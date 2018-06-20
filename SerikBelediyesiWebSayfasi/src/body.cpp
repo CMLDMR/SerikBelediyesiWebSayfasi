@@ -3629,9 +3629,9 @@ Body::NewsAnnounceContent::AnnouncePanel::AnnounceList::AnnounceItem::AnnounceIt
     layout->addWidget(cpp14::make_unique<WText>(birim));
     QString str = QString::fromStdString(title);
 
-    if( str.count() > 70 )
+    if( str.count() > 60 )
     {
-        str = str.mid(0,70);
+        str = str.mid(0,60);
         str.append("...");
     }
 
