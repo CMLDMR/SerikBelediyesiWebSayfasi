@@ -7871,6 +7871,9 @@ Body::BilgiEdin::Basvuru::Basvuru(mongocxx::database *_db)
 
         auto text = _layout->addWidget(cpp14::make_unique<WLabel>("Şikayet ve Talepleriniz İçin Lütfen İletişim Bölümünden Başvuruda Bulununuz"),0,AlignmentFlag::Center);
 
+        auto text1 = _layout->addWidget(cpp14::make_unique<WLabel>("Başvurularınızın Cevaplarını Üst Menüden Telefon Numarası ve Şifreniz İle Giriş Yaparak Takip Edebilirsiniz"),0,AlignmentFlag::Center);
+
+
         save->addStyleClass(Bootstrap::Button::Primary);
         save->clicked().connect(this,&Basvuru::save);
         _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
