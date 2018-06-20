@@ -746,7 +746,7 @@ void Giris::LoginWidget::ConfirmVatandas()
         {
             if( !val.value().view().empty() )
             {
-                std::cout << "FIND Vat " << bsoncxx::to_json(val.value().view()) << std::endl;
+//                std::cout << "FIND Vat " << bsoncxx::to_json(val.value().view()) << std::endl;
                 vatandas = val.value();
 
                 std::string password;
@@ -3556,6 +3556,8 @@ void Giris::Personel::PersonelWidget::initMenu()
     menu->setStyleClass("nav nav-pills nav-stacked");
 
 
+    menu->addItem("Yenilikler", Wt::cpp14::make_unique<Yenilikler>());
+
     menu->addItem("Bilgilerim", Wt::cpp14::make_unique<Bilgilerim>(db(),User()));
 
 
@@ -3564,9 +3566,9 @@ void Giris::Personel::PersonelWidget::initMenu()
         menu->addItem("Mesajlar", Wt::cpp14::make_unique<BaskanMesajlar>(db(),User()));
         menu->addItem("Projeler", Wt::cpp14::make_unique<ProjeWidget>(db(),User()));
         menu->addItem("Çalışmalar", Wt::cpp14::make_unique<CalismaWidget>(db(),User()));
-//        menu->addItem("Şikayetler", Wt::cpp14::make_unique<WText>("Şikayetler"));
+
         menu->addItem("Çağrı Merkezi", Wt::cpp14::make_unique<CagriMerkezi>(db(),User()));
-//        menu->addItem("Performans", Wt::cpp14::make_unique<WText>("Performans"));
+
         menu->addItem("Muhasebe", Wt::cpp14::make_unique<WText>("Muhasebe Yakın Zamanda Devreye Alınacaktır"));
 //        menu->addItem("Birimler", Wt::cpp14::make_unique<WText>("Birimler"));
 

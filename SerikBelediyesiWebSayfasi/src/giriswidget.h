@@ -423,6 +423,24 @@ private:
 
 };
 
+class Yenilikler : public WContainerWidget
+{
+public:
+    Yenilikler() {
+
+        auto fContainer = addWidget(cpp14::make_unique<WContainerWidget>());
+
+        fContainer->addStyleClass(Bootstrap::Grid::container_fluid);
+
+        auto rContainer = fContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+
+        rContainer->addStyleClass(Bootstrap::Grid::row);
+
+        auto Text = rContainer->addWidget(cpp14::make_unique<WText>("<iframe src=\"https://www.google.com.tr\" style=\"border:0px #ffffff none;\" name=\"myiFrame\" scrolling=\"no\" frameborder=\"1\" marginheight=\"0px\" marginwidth=\"0px\" height=\"100%\" width=\"100%\" allowfullscreen></iframe>",TextFormat::UnsafeXHTML));
+    }
+};
+
+
 class Bilgilerim : public BaseWidget
 {
 public:
