@@ -3121,9 +3121,9 @@ void Body::NewsAnnounceContent::NewsPanel::NewsList::initList(std::string key)
 
     try {
         filter.append(kvp(SBLDKeys::Haberler::Yayinda,SBLDKeys::Haberler::Yayin::Yayinda));
-        WDate date = WDate::currentDate();
-        date = date.addDays(-45);
-        filter.append(kvp(SBLDKeys::Haberler::tarih,make_document(kvp("$gte",QString::fromStdString(date.toString("yyyyMMdd").toUTF8()).toDouble()))));
+//        WDate date = WDate::currentDate();
+//        date = date.addDays(-45);
+//        filter.append(kvp(SBLDKeys::Haberler::tarih,make_document(kvp("$gte",QString::fromStdString(date.toString("yyyyMMdd").toUTF8()).toDouble()))));
     } catch (bsoncxx::exception& e) {
         std::cout << "Error: " << e.what() << std::endl;
     }

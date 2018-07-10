@@ -1921,7 +1921,7 @@ void Giris::Taleplerim::setDetail(bsoncxx::oid oid)
 
         // Talep Başlığı
         {
-            std::string konu,tarih,saat,mahalle,tamadres,durum,birim;
+            std::string konu,tarih,saat,mahalle,tamadres,durum,birim,cagriMerkeziPersonli;
 
             try {
                 konu = view[SBLDKeys::SikayetKey::mainKey::konu].get_utf8().value.to_string();
@@ -1960,7 +1960,13 @@ void Giris::Taleplerim::setDetail(bsoncxx::oid oid)
                 birim = e.what();
             }
 
-            auto header = std::make_unique<TalepHeader>(konu,tarih,saat,mahalle,tamadres,durum,birim);
+            try {
+                cagriMerkeziPersonli = "";
+            } catch (bsoncxx::exception &e) {
+                cagriMerkeziPersonli = e.what();
+            }
+
+            auto header = std::make_unique<TalepHeader>(konu,tarih,saat,mahalle,tamadres,durum,birim,cagriMerkeziPersonli);
             mContentContainer->addWidget(std::move(header));
         }
 
@@ -2098,7 +2104,7 @@ Giris::Bilgilerim::Bilgilerim(mongocxx::database *_db, bsoncxx::document::value 
 
 }
 
-Giris::Taleplerim::TalepHeader::TalepHeader(std::string konu, std::string tarih, std::string saat, std::string mahalle, std::string adres, std::string durum, std::string birim)
+Giris::Taleplerim::TalepHeader::TalepHeader(std::string konu, std::string tarih, std::string saat, std::string mahalle, std::string adres, std::string durum, std::string birim, std::string cagriMerkeziPersoneli)
 {
 
     auto container = addWidget(cpp14::make_unique<WContainerWidget>());
@@ -2126,8 +2132,12 @@ Giris::Taleplerim::TalepHeader::TalepHeader(std::string konu, std::string tarih,
     {
         auto text = layout->addWidget(cpp14::make_unique<WText>(birim));
     }
+
     {
         auto text = layout->addWidget(cpp14::make_unique<WText>(adres));
+    }
+    {
+        auto text = layout->addWidget(cpp14::make_unique<WText>("<b>Çarğı Merkezi Personeli: "+cagriMerkeziPersoneli+"</b>"));
     }
 
 
@@ -4382,7 +4392,9 @@ void Giris::Personel::Taleplerim::setDetail(bsoncxx::oid oid)
 
         // Talep Başlığı
         {
-            std::string konu,tarih,saat,mahalle,tamadres,durum,birim;
+            std::string konu,tarih,saat,mahalle,tamadres,durum,birim,cagirMerkeziPersoneli;
+
+
 
             try {
                 konu = view[SBLDKeys::SikayetKey::mainKey::konu].get_utf8().value.to_string();
@@ -4421,7 +4433,13 @@ void Giris::Personel::Taleplerim::setDetail(bsoncxx::oid oid)
                 birim = e.what();
             }
 
-            auto header = std::make_unique<Giris::Taleplerim::TalepHeader>(konu,tarih,saat,mahalle,tamadres,durum,birim);
+            try {
+                cagirMerkeziPersoneli = view[SBLDKeys::SikayetKey::mainKey::cagriMerkeziPersoneli].get_utf8().value.to_string();
+            } catch (bsoncxx::exception &e) {
+                cagirMerkeziPersoneli = e.what();
+            }
+
+            auto header = std::make_unique<Giris::Taleplerim::TalepHeader>(konu,tarih,saat,mahalle,tamadres,durum,birim,cagirMerkeziPersoneli);
             mContentContainer->addWidget(std::move(header));
 
 
