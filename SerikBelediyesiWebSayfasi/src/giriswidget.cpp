@@ -12189,7 +12189,6 @@ void Giris::Personel::CalismaGirWidget::setCalismaDetail(std::string oid)
 
     {
         auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
-        auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
         auto bucket = this->db()->gridfs_bucket();
         std::string iconPaht = SBLDKeys::downloadifNotExist(&bucket,view[SBLDKeys::Calismalar::icon].get_oid().value.to_string());
         TitleContainer->setAttributeValue(Style::style,Style::background::url(iconPaht)+Style::background::size::cover+Style::background::repeat::norepeat+Style::background::position::center_center);
