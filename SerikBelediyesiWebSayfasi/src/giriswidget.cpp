@@ -3567,7 +3567,7 @@ void Giris::Personel::PersonelWidget::initMenu()
     menu->setStyleClass("nav nav-pills nav-stacked");
 
 
-    menu->addItem("Yenilikler", Wt::cpp14::make_unique<Giris::Personel::Yenilikler>());
+    menu->addItem("Kod Repository", Wt::cpp14::make_unique<Giris::Personel::Yenilikler>());
 
     menu->addItem("Bilgilerim", Wt::cpp14::make_unique<Bilgilerim>(db(),User()));
 
