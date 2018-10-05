@@ -69,7 +69,8 @@ HEADERS += \
     SerikBelediyesiWebSayfasi/chart/donutchart.h \
     SerikBelediyesiWebSayfasi/BaseClass/basewidget.h \
     SerikBelediyesiWebSayfasi/Giris/gelenmesajlarwidget.h \
-    SerikBelediyesiWebSayfasi/reporter/reportresource.h
+    SerikBelediyesiWebSayfasi/reporter/reportresource.h \
+    ../url.h
 
 DISTFILES += \
     ../build-SerikBelediyesiWebSayfasi-Desktop_Qt_5_9_1_MSVC2015_64bit2-Release/docroot/css/mainPage.css \

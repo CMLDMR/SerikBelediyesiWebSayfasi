@@ -7161,7 +7161,7 @@ Body::Talep::Talep(mongocxx::database *_db)
                 auto text = layout->addWidget(cpp14::make_unique<WText>("Telefon"),3,0,AlignmentFlag::Middle);
                 mTelefon = layout->addWidget(cpp14::make_unique<WLineEdit>(),3,1);
                 mTelefon->setPlaceholderText("Cep Telefonu Numaranızı Giriniz(05321234567)");
-                mTelefon->setInputMask("99999999999");
+//                mTelefon->setInputMask("99999999999");
             }
 
         }
@@ -7287,6 +7287,7 @@ void Body::Talep::Save()
         this->showMessage("UYARI","Talep/Şikayet Mahallesi Seçmediniz");
         return;
     }
+
 
     if( mTelefon->text().toUTF8().size() != 11 )
     {

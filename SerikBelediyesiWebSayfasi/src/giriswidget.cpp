@@ -1,5 +1,7 @@
 #include "giriswidget.h"
 
+#include <QLatin1String>
+
 
 
 Giris::GirisWidget::GirisWidget(mongocxx::database *_db)
@@ -88,7 +90,6 @@ void Giris::GirisWidget::initMenu(bsoncxx::document::value vatandas)
     mPageTitle->setText("INTERAKTİF ALAN");
 
 
-    std::cout << "initMenu Vatandas: " << bsoncxx::to_json(vatandas.view()) << std::endl;
 
     auto filter = document{};
 
@@ -3570,6 +3571,8 @@ void Giris::Personel::PersonelWidget::initMenu()
 
     menu->addItem("Bilgilerim", Wt::cpp14::make_unique<Bilgilerim>(db(),User()));
 
+    menu->addItem("Arıza Kaydı", Wt::cpp14::make_unique<ArizaKaydi>(db(),User()));
+
 
     if(this->User().view()[SBLDKeys::Personel::statu].get_utf8().value.to_string() == SBLDKeys::Personel::statuType::baskan )
     {
@@ -3579,7 +3582,7 @@ void Giris::Personel::PersonelWidget::initMenu()
 
         menu->addItem("Çağrı Merkezi", Wt::cpp14::make_unique<CagriMerkezi>(db(),User()));
 
-        menu->addItem("Muhasebe", Wt::cpp14::make_unique<WText>("Muhasebe Yakın Zamanda Devreye Alınacaktır"));
+//        menu->addItem("Muhasebe", Wt::cpp14::make_unique<WText>("Muhasebe Yakın Zamanda Devreye Alınacaktır"));
 //        menu->addItem("Birimler", Wt::cpp14::make_unique<WText>("Birimler"));
 
         menu->addSeparator();
@@ -4441,6 +4444,38 @@ void Giris::Personel::Taleplerim::setDetail(bsoncxx::oid oid)
 
             auto header = std::make_unique<Giris::Taleplerim::TalepHeader>(konu,tarih,saat,mahalle,tamadres,durum,birim,cagirMerkeziPersoneli);
             mContentContainer->addWidget(std::move(header));
+
+
+            // Varsa Fotoğraf ve Konum Bilgisi
+            {
+                try {
+                    auto bucket = db()->gridfs_bucket();
+
+                    auto mobildoc = view[SBLDKeys::SikayetKey::mainKey::mobilDoc].get_document().value;
+
+                    auto latitude = mobildoc[SBLDKeys::SikayetKey::mobil::latitude].get_double().value;
+                    auto longtitude = mobildoc[SBLDKeys::SikayetKey::mobil::longtitude].get_double().value;
+
+                    auto imglist = mobildoc[SBLDKeys::SikayetKey::mobil::fotooidlist].get_array().value;
+
+                    auto container = mContentContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+                    container->addStyleClass(Bootstrap::Grid::container_fluid);
+                    auto row = container->addWidget(cpp14::make_unique<WContainerWidget>());
+                    row->addStyleClass(Bootstrap::Grid::row);
+                    for( auto img : imglist )
+                    {
+                        auto filename = SBLDKeys::downloadifNotExist(&bucket,img.get_oid().value.to_string());
+
+                        auto mimg = row->addWidget(cpp14::make_unique<WImage>(WLink(filename)));
+                        mimg->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
+                    }
+
+
+                } catch (bsoncxx::exception &e) {
+
+                }
+
+            }
 
 
             {
@@ -5335,6 +5370,7 @@ void Giris::Personel::EvrakArsiv::initList()
     table->elementAt(0, 3)->addWidget(cpp14::make_unique<WText>("Sayı"));
     table->elementAt(0, 4)->addWidget(cpp14::make_unique<WText>("Birim"));
     table->elementAt(0, 5)->addWidget(cpp14::make_unique<WText>("İncele"));
+    table->elementAt(0, 6)->addWidget(cpp14::make_unique<WText>("İndir"));
 
     table->addStyleClass("table form-inline table-bordered table-hover table-condensed table-striped");
 
@@ -5488,13 +5524,29 @@ void Giris::Personel::EvrakArsiv::initList()
         table->elementAt(row,3)->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(doc[SBLDKeys::Arsiv::Arsiv::sayi].get_int32().value)));
         table->elementAt(row,4)->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(doc[SBLDKeys::Arsiv::Arsiv::birim].get_utf8().value.to_string().c_str())));
         oidList.push_back(doc[SBLDKeys::oid].get_oid().value);
-        auto btn = cpp14::make_unique<WPushButton>("Buna Bakayım!");
-        btn->addStyleClass(Bootstrap::Button::Primary);
-        btn->clicked().connect([=](){
-            auto oid = oidList.at(row-1);
-            this->setArsiv(oid);
-        });
-        table->elementAt(row,5)->addWidget(std::move(btn));
+
+        {
+            auto btn = cpp14::make_unique<WPushButton>("Buna Bakayım!");
+            btn->addStyleClass(Bootstrap::Button::Primary);
+            btn->clicked().connect([=](){
+                auto oid = oidList.at(row-1);
+                this->setArsiv(oid);
+            });
+            table->elementAt(row,5)->addWidget(std::move(btn));
+        }
+
+        {
+//            oidList.push_back(doc[SBLDKeys::oid].get_oid().value);
+            auto btn = cpp14::make_unique<WPushButton>("indir");
+            btn->addStyleClass(Bootstrap::Button::Link);
+            btn->clicked().connect([=](){
+                auto oid = oidList.at(row-1);
+                this->setForDownload(oid);
+            });
+            table->elementAt(row,6)->addWidget(std::move(btn));
+        }
+
+
         row++;
     }
 
@@ -5853,6 +5905,89 @@ void Giris::Personel::EvrakArsiv::setEvrak(bsoncxx::oid fileOid)
 
 }
 
+void Giris::Personel::EvrakArsiv::setForDownload(bsoncxx::oid oid)
+{
+
+//    std::cout << oid.to_string().c_str()<<std::endl;
+
+
+
+    auto filter = document{};
+
+    try {
+        filter.append(kvp(SBLDKeys::oid,oid));
+    } catch (bsoncxx::exception &e) {
+        std::cout << "Exception Error: " << e.what() << std::endl;
+    }
+
+
+    auto projectFilter = document{};
+
+    try {
+        projectFilter.append(kvp(SBLDKeys::Arsiv::Arsiv::dosyalar,true));
+    } catch (bsoncxx::exception &e) {
+        std::cout << "Exception Error: " << e.what() << std::endl;
+    }
+
+    try {
+        projectFilter.append(kvp(SBLDKeys::Arsiv::Arsiv::anahtarKelime,true));
+    } catch (bsoncxx::exception &e) {
+        std::cout << "Exception Error: " << e.what() << std::endl;
+    }
+
+    mongocxx::options::find findOptions;
+
+    findOptions.projection(projectFilter.view());
+
+    try {
+        auto val = this->db()->collection(SBLDKeys::Arsiv::Arsiv::collection).find_one(filter.view(),findOptions);
+
+        if( !val.value().view().empty() )
+        {
+
+            auto arsivadi = val.value().view()[SBLDKeys::Arsiv::Arsiv::anahtarKelime].get_utf8().value.to_string();
+            auto filelist = val.value().view()[SBLDKeys::Arsiv::Arsiv::dosyalar].get_array().value;
+
+            auto bucket = this->db()->gridfs_bucket();
+
+            std::vector<std::string> filenameList;
+
+            for( auto element : filelist )
+            {
+
+                auto fileOid = element.get_document().view()[SBLDKeys::Arsiv::Arsiv::dosya::oid].get_oid().value;
+                std::string filePath = SBLDKeys::downloadifNotExist(&bucket,fileOid.to_string());
+                filenameList.push_back(filePath);
+            }
+
+
+
+            std::string scriptString;
+
+            scriptString +="var urls = [";
+
+            for( auto url : filenameList )
+            {
+                scriptString += "\""+url+"\",";
+            }
+            scriptString += "];"
+                            "var name = \""+std::string(QLatin1String(arsivadi.c_str()).latin1())+".zip\";"
+                            "compressed_img(urls,name);";
+
+
+            this->doJavaScript(scriptString);
+
+
+        }
+
+    } catch (mongocxx::exception &e) {
+
+    }
+
+
+
+}
+
 void Giris::Personel::EvrakArsiv::initTumEvraklar()
 {
 
@@ -5866,12 +6001,25 @@ void Giris::Personel::EvrakArsiv::initTumEvraklar()
 
     {
         auto backContainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
-        backContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_1+Bootstrap::Grid::ExtraSmall::col_xs_1);
+        backContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_3);
         backContainer->setAttributeValue(Style::style,Style::background::color::color(Style::color::Purple::Magenta));
         auto layout = backContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
         auto text = layout->addWidget(cpp14::make_unique<WText>("Ana Menü"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
         text->setAttributeValue(Style::style,Style::font::size::s12px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
         backContainer->setWidth(75);
+        backContainer->setHeight(75);
+        backContainer->clicked().connect(this,&EvrakArsiv::initMenu);
+        backContainer->decorationStyle().setCursor(Cursor::PointingHand);
+    }
+
+    {
+        auto backContainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
+        backContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_10+Bootstrap::Grid::Medium::col_md_10+Bootstrap::Grid::Small::col_sm_9+Bootstrap::Grid::ExtraSmall::col_xs_9);
+        backContainer->setAttributeValue(Style::style,Style::background::color::color(Style::color::Grey::DarkGray));
+        auto layout = backContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
+        auto text = layout->addWidget(cpp14::make_unique<WText>("Bu Fonksiyon Kullanılabilir Değil!"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+        text->setAttributeValue(Style::style,Style::font::size::s12px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
+//        backContainer->setWidth(75);
         backContainer->setHeight(75);
         backContainer->clicked().connect(this,&EvrakArsiv::initMenu);
         backContainer->decorationStyle().setCursor(Cursor::PointingHand);
@@ -15355,3 +15503,29 @@ Giris::Personel::BaskanMesajlar::CevapYazWidget::CevapYazWidget(mongocxx::databa
     });
 
 }
+
+Giris::Personel::ArizaKaydi::ArizaKaydi(mongocxx::database *_database, bsoncxx::document::value _user)
+    :ContainerWidget::ContainerWidget( _database , _user,"Arıza Kayıtları")
+{
+
+    addWidget(cpp14::make_unique<WText>("Ariza Kaydı"));
+
+    addWidget(cpp14::make_unique<WText>(this->User().view()[SBLDKeys::Personel::birimi].get_utf8().value.to_string().c_str()));
+
+
+
+}
+
+Giris::Personel::Yenilikler::Yenilikler()
+{
+
+        auto fContainer = addWidget(cpp14::make_unique<WContainerWidget>());
+
+        fContainer->addStyleClass(Bootstrap::Grid::container_fluid);
+
+        auto rContainer = fContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+
+        rContainer->addStyleClass(Bootstrap::Grid::row);
+
+        auto Text = rContainer->addWidget(cpp14::make_unique<WText>("<iframe src=\"https://www.google.com.tr\" style=\"border:0px #ffffff none;\" name=\"myiFrame\" scrolling=\"no\" frameborder=\"1\" marginheight=\"0px\" marginwidth=\"0px\" height=\"300\" width=\"100%\" allowfullscreen></iframe>",TextFormat::UnsafeXHTML));
+    }

@@ -39,6 +39,8 @@ private:
     void initPersonel();
 };
 
+
+
 class SivilWidget : public WContainerWidget
 {
 public:
@@ -204,7 +206,7 @@ public:
     class TalepHeader : public WContainerWidget
     {
     public:
-        TalepHeader(std::string konu,std::string tarih,std::string saat,std::string mahalle,std::string adres,std::string durum,std::string birim);
+        TalepHeader(std::string konu,std::string tarih,std::string saat,std::string mahalle,std::string adres,std::string durum,std::string birim,std::string cagriMerkeziPersoneli);
     };
 
 
@@ -426,18 +428,7 @@ private:
 class Yenilikler : public WContainerWidget
 {
 public:
-    Yenilikler() {
-
-        auto fContainer = addWidget(cpp14::make_unique<WContainerWidget>());
-
-        fContainer->addStyleClass(Bootstrap::Grid::container_fluid);
-
-        auto rContainer = fContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-
-        rContainer->addStyleClass(Bootstrap::Grid::row);
-
-        auto Text = rContainer->addWidget(cpp14::make_unique<WText>("<iframe src=\"https://www.google.com.tr\" style=\"border:0px #ffffff none;\" name=\"myiFrame\" scrolling=\"no\" frameborder=\"1\" marginheight=\"0px\" marginwidth=\"0px\" height=\"100%\" width=\"100%\" allowfullscreen></iframe>",TextFormat::UnsafeXHTML));
-    }
+    Yenilikler();
 };
 
 
@@ -547,6 +538,7 @@ public:
     std::vector<bsoncxx::oid> oidList;
     void setArsiv(bsoncxx::oid oid);
     void setEvrak(bsoncxx::oid fileOid);
+    void setForDownload(bsoncxx::oid oid);
     WContainerWidget* msetEvrakWidget;
     WImage* mEvrakCanvas;
 
@@ -821,6 +813,20 @@ public:
 
 
 };
+
+
+class ArizaKaydi : public ContainerWidget
+{
+
+public:
+    ArizaKaydi(mongocxx::database* _database , bsoncxx::document::value _user);
+
+
+private:
+    WContainerWidget* mMainContainer;
+    WContainerWidget* mContentContainer;
+};
+
 
 }
 
