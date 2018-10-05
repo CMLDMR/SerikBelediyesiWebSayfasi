@@ -44,7 +44,7 @@ void Body::Body::initBody()
     mContentWidget->mEventWidget->mGetBaskanClick().connect(this,&Body::setBaskanDetail);
     mContentWidget->mEventWidget->mGetEventClick().connect(this,&Body::setEventDetail);
 
-    mMainContainer->addWidget(cpp14::make_unique<ContentWidget::EventWidget>(db,true));
+//    mMainContainer->addWidget(cpp14::make_unique<ContentWidget::EventWidget>(db,true));
 
 
     mNewsAnnounceContent = mMainContainer->addWidget(cpp14::make_unique<NewsAnnounceContent>(db));
@@ -2219,8 +2219,6 @@ std::string Body::Slider::downloadifNotExist(bsoncxx::types::value oid, bool for
         mainArray+= ar;
     }
 
-//    std::cout << "Current Dir: " << QDir::currentPath().toStdString() << std::endl;
-//    std::cout << "file Size: " << mainArray.size() << std::endl;
     QFile file( "docroot/"+fullFilename );
     if( file.open(QIODevice::WriteOnly) )
     {
@@ -2237,20 +2235,35 @@ Body::ContentWidget::ContentWidget(mongocxx::database *_db)
     :WContainerWidget(),
       db(_db)
 {
-    addStyleClass("ContentWidget");
-    setHeight(250);
 
     auto mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
     mMainContainer->addStyleClass(Bootstrap::Grid::row);
 
     mVideoWidget = mMainContainer->addWidget(cpp14::make_unique<VideoWidget>(db));
-    mVideoWidget->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_12);
+    mVideoWidget->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
+
+
+    {
+        auto item = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+        item->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
+        item->setAttributeValue(Style::style,Style::background::color::rgba("86,200,232,.4"));
+        item->setHeight(250);
+
+        auto _layout = item->setLayout(cpp14::make_unique<WVBoxLayout>());
+        _layout->setContentsMargins(0,0,0,0);
+        auto _widget = _layout->addWidget(cpp14::make_unique<WContainerWidget>());
+        _widget->setAttributeValue(Style::style,Style::background::url("img/isimizGucumuzSerik.png")+
+                                Style::background::size::contain+
+                                Style::background::origin::border_box+
+                                Style::background::repeat::norepeat+
+                                Style::background::position::center_center);
+        _widget->setPadding(0,AllSides);
+    }
+
 
     mEventWidget = mMainContainer->addWidget(cpp14::make_unique<EventWidget>(db));
-    mEventWidget->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_8+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_12);
+    mEventWidget->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
 
-//    mEventWidget = mMainContainer->addWidget(cpp14::make_unique<EventWidget>(db,true));
-//    mEventWidget->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_8+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
 }
 
 Body::ContentWidget::VideoWidget::VideoWidget(mongocxx::database *_db)
@@ -2292,23 +2305,23 @@ Body::ContentWidget::VideoWidget::VideoWidget(mongocxx::database *_db)
             auto view = val.value().view();
 
 
-            {
-                auto containerItem = container->addWidget(cpp14::make_unique<WContainerWidget>());
-                containerItem->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_12
-                                             +Bootstrap::Grid::Small::col_sm_12
-                                             +Bootstrap::Grid::ExtraSmall::col_xs_12);
-                auto layout = containerItem->setLayout(cpp14::make_unique<WVBoxLayout>());
-                layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Video::title].get_utf8().value.to_string()),0,AlignmentFlag::Middle);
-                containerItem->setHeight(250);
-                containerItem->setAttributeValue(Style::style,Style::background::color::color(Style::color::Purple::BlueViolet)+
-                                                 Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::Snow));
-            }
+//            {
+//                auto containerItem = container->addWidget(cpp14::make_unique<WContainerWidget>());
+//                containerItem->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_12
+//                                             +Bootstrap::Grid::Small::col_sm_12
+//                                             +Bootstrap::Grid::ExtraSmall::col_xs_12);
+//                auto layout = containerItem->setLayout(cpp14::make_unique<WVBoxLayout>());
+//                layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Video::title].get_utf8().value.to_string()),0,AlignmentFlag::Middle);
+//                containerItem->setHeight(250);
+//                containerItem->setAttributeValue(Style::style,Style::background::color::color(Style::color::Purple::BlueViolet)+
+//                                                 Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::Snow));
+//            }
 
 
 
             {
                 auto containerItem = container->addWidget(cpp14::make_unique<WContainerWidget>());
-                containerItem->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_12
+                containerItem->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12
                                              +Bootstrap::Grid::Small::col_sm_12
                                              +Bootstrap::Grid::ExtraSmall::col_xs_12);
                 auto layout = containerItem->setLayout(cpp14::make_unique<WVBoxLayout>());
@@ -2347,9 +2360,7 @@ Body::ContentWidget::VideoWidget::VideoWidget(mongocxx::database *_db)
 
 Signal<std::string> &Body::ContentWidget::VideoWidget::mGetClickVideo()
 {
-
     return this->_ClickOid;
-
 }
 
 Body::ContentWidget::EventWidget::EventWidget(mongocxx::database *_db, bool addOnlySub)
@@ -2357,9 +2368,11 @@ Body::ContentWidget::EventWidget::EventWidget(mongocxx::database *_db, bool addO
       db(_db)
 {
 
-
+    addStyleClass("EventWidget");
+    addStyleClass(Bootstrap::Grid::Large::col_lg_12);
 
     mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
+
 
 
     mMainContainer->setPadding(0,AllSides);
@@ -2373,324 +2386,108 @@ Body::ContentWidget::EventWidget::EventWidget(mongocxx::database *_db, bool addO
     container = layout->addWidget(cpp14::make_unique<WContainerWidget>());
     container->setMargin(0,AllSides);
 
-
-    if( addOnlySub )
-    {
-        addStyleClass("EventWidget");
-        addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-//        setHeight(250);
-        container->addStyleClass(Bootstrap::Grid::row+"EventWidgetMainContainerItemsaddOnlySub");
-//        container->setHeight(250);
-    }else{
-        addStyleClass("EventWidget");
-        setHeight(250);
-
-        mMainContainer->addStyleClass("EventWidgetMainContainer");
-        container->addStyleClass(Bootstrap::Grid::row+"EventWidgetMainContainerItems");
+    addOnlySub = true;
+    container->addStyleClass(Bootstrap::Grid::row);
 
 
-        // İşimiz Gücümüz Serik
-        this->addisimizGucumuz();
+    addBaskan();
 
 
-        // BAŞKAN
-        this->addBaskan();
+    std::string explain;
+    std::string oid;
+    std::string iconPath;
 
+    auto bucket = db->gridfs_bucket();
+    auto collection = db->collection(SBLDKeys::Etkinlik::collection);
+
+    auto filter = document{};
+    auto sortDoc = document{};
+    mongocxx::options::find findOptions;
+    try {
+        filter.append(kvp(SBLDKeys::Etkinlik::online,SBLDKeys::Etkinlik::on::online));
+    } catch (bsoncxx::exception &e) {
+    }
+
+    try {
+        filter.append(kvp(SBLDKeys::Etkinlik::endDate,make_document(kvp("$gte",QDate::currentDate().toJulianDay()))));
+    } catch (bsoncxx::exception &e) {
+    }
+
+    try {
+        filter.append(kvp(SBLDKeys::Etkinlik::beginDate,make_document(kvp("$lte",QDate::currentDate().toJulianDay()))));
+    } catch (bsoncxx::exception &e) {
+    }
+
+    try {
+        sortDoc.append(kvp(SBLDKeys::Etkinlik::beginDate,1));
+    } catch (bsoncxx::exception &e) {
+    }
+    findOptions.sort(sortDoc.view());
+    try {
+        auto val = db->collection(SBLDKeys::Etkinlik::collection).find_one(filter.view(),findOptions);
+        if( val )
+        {
+            explain = val.value().view()[SBLDKeys::Etkinlik::plainText].get_utf8().value.to_string().c_str();
+            auto view = val.value().view();
+            try {
+                iconPath = SBLDKeys::downloadifNotExist(&bucket,view[SBLDKeys::Etkinlik::iconFile].get_oid().value.to_string());
+                oid = view[SBLDKeys::Etkinlik::oid].get_oid().value.to_string();
+            } catch (bsoncxx::exception &e) {
+
+            }
+
+
+        }
+    } catch (mongocxx::exception &e) {
     }
 
 
-
-    if( addOnlySub )
     {
+        auto item = container->addWidget(cpp14::make_unique<WContainerWidget>());
 
-        std::string explain;
-        std::string oid;
-        std::string iconPath;
+        item->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6+"EventWidgetMainContainerItem");
 
+        item->setHeight(250);
+        item->decorationStyle().setCursor(Cursor::PointingHand);
+        item->setAttributeValue(Style::style,Style::background::color::color(Style::color::Orange::DarkOrange));
+        auto layout = item->setLayout(cpp14::make_unique<WVBoxLayout>());
+        auto title1 = layout->addWidget(cpp14::make_unique<WText>("Etkinlik**"));
+        title1->setAttributeValue(Style::style,Style::font::size::s24px+Style::font::weight::bold+Style::font::weight::lighter+Style::color::color("white"));
 
-
-        auto bucket = db->gridfs_bucket();
-        auto collection = db->collection(SBLDKeys::Etkinlik::collection);
-
-        auto filter = document{};
-        auto sortDoc = document{};
-        mongocxx::options::find findOptions;
         try {
-            filter.append(kvp(SBLDKeys::Etkinlik::online,SBLDKeys::Etkinlik::on::online));
+            std::string text = explain;
+            if( text.size() > 100 )
+            {
+                text.resize(100);
+                text.resize(103,'.');
+            }
+
+            if( text.size() == 0 )
+            {
+                text = "Yaklaşan Etkinlik Yok";
+            }
+            auto title2 = layout->addWidget(cpp14::make_unique<WText>(text));
+            title2->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::lighter+Style::color::color("white"));
+
         } catch (bsoncxx::exception &e) {
+            auto title2 = layout->addWidget(cpp14::make_unique<WText>(WString("Error: {1}").arg(e.what())));
+            title2->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::lighter+Style::color::color("white"));
         }
 
-        try {
-            filter.append(kvp(SBLDKeys::Etkinlik::endDate,make_document(kvp("$gte",QDate::currentDate().toJulianDay()))));
-        } catch (bsoncxx::exception &e) {
-        }
-
-        try {
-            filter.append(kvp(SBLDKeys::Etkinlik::beginDate,make_document(kvp("$lte",QDate::currentDate().toJulianDay()))));
-        } catch (bsoncxx::exception &e) {
-        }
-
-        try {
-            sortDoc.append(kvp(SBLDKeys::Etkinlik::beginDate,1));
-        } catch (bsoncxx::exception &e) {
-        }
-
-        findOptions.sort(sortDoc.view());
-
-        std::cout << "addOnlySub = true EVENT FILTER: " << bsoncxx::to_json(filter.view()) << " - " << QDate::currentDate().toJulianDay() << std::endl;
-
-        try {
-            auto val = db->collection(SBLDKeys::Etkinlik::collection).find_one(filter.view(),findOptions);
-            if( val )
-            {
-                explain = val.value().view()[SBLDKeys::Etkinlik::plainText].get_utf8().value.to_string().c_str();
-
-                auto view = val.value().view();
-
-                try {
-                    iconPath = SBLDKeys::downloadifNotExist(&bucket,view[SBLDKeys::Etkinlik::iconFile].get_oid().value.to_string());
-                    oid = view[SBLDKeys::Etkinlik::oid].get_oid().value.to_string();
-
-                } catch (bsoncxx::exception &e) {
-
-                }
-
-
-            }else{
-//                item->addWidget(cpp14::make_unique<WText>("No Document Queried"));
-            }
-        } catch (mongocxx::exception &e) {
-//            item->addWidget(cpp14::make_unique<WText>(WString("Error: {1}").arg(e.what())));
-        }
-
-
-
-
-
+        if( explain.size() == 0 )
         {
-            auto item = container->addWidget(cpp14::make_unique<WContainerWidget>());
-            if( addOnlySub )
-            {
-                item->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+"EventWidgetMainContainerItem");
-
-            }else{
-                item->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_12+"EventWidgetMainContainerItem");
-                item->addStyleClass("HideForSM");
-            }
-            item->setHeight(250);
-            item->decorationStyle().setCursor(Cursor::PointingHand);
-            item->setAttributeValue(Style::style,Style::background::color::color(Style::color::Orange::DarkOrange));
-            auto layout = item->setLayout(cpp14::make_unique<WVBoxLayout>());
-            auto title1 = layout->addWidget(cpp14::make_unique<WText>("Etkinlik"));
-            title1->setAttributeValue(Style::style,Style::font::size::s24px+Style::font::weight::bold+Style::font::weight::lighter+Style::color::color("white"));
-
-            try {
-                std::string text = explain;
-                if( text.size() > 100 )
-                {
-                    text.resize(100);
-                    text.resize(103,'.');
-                }
-
-                if( text.size() == 0 )
-                {
-                    text = "Yaklaşan Etkinlik Yok";
-                }
-                auto title2 = layout->addWidget(cpp14::make_unique<WText>(text));
-                title2->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::lighter+Style::color::color("white"));
-
-            } catch (bsoncxx::exception &e) {
-                auto title2 = layout->addWidget(cpp14::make_unique<WText>(WString("Error: {1}").arg(e.what())));
-                title2->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::lighter+Style::color::color("white"));
-            }
-
-            if( explain.size() == 0 )
-            {
-                auto title3 = layout->addWidget(cpp14::make_unique<WText>("***"));
-                title3->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color("white"));
-            }else{
-                auto title3 = layout->addWidget(cpp14::make_unique<WText>("Devamını Oku"));
-                title3->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color("white"));
-            }
-
-
-            item->clicked().connect([=](){
-                _ClickEvent.emit(oid);
-            });
+            auto title3 = layout->addWidget(cpp14::make_unique<WText>("***"));
+            title3->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color("white"));
+        }else{
+            auto title3 = layout->addWidget(cpp14::make_unique<WText>("Devamını Oku"));
+            title3->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color("white"));
         }
 
 
-
-        {
-
-            auto item = container->addWidget(cpp14::make_unique<WContainerWidget>());
-            item->setHeight(250);
-
-
-            if( addOnlySub )
-            {
-                item->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+"EventWidgetMainContainerItem");
-
-            }else{
-                item->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_12+"EventWidgetMainContainerItem");
-                item->addStyleClass("HideForSM");
-            }
-
-            item->decorationStyle().setCursor(Cursor::PointingHand);
-
-
-            item->setAttributeValue(Style::style,Style::background::url(iconPath)
-                                    +Style::background::repeat::norepeat
-                                    +Style::background::position::center_center
-                                    +Style::background::size::cover);
-            item->clicked().connect([=](){
-                _ClickEvent.emit(oid);
-            });
-
-
-        }
-
-
-
-    }else{
-
-        std::string explain;
-        std::string oid;
-
-        {
-
-            auto item = container->addWidget(cpp14::make_unique<WContainerWidget>());
-            item->setHeight(250);
-
-
-            if( addOnlySub )
-            {
-                item->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+"EventWidgetMainContainerItem");
-
-            }else{
-                item->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_12+"EventWidgetMainContainerItem");
-                item->addStyleClass("HideForSM");
-            }
-
-            item->decorationStyle().setCursor(Cursor::PointingHand);
-
-            auto bucket = db->gridfs_bucket();
-            auto collection = db->collection(SBLDKeys::Etkinlik::collection);
-
-            auto filter = document{};
-            auto sortDoc = document{};
-            mongocxx::options::find findOptions;
-            try {
-                filter.append(kvp(SBLDKeys::Etkinlik::online,SBLDKeys::Etkinlik::on::online));
-            } catch (bsoncxx::exception &e) {
-            }
-
-            try {
-                filter.append(kvp(SBLDKeys::Etkinlik::endDate,make_document(kvp("$gte",QDate::currentDate().toJulianDay()))));
-            } catch (bsoncxx::exception &e) {
-            }
-            try {
-                filter.append(kvp(SBLDKeys::Etkinlik::beginDate,make_document(kvp("$lte",QDate::currentDate().toJulianDay()))));
-            } catch (bsoncxx::exception &e) {
-            }
-
-            try {
-                sortDoc.append(kvp(SBLDKeys::Etkinlik::beginDate,1));
-            } catch (bsoncxx::exception &e) {
-            }
-
-            findOptions.sort(sortDoc.view());
-
-            try {
-                auto val = collection.find_one(filter.view(),findOptions);
-                if( val )
-                {
-                    explain = val.value().view()[SBLDKeys::Etkinlik::plainText].get_utf8().value.to_string().c_str();
-
-                    auto view = val.value().view();
-
-
-                    try {
-                        std::string iconPath = SBLDKeys::downloadifNotExist(&bucket,view[SBLDKeys::Etkinlik::iconFile].get_oid().value.to_string());
-                        item->setAttributeValue(Style::style,Style::background::url(iconPath)
-                                                +Style::background::repeat::norepeat
-                                                +Style::background::position::center_center
-                                                +Style::background::size::cover);
-                        oid = view[SBLDKeys::Etkinlik::oid].get_oid().value.to_string();
-                        item->clicked().connect([=](){
-                            _ClickEvent.emit(oid);
-                        });
-                    } catch (bsoncxx::exception &e) {
-                        item->addWidget(cpp14::make_unique<WText>(WString("Error: {1}").arg(e.what())));
-                    }
-
-
-                }else{
-                    item->addWidget(cpp14::make_unique<WImage>(WLink("img/no_events.png")))->setMaximumSize(64,64);
-                    item->addWidget(cpp14::make_unique<WText>("Yaklaşan Etkinlik Yok"));
-                }
-            } catch (mongocxx::exception &e) {
-                item->addWidget(cpp14::make_unique<WText>(WString("Error: {1}").arg(e.what())));
-            }
-
-        }
-
-        {
-            auto item = container->addWidget(cpp14::make_unique<WContainerWidget>());
-            if( addOnlySub )
-            {
-                item->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+"EventWidgetMainContainerItem");
-
-            }else{
-                item->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_12+"EventWidgetMainContainerItem");
-                item->addStyleClass("HideForSM");
-            }
-            item->setHeight(250);
-            item->decorationStyle().setCursor(Cursor::PointingHand);
-            item->setAttributeValue(Style::style,Style::background::color::color(Style::color::Orange::DarkOrange));
-            auto layout = item->setLayout(cpp14::make_unique<WVBoxLayout>());
-            auto title1 = layout->addWidget(cpp14::make_unique<WText>("Etkinlik"));
-            title1->setAttributeValue(Style::style,Style::font::size::s24px+Style::font::weight::bold+Style::font::weight::lighter+Style::color::color("white"));
-
-            try {
-                std::string text = explain;
-                if(text.size() > 100 )
-                {
-                    text.resize(100);
-                    text.resize(103,'.');
-                }
-
-                if( text.size() == 0 )
-                {
-                    auto title2 = layout->addWidget(cpp14::make_unique<WText>("Yaklaşan Etkinlik Yok"));
-                    title2->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::lighter+Style::color::color("white"));
-                }else{
-                    auto title2 = layout->addWidget(cpp14::make_unique<WText>(text));
-                    title2->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::lighter+Style::color::color("white"));
-                }
-
-
-            } catch (bsoncxx::exception &e) {
-                auto title2 = layout->addWidget(cpp14::make_unique<WText>(WString("Error: {1}").arg(e.what())));
-                title2->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::lighter+Style::color::color("white"));
-            }
-
-            if( explain.size() )
-            {
-                auto title3 = layout->addWidget(cpp14::make_unique<WText>("Devamını Oku"));
-                title3->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color("white"));
-            }else{
-                auto title3 = layout->addWidget(cpp14::make_unique<WText>("***"));
-                title3->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color("white"));
-            }
-
-
-            item->clicked().connect([=](){
-                _ClickEvent.emit(oid);
-            });
-        }
+        item->clicked().connect([=](){
+            _ClickEvent.emit(oid);
+        });
     }
-
 
 
 }
@@ -2699,7 +2496,7 @@ void Body::ContentWidget::EventWidget::addisimizGucumuz()
 {
 
     auto item = container->addWidget(cpp14::make_unique<WContainerWidget>());
-    item->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_12+"EventWidgetMainContainerItem");
+    item->addStyleClass(Bootstrap::Grid::Large::col_lg_4+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+"EventWidgetMainContainerItem");
     item->setAttributeValue(Style::style,Style::background::color::rgba("86,200,232,.4"));
 
     auto _layout = item->setLayout(cpp14::make_unique<WVBoxLayout>());
@@ -2746,9 +2543,10 @@ void Body::ContentWidget::EventWidget::addBaskan()
             }
 
             auto item = container->addWidget(cpp14::make_unique<WContainerWidget>());
-            item->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_12+"EventWidgetMainContainerItem");
+            item->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
             item->setPadding(0,AllSides);
             item->setAttributeValue(Style::style,Style::background::color::rgba("25,25,25,.2"));
+            item->setHeight(250);
 
             auto _layout = item->setLayout(cpp14::make_unique<WVBoxLayout>());
             _layout->setContentsMargins(0,0,0,0);
@@ -2800,7 +2598,7 @@ void Body::ContentWidget::EventWidget::addBaskan()
 
                 // TWEETER
                 {
-                    Wt::WLink link = Wt::WLink("https://twitter.com/ramazancalik07");
+                    Wt::WLink link = Wt::WLink("https://twitter.com/rmzncalik07");
                     link.setTarget(Wt::LinkTarget::NewWindow);
 
                     auto text1 = _hLayout->addWidget(cpp14::make_unique<WAnchor>(link,"T"),0,AlignmentFlag::Center);
@@ -2847,7 +2645,7 @@ Body::NewsAnnounceContent::NewsAnnounceContent(mongocxx::database *_database)
 
     auto _container = addWidget(cpp14::make_unique<WContainerWidget>());
 
-    _container->addStyleClass(Bootstrap::Grid::container_fluid+"NewsAnnounceContent");
+    _container->addStyleClass(Bootstrap::Grid::container_fluid);
     auto mMainContainer = _container->addWidget(cpp14::make_unique<WContainerWidget>());
     mMainContainer->addStyleClass(Bootstrap::Grid::row);
     mNewsPanel = mMainContainer->addWidget(cpp14::make_unique<NewsPanel>(_database));
@@ -2869,7 +2667,7 @@ Body::NewsAnnounceContent::NewsPanel::NewsPanel(mongocxx::database *_db)
     Bucket = db->gridfs_bucket();
 
     auto mControlPanel = mMainContainer->addWidget(cpp14::make_unique<ControlPanel>());
-    mControlPanel->addStyleClass(Bootstrap::Grid::Large::col_lg_4+Bootstrap::Grid::Medium::col_md_3);
+    mControlPanel->addStyleClass(Bootstrap::Grid::Large::col_lg_4+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
     mNewsList = mMainContainer->addWidget(cpp14::make_unique<NewsList>(db,&nCollection,&nVCollection,&Bucket));
     mNewsList->addStyleClass(Bootstrap::Grid::Large::col_lg_8+Bootstrap::Grid::Medium::col_md_9);
 
