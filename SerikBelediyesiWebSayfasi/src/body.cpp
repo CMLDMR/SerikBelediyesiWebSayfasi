@@ -2012,12 +2012,29 @@ void Body::Slider::addItem(std::string oid , int currentIndex, int indexCount, s
     RowContainer->addStyleClass(Bootstrap::Grid::row);
     RowContainer->addStyleClass("SliderRowContainer");
 
-
+    {
+        auto container = RowContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass(Bootstrap::Grid::Large::col_lg_12+"SliderRightSide");
+        container->setMargin(0,AllSides);
+        container->setPadding(0,AllSides);
+//        container->setHeight(650);
+        auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
+        layout->addStretch(1);
+        auto text = layout->addWidget(cpp14::make_unique<WText>(title));
+        text->setAttributeValue(Style::style,Style::color::color(Style::color::White::White));
+        text->addStyleClass("SliderTitleText");
+        text->decorationStyle().setCursor(Cursor::PointingHand);
+        text->clicked().connect([=](){
+            _clickOid.emit(oid);
+        });
+        layout->addStretch(1);
+//        layout->addSpacing(350);
+    }
 
 
     {
         auto container = RowContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass(Bootstrap::Grid::Large::col_lg_6 + "SliderLeftSide");
+        container->addStyleClass(Bootstrap::Grid::Large::col_lg_12 + "SliderLeftSide");
 //        container->setHeight(650);
         container->setMargin(0,AllSides);
         container->setPadding(0,Side::Left|Side::Right);
@@ -2025,7 +2042,9 @@ void Body::Slider::addItem(std::string oid , int currentIndex, int indexCount, s
 
         auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
         layout->addStretch(1);
-        auto img = layout->addWidget(cpp14::make_unique<WContainerWidget>());
+
+        auto img = layout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Center);
+        img->setWidth(WLength("100%"));
         img->decorationStyle().setCursor(Cursor::PointingHand);
         img->clicked().connect([=](){
             _clickOid.emit(oid);
@@ -2121,24 +2140,7 @@ void Body::Slider::addItem(std::string oid , int currentIndex, int indexCount, s
 
 
 
-    {
-        auto container = RowContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass(Bootstrap::Grid::Large::col_lg_6+"SliderRightSide");
-        container->setMargin(0,AllSides);
-        container->setPadding(0,AllSides);
-//        container->setHeight(650);
-        auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        layout->addStretch(1);
-        auto text = layout->addWidget(cpp14::make_unique<WText>(title));
-        text->setAttributeValue(Style::style,Style::color::color(Style::color::White::White));
-        text->addStyleClass("SliderTitleText");
-        text->decorationStyle().setCursor(Cursor::PointingHand);
-        text->clicked().connect([=](){
-            _clickOid.emit(oid);
-        });
-        layout->addStretch(1);
-//        layout->addSpacing(350);
-    }
+
 
 }
 
