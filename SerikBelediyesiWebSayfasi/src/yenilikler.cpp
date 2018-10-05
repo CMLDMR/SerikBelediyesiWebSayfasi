@@ -17,13 +17,13 @@ Giris::Personel::Yenilikler::Yenilikler()
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::col_full_12);
-            auto text = container->addWidget(cpp14::make_unique<WText>("<h3>Geliştirilen Yazılımlarımız</h3>"));
+            auto text = container->addWidget(cpp14::make_unique<WText>("<h3>Repository</h3>"));
             container->setMargin(10,Side::Bottom);
         }
 
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(Bootstrap::Grid::col_full_12);
+            container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_12);
             container->setMargin(25,Side::Bottom);
 
             // Create an anchor that links to a URL through clickable text.
@@ -55,7 +55,7 @@ Giris::Personel::Yenilikler::Yenilikler()
 
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(Bootstrap::Grid::col_full_12);
+            container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_12);
             container->setMargin(25,Side::Bottom);
 
             // Create an anchor that links to a URL through clickable text.
@@ -88,7 +88,7 @@ Giris::Personel::Yenilikler::Yenilikler()
 
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(Bootstrap::Grid::col_full_12);
+            container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_12);
             container->setMargin(25,Side::Bottom);
 
             // Create an anchor that links to a URL through clickable text.
@@ -121,7 +121,7 @@ Giris::Personel::Yenilikler::Yenilikler()
 
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(Bootstrap::Grid::col_full_12);
+            container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_12);
             container->setMargin(25,Side::Bottom);
 
             // Create an anchor that links to a URL through clickable text.
@@ -153,7 +153,7 @@ Giris::Personel::Yenilikler::Yenilikler()
 
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(Bootstrap::Grid::col_full_12);
+            container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_12);
             container->setMargin(25,Side::Bottom);
 
             // Create an anchor that links to a URL through clickable text.
@@ -186,7 +186,7 @@ Giris::Personel::Yenilikler::Yenilikler()
 
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(Bootstrap::Grid::col_full_12);
+            container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_12);
             container->setMargin(25,Side::Bottom);
 
             // Create an anchor that links to a URL through clickable text.
@@ -219,7 +219,7 @@ Giris::Personel::Yenilikler::Yenilikler()
 
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(Bootstrap::Grid::col_full_12);
+            container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_12);
             container->setMargin(25,Side::Bottom);
 
             // Create an anchor that links to a URL through clickable text.
@@ -251,7 +251,7 @@ Giris::Personel::Yenilikler::Yenilikler()
 
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(Bootstrap::Grid::col_full_12);
+            container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_12);
             container->setMargin(25,Side::Bottom);
 
             // Create an anchor that links to a URL through clickable text.
@@ -283,7 +283,7 @@ Giris::Personel::Yenilikler::Yenilikler()
 
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(Bootstrap::Grid::col_full_12);
+            container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_12);
             container->setMargin(25,Side::Bottom);
 
             // Create an anchor that links to a URL through clickable text.
@@ -313,9 +313,4 @@ Giris::Personel::Yenilikler::Yenilikler()
             }
         }
 
-
-//        auto textContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//        textContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
-//        textContainer->setContentAlignment(AlignmentFlag::Center);
-//        auto Text = textContainer->addWidget(cpp14::make_unique<WText>("TEST PAge",TextFormat::UnsafeXHTML));
     }
