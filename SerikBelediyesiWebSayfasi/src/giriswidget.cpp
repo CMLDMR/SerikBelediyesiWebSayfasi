@@ -5030,13 +5030,13 @@ Giris::Personel::EvrakArsiv::EvrakArsiv(mongocxx::database *_db, bsoncxx::docume
     mContentContainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
     mContentContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
     mContentContainer->setAttributeValue(Style::style,Style::Border::border("1px solid black"));
-    this->initMenu();
+
 
 
     mEvrakContainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
     mEvrakContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
     mEvrakContainer->setAttributeValue(Style::style,Style::Border::border("1px solid black"));
-
+    this->initMenu();
 
     // Connection
     _initMenu.connect(this,&EvrakArsiv::initMenu);
@@ -5051,7 +5051,7 @@ void Giris::Personel::EvrakArsiv::initMenu()
 {
 
     mContentContainer->clear();
-
+    mEvrakContainer->clear();
 
     auto container = mContentContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     container->addStyleClass(Bootstrap::Grid::container_fluid);
@@ -5202,6 +5202,7 @@ void Giris::Personel::EvrakArsiv::initEvrakArama()
         backContainer->setHeight(128);
         backContainer->clicked().connect(this,&EvrakArsiv::initMenu);
         backContainer->decorationStyle().setCursor(Cursor::PointingHand);
+
     }
 
 
