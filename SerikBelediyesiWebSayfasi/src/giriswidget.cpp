@@ -1,5 +1,5 @@
 #include "giriswidget.h"
-
+#include "yenilikler.h"
 #include <QLatin1String>
 
 
@@ -3567,7 +3567,7 @@ void Giris::Personel::PersonelWidget::initMenu()
     menu->setStyleClass("nav nav-pills nav-stacked");
 
 
-    menu->addItem("Yenilikler", Wt::cpp14::make_unique<Yenilikler>());
+    menu->addItem("Yenilikler", Wt::cpp14::make_unique<Giris::Personel::Yenilikler>());
 
     menu->addItem("Bilgilerim", Wt::cpp14::make_unique<Bilgilerim>(db(),User()));
 
@@ -5080,14 +5080,34 @@ void Giris::Personel::EvrakArsiv::initMenu()
         aramaContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
         aramaContainer->setContentAlignment(AlignmentFlag::Center);
         auto AramaBtn = aramaContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-        AramaBtn->setWidth(100);
+        AramaBtn->setWidth(200);
         AramaBtn->setHeight(100);
-        AramaBtn->setAttributeValue(Style::style,Style::background::color::color(Style::color::Pink::PaleVioletRed));
+//        AramaBtn->setAttributeValue(Style::style,Style::background::url("icon/3D-Logo.png")+Style::background::repeat::norepeat+
+//                                    Style::background::size::contain+
+//                                    Style::background::position::center_center);
         AramaBtn->decorationStyle().setCursor(Cursor::PointingHand);
         auto layout = AramaBtn->setLayout(cpp14::make_unique<WVBoxLayout>());
-        auto text = layout->addWidget(cpp14::make_unique<WText>("Tüm Evraklar"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
-        text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
-        AramaBtn->clicked().connect(this,&EvrakArsiv::initTumEvraklar);
+        layout->setContentsMargins(0,0,0,0);
+
+        auto imgContainer = layout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Center|AlignmentFlag::Top);
+        imgContainer->setHeight(75);
+        imgContainer->setWidth(75);
+        imgContainer->setAttributeValue(Style::style,Style::background::url("icon/3D-Logo.png")+Style::background::repeat::norepeat+
+                                    Style::background::size::contain+
+                                    Style::background::position::center_center);
+
+        Wt::WLink link = Wt::WLink("https://github.com/CMLDMR/EArsiv/releases");
+        link.setTarget(Wt::LinkTarget::NewWindow);
+
+        std::unique_ptr<Wt::WAnchor> anchor =
+                Wt::cpp14::make_unique<Wt::WAnchor>(link,
+                                "EArşiv v0.1");
+
+//        container->addWidget(cpp14::make_unique<WAnchor>(link,"<b>● Kod Kütüphanesi</b>"));
+
+        auto text = layout->addWidget(cpp14::make_unique<WAnchor>(link,"<b>● EArşiv Uygulaması</b>"),0,AlignmentFlag::Center|AlignmentFlag::Bottom);
+//        text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
+//        AramaBtn->clicked().connect(this,&EvrakArsiv::initTumEvraklar);
     }
 }
 
@@ -15516,16 +15536,3 @@ Giris::Personel::ArizaKaydi::ArizaKaydi(mongocxx::database *_database, bsoncxx::
 
 }
 
-Giris::Personel::Yenilikler::Yenilikler()
-{
-
-        auto fContainer = addWidget(cpp14::make_unique<WContainerWidget>());
-
-        fContainer->addStyleClass(Bootstrap::Grid::container_fluid);
-
-        auto rContainer = fContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-
-        rContainer->addStyleClass(Bootstrap::Grid::row);
-
-        auto Text = rContainer->addWidget(cpp14::make_unique<WText>("<iframe src=\"https://www.google.com.tr\" style=\"border:0px #ffffff none;\" name=\"myiFrame\" scrolling=\"no\" frameborder=\"1\" marginheight=\"0px\" marginwidth=\"0px\" height=\"300\" width=\"100%\" allowfullscreen></iframe>",TextFormat::UnsafeXHTML));
-    }

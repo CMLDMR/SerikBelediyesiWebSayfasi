@@ -6,6 +6,7 @@
 #include "SerikBelediyesiWebSayfasi/reporter/reportresource.h"
 
 
+
 namespace Giris {
 
 
@@ -425,11 +426,11 @@ private:
 
 };
 
-class Yenilikler : public WContainerWidget
-{
-public:
-    Yenilikler();
-};
+//class Yenilikler : public WContainerWidget
+//{
+//public:
+//    Yenilikler();
+//};
 
 
 class Bilgilerim : public BaseWidget
