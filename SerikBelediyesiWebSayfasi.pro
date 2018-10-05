@@ -32,7 +32,8 @@ SOURCES += main.cpp \
     SerikBelediyesiWebSayfasi/chart/donutchart.cpp \
     SerikBelediyesiWebSayfasi/BaseClass/basewidget.cpp \
     SerikBelediyesiWebSayfasi/Giris/gelenmesajlarwidget.cpp \
-    SerikBelediyesiWebSayfasi/reporter/reportresource.cpp
+    SerikBelediyesiWebSayfasi/reporter/reportresource.cpp \
+    SerikBelediyesiWebSayfasi/src/yenilikler.cpp
 
 
 
@@ -70,7 +71,8 @@ HEADERS += \
     SerikBelediyesiWebSayfasi/BaseClass/basewidget.h \
     SerikBelediyesiWebSayfasi/Giris/gelenmesajlarwidget.h \
     SerikBelediyesiWebSayfasi/reporter/reportresource.h \
-    ../url.h
+    ../url.h \
+    SerikBelediyesiWebSayfasi/src/yenilikler.h
 
 DISTFILES += \
     ../build-SerikBelediyesiWebSayfasi-Desktop_Qt_5_9_1_MSVC2015_64bit2-Release/docroot/css/mainPage.css \
