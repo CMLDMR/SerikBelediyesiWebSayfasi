@@ -2019,7 +2019,7 @@ void Body::Slider::addItem(std::string oid , int currentIndex, int indexCount, s
         container->setPadding(0,AllSides);
 //        container->setHeight(650);
         auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        layout->addStretch(1);
+//        layout->addStretch(1);
         auto text = layout->addWidget(cpp14::make_unique<WText>(title));
         text->setAttributeValue(Style::style,Style::color::color(Style::color::White::White));
         text->addStyleClass("SliderTitleText");
@@ -2027,116 +2027,116 @@ void Body::Slider::addItem(std::string oid , int currentIndex, int indexCount, s
         text->clicked().connect([=](){
             _clickOid.emit(oid);
         });
-        layout->addStretch(1);
+//        layout->addStretch(1);
 //        layout->addSpacing(350);
     }
 
 
     {
-        auto container = RowContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass(Bootstrap::Grid::Large::col_lg_12 + "SliderLeftSide");
-//        container->setHeight(650);
-        container->setMargin(0,AllSides);
-        container->setPadding(0,Side::Left|Side::Right);
-        container->setId("SagTaraf");
+            auto container = RowContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+            container->addStyleClass(Bootstrap::Grid::Large::col_lg_12 + "SliderLeftSide");
+    //        container->setHeight(650);
+            container->setMargin(0,AllSides);
+            container->setPadding(0,Side::Left|Side::Right);
+            container->setId("SagTaraf");
 
-        auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        layout->addStretch(1);
+            auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
+            layout->addStretch(1);
 
-        auto img = layout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Center);
-        img->setWidth(WLength("100%"));
-        img->decorationStyle().setCursor(Cursor::PointingHand);
-        img->clicked().connect([=](){
-            _clickOid.emit(oid);
-        });
-        img->setAttributeValue(Style::style,Style::background::url(imgPath)+Style::background::size::cover+
-                               Style::background::repeat::norepeat+
-                               Style::background::position::center_center+
-                               Style::background::origin::padding_box);
-        img->addStyleClass(Bootstrap::Grid::container_fluid+"sliderIMG");
-//        img->setHeight(300);
-        layout->addSpacing(10);
-        auto textWidget = layout->addWidget(cpp14::make_unique<WContainerWidget>());
-        textWidget->setPadding(5,Side::Bottom|Side::Top);
-        textWidget->setMargin(0,Side::Left|Side::Right);
-        textWidget->addWidget(cpp14::make_unique<WText>(text));
-        textWidget->decorationStyle().setCursor(Cursor::PointingHand);
-        textWidget->clicked().connect([=](){
-            _clickOid.emit(oid);
-        });
-        textWidget->setPadding(15,Side::Left|Side::Right);
-        textWidget->addStyleClass("SliderTextSection");
-        layout->addSpacing(10);
-        {
-            auto dotContainer = layout->addWidget(cpp14::make_unique<WContainerWidget>());
-            auto _layout = dotContainer->setLayout(cpp14::make_unique<WHBoxLayout>());
-
+            auto img = layout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Center);
+            img->setWidth(WLength("100%"));
+            img->decorationStyle().setCursor(Cursor::PointingHand);
+            img->clicked().connect([=](){
+                _clickOid.emit(oid);
+            });
+            img->setAttributeValue(Style::style,Style::background::url(imgPath)+Style::background::size::cover+
+                                   Style::background::repeat::norepeat+
+                                   Style::background::position::center_center+
+                                   Style::background::origin::padding_box);
+            img->addStyleClass(Bootstrap::Grid::container_fluid+"sliderIMG");
+    //        img->setHeight(300);
+            layout->addSpacing(10);
+            auto textWidget = layout->addWidget(cpp14::make_unique<WContainerWidget>());
+            textWidget->setPadding(5,Side::Bottom|Side::Top);
+            textWidget->setMargin(0,Side::Left|Side::Right);
+            textWidget->addWidget(cpp14::make_unique<WText>(text));
+            textWidget->decorationStyle().setCursor(Cursor::PointingHand);
+            textWidget->clicked().connect([=](){
+                _clickOid.emit(oid);
+            });
+            textWidget->setPadding(15,Side::Left|Side::Right);
+            textWidget->addStyleClass("SliderTextSection");
+            layout->addSpacing(10);
             {
-                auto button = _layout->addWidget(cpp14::make_unique<WText>("<"),0,AlignmentFlag::Left);
-                button->addStyleClass("ChangeSliderButton");
-                button->clicked().connect([=](){
-                    std::cout << "CurrentINDEX --: " << mCurrentIndex << " - "<< mSlideCount << std::endl;
-                    if( mCurrentIndex <= 0)
-                    {
-                        mCurrentIndex = mSlideCount - 1 ;
-                        sSlideIndex.emit(mCurrentIndex);
-                    }else{
-                        sSlideIndex.emit(mCurrentIndex-1);
-                    }
-                });
-            }
+                auto dotContainer = layout->addWidget(cpp14::make_unique<WContainerWidget>());
+                auto _layout = dotContainer->setLayout(cpp14::make_unique<WHBoxLayout>());
 
-            _layout->addStretch(1);
-
-
-
-            auto ControlContainer = _layout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Middle);
-            ControlContainer->addStyleClass("DotContainer");
-
-            auto _controlLayout = ControlContainer->setLayout(cpp14::make_unique<WHBoxLayout>());
-
-            for( int i = 0 ; i < indexCount ; i++ )
-            {
                 {
-                    auto button = _controlLayout->addWidget(cpp14::make_unique<WContainerWidget>());
-                    sliderWidgetListBtn.push_back(button);
-                    if( currentIndex == i )
-                    {
-                        button->addStyleClass("SliderDotSectionActive");
-                    }else{
-                        button->addStyleClass("SliderDotSection");
-                    }
-
-                    button->setMargin(12,AllSides);
-                    button->decorationStyle().setCursor(Cursor::PointingHand);
+                    auto button = _layout->addWidget(cpp14::make_unique<WText>("<"),0,AlignmentFlag::Left);
+                    button->addStyleClass("ChangeSliderButton");
                     button->clicked().connect([=](){
-                        if( mCurrentIndex != i )
+                        std::cout << "CurrentINDEX --: " << mCurrentIndex << " - "<< mSlideCount << std::endl;
+                        if( mCurrentIndex <= 0)
                         {
-                            sSlideIndex.emit(i);
+                            mCurrentIndex = mSlideCount - 1 ;
+                            sSlideIndex.emit(mCurrentIndex);
+                        }else{
+                            sSlideIndex.emit(mCurrentIndex-1);
+                        }
+                    });
+                }
+
+                _layout->addStretch(1);
+
+
+
+                auto ControlContainer = _layout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Middle);
+                ControlContainer->addStyleClass("DotContainer");
+
+                auto _controlLayout = ControlContainer->setLayout(cpp14::make_unique<WHBoxLayout>());
+
+                for( int i = 0 ; i < indexCount ; i++ )
+                {
+                    {
+                        auto button = _controlLayout->addWidget(cpp14::make_unique<WContainerWidget>());
+                        sliderWidgetListBtn.push_back(button);
+                        if( currentIndex == i )
+                        {
+                            button->addStyleClass("SliderDotSectionActive");
+                        }else{
+                            button->addStyleClass("SliderDotSection");
+                        }
+
+                        button->setMargin(12,AllSides);
+                        button->decorationStyle().setCursor(Cursor::PointingHand);
+                        button->clicked().connect([=](){
+                            if( mCurrentIndex != i )
+                            {
+                                sSlideIndex.emit(i);
+                            }
+                        });
+                    }
+                }
+
+
+                _layout->addStretch(1);
+
+                {
+                    auto button = _layout->addWidget(cpp14::make_unique<WText>(">"),0,AlignmentFlag::Right);
+                    button->addStyleClass("ChangeSliderButton");
+                    button->clicked().connect([=](){
+                        if( mCurrentIndex >= mSlideCount )
+                        {
+                            mCurrentIndex = 0;
+                            sSlideIndex.emit(mCurrentIndex);
+                        }else{
+                            sSlideIndex.emit((mCurrentIndex+1)%mSlideCount);
                         }
                     });
                 }
             }
-
-
-            _layout->addStretch(1);
-
-            {
-                auto button = _layout->addWidget(cpp14::make_unique<WText>(">"),0,AlignmentFlag::Right);
-                button->addStyleClass("ChangeSliderButton");
-                button->clicked().connect([=](){
-                    if( mCurrentIndex >= mSlideCount )
-                    {
-                        mCurrentIndex = 0;
-                        sSlideIndex.emit(mCurrentIndex);
-                    }else{
-                        sSlideIndex.emit((mCurrentIndex+1)%mSlideCount);
-                    }
-                });
-            }
+            layout->addSpacing(10);
         }
-        layout->addSpacing(10);
-    }
 
 
 
@@ -2453,7 +2453,7 @@ Body::ContentWidget::EventWidget::EventWidget(mongocxx::database *_db, bool addO
         item->decorationStyle().setCursor(Cursor::PointingHand);
         item->setAttributeValue(Style::style,Style::background::color::color(Style::color::Orange::DarkOrange));
         auto layout = item->setLayout(cpp14::make_unique<WVBoxLayout>());
-        auto title1 = layout->addWidget(cpp14::make_unique<WText>("Etkinlik**"));
+        auto title1 = layout->addWidget(cpp14::make_unique<WText>("Etkinlik"));
         title1->setAttributeValue(Style::style,Style::font::size::s24px+Style::font::weight::bold+Style::font::weight::lighter+Style::color::color("white"));
 
         try {
@@ -2671,7 +2671,7 @@ Body::NewsAnnounceContent::NewsPanel::NewsPanel(mongocxx::database *_db)
     auto mControlPanel = mMainContainer->addWidget(cpp14::make_unique<ControlPanel>());
     mControlPanel->addStyleClass(Bootstrap::Grid::Large::col_lg_4+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
     mNewsList = mMainContainer->addWidget(cpp14::make_unique<NewsList>(db,&nCollection,&nVCollection,&Bucket));
-    mNewsList->addStyleClass(Bootstrap::Grid::Large::col_lg_8+Bootstrap::Grid::Medium::col_md_9);
+    mNewsList->addStyleClass(Bootstrap::Grid::Large::col_lg_8+Bootstrap::Grid::Medium::col_md_9+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
 
     mControlPanel->mGetClickNews().connect(mNewsList,&NewsList::initList);
     mControlPanel->mGetClickZiyaret().connect(mNewsList,&NewsList::initZiyaretList);
