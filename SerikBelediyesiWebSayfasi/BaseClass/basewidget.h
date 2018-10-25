@@ -51,6 +51,7 @@
 #include <Wt/WProgressBar.h>
 #include <Wt/WSignal.h>
 #include <Wt/WTime.h>
+#include <Wt/WJavaScript.h>
 
 
 
@@ -113,12 +114,12 @@ public:
 
     std::unique_ptr<Wt::WPushButton> createColorButton(const char *className, const Wt::WString& text);
 
-    mongocxx::cursor find(std::string collection , const bsoncxx::document::view &view = document{}.view() ,mongocxx::options::find options = mongocxx::options::find());
+//    mongocxx::cursor find(std::string collection , const bsoncxx::document::view &view = document{}.view() ,mongocxx::options::find options = mongocxx::options::find());
 
-    mongocxx::stdx::optional<bsoncxx::document::value> find_one(std::string collection , const bsoncxx::document::view &view = document{}.view(), mongocxx::options::find options = mongocxx::options::find());
+//    mongocxx::stdx::optional<bsoncxx::document::value> find_one(std::string collection , const bsoncxx::document::view &view = document{}.view(), mongocxx::options::find options = mongocxx::options::find());
 
-    std::int64_t count(std::string collection , bsoncxx::document::view &filter);
-    std::int64_t count(std::string collection , bsoncxx::document::value val );
+//    std::int64_t count(std::string collection , bsoncxx::document::view &filter);
+//    std::int64_t count(std::string collection , bsoncxx::document::value val );
 
 
     std::string UserBirim(){

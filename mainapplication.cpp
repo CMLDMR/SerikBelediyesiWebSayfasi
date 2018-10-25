@@ -7,13 +7,15 @@
 #include <Wt/WOverlayLoadingIndicator.h>
 
 
+#include "../url.h"
+
 
 MainApplication::MainApplication(const Wt::WEnvironment &env)
     :WApplication(env)
 {
 
     try {
-        mClient = new mongocxx::client(mongocxx::uri("mongodb://<serikbeltr>:<sErikBeltR>>1926@192.168.0.11:27018/?authSource=SERIKBELTR"));
+        mClient = new mongocxx::client(mongocxx::uri(_url));
     } catch (mongocxx::exception& e) {
         std::cout << "MongoDB Connection Error: " << e.what() << std::endl;
         root()->addWidget(cpp14::make_unique<WText>("Driver Yüklenemedi!"));
@@ -56,6 +58,12 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
 
     Wt::WApplication::instance()->useStyleSheet("resources/themes/bootstrap/3/bootstrap-theme.min.css");
     Wt::WApplication::require("script/Script.js");
+    Wt::WApplication::require("script/jszip/jszip.min.js");
+    Wt::WApplication::require("script/jszip/jszip.js");
+    //FileSaver.js
+    Wt::WApplication::require("script/jszip/FileSaver.js");
+
+
 
 
     WApplication::instance()->require("https://www.googletagmanager.com/gtag/js?id=UA-56529726-1");

@@ -2,6 +2,8 @@
 #include "yenilikler.h"
 #include <QLatin1String>
 
+#include "anonswidget.h"
+
 
 
 Giris::GirisWidget::GirisWidget(mongocxx::database *_db)
@@ -3572,6 +3574,12 @@ void Giris::Personel::PersonelWidget::initMenu()
     menu->addItem("Bilgilerim", Wt::cpp14::make_unique<Bilgilerim>(db(),User()));
 
     menu->addItem("Arıza Kaydı", Wt::cpp14::make_unique<ArizaKaydi>(db(),User()));
+
+    if(this->User().view()[SBLDKeys::Personel::statu].get_utf8().value.to_string() == SBLDKeys::Personel::statuType::baskan ||
+            this->User().view()[SBLDKeys::Personel::birimi].get_utf8().value.to_string() == "Bilgi İşlem Müdürlüğü" )
+    {
+        menu->addItem("Anons Sistemi", Wt::cpp14::make_unique<AnonsWidget>(db(),User()));
+    }
 
 
     if(this->User().view()[SBLDKeys::Personel::statu].get_utf8().value.to_string() == SBLDKeys::Personel::statuType::baskan )
