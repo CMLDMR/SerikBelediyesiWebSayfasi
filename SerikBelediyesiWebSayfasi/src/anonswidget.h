@@ -59,6 +59,9 @@ public:
     JSignal<std::string> &PopupClick();
 
 
+    std::string durum() const;
+    void setDurum(const std::string &durum);
+
 private:
     double mLongtitute;
     double mLatitute;
@@ -77,6 +80,8 @@ private:
     WText* mMahalleText;
 
     JSignal<std::string> _mPopupClick;
+
+    std::string mDurum;
 
 };
 

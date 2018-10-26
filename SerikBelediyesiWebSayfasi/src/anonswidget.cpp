@@ -5,10 +5,17 @@
 
 
 AnonsWidget::AnonsWidget(mongocxx::database* _db , bsoncxx::document::value _user)
-    :BaseClass::ContainerWidget (_db , _user , "Anons Sitemi")
+    :BaseClass::ContainerWidget (_db , _user , u8"Anons Cihazları")
 {
-    wApp->require("http://www.openlayers.org/api/OpenLayers.js");
+//
 //    wApp->require("OpenLayer/ol.js");
+
+
+    {
+        auto container = this->getHeaderRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
+
+        auto text = container->addWidget(cpp14::make_unique<WText>("A Türkçe Karakter Sorunu ÇŞĞÖİÜ"));
+    }
 
 
     mMap = this->getHeaderRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -16,6 +23,17 @@ AnonsWidget::AnonsWidget(mongocxx::database* _db , bsoncxx::document::value _use
     mMap->setWidth(WLength(100,LengthUnit::Percentage));
     mMap->setId("mapdiv");
 
+
+    {
+        auto container = this->getHeaderRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass(Bootstrap::Grid::col_full_12);
+        container->setContentAlignment(AlignmentFlag::Center);
+        auto refreshBtn = container->addWidget(cpp14::make_unique<WPushButton>(WString::fromUTF8(u8"Tüm Cihazlar")));
+        refreshBtn->addStyleClass(Bootstrap::Button::Primary);
+        refreshBtn->clicked().connect([=](){
+            this->initDevices();
+        });
+    }
 
 
     mDeviceListContainer = this->getContentRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -27,24 +45,14 @@ AnonsWidget::AnonsWidget(mongocxx::database* _db , bsoncxx::document::value _use
 
 
 
-
-
     {
-        auto container = this->getFooterRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass(Bootstrap::Grid::col_full_12);
-        container->setContentAlignment(AlignmentFlag::Center);
-        auto refreshBtn = container->addWidget(cpp14::make_unique<WPushButton>(WString::fromUTF8("Cihazları Listele")));
+        auto container = this->getHeaderRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
 
-        refreshBtn->clicked().connect([=](){
-            this->initDevices();
-        });
+        auto text = container->addWidget(cpp14::make_unique<WText>(WString::fromUTF8(u8"B Türkçe Karakter Sorunu ÇŞĞÖİÜ").toUTF8().c_str()));
     }
 
 
-//    {
-//        auto text = this->getFooterRowContainer()->addWidget(cpp14::make_unique<WText>("Uygulamayı indirin"));
-////        text->addStyleClass(Bootstrap::Grid::col_full_12);
-//    }
+
 
 
     this->initDevices();
@@ -128,6 +136,14 @@ void AnonsWidget::initDevices()
             }
 
 
+            try {
+                auto value = doc["durum"].get_utf8().value.to_string();
+                deviceWidget->setDurum(value);
+            } catch (bsoncxx::exception &e) {
+                std::cout << "Line " << __LINE__ << "->in doc durum type is not " << "utf8() :"<< e.what() << std::endl;
+            }
+
+
 
             objstring += "obj"+std::to_string(count)+"[\"oid\"] = \"" + (deviceWidget->oid())+"\";";
 
@@ -204,7 +220,9 @@ void AnonsWidget::DeviceProperties(std::string deviceOid)
                 adContainer->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(),this->getRandom(),this->getRandom()));
                 adContainer->setContentAlignment(AlignmentFlag::Center);
 
-                auto text = adContainer->addWidget(cpp14::make_unique<WText>(doc["cihazadi"].get_utf8().value.to_string()));
+                auto vLayout = adContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
+
+                auto text = vLayout->addWidget(cpp14::make_unique<WText>(doc["cihazadi"].get_utf8().value.to_string()),0,AlignmentFlag::Center|AlignmentFlag::Middle);
                 text->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::size::s12px+Style::font::weight::bold);
             }
 
@@ -215,20 +233,111 @@ void AnonsWidget::DeviceProperties(std::string deviceOid)
                 adContainer->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(),this->getRandom(),this->getRandom()));
                 adContainer->setContentAlignment(AlignmentFlag::Center);
 
-                auto text = adContainer->addWidget(cpp14::make_unique<WText>(doc["mahalle"].get_utf8().value.to_string()));
+                auto vLayout = adContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
+
+                auto text = vLayout->addWidget(cpp14::make_unique<WText>(doc["mahalle"].get_utf8().value.to_string()),0,AlignmentFlag::Center|AlignmentFlag::Middle);
                 text->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::size::s12px+Style::font::weight::bold);
             }
 
             {
                 auto adContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-                adContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
+                adContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
                 adContainer->setHeight(50);
                 adContainer->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(),this->getRandom(),this->getRandom()));
                 adContainer->setContentAlignment(AlignmentFlag::Center|AlignmentFlag::Middle);
 
-                auto text = adContainer->addWidget(cpp14::make_unique<WText>(std::to_string(doc["longtitude"].get_double().value) +
-                                                   " - " + std::to_string(doc["latitute"].get_double().value)));
+                auto vLayout = adContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
+
+                {
+                    auto text = vLayout->addWidget(cpp14::make_unique<WText>("Koordinatlar"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+                    text->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::size::s12px+Style::font::weight::bold);
+                }
+
+                {
+                    auto text = vLayout->addWidget(cpp14::make_unique<WText>(std::to_string(doc["longtitude"].get_double().value) +
+                                                   " - " + std::to_string(doc["latitute"].get_double().value)),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+                    text->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::size::s12px+Style::font::weight::bold);
+                }
+            }
+
+            {
+                auto adContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+                adContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
+                adContainer->setHeight(50);
+                adContainer->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(),this->getRandom(),this->getRandom()));
+                adContainer->setContentAlignment(AlignmentFlag::Center);
+
+                auto vLayout = adContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
+
+                auto text = vLayout->addWidget(cpp14::make_unique<WText>(doc["durum"].get_utf8().value.to_string()),0,AlignmentFlag::Center|AlignmentFlag::Middle);
                 text->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::size::s12px+Style::font::weight::bold);
+            }
+
+            {
+                auto adContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+                adContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
+                adContainer->setHeight(50);
+                adContainer->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(),this->getRandom(),this->getRandom()));
+                adContainer->setContentAlignment(AlignmentFlag::Center);
+
+                auto vLayout = adContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
+
+                auto fotoBtn = vLayout->addWidget(cpp14::make_unique<WPushButton>(u8"Fotoğraflar"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+                fotoBtn->addStyleClass(Bootstrap::Button::Success);
+            }
+
+            {
+                auto adContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+                adContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
+                adContainer->setHeight(50);
+                adContainer->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(),this->getRandom(),this->getRandom()));
+                adContainer->setContentAlignment(AlignmentFlag::Center);
+
+                auto vLayout = adContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
+
+                auto aciklamaEkle = vLayout->addWidget(cpp14::make_unique<WPushButton>(u8"Açıklama Ekle"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+                aciklamaEkle->addStyleClass(Bootstrap::Button::Primary);
+            }
+
+            {
+                auto adContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+                adContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
+//                adContainer->setHeight(50);
+                adContainer->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(),this->getRandom(),this->getRandom()));
+                adContainer->setContentAlignment(AlignmentFlag::Center);
+
+                auto vLayout = adContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
+
+                {
+                    auto text = vLayout->addWidget(cpp14::make_unique<WText>(u8"Adını Değiştir"),0,AlignmentFlag::Center);
+                    text->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::size::s12px+Style::font::weight::bold);
+                }
+                auto selectBtn = vLayout->addWidget(cpp14::make_unique<WLineEdit>(),0,AlignmentFlag::Center);
+                selectBtn->setText(doc["cihazadi"].get_utf8().value.to_string());
+
+                auto degistir = vLayout->addWidget(cpp14::make_unique<WPushButton>(u8"Değiştir"),0,AlignmentFlag::Center);
+                degistir->addStyleClass(Bootstrap::Button::Primary);
+
+            }
+
+            {
+                auto adContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+                adContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
+                adContainer->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(),this->getRandom(),this->getRandom()));
+                adContainer->setContentAlignment(AlignmentFlag::Center);
+                adContainer->setHeight(115);
+
+                auto vLayout = adContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
+
+                {
+                    auto text = vLayout->addWidget(cpp14::make_unique<WText>(u8"Durum Değiştir"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+                    text->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::size::s12px+Style::font::weight::bold);
+                }
+                auto selectBtn = vLayout->addWidget(cpp14::make_unique<WComboBox>(),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+                selectBtn->addItem(u8"Arızalı");
+                selectBtn->addItem(u8"Çalışıyor");
+                selectBtn->addItem(u8"Kapalı");
+
             }
 
         }
@@ -323,5 +432,28 @@ void Device::setMahalle(const std::string &mahalle)
 JSignal<std::string> &Device::PopupClick()
 {
     return _mPopupClick;
+}
+
+std::string Device::durum() const
+{
+    return mDurum;
+}
+
+void Device::setDurum(const std::string &durum)
+{
+
+    mDurum = durum;
+
+    std::cout << "Durum: " << "u8"+mDurum << durum << std::endl;
+
+    if( mDurum == u8"Arızalı" )
+    {
+        setAttributeValue(Style::style,Style::background::color::color(Style::color::Red::FireBrick));
+    }else if(mDurum == u8"Çalışıyor") {
+        setAttributeValue(Style::style,Style::background::color::color(Style::color::Green::DarkGreen));
+    }else{
+        setAttributeValue(Style::style,Style::background::color::color(Style::color::Orange::DarkOrange));
+    }
+
 }
 
