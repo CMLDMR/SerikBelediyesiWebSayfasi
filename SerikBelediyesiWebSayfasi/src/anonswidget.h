@@ -13,6 +13,8 @@ public:
 
     void initDevices();
 
+    void DeviceProperties( std::string deviceOid );
+
 
 
 private:

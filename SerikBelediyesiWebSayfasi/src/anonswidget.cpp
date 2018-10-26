@@ -69,6 +69,7 @@ void AnonsWidget::initDevices()
     std::string objlist = "var objlist = new Array;";
 
     try {
+
         auto cursor = this->db()->collection("AnonsCihazlari").find(filter.view());
 
         int count = 0 ;
@@ -82,10 +83,7 @@ void AnonsWidget::initDevices()
 
             container->setContentAlignment(AlignmentFlag::Center);
 
-
-
             auto deviceWidget = container->addWidget(cpp14::make_unique<Device>(doc["_id"].get_oid().value.to_string()));
-
 
             std::string objstring = "var obj"+ std::to_string(count) +" = new Object;";
 
@@ -145,31 +143,101 @@ void AnonsWidget::initDevices()
                         "\",\""+ deviceWidget->PopupClick().createCall({}) + "\");";
 //                std::cout << "Script : " << script << std::endl;
                 mMap->doJavaScript(script);
+                this->DeviceProperties(deviceWidget->oid());
             });
 
             deviceWidget->PopupClick().connect([=](std::string str){
                 std::cout << "POPUP Signal İmplement this About Anounce Devices: " << deviceWidget->mahalle() << std::endl;
+                this->DeviceProperties(deviceWidget->oid());
             });
-
-
 
             count++;
 
         }
 
         objlist += "listdevice(objlist);";
-        std::cout << objlist << std::endl;
+//        std::cout << objlist << std::endl;
         mMap->doJavaScript(objlist);
-
-
 
     } catch (mongocxx::exception &e) {
 
     }
 
-
-
 //    auto container = this->getContentRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
+
+}
+
+void AnonsWidget::DeviceProperties(std::string deviceOid)
+{
+
+    mDevicePropertiesContainer->clear();
+
+
+    auto filter = document{};
+
+    try {
+        filter.append(kvp("_id",bsoncxx::oid(deviceOid))) ;
+    } catch (bsoncxx::exception &e) {
+        std::cout << "Line " << __LINE__ << "-> filter." << "_id :"<< e.what() << std::endl;
+    }
+
+
+
+    try {
+
+        auto val = this->db()->collection("AnonsCihazlari").find_one(filter.view());
+
+        if( val )
+        {
+            auto doc = val.value().view();
+
+            auto fContainer = mDevicePropertiesContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+            fContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+
+            auto rContainer = fContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+            rContainer->addStyleClass(Bootstrap::Grid::row);
+
+            {
+                auto adContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+                adContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
+                adContainer->setHeight(50);
+                adContainer->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(),this->getRandom(),this->getRandom()));
+                adContainer->setContentAlignment(AlignmentFlag::Center);
+
+                auto text = adContainer->addWidget(cpp14::make_unique<WText>(doc["cihazadi"].get_utf8().value.to_string()));
+                text->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::size::s12px+Style::font::weight::bold);
+            }
+
+            {
+                auto adContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+                adContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
+                adContainer->setHeight(50);
+                adContainer->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(),this->getRandom(),this->getRandom()));
+                adContainer->setContentAlignment(AlignmentFlag::Center);
+
+                auto text = adContainer->addWidget(cpp14::make_unique<WText>(doc["mahalle"].get_utf8().value.to_string()));
+                text->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::size::s12px+Style::font::weight::bold);
+            }
+
+            {
+                auto adContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+                adContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
+                adContainer->setHeight(50);
+                adContainer->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(),this->getRandom(),this->getRandom()));
+                adContainer->setContentAlignment(AlignmentFlag::Center|AlignmentFlag::Middle);
+
+                auto text = adContainer->addWidget(cpp14::make_unique<WText>(std::to_string(doc["longtitude"].get_double().value) +
+                                                   " - " + std::to_string(doc["latitute"].get_double().value)));
+                text->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::size::s12px+Style::font::weight::bold);
+            }
+
+        }
+
+
+    } catch (mongocxx::exception &e) {
+        std::cout << "Line: " << __LINE__ << "  ->" <<e.what() << std::endl;
+    }
+
 
 
 
