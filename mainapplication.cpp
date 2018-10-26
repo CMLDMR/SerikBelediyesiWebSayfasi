@@ -14,6 +14,8 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
     :WApplication(env)
 {
 
+    wApp->addMetaHeader(MetaHeaderType::Meta,"Content-Type","text/html; charset=utf-8");
+
     try {
         mClient = new mongocxx::client(mongocxx::uri(_url));
     } catch (mongocxx::exception& e) {
@@ -25,6 +27,8 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
     Wt::WApplication *app = Wt::WApplication::instance();
     app->setLoadingIndicator(std::make_unique<WOverlayLoadingIndicator>());
     app->loadingIndicator()->setMessage("Yükleniyor...");
+
+
 
 
 
@@ -101,6 +105,7 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
     Wt::WApplication::instance()->setBodyClass("introMain");
 
     WApplication::instance()->addMetaHeader("viewport","width=device-width, initial-scale=1.0");
+    wApp->require("http://www.openlayers.org/api/OpenLayers.js");
 
     this->init();
 

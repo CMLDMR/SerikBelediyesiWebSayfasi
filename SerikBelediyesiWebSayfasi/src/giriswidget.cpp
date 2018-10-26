@@ -3573,7 +3573,7 @@ void Giris::Personel::PersonelWidget::initMenu()
 
     menu->addItem("Bilgilerim", Wt::cpp14::make_unique<Bilgilerim>(db(),User()));
 
-    menu->addItem("Arıza Kaydı", Wt::cpp14::make_unique<ArizaKaydi>(db(),User()));
+    menu->addItem(WString::fromUTF8("Arıza Kaydı"), Wt::cpp14::make_unique<ArizaKaydi>(db(),User()));
 
     if(this->User().view()[SBLDKeys::Personel::statu].get_utf8().value.to_string() == SBLDKeys::Personel::statuType::baskan ||
             this->User().view()[SBLDKeys::Personel::birimi].get_utf8().value.to_string() == "Bilgi İşlem Müdürlüğü" )
@@ -3586,9 +3586,9 @@ void Giris::Personel::PersonelWidget::initMenu()
     {
         menu->addItem("Mesajlar", Wt::cpp14::make_unique<BaskanMesajlar>(db(),User()));
         menu->addItem("Projeler", Wt::cpp14::make_unique<ProjeWidget>(db(),User()));
-        menu->addItem("Çalışmalar", Wt::cpp14::make_unique<CalismaWidget>(db(),User()));
+        menu->addItem(WString::fromUTF8("Çalışmalar"), Wt::cpp14::make_unique<CalismaWidget>(db(),User()));
 
-        menu->addItem("Çağrı Merkezi", Wt::cpp14::make_unique<CagriMerkezi>(db(),User()));
+        menu->addItem(WString::fromUTF8("Çağrı Merkezi"), Wt::cpp14::make_unique<CagriMerkezi>(db(),User()));
 
 //        menu->addItem("Muhasebe", Wt::cpp14::make_unique<WText>("Muhasebe Yakın Zamanda Devreye Alınacaktır"));
 //        menu->addItem("Birimler", Wt::cpp14::make_unique<WText>("Birimler"));
@@ -3600,9 +3600,9 @@ void Giris::Personel::PersonelWidget::initMenu()
         // Add menu items using the default lazy loading policy.
         menu->addItem("Gelen Mesajlar", Wt::cpp14::make_unique<PersonelV2::GelenMesajlarWidget>(db(),User()));
         menu->addItem("Taleplerim", Wt::cpp14::make_unique<Taleplerim>(db(),User()));
-        menu->addItem("Evrak Arşivi", Wt::cpp14::make_unique<EvrakArsiv>(db(),User()));
-        menu->addItem("Başvurularım", Wt::cpp14::make_unique<Basvurularim>(db(),User()));
-        menu->addItem("Çalışmalar", Wt::cpp14::make_unique<CalismaGirWidget>(db(),User()));
+        menu->addItem(WString::fromUTF8("Evrak Arşivi"), Wt::cpp14::make_unique<EvrakArsiv>(db(),User()));
+        menu->addItem(WString::fromUTF8("Başvurularım"), Wt::cpp14::make_unique<Basvurularim>(db(),User()));
+        menu->addItem(WString::fromUTF8("Çalışmalar"), Wt::cpp14::make_unique<CalismaGirWidget>(db(),User()));
     }
 
 
