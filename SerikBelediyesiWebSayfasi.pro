@@ -35,7 +35,8 @@ SOURCES += main.cpp \
     SerikBelediyesiWebSayfasi/reporter/reportresource.cpp \
     SerikBelediyesiWebSayfasi/src/yenilikler.cpp \
     SerikBelediyesiWebSayfasi/src/anonswidget.cpp \
-    SerikBelediyesiWebSayfasi/BaseClass/databasewidget.cpp
+    SerikBelediyesiWebSayfasi/BaseClass/databasewidget.cpp \
+    SerikBelediyesiWebSayfasi/src/basindabizwidget.cpp
 
 
 
@@ -76,7 +77,8 @@ HEADERS += \
     ../url.h \
     SerikBelediyesiWebSayfasi/src/yenilikler.h \
     SerikBelediyesiWebSayfasi/src/anonswidget.h \
-    SerikBelediyesiWebSayfasi/BaseClass/databasewidget.h
+    SerikBelediyesiWebSayfasi/BaseClass/databasewidget.h \
+    SerikBelediyesiWebSayfasi/src/basindabizwidget.h
 
 DISTFILES += \
     ../build-SerikBelediyesiWebSayfasi-Desktop_Qt_5_9_1_MSVC2015_64bit2-Release/docroot/css/mainPage.css \
