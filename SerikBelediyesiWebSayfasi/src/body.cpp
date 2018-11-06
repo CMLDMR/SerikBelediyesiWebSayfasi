@@ -34,12 +34,12 @@ void Body::Body::initBody()
     wApp->setInternalPath("/initBody",false);
 
     mSlider = mMainContainer->addWidget(cpp14::make_unique<Slider>(&SliderCollection,Bucket));
-    mSlider->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+    mSlider->addStyleClass(Bootstrap::Grid::col_full_12);
     mSlider->mGetOid().connect(this,&Body::setSliderDetail);
 
 
     mContentWidget = mMainContainer->addWidget(cpp14::make_unique<ContentWidget>(db));
-    mContentWidget->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+    mContentWidget->addStyleClass(Bootstrap::Grid::col_full_12);
     mContentWidget->mVideoWidget->mGetClickVideo().connect(this,&Body::setVideoDetail);
     mContentWidget->mEventWidget->mGetBaskanClick().connect(this,&Body::setBaskanDetail);
     mContentWidget->mEventWidget->mGetEventClick().connect(this,&Body::setEventDetail);
@@ -49,7 +49,7 @@ void Body::Body::initBody()
 
     mNewsAnnounceContent = mMainContainer->addWidget(cpp14::make_unique<NewsAnnounceContent>(db));
 
-    mNewsAnnounceContent->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+    mNewsAnnounceContent->addStyleClass(Bootstrap::Grid::col_full_12);
 
     mNewsAnnounceContent->mNewsPanel->mNewsList->mGetClickOid().connect(this,&Body::setNewsDetail);
 
@@ -64,6 +64,8 @@ void Body::Body::initBody()
 
 //    mMainContainer->addWidget(cpp14::make_unique<IstatistikAnket>())->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
 
+    mMainContainer->addWidget(cpp14::make_unique<BasindaBizWidget>(db))->addStyleClass(Bootstrap::Grid::col_full_12);
+
 
     auto projeBlock = mMainContainer->addWidget(cpp14::make_unique<Job::Block>(db));
     projeBlock->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
@@ -72,12 +74,12 @@ void Body::Body::initBody()
     projeBlock->mTaskBlock->ClickTasks().connect(this,&Body::setCalismaDetail);
 
 
-    mMainContainer->addWidget(cpp14::make_unique<ProjectPanel>(db))->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+    mMainContainer->addWidget(cpp14::make_unique<ProjectPanel>(db))->addStyleClass(Bootstrap::Grid::col_full_12);
 
-    mMainContainer->addWidget(cpp14::make_unique<Partners>())->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+    mMainContainer->addWidget(cpp14::make_unique<Partners>())->addStyleClass(Bootstrap::Grid::col_full_12);
 
     auto iletisim = mMainContainer->addWidget(cpp14::make_unique<Iletisim>());
-    iletisim->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+    iletisim->addStyleClass(Bootstrap::Grid::col_full_12);
     iletisim->mClickTalep().connect(this,&Body::initTalep);
 
 }

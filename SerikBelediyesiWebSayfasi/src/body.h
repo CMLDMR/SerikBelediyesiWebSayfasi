@@ -48,6 +48,7 @@
 #include "inlinestyle.h"
 #include "mongoheaders.h"
 #include "serikbeltr.h"
+#include "basindabizwidget.h"
 
 #include "SerikBelediyesiWebSayfasi/BaseClass/databasewidget.h"
 
