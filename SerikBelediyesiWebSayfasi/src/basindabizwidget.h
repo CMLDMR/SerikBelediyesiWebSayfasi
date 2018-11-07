@@ -29,6 +29,8 @@ public:
 
 
 
+    WContainerWidget *footerRowContainer() const;
+
 private:
     bool mInitForBody;
 
@@ -41,6 +43,8 @@ private:
 
     WContainerWidget *headerRowContainer() const;
 
+    WContainerWidget* mFooterRowContainer;
+
 };
 
 
@@ -49,6 +53,10 @@ class BasinItem : public DataBaseWidget
 {
 public:
     BasinItem(mongocxx::database* _db);
+
+    Signal<std::string> &getClick();
+private:
+    Signal<std::string> _Click;
 };
 
 #endif // BASINDABIZWIDGET_H

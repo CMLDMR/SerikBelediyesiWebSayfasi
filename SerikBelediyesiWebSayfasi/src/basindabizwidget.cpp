@@ -14,7 +14,7 @@ BasindaBizWidget::BasindaBizWidget(mongocxx::database *_db, bool initForBody)
     }
 
 
-    setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(225),this->getRandom(235),this->getRandom(240)));
+//    setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(225),this->getRandom(235),this->getRandom(240)));
 
 
 }
@@ -78,6 +78,32 @@ void BasindaBizWidget::initForBody()
 
 
 
+    // Header Arena For Widget
+    {
+        auto mHeaderContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+        mHeaderContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+
+        auto mHeaderFluidContainer = mHeaderContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+        mHeaderFluidContainer->addStyleClass(Bootstrap::Grid::container_fluid);
+
+        mFooterRowContainer = mHeaderFluidContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+        this->footerRowContainer()->addStyleClass(Bootstrap::Grid::row);
+
+        auto container = this->footerRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
+        container->setAttributeValue(Style::style,Style::background::color::rgb(0,0,0));
+
+        auto text = container->addWidget(cpp14::make_unique<WText>(WString::fromUTF8("Tüm Basılı Yayınlar")));
+        text->setAttributeValue(Style::style,Style::color::rgb("255,255,255"));
+
+//        text->addStyleClass(Bootstrap::ContextualBackGround::bg_primary);
+
+        text->setPadding(25,Side::Left|Side::Right);
+
+        container->decorationStyle().setCursor(Cursor::PointingHand);
+    }
+
+
+
 
 
 }
@@ -97,11 +123,18 @@ WContainerWidget *BasindaBizWidget::headerRowContainer() const
     return mHeaderRowContainer;
 }
 
+WContainerWidget *BasindaBizWidget::footerRowContainer() const
+{
+    return mFooterRowContainer;
+}
+
 BasinItem::BasinItem(mongocxx::database *_db)
     :DataBaseWidget (_db)
 {
 
     setHeight(250);
+
+    decorationStyle().setCursor(Cursor::PointingHand);
 
     addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
@@ -133,5 +166,12 @@ BasinItem::BasinItem(mongocxx::database *_db)
 //        text->addStyleClass(Bootstrap::ContextualBackGround::bg_info);
 
     }
+
+}
+
+Signal<std::string> &BasinItem::getClick()
+{
+
+    return _Click;
 
 }
