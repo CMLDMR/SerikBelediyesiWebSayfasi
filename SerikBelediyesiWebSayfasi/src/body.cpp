@@ -40,6 +40,7 @@ void Body::Body::initBody()
 
     mContentWidget = mMainContainer->addWidget(cpp14::make_unique<ContentWidget>(db));
     mContentWidget->addStyleClass(Bootstrap::Grid::col_full_12);
+    mContentWidget->setMargin( 50 , Side::Top|Side::Bottom );
     mContentWidget->mVideoWidget->mGetClickVideo().connect(this,&Body::setVideoDetail);
     mContentWidget->mEventWidget->mGetBaskanClick().connect(this,&Body::setBaskanDetail);
     mContentWidget->mEventWidget->mGetEventClick().connect(this,&Body::setEventDetail);
@@ -2248,9 +2249,17 @@ Body::ContentWidget::ContentWidget(mongocxx::database *_db)
 
 
     {
-        auto item = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-        item->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
+
+        auto item1 = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+
+        item1->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
+
+        auto item = item1->addWidget(cpp14::make_unique<WContainerWidget>());
+
+        item->addStyleClass(Bootstrap::ImageShape::img_rounded);
+
         item->setAttributeValue(Style::style,Style::background::color::rgba("86,200,232,.4"));
+
         item->setHeight(250);
 
         auto _layout = item->setLayout(cpp14::make_unique<WVBoxLayout>());
@@ -2262,6 +2271,7 @@ Body::ContentWidget::ContentWidget(mongocxx::database *_db)
                                 Style::background::repeat::norepeat+
                                 Style::background::position::center_center);
         _widget->setPadding(0,AllSides);
+        item->addStyleClass(Bootstrap::ImageShape::img_rounded);
     }
 
 
@@ -2274,7 +2284,7 @@ Body::ContentWidget::VideoWidget::VideoWidget(mongocxx::database *_db)
     :WContainerWidget(),db(_db)
 {
 
-    addStyleClass(Bootstrap::Grid::container_fluid+"VideoWidget");
+    addStyleClass(Bootstrap::Grid::container_fluid);
     setHeight(250);
 
     auto container = addWidget(cpp14::make_unique<WContainerWidget>());
@@ -2324,10 +2334,17 @@ Body::ContentWidget::VideoWidget::VideoWidget(mongocxx::database *_db)
 
 
             {
-                auto containerItem = container->addWidget(cpp14::make_unique<WContainerWidget>());
-                containerItem->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12
+                auto containerItem1 = container->addWidget(cpp14::make_unique<WContainerWidget>());
+                containerItem1->addStyleClass(Bootstrap::Grid::Large::col_lg_12
+                                             +Bootstrap::Grid::Medium::col_md_12
                                              +Bootstrap::Grid::Small::col_sm_12
-                                             +Bootstrap::Grid::ExtraSmall::col_xs_12);
+                                             +Bootstrap::Grid::ExtraSmall::col_xs_12
+                                             +Bootstrap::ImageShape::img_rounded);
+
+                auto containerItem = containerItem1->addWidget(cpp14::make_unique<WContainerWidget>());
+                containerItem->addStyleClass(Bootstrap::ImageShape::img_rounded);
+
+
                 auto layout = containerItem->setLayout(cpp14::make_unique<WVBoxLayout>());
                 containerItem->setHeight(250);
 
@@ -2447,9 +2464,14 @@ Body::ContentWidget::EventWidget::EventWidget(mongocxx::database *_db, bool addO
 
 
     {
-        auto item = container->addWidget(cpp14::make_unique<WContainerWidget>());
+        auto item1 = container->addWidget(cpp14::make_unique<WContainerWidget>());
+        item1->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6+"EventWidgetMainContainerItem");
 
-        item->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6+"EventWidgetMainContainerItem");
+        auto item = item1->addWidget(cpp14::make_unique<WContainerWidget>());
+//        item->setMargin(5,AllSides);
+        item->addStyleClass(Bootstrap::ImageShape::img_rounded);
+
+
 
         item->setHeight(250);
         item->decorationStyle().setCursor(Cursor::PointingHand);
@@ -2546,10 +2568,11 @@ void Body::ContentWidget::EventWidget::addBaskan()
                 SBLDKeys::downloadifNotExist(&bucket,element.get_oid().value.to_string(),true);
             }
 
-            auto item = container->addWidget(cpp14::make_unique<WContainerWidget>());
-            item->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
+            auto item1 = container->addWidget(cpp14::make_unique<WContainerWidget>());
+            item1->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
+            auto item = item1->addWidget(cpp14::make_unique<WContainerWidget>());
+            item->addStyleClass(Bootstrap::ImageShape::img_rounded);
             item->setPadding(0,AllSides);
-            item->setAttributeValue(Style::style,Style::background::color::rgba("25,25,25,.2"));
             item->setHeight(250);
 
             auto _layout = item->setLayout(cpp14::make_unique<WVBoxLayout>());
@@ -2562,6 +2585,7 @@ void Body::ContentWidget::EventWidget::addBaskan()
                                     Style::background::position::center_center);
             _widget->setPadding(0,AllSides);
             _widget->setMargin(0,AllSides);
+            _widget->addStyleClass(Bootstrap::ImageShape::img_rounded);
 
 
             {
@@ -2581,9 +2605,10 @@ void Body::ContentWidget::EventWidget::addBaskan()
                     link.setTarget(Wt::LinkTarget::NewWindow);
 
                     auto text1 = _hLayout->addWidget(cpp14::make_unique<WAnchor>(link,"F"),0,AlignmentFlag::Center);
-                    text1->setAttributeValue(Style::style,Style::Border::border("2px solid AntiqueWhite")+
-                                             Style::font::size::s24px+Style::font::weight::bold+
-                                             Style::color::color(Style::color::White::White+Style::background::color::color(Style::color::Purple::DarkSlateBlue)));
+                    text1->setAttributeValue( Style::style ,
+                                              Style::font::size::s24px+
+                                              Style::font::weight::bold+
+                                              Style::color::color(Style::color::White::White)+Style::background::color::rgb(59,89,152));
                     text1->setMaximumSize(40,40);
                     text1->setMinimumSize(40,40);
                     text1->decorationStyle().setCursor(Cursor::PointingHand);
@@ -2606,9 +2631,10 @@ void Body::ContentWidget::EventWidget::addBaskan()
                     link.setTarget(Wt::LinkTarget::NewWindow);
 
                     auto text1 = _hLayout->addWidget(cpp14::make_unique<WAnchor>(link,"T"),0,AlignmentFlag::Center);
-                    text1->setAttributeValue(Style::style,Style::Border::border("2px solid AntiqueWhite")+
+                    text1->setAttributeValue(Style::style,
                                              Style::font::size::s24px+Style::font::weight::bold+
-                                             Style::color::color(Style::color::White::White+Style::background::color::color(Style::color::Purple::DarkSlateBlue)));
+                                             Style::color::color(Style::color::White::White)+
+                                             Style::background::color::rgb(50,106,218));
                     text1->setMaximumSize(40,40);
                     text1->setMinimumSize(40,40);
                     text1->decorationStyle().setCursor(Cursor::PointingHand);
@@ -8379,9 +8405,9 @@ Body::Job::ProjectBlock::ProjectBlock(mongocxx::database *_db, bool _subPage)
 {
     if( !subPage )
     {
-        addWidget(cpp14::make_unique<WText>("<h3>Projeler</h3>"));
+//        addWidget(cpp14::make_unique<WText>("<h3>Projeler</h3>"))->addStyleClass(Bootstrap::ContextualBackGround::bg_primary);
     }
-    setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(0,125),this->getRandom(0,125),this->getRandom(0,125),.12));
+//    setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(0,125),this->getRandom(0,125),this->getRandom(0,125),.12));
     setPadding(25,Side::Bottom);
 
 
@@ -8865,8 +8891,8 @@ void Body::Job::ProjectBlock::displayinYear(int year)
 Body::Job::TaskBlock::TaskBlock(mongocxx::database *_db)
     :DataBaseWidget(_db)
 {
-    addWidget(cpp14::make_unique<WText>("<h3>Çalışmalar</h3>"));
-    setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(0,125),this->getRandom(0,125),this->getRandom(0,125),.12));
+//    addWidget(cpp14::make_unique<WText>("<h3>Çalışmalar</h3>"));
+//    setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(0,125),this->getRandom(0,125),this->getRandom(0,125),.12));
 
     setPadding(25,Side::Bottom);
 
@@ -9273,8 +9299,7 @@ Body::Job::Block::Block(mongocxx::database *_db)
 {
 
     setPadding(0,AllSides);
-
-//    setAttributeValue(Style::style,Style::Border::border("2px solid red"));
+    setMargin(50,Side::Bottom|Side::Top);
 
     auto mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
 
@@ -9283,6 +9308,16 @@ Body::Job::Block::Block(mongocxx::database *_db)
     auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
 
     row->addStyleClass(Bootstrap::Grid::row);
+
+    {
+        auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass(Bootstrap::Grid::col_full_12);
+        container->setContentAlignment(AlignmentFlag::Center);
+
+        auto text = container->addWidget(cpp14::make_unique<WText>("Projeler & Çalışmalar"));
+        text->addStyleClass(Bootstrap::ContextualBackGround::bg_primary);
+        text->setPadding(25,Side::Left|Side::Right);
+    }
 
 
     mProjectBlock = row->addWidget(cpp14::make_unique<ProjectBlock>(this->getDB()));
