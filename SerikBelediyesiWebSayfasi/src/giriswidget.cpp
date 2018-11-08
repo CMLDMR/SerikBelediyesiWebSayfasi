@@ -3578,8 +3578,10 @@ void Giris::Personel::PersonelWidget::initMenu()
     if(this->User().view()[SBLDKeys::Personel::statu].get_utf8().value.to_string() == SBLDKeys::Personel::statuType::baskan ||
             this->User().view()[SBLDKeys::Personel::birimi].get_utf8().value.to_string() == "Bilgi İşlem Müdürlüğü" )
     {
-        menu->addItem("Anons Sistemi", Wt::cpp14::make_unique<AnonsWidget>(db(),User()));
     }
+
+
+    menu->addItem("Anons Sistemi", Wt::cpp14::make_unique<AnonsWidget>(db(),User()));
 
 
     if(this->User().view()[SBLDKeys::Personel::statu].get_utf8().value.to_string() == SBLDKeys::Personel::statuType::baskan )
@@ -5109,11 +5111,11 @@ void Giris::Personel::EvrakArsiv::initMenu()
 
         std::unique_ptr<Wt::WAnchor> anchor =
                 Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                "EArşiv v0.1");
+                                "EArşiv v0.2");
 
 //        container->addWidget(cpp14::make_unique<WAnchor>(link,"<b>● Kod Kütüphanesi</b>"));
 
-        auto text = layout->addWidget(cpp14::make_unique<WAnchor>(link,"<b>● EArşiv Uygulaması</b>"),0,AlignmentFlag::Center|AlignmentFlag::Bottom);
+        auto text = layout->addWidget(cpp14::make_unique<WAnchor>(link,"<b>● E-Arşiv Uygulaması</b>"),0,AlignmentFlag::Center|AlignmentFlag::Bottom);
 //        text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
 //        AramaBtn->clicked().connect(this,&EvrakArsiv::initTumEvraklar);
     }
