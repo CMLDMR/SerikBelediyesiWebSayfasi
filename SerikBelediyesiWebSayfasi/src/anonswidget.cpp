@@ -274,6 +274,9 @@ void AnonsWidget::DeviceProperties(std::string deviceOid)
                 auto fotoBtn = vLayout->addWidget(cpp14::make_unique<WPushButton>(u8"Fotoğraflar"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
                 fotoBtn->addStyleClass(Bootstrap::Button::Success);
 
+                fotoBtn->clicked().connect([=](){
+                    this->showFoto(deviceOid);
+                });
 
             }
 
@@ -629,6 +632,61 @@ void AnonsWidget::addAciklama(std::string deviveOid)
         }
     });
     dialog_->show();
+
+}
+
+void AnonsWidget::showFoto(const std::string &deviceOid)
+{
+
+    std::cout << deviceOid << std::endl;
+
+//    this->showMessage("Bilgi",deviceOid,"Tamam");
+
+    auto dialog_ = addChild(std::make_unique<Wt::WDialog>(u8"Fotoğraflar"));
+    dialog_->webWidget()->setZIndex(1100);
+    dialog_->setWidth(1000);
+
+    //      dialog_->contents()->addWidget(std::make_unique<Wt::WText>(u8"Açıklamanız: "));
+    auto container = dialog_->contents()->addWidget(std::make_unique<Wt::WContainerWidget>());
+    container->setHeight(650);
+    container->setWidth(WLength("100%"));
+    container->setOverflow(Overflow::Scroll,Orientation::Vertical);
+
+    auto fContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
+    fContainer->addStyleClass(Bootstrap::Grid::container_fluid);
+
+    auto rContainer = fContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+    rContainer->addStyleClass(Bootstrap::Grid::row);
+
+//    auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
+
+    for( int i = 0 ; i < 5 ; i++ )
+    {
+        auto imgContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+        imgContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+        imgContainer->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+//        imgContainer->setWidth(600);
+        imgContainer->setHeight(600);
+        std::string url = "img/"+std::to_string(i+1)+".jpg";
+        imgContainer->setAttributeValue(Style::style,Style::background::url(url)
+                                        +Style::background::size::contain
+                                        +Style::background::repeat::norepeat
+                                        +Style::background::position::center_center);
+    }
+
+//    dialog_->contents()->addWidget(std::make_unique<Wt::WBreak>());
+
+    Wt::WPushButton *ok = dialog_->footer()->addWidget(std::make_unique<Wt::WPushButton>("Tamam"));
+    ok->addStyleClass(Bootstrap::Button::Primary);
+    // these events will accept() the Dialog
+
+    ok->clicked().connect(dialog_, &Wt::WDialog::accept);
+
+    dialog_->finished().connect([=](DialogCode code){
+        dialog_->removeFromParent();
+    });
+    dialog_->show();
+
 
 }
 

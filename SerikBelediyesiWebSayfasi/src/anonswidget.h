@@ -21,6 +21,8 @@ public:
 
     void addAciklama( std::string deviveOid );
 
+    void showFoto( const std::string &deviceOid );
+
 
 
 private:
