@@ -62,6 +62,7 @@ void BaseClass::BaseWidget::showMessage(std::string title, std::string msg, std:
             this->removeChild(messageBox);
         });
 
+        messageBox->webWidget()->setZIndex(1000);
         messageBox->show();
 }
 
@@ -77,6 +78,7 @@ void BaseClass::BaseWidget::showMessage(std::string title, std::string msg, bson
             this->removeChild(messageBox);
         });
 
+        messageBox->webWidget()->setZIndex(1000);
         messageBox->show();
 }
 
@@ -91,6 +93,8 @@ void BaseClass::BaseWidget::showMessage(std::string title, std::string msg, mong
         messageBox->buttonClicked().connect([=] {
             this->removeChild(messageBox);
         });
+
+        messageBox->webWidget()->setZIndex(1000);
 
         messageBox->show();
 }
