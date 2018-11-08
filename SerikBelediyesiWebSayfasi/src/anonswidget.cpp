@@ -7,16 +7,6 @@
 AnonsWidget::AnonsWidget(mongocxx::database* _db , bsoncxx::document::value _user)
     :BaseClass::ContainerWidget (_db , _user , u8"Anons Cihazları")
 {
-//
-//    wApp->require("OpenLayer/ol.js");
-
-
-    {
-        auto container = this->getHeaderRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
-
-        auto text = container->addWidget(cpp14::make_unique<WText>("A Türkçe Karakter Sorunu ÇŞĞÖİÜ"));
-    }
-
 
     mMap = this->getHeaderRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
     mMap->setHeight(WLength(450,LengthUnit::Pixel));
@@ -99,9 +89,8 @@ void AnonsWidget::initDevices()
                 auto value = doc["cihazadi"].get_utf8().value.to_string();
                 deviceWidget->setDeviceName(value);
                 objstring += "obj"+std::to_string(count)+"[\"name\"] = \"" + deviceWidget->deviceName()+"\";";
-
             } catch (bsoncxx::exception &e) {
-//                std::cout << "Line " << __LINE__ << "->in doc cihazadi type is not " << "utf8 :"<< e.what() << std::endl;
+                //                std::cout << "Line " << __LINE__ << "->in doc cihazadi type is not " << "utf8 :"<< e.what() << std::endl;
                 deviceWidget->setDeviceName(e.what());
             }
 
@@ -110,7 +99,7 @@ void AnonsWidget::initDevices()
                 deviceWidget->setMahalle(value);
                 objstring += "obj"+std::to_string(count)+"[\"mahalle\"] = \"" + value+"\";";
             } catch (bsoncxx::exception &e) {
-//                std::cout << "Line " << __LINE__ << "->in doc mahalle type is not " << "utf8() :"<< e.what() << std::endl;
+                //                std::cout << "Line " << __LINE__ << "->in doc mahalle type is not " << "utf8() :"<< e.what() << std::endl;
                 deviceWidget->setMahalle(e.what());
             }
 
@@ -122,7 +111,7 @@ void AnonsWidget::initDevices()
 
 
             } catch (bsoncxx::exception &e) {
-//                std::cout << "Line " << __LINE__ << "->in doc longtitude type is not " << "double :"<< e.what() << std::endl;
+                //                std::cout << "Line " << __LINE__ << "->in doc longtitude type is not " << "double :"<< e.what() << std::endl;
             }
 
             try {
@@ -132,7 +121,7 @@ void AnonsWidget::initDevices()
 
 
             } catch (bsoncxx::exception &e) {
-//                std::cout << "Line " << __LINE__ << "->in doc latitute type is not " << "double() :"<< e.what() << std::endl;
+                //                std::cout << "Line " << __LINE__ << "->in doc latitute type is not " << "double() :"<< e.what() << std::endl;
             }
 
 
@@ -157,7 +146,6 @@ void AnonsWidget::initDevices()
                         "\",\""+deviceWidget->deviceName()+
                         "\",\""+deviceWidget->mahalle()+
                         "\",\""+ deviceWidget->PopupClick().createCall({}) + "\");";
-//                std::cout << "Script : " << script << std::endl;
                 mMap->doJavaScript(script);
                 this->DeviceProperties(deviceWidget->oid());
             });
@@ -172,14 +160,14 @@ void AnonsWidget::initDevices()
         }
 
         objlist += "listdevice(objlist);";
-//        std::cout << objlist << std::endl;
+        //        std::cout << objlist << std::endl;
         mMap->doJavaScript(objlist);
 
     } catch (mongocxx::exception &e) {
 
     }
 
-//    auto container = this->getContentRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
+    //    auto container = this->getContentRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
 
 }
 
@@ -273,6 +261,7 @@ void AnonsWidget::DeviceProperties(std::string deviceOid)
                 text->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::size::s12px+Style::font::weight::bold);
             }
 
+            // Fotoğraflar
             {
                 auto adContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
                 adContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
@@ -284,8 +273,11 @@ void AnonsWidget::DeviceProperties(std::string deviceOid)
 
                 auto fotoBtn = vLayout->addWidget(cpp14::make_unique<WPushButton>(u8"Fotoğraflar"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
                 fotoBtn->addStyleClass(Bootstrap::Button::Success);
+
+
             }
 
+            // Açıklama Ekle Bölümü
             {
                 auto adContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
                 adContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
@@ -297,12 +289,24 @@ void AnonsWidget::DeviceProperties(std::string deviceOid)
 
                 auto aciklamaEkle = vLayout->addWidget(cpp14::make_unique<WPushButton>(u8"Açıklama Ekle"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
                 aciklamaEkle->addStyleClass(Bootstrap::Button::Primary);
+
+                if( this->User().view()["Birimi"].get_utf8().value.to_string() != u8"Bilgi İşlem Müdürlüğü" )
+                {
+                    aciklamaEkle->setEnabled(false);
+                }
+
+                aciklamaEkle->clicked().connect([=](){
+                    this->addAciklama(deviceOid);
+                });
+
+
             }
+
 
             {
                 auto adContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
                 adContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
-//                adContainer->setHeight(50);
+                //                adContainer->setHeight(50);
                 adContainer->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(),this->getRandom(),this->getRandom()));
                 adContainer->setContentAlignment(AlignmentFlag::Center);
 
@@ -317,6 +321,53 @@ void AnonsWidget::DeviceProperties(std::string deviceOid)
 
                 auto degistir = vLayout->addWidget(cpp14::make_unique<WPushButton>(u8"Değiştir"),0,AlignmentFlag::Center);
                 degistir->addStyleClass(Bootstrap::Button::Primary);
+
+                if( this->User().view()["Birimi"].get_utf8().value.to_string() != u8"Bilgi İşlem Müdürlüğü" )
+                {
+                    degistir->setEnabled(false);
+                }
+
+                degistir->clicked().connect([=](){
+
+                    auto filter = document{};
+
+                    try {
+                        filter.append(kvp("_id",bsoncxx::oid{deviceOid}));
+                    } catch (bsoncxx::exception &e) {
+
+                    }
+
+
+                    auto setDoc = document{};
+
+                    try {
+                        setDoc.append(kvp("$set",make_document(kvp("cihazadi",selectBtn->text().toUTF8().c_str())))) ;
+                    } catch (bsoncxx::exception &e) {
+                        std::cout << "Line " << __LINE__ << "-> setDoc." << "$set :"<< e.what() << std::endl;
+                    }
+
+                    try {
+                        auto upt = this->db()->collection("AnonsCihazlari").update_one(filter.view(),setDoc.view());
+
+                        if( upt )
+                        {
+                            if( upt.value().modified_count() )
+                            {
+                                this->showMessage(u8"Başarılı",u8"Cihaz Adı Değiştirildi","Tamam");
+                            }else{
+                                this->showMessage(u8"Uyarı",u8"Cihaz Adı Değiştirilemedi","Tamam");
+                            }
+                        }else{
+                            this->showMessage(u8"Uyarı",u8"Cihaz Adı Değiştirilemedi","Tamam");
+                        }
+
+                    } catch (mongocxx::exception &e) {
+                        std::cout << "Line: " << __LINE__ << "  ->" <<e.what() << std::endl;
+                        this->showMessage(u8"Error",u8"Line: " + std::to_string(__LINE__) + " -> " + e.what(),"Tamam");
+                    }
+
+
+                });
 
             }
 
@@ -337,6 +388,145 @@ void AnonsWidget::DeviceProperties(std::string deviceOid)
                 selectBtn->addItem(u8"Arızalı");
                 selectBtn->addItem(u8"Çalışıyor");
                 selectBtn->addItem(u8"Kapalı");
+                selectBtn->addItem(u8"Bilinmiyor");
+
+                //Bilgi İşlem Müdürlüğü
+
+                if( this->User().view()["Birimi"].get_utf8().value.to_string() != u8"Bilgi İşlem Müdürlüğü" )
+                {
+                    selectBtn->setEnabled(false);
+                }
+                std::string mDurum;
+
+                try {
+                    mDurum = doc["durum"].get_utf8().value.to_string();
+                } catch (bsoncxx::exception &e) {
+                    std::cout << "Line " << __LINE__ << "->in doc durum type is not " << "utf8() :"<< e.what() << std::endl;
+                }
+
+
+                if( mDurum == u8"Arızalı" )
+                {
+                    selectBtn->setCurrentIndex(0);
+                }else if (mDurum == u8"Çalışıyor") {
+                    selectBtn->setCurrentIndex(1);
+                }else if (mDurum == u8"Kapalı") {
+                    selectBtn->setCurrentIndex(2);
+                }else{
+                    selectBtn->setCurrentIndex(3);
+                }
+
+
+                selectBtn->changed().connect([=](){
+
+                    auto filter = document{};
+
+                    try {
+                        filter.append(kvp("_id",bsoncxx::oid{deviceOid}));
+                    } catch (bsoncxx::exception &e) {
+
+                    }
+
+
+                    auto setDoc = document{};
+
+                    try {
+                        setDoc.append(kvp("$set",make_document(kvp("durum",selectBtn->currentText().toUTF8().c_str())))) ;
+                    } catch (bsoncxx::exception &e) {
+                        std::cout << "Line " << __LINE__ << "-> setDoc." << "$set :"<< e.what() << std::endl;
+                    }
+
+                    try {
+                        auto upt = this->db()->collection("AnonsCihazlari").update_one(filter.view(),setDoc.view());
+
+                        if( upt )
+                        {
+                            if( upt.value().modified_count() )
+                            {
+                                this->showMessage(u8"Başarılı",u8"Cihaz Durumu Değiştirildi","Tamam");
+                            }else{
+                                this->showMessage(u8"Uyarı",u8"Cihaz Durumu Değiştirilemedi","Tamam");
+                            }
+                        }else{
+                            this->showMessage(u8"Uyarı",u8"Cihaz Durumu Değiştirilemedi","Tamam");
+                        }
+
+                    } catch (mongocxx::exception &e) {
+                        std::cout << "Line: " << __LINE__ << "  ->" <<e.what() << std::endl;
+                        this->showMessage(u8"Error",u8"Line: " + std::to_string(__LINE__) + " -> " + e.what(),"Tamam");
+                    }
+
+                });
+
+            }
+
+            {
+                auto adContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+                adContainer->setMargin(25,Side::Top);
+                adContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+                adContainer->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25),this->getRandom(125),this->getRandom(175)));
+                adContainer->setContentAlignment(AlignmentFlag::Center);
+                adContainer->addStyleClass(Bootstrap::ImageShape::img_rounded);
+
+                auto vLayout = adContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
+
+                {
+                    auto text = vLayout->addWidget(cpp14::make_unique<WText>(u8"Açıklamalar"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+                    text->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::size::s12px+Style::font::weight::bold);
+                }
+
+                auto aciklamaArray = bsoncxx::builder::basic::array{}.view();
+
+                try {
+                    aciklamaArray = doc["aciklamalar"].get_array().value;
+                } catch (bsoncxx::exception &e) {
+                    std::cout << "Line " << __LINE__ << "->in doc aciklamalar type is not " << "arr :"<< e.what() << std::endl;
+                }
+
+                for( auto item : aciklamaArray){
+
+                    auto aciklamaContainer = vLayout->addWidget(cpp14::make_unique<WContainerWidget>());
+                    aciklamaContainer->addStyleClass(Bootstrap::Grid::container_fluid);
+
+                    auto aciklamaRContainer = aciklamaContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+                    aciklamaRContainer->addStyleClass(Bootstrap::Grid::row);
+
+                    {
+                        auto itemContainer = aciklamaRContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+                        itemContainer->addStyleClass(Bootstrap::ImageShape::img_thumbnail+Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
+                        auto itemLayout = itemContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
+                        try {
+                            auto value = item.get_document().view()["julianDate"].get_int64().value;
+                            itemLayout->addWidget(cpp14::make_unique<WText>(QDate::fromJulianDay(value).toString().toStdString()),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+                        } catch (bsoncxx::exception &e) {
+                            std::cout << "Line " << __LINE__ << "->in item.get_document().view() julianDate type is not " << "int64 :"<< e.what() << std::endl;
+                        }
+                    }
+                    {
+                        auto itemContainer = aciklamaRContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+                        itemContainer->addStyleClass(Bootstrap::ImageShape::img_thumbnail+Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
+                        auto itemLayout = itemContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
+                        try {
+                            auto value = item.get_document().view()["saat"].get_utf8().value.to_string();
+                            itemLayout->addWidget( cpp14::make_unique<WText>( value , TextFormat::XHTML ) , 0 , AlignmentFlag::Center|AlignmentFlag::Middle);
+                        } catch (bsoncxx::exception &e) {
+                            std::cout << "Line " << __LINE__ << "->in item.get_document().v saat type is not " << "utf8() :"<< e.what() << std::endl;
+                        }
+                    }
+                    {
+                        auto itemContainer = aciklamaRContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+                        itemContainer->addStyleClass(Bootstrap::ImageShape::img_thumbnail+Bootstrap::Grid::col_full_12);
+                        auto itemLayout = itemContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
+                        try {
+                            auto value = item.get_document().view()["aciklama"].get_utf8().value.to_string();
+                            itemLayout->addWidget(cpp14::make_unique<WText>(value,TextFormat::XHTML),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+                        } catch (bsoncxx::exception &e) {
+                            std::cout << "Line " << __LINE__ << "->in item.get_document().v aciklama type is not " << "utf8() :"<< e.what() << std::endl;
+                        }
+                    }
+
+                    vLayout->addSpacing(10);
+                }
 
             }
 
@@ -349,6 +539,96 @@ void AnonsWidget::DeviceProperties(std::string deviceOid)
 
 
 
+
+}
+
+void AnonsWidget::addAciklama(std::string deviveOid)
+{
+
+    std::cout << "ACIKLAMA EKLEM . < " << deviveOid << std::endl;
+
+    auto dialog_ = addChild(std::make_unique<Wt::WDialog>(u8"Açıklama Giriniz"));
+    dialog_->webWidget()->setZIndex(1000);
+
+    //      dialog_->contents()->addWidget(std::make_unique<Wt::WText>(u8"Açıklamanız: "));
+    auto edit_ = dialog_->contents()->addWidget(std::make_unique<Wt::WTextEdit>());
+    edit_->setHeight(350);
+    dialog_->contents()->addWidget(std::make_unique<Wt::WBreak>());
+
+    Wt::WPushButton *ok = dialog_->contents()->addWidget(std::make_unique<Wt::WPushButton>("Ekle"));
+    ok->addStyleClass(Bootstrap::Button::Primary);
+    Wt::WPushButton *close = dialog_->contents()->addWidget(std::make_unique<Wt::WPushButton>("Kapat"));
+    // these events will accept() the Dialog
+    edit_->enterPressed().connect(dialog_, &Wt::WDialog::accept);
+    ok->clicked().connect(dialog_, &Wt::WDialog::accept);
+    close->clicked().connect(dialog_, &Wt::WDialog::reject);
+
+    dialog_->finished().connect([=](DialogCode code){
+        if (code == Wt::WDialog::Code::Accepted){
+
+            auto filter = document{};
+
+            try {
+                filter.append(kvp("_id",bsoncxx::oid{deviveOid})) ;
+            } catch (bsoncxx::exception &e) {
+                std::cout << "Line " << __LINE__ << "-> filter." << "_id :"<< e.what() << std::endl;
+            }
+
+            auto push = document{};
+
+            try {
+                push.append(kvp("saat",QTime::currentTime().toString("hh:mm").toStdString().c_str())) ;
+            } catch (bsoncxx::exception &e) {
+                std::cout << "Line " << __LINE__ << "-> push." << "saat :"<< e.what() << std::endl;
+            }
+
+            try {
+                push.append(kvp("julianDate",QDate::currentDate().toJulianDay())) ;
+            } catch (bsoncxx::exception &e) {
+                std::cout << "Line " << __LINE__ << "-> push." << "tarih :"<< e.what() << std::endl;
+            }
+
+            try {
+                push.append(kvp("aciklama",edit_->text().toUTF8().c_str())) ;
+            } catch (bsoncxx::exception &e) {
+                std::cout << "Line " << __LINE__ << "-> push." << "aciklama :"<< e.what() << std::endl;
+            }
+
+
+
+            auto pushDoc = document{};
+
+            try {
+                pushDoc.append(kvp("$push",make_document(kvp("aciklamalar",push)))) ;
+            } catch (bsoncxx::exception &e) {
+                std::cout << "Line " << __LINE__ << "-> pushDoc." << "$push :"<< e.what() << std::endl;
+            }
+
+            dialog_->removeFromParent();
+
+            try {
+                auto upt = this->db()->collection("AnonsCihazlari").update_one(filter.view(),pushDoc.view());
+                if( upt )
+                {
+                    if( upt.value().modified_count() )
+                    {
+                        this->showMessage( u8"Başarılı" , u8"Açıklama Eklendi" , u8"Tamam" );
+                        this->DeviceProperties(deviveOid);
+                    }else{
+                        this->showMessage( u8"Uyarı" , u8"Açıklama Eklenemedi" , u8"Tamam" );
+                    }
+                }else{
+                    this->showMessage( u8"Uyarı" , u8"Açıklama Eklenemedi" , u8"Tamam" );
+                }
+            } catch (mongocxx::exception &e) {
+                std::cout << "Line: " << __LINE__ << "  ->" <<e.what() << std::endl;
+                this->showMessage( u8"Hata" , u8"Line: " + std::to_string(__LINE__) + " -> " +e.what() , u8"Tamam" );
+            }
+
+
+        }
+    });
+    dialog_->show();
 
 }
 

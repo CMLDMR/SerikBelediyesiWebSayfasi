@@ -3,6 +3,9 @@
 
 #include "SerikBelediyesiWebSayfasi/BaseClass/basewidget.h"
 
+#include <Wt/WDialog.h>
+
+
 
 class AnonsWidget : public BaseClass::ContainerWidget
 {
@@ -14,6 +17,9 @@ public:
     void initDevices();
 
     void DeviceProperties( std::string deviceOid );
+
+
+    void addAciklama( std::string deviveOid );
 
 
 
@@ -57,7 +63,6 @@ public:
     void setMahalle(const std::string &mahalle);
 
     JSignal<std::string> &PopupClick();
-
 
     std::string durum() const;
     void setDurum(const std::string &durum);
