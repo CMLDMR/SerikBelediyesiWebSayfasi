@@ -25,6 +25,7 @@ Giris::Personel::Yenilikler::Yenilikler()
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_12);
             container->setMargin(25,Side::Bottom);
+            container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
             // Create an anchor that links to a URL through clickable text.
             Wt::WLink link = Wt::WLink("https://github.com/CMLDMR?tab=repositories/");
@@ -51,12 +52,21 @@ Giris::Personel::Yenilikler::Yenilikler()
                 listContainer->setList(true);
                 auto text = listContainer->addWidget(cpp14::make_unique<WText>("▸ Kaynak Kodlar"));
             }
+            {
+                auto listContainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
+                listContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+                listContainer->setList(true);
+                listContainer->addWidget(cpp14::make_unique<WText>("<b>Platformlar</b>"));
+                listContainer->addWidget(cpp14::make_unique<WBreak>());
+                listContainer->addWidget(cpp14::make_unique<WText>("■ <i>Web</i>"));
+            }
         }
 
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_12);
             container->setMargin(25,Side::Bottom);
+            container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
             // Create an anchor that links to a URL through clickable text.
             Wt::WLink link = Wt::WLink("https://github.com/CMLDMR/SerikBelediyesiWebSayfasi/");
@@ -83,6 +93,16 @@ Giris::Personel::Yenilikler::Yenilikler()
                 listContainer->setList(true);
                 auto text = listContainer->addWidget(cpp14::make_unique<WText>("▸ Kaynak Kodlar"));
             }
+            {
+                auto listContainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
+                listContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+                listContainer->setList(true);
+                listContainer->addWidget(cpp14::make_unique<WText>("<b>Platformlar</b>"));
+                listContainer->addWidget(cpp14::make_unique<WBreak>());
+                listContainer->addWidget(cpp14::make_unique<WText>("■ <i>Web</i>"));
+                listContainer->addWidget(cpp14::make_unique<WBreak>());
+                listContainer->addWidget(cpp14::make_unique<WText>("■ <i>Windows</i>"));
+            }
         }
 
 
@@ -90,6 +110,7 @@ Giris::Personel::Yenilikler::Yenilikler()
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_12);
             container->setMargin(25,Side::Bottom);
+            container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
             // Create an anchor that links to a URL through clickable text.
             Wt::WLink link = Wt::WLink("https://github.com/CMLDMR/EArsiv/releases");
@@ -99,7 +120,7 @@ Giris::Personel::Yenilikler::Yenilikler()
                     Wt::cpp14::make_unique<Wt::WAnchor>(link,
                                     "EArşiv v0.1");
 
-            container->addWidget(cpp14::make_unique<WAnchor>(link,"<b>● EArşiv v0.1</b>"));
+            container->addWidget(cpp14::make_unique<WAnchor>(link,"<b>● EArşiv v0.2</b>"));
 
 
 
@@ -116,6 +137,16 @@ Giris::Personel::Yenilikler::Yenilikler()
                 listContainer->setList(true);
                 auto text = listContainer->addWidget(cpp14::make_unique<WText>("▸ Setup ve Kaynak Kodlar"));
             }
+            {
+                auto listContainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
+                listContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+                listContainer->setList(true);
+                listContainer->addWidget(cpp14::make_unique<WText>("<b>Platformlar</b>"));
+                listContainer->addWidget(cpp14::make_unique<WBreak>());
+                listContainer->addWidget(cpp14::make_unique<WText>("■ <i>Web</i>"));
+                listContainer->addWidget(cpp14::make_unique<WBreak>());
+                listContainer->addWidget(cpp14::make_unique<WText>("■ <i>Windows</i>"));
+            }
         }
 
 
@@ -123,6 +154,7 @@ Giris::Personel::Yenilikler::Yenilikler()
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_12);
             container->setMargin(25,Side::Bottom);
+            container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
             // Create an anchor that links to a URL through clickable text.
             Wt::WLink link = Wt::WLink("https://github.com/CMLDMR/SerikBelediyesiCrossApplication/releases");
@@ -149,12 +181,31 @@ Giris::Personel::Yenilikler::Yenilikler()
                 listContainer->setList(true);
                 auto text = listContainer->addWidget(cpp14::make_unique<WText>("▸ Setup ve Kaynak Kodlar"));
             }
+            {
+                auto listContainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
+                listContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+                listContainer->setList(true);
+                listContainer->addWidget(cpp14::make_unique<WText>("<b>Platformlar</b>"));
+                listContainer->addWidget(cpp14::make_unique<WBreak>());
+                listContainer->addWidget(cpp14::make_unique<WText>("■ <i>Web</i>"));
+                listContainer->addWidget(cpp14::make_unique<WBreak>());
+                listContainer->addWidget(cpp14::make_unique<WText>("■ <i>Android</i>"));
+                listContainer->addWidget(cpp14::make_unique<WBreak>());
+                listContainer->addWidget(cpp14::make_unique<WText>("■ <i>iOS</i>"));
+                listContainer->addWidget(cpp14::make_unique<WBreak>());
+                listContainer->addWidget(cpp14::make_unique<WText>("■ <i>Linux</i>"));
+                listContainer->addWidget(cpp14::make_unique<WBreak>());
+                listContainer->addWidget(cpp14::make_unique<WText>("■ <i>Mac</i>"));
+                listContainer->addWidget(cpp14::make_unique<WBreak>());
+                listContainer->addWidget(cpp14::make_unique<WText>("■ <i>Windows</i>"));
+            }
         }
 
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_12);
             container->setMargin(25,Side::Bottom);
+            container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
             // Create an anchor that links to a URL through clickable text.
             Wt::WLink link = Wt::WLink("https://github.com/CMLDMR/QMongoDB/releases");
@@ -181,6 +232,24 @@ Giris::Personel::Yenilikler::Yenilikler()
                 listContainer->setList(true);
                 auto text = listContainer->addWidget(cpp14::make_unique<WText>("▸ Shared Libraries ve Kaynak Kodlar"));
             }
+            {
+                auto listContainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
+                listContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+                listContainer->setList(true);
+                listContainer->addWidget(cpp14::make_unique<WText>("<b>Platformlar</b>"));
+                listContainer->addWidget(cpp14::make_unique<WBreak>());
+                listContainer->addWidget(cpp14::make_unique<WText>("■ <i>Web</i>"));
+                listContainer->addWidget(cpp14::make_unique<WBreak>());
+                listContainer->addWidget(cpp14::make_unique<WText>("■ <i>Android</i>"));
+                listContainer->addWidget(cpp14::make_unique<WBreak>());
+                listContainer->addWidget(cpp14::make_unique<WText>("■ <i>iOS</i>"));
+                listContainer->addWidget(cpp14::make_unique<WBreak>());
+                listContainer->addWidget(cpp14::make_unique<WText>("■ <i>Linux</i>"));
+                listContainer->addWidget(cpp14::make_unique<WBreak>());
+                listContainer->addWidget(cpp14::make_unique<WText>("■ <i>Mac</i>"));
+                listContainer->addWidget(cpp14::make_unique<WBreak>());
+                listContainer->addWidget(cpp14::make_unique<WText>("■ <i>Windows</i>"));
+            }
         }
 
 
@@ -188,6 +257,7 @@ Giris::Personel::Yenilikler::Yenilikler()
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_12);
             container->setMargin(25,Side::Bottom);
+            container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
             // Create an anchor that links to a URL through clickable text.
             Wt::WLink link = Wt::WLink("https://github.com/CMLDMR/SINKAR");
@@ -214,6 +284,16 @@ Giris::Personel::Yenilikler::Yenilikler()
                 listContainer->setList(true);
                 auto text = listContainer->addWidget(cpp14::make_unique<WText>("▸ Kaynak Kodlar"));
             }
+            {
+                auto listContainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
+                listContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+                listContainer->setList(true);
+                listContainer->addWidget(cpp14::make_unique<WText>("<b>Platformlar</b>"));
+                listContainer->addWidget(cpp14::make_unique<WBreak>());
+                listContainer->addWidget(cpp14::make_unique<WText>("■ <i>Android</i>"));
+                listContainer->addWidget(cpp14::make_unique<WBreak>());
+                listContainer->addWidget(cpp14::make_unique<WText>("■ <i>Windows</i>"));
+            }
         }
 
 
@@ -221,6 +301,7 @@ Giris::Personel::Yenilikler::Yenilikler()
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_12);
             container->setMargin(25,Side::Bottom);
+            container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
             // Create an anchor that links to a URL through clickable text.
             Wt::WLink link = Wt::WLink("https://github.com/CMLDMR/SerikBelediyeSporWeb");
@@ -247,12 +328,21 @@ Giris::Personel::Yenilikler::Yenilikler()
                 listContainer->setList(true);
                 auto text = listContainer->addWidget(cpp14::make_unique<WText>("▸ Kaynak Kodlar"));
             }
+            {
+                auto listContainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
+                listContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+                listContainer->setList(true);
+                listContainer->addWidget(cpp14::make_unique<WText>("<b>Platformlar</b>"));
+                listContainer->addWidget(cpp14::make_unique<WBreak>());
+                listContainer->addWidget(cpp14::make_unique<WText>("■ <i>Web</i>"));
+            }
         }
 
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_12);
             container->setMargin(25,Side::Bottom);
+            container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
             // Create an anchor that links to a URL through clickable text.
             Wt::WLink link = Wt::WLink("https://github.com/CMLDMR/serikgencfikir.com");
@@ -279,12 +369,21 @@ Giris::Personel::Yenilikler::Yenilikler()
                 listContainer->setList(true);
                 auto text = listContainer->addWidget(cpp14::make_unique<WText>("▸ Kaynak Kodlar"));
             }
+            {
+                auto listContainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
+                listContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+                listContainer->setList(true);
+                listContainer->addWidget(cpp14::make_unique<WText>("<b>Platformlar</b>"));
+                listContainer->addWidget(cpp14::make_unique<WBreak>());
+                listContainer->addWidget(cpp14::make_unique<WText>("■ <i>Web</i>"));
+            }
         }
 
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_12);
             container->setMargin(25,Side::Bottom);
+            container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
             // Create an anchor that links to a URL through clickable text.
             Wt::WLink link = Wt::WLink("https://github.com/CMLDMR/MOGAT");
@@ -311,6 +410,61 @@ Giris::Personel::Yenilikler::Yenilikler()
                 listContainer->setList(true);
                 auto text = listContainer->addWidget(cpp14::make_unique<WText>("▸ Kaynak Kodlar"));
             }
+            {
+                auto listContainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
+                listContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+                listContainer->setList(true);
+                listContainer->addWidget(cpp14::make_unique<WText>("<b>Platformlar</b>"));
+                listContainer->addWidget(cpp14::make_unique<WBreak>());
+                listContainer->addWidget(cpp14::make_unique<WText>("■ <i>Web</i>"));
+            }
+        }
+
+
+        {
+            auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+            container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_12);
+            container->setMargin(25,Side::Bottom);
+            container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+
+            // Create an anchor that links to a URL through clickable text.
+            Wt::WLink link = Wt::WLink("https://github.com/CMLDMR/AnonsTakip");
+            link.setTarget(Wt::LinkTarget::NewWindow);
+
+            std::unique_ptr<Wt::WAnchor> anchor =
+                    Wt::cpp14::make_unique<Wt::WAnchor>(link,
+                                    "Anons Cihaz Takip v0.1");
+
+            container->addWidget(cpp14::make_unique<WAnchor>(link,"<b>● Anons Cihaz Takip v0.1</b>"));
+
+
+
+            auto sContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
+            sContainer->addStyleClass(Bootstrap::Grid::container_fluid);
+            auto row = sContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+            row->addStyleClass(Bootstrap::Grid::row);
+
+
+
+            {
+                auto listContainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
+                listContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+                listContainer->setList(true);
+                auto text = listContainer->addWidget(cpp14::make_unique<WText>("▸ Kaynak Kodlar"));
+            }
+            {
+                auto listContainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
+                listContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+                listContainer->setList(true);
+                listContainer->addWidget(cpp14::make_unique<WText>("<b>Platformlar</b>"));
+                listContainer->addWidget(cpp14::make_unique<WBreak>());
+                listContainer->addWidget(cpp14::make_unique<WText>("■ <i>Web</i>"));
+                listContainer->addWidget(cpp14::make_unique<WBreak>());
+                listContainer->addWidget(cpp14::make_unique<WText>("■ <i>Android</i>"));
+                listContainer->addWidget(cpp14::make_unique<WBreak>());
+                listContainer->addWidget(cpp14::make_unique<WText>("■ <i>Windows</i>"));
+            }
+
         }
 
     }

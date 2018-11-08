@@ -9,6 +9,7 @@
 #include <Wt/WLink.h>
 #include <Wt/WText.h>
 #include <Wt/WAnchor.h>
+#include <Wt/WBreak.h>
 
 
 using namespace Wt;
