@@ -640,13 +640,37 @@ void AnonsWidget::showFoto(const std::string &deviceOid)
 
     std::cout << deviceOid << std::endl;
 
-//    this->showMessage("Bilgi",deviceOid,"Tamam");
+
+    auto filter = document{};
+
+    try {
+        filter.append(kvp("_id",bsoncxx::oid{deviceOid})) ;
+    } catch (bsoncxx::exception &e) {
+        std::cout << "Line " << __LINE__ << "-> filter." << "_id :"<< e.what() << std::endl;
+    }
+
+
+    bsoncxx::document::value val(document{}.view());
+
+    bool exist = false;
+
+    try {
+        auto value = this->db()->collection("AnonsCihazlari").find_one(filter.view());
+        if( value )
+        {
+            exist = true;
+            val = value.value();
+        }
+    } catch (mongocxx::exception &e) {
+        std::cout << "Line: " << __LINE__ << "  ->" <<e.what() << std::endl;
+    }
+
+
 
     auto dialog_ = addChild(std::make_unique<Wt::WDialog>(u8"Fotoğraflar"));
     dialog_->webWidget()->setZIndex(1100);
     dialog_->setWidth(1000);
 
-    //      dialog_->contents()->addWidget(std::make_unique<Wt::WText>(u8"Açıklamanız: "));
     auto container = dialog_->contents()->addWidget(std::make_unique<Wt::WContainerWidget>());
     container->setHeight(650);
     container->setWidth(WLength("100%"));
@@ -660,19 +684,85 @@ void AnonsWidget::showFoto(const std::string &deviceOid)
 
 //    auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
 
-    for( int i = 0 ; i < 5 ; i++ )
+    if( exist )
     {
+        try {
+            auto fotolist = val.view()["Fotolist"].get_array().value;
+            auto bucket = this->db()->gridfs_bucket();
+            for( auto fotoitem : fotolist )
+            {
+                auto imgurl = SBLDKeys::downloadifNotExist(&bucket,fotoitem.get_document().view()["fotooid"].get_oid().value.to_string());
+                auto imgContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+                imgContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+                imgContainer->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+                imgContainer->setHeight(600);
+                imgContainer->setAttributeValue(Style::style,Style::background::url(imgurl)
+                                                +Style::background::size::contain
+                                                +Style::background::repeat::norepeat
+                                                +Style::background::position::center_center);
+
+                auto vLayout = imgContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
+
+                vLayout->addStretch(1);
+                vLayout->setContentsMargins(0,0,0,0);
+
+                {
+                    auto container = vLayout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Justify|AlignmentFlag::Bottom);
+                    container->setAttributeValue(Style::style,Style::background::color::rgba(0,0,0));
+                    container->setContentAlignment(AlignmentFlag::Center);
+                    {
+                        auto text = container->addWidget(cpp14::make_unique<WText>(fotoitem.get_document().view()["saat"].get_utf8().value.to_string().c_str()));
+                        text->setAttributeValue(Style::style,Style::color::color(Style::color::White::AntiqueWhite)
+                                                +Style::font::size::s14px+Style::font::weight::bold);
+                    }
+                    container->setMargin(0,Side::Top|Side::Bottom);
+                    container->addWidget(cpp14::make_unique<WBreak>());
+
+                    {
+                        auto text = container->addWidget(cpp14::make_unique<WText>(QDate::fromJulianDay(fotoitem.get_document().view()["julianDate"].get_int64().value).toString("dddd dd/MM/yyyy").toStdString()));
+                        text->setAttributeValue(Style::style,Style::color::color(Style::color::White::AntiqueWhite)
+                                                +Style::font::size::s14px+Style::font::weight::bold);
+                    }
+
+                }
+
+//                {
+//                    auto container = vLayout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Justify|AlignmentFlag::Bottom);
+//                    container->setAttributeValue(Style::style,Style::background::color::rgba(0,0,0));
+//                    container->setContentAlignment(AlignmentFlag::Center);
+//                    auto text = container->addWidget(cpp14::make_unique<WText>(QDate::fromJulianDay(fotoitem.get_document().view()["julianDate"].get_int64().value).toString("dddd dd/MM/yyyy").toStdString()));
+//                    text->setAttributeValue(Style::style,Style::color::color(Style::color::White::AntiqueWhite)
+//                                            +Style::font::size::s14px+Style::font::weight::bold);
+//                    container->setMargin(0,Side::Top|Side::Bottom);
+//                }
+
+                imgContainer->setMargin(15,Side::Top|Side::Bottom);
+            }
+        } catch (bsoncxx::exception &e) {
+            std::cout << "Line " << __LINE__ << "->in val.view() Fotolist type is not " << "array() :"<< e.what() << std::endl;
+        }
+
+
+    }else{
         auto imgContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
         imgContainer->addStyleClass(Bootstrap::Grid::col_full_12);
         imgContainer->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
-//        imgContainer->setWidth(600);
-        imgContainer->setHeight(600);
-        std::string url = "img/"+std::to_string(i+1)+".jpg";
-        imgContainer->setAttributeValue(Style::style,Style::background::url(url)
-                                        +Style::background::size::contain
-                                        +Style::background::repeat::norepeat
-                                        +Style::background::position::center_center);
+        imgContainer->setContentAlignment(AlignmentFlag::Center);
+        imgContainer->addWidget(cpp14::make_unique<WText>("<h3>Bu Cihaza Ait Hiç Fotoğraf Yok</h3>"));
     }
+//    for( int i = 0 ; i < 5 ; i++ )
+//    {
+//        auto imgContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//        imgContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+//        imgContainer->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+////        imgContainer->setWidth(600);
+//        imgContainer->setHeight(600);
+//        std::string url = "img/"+std::to_string(i+1)+".jpg";
+//        imgContainer->setAttributeValue(Style::style,Style::background::url(url)
+//                                        +Style::background::size::contain
+//                                        +Style::background::repeat::norepeat
+//                                        +Style::background::position::center_center);
+//    }
 
 //    dialog_->contents()->addWidget(std::make_unique<Wt::WBreak>());
 

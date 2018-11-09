@@ -51,12 +51,17 @@ private:
 
 class BasinItem : public DataBaseWidget
 {
+
 public:
+
     BasinItem(mongocxx::database* _db);
 
     Signal<std::string> &getClick();
+
 private:
+
     Signal<std::string> _Click;
+
 };
 
 #endif // BASINDABIZWIDGET_H
