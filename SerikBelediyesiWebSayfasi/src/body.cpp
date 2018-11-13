@@ -65,11 +65,13 @@ void Body::Body::initBody()
 
 //    mMainContainer->addWidget(cpp14::make_unique<IstatistikAnket>())->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
 
-    mMainContainer->addWidget(cpp14::make_unique<BasindaBizWidget>(db))->addStyleClass(Bootstrap::Grid::col_full_12);
+    auto mBasindaBiz = mMainContainer->addWidget(cpp14::make_unique<BasindaBizWidget>(db));
+    mBasindaBiz->addStyleClass(Bootstrap::Grid::col_full_12);
+    mBasindaBiz->getTumilanlar().connect(this,&Body::initBasindaBiz);
 
 
     auto projeBlock = mMainContainer->addWidget(cpp14::make_unique<Job::Block>(db));
-    projeBlock->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+    projeBlock->addStyleClass(Bootstrap::Grid::col_full_12);
     projeBlock->mProjectBlock->ClickLastProject().connect(this,&Body::setProjeDetail);
     projeBlock->mProjectBlock->ClickProjects().connect(this,&Body::initProje);
     projeBlock->mTaskBlock->ClickTasks().connect(this,&Body::setCalismaDetail);
@@ -346,6 +348,31 @@ void Body::Body::initCalismalar()
         talep->_ClickBack.connect(this,&Body::initBody);
     }
     wApp->setInternalPath("/initCalismalar",false);
+}
+
+void Body::Body::initBasindaBiz()
+{
+
+    mMainContainer->clear();
+
+    mMainContainer->setContentAlignment(AlignmentFlag::Center);
+    auto container = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+
+    container->setMaximumSize(1250,WLength::Auto);
+    container->setPadding(0,AllSides);
+    container->addStyleClass(Bootstrap::Grid::row);
+
+    // Giris Sayfası
+    {
+/*        auto talep = container->addWidget(cpp14::make_unique<Calisma>(db));
+        talep->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+        talep->_ClickBack.connect(this,&Body::initBody);*/
+
+        auto mBasindaBiz = container->addWidget(cpp14::make_unique<BasindaBizWidget>(db,false));
+        mBasindaBiz->addStyleClass(Bootstrap::Grid::col_full_12);
+    }
+    wApp->setInternalPath("/initBasindaBiz",false);
+
 }
 
 void Body::Body::setSliderDetail(std::string oid)
@@ -9298,8 +9325,8 @@ Body::Job::Block::Block(mongocxx::database *_db)
     :DataBaseWidget(_db)
 {
 
-    setPadding(0,AllSides);
-    setMargin(50,Side::Bottom|Side::Top);
+//    setPadding(0,AllSides);
+//    setMargin(50,Side::Bottom|Side::Top);
 
     auto mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
 
@@ -9321,11 +9348,10 @@ Body::Job::Block::Block(mongocxx::database *_db)
 
 
     mProjectBlock = row->addWidget(cpp14::make_unique<ProjectBlock>(this->getDB()));
-    mProjectBlock->addStyleClass(Bootstrap::Grid::Large::col_lg_6);
-//    project->setAttributeValue(Style::style,Style::Border::border("1px solid green"));
+    mProjectBlock->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
 
     mTaskBlock = row->addWidget(cpp14::make_unique<TaskBlock>(this->getDB()));
-    mTaskBlock->addStyleClass(Bootstrap::Grid::Large::col_lg_6);
+    mTaskBlock->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
 
 }
 

@@ -141,6 +141,7 @@ namespace Body {
         void initGiris();
         void initHakkinda();
         void initCalismalar();
+        void initBasindaBiz();
 
 
         Slider* mSlider;

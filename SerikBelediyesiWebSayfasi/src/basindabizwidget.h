@@ -29,6 +29,14 @@ public:
 
 
 
+    Signal<NoClass> &getTumilanlar();
+
+    Signal<NoClass> &ClickAnayfa();
+
+    ///
+    /// \brief footerRowContainer
+    /// \return
+    ///
     WContainerWidget *footerRowContainer() const;
 
 private:
@@ -45,6 +53,18 @@ private:
 
     WContainerWidget* mFooterRowContainer;
 
+
+    Signal<NoClass> m_TumBasiliYayinlar;
+
+    Signal<NoClass> _ClickBack;
+
+
+    std::int64_t skip;
+
+    std::int64_t itemCount;
+
+    void loadListMore( const int& limit = 12 );
+
 };
 
 
@@ -54,13 +74,35 @@ class BasinItem : public DataBaseWidget
 
 public:
 
-    BasinItem(mongocxx::database* _db);
+    BasinItem(mongocxx::database* _db , const bsoncxx::document::view &view);
 
     Signal<std::string> &getClick();
+
+    void setGazetefileoid(const std::string &value);
+
+    void setGazeteTitle(const std::string &value);
+
+    void setTarihTitle(const std::string &value);
+
+    std::string getGazetefileoid() const;
+
+    std::string getGazeteTitle() const;
+
+    std::string getTarihTitle() const;
 
 private:
 
     Signal<std::string> _Click;
+
+
+    std::string gazetefileoid;
+
+    std::string gazeteTitle;
+
+    std::string tarihTitle;
+
+//    WContainerWidget* baskiContainer;
+
 
 };
 
