@@ -345,7 +345,7 @@ BasinItem::BasinItem(mongocxx::database *_db, const bsoncxx::document::view &vie
 //        std::string url_ = "img/"+std::to_string(this->getRandom(0,15))+".jpg";
         imgContainer->setAttributeValue(Style::style,Style::background::url(url_)+Style::background::repeat::norepeat+
                                         Style::background::size::cover);
-        imgContainer->addStyleClass(Bootstrap::ImageShape::img_circle);
+        imgContainer->addStyleClass(Bootstrap::ImageShape::img_rounded);
         imgContainer->setHeight(200);
     }
 
