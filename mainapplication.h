@@ -56,4 +56,32 @@ private:
 
 };
 
+
+
+class tWidget : public WContainerWidget
+{
+public:
+    tWidget() {
+        setContentAlignment(AlignmentFlag::Center);
+
+
+
+//        decorationStyle().setBorder(WBorder(BorderStyle::Solid));
+
+        setAttributeValue(Style::style,Style::background::url("img/01.jpg")+Style::background::size::contain
+                          +Style::background::repeat::norepeat
+                          +Style::background::position::center_center);
+
+        setHeight(450);
+
+
+//        addWidget(cpp14::make_unique<WText>("Yeni Web Sayfamız Çok Yakında..."));
+        setMargin(20,Side::Bottom|Side::Top);
+//        setMargin(50,Side::Bottom);
+
+
+
+    }
+};
+
 #endif // MAINAPPLICATION_H

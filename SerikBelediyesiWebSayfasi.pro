@@ -36,7 +36,11 @@ SOURCES += main.cpp \
     SerikBelediyesiWebSayfasi/src/yenilikler.cpp \
     SerikBelediyesiWebSayfasi/src/anonswidget.cpp \
     SerikBelediyesiWebSayfasi/BaseClass/databasewidget.cpp \
-    SerikBelediyesiWebSayfasi/src/basindabizwidget.cpp
+    SerikBelediyesiWebSayfasi/src/basindabizwidget.cpp \
+    SerikBelediyesiWebSayfasi/srcV2/mainpage.cpp \
+    SerikBelediyesiWebSayfasi/srcV2/headerpage.cpp \
+    SerikBelediyesiWebSayfasi/srcV2/slider.cpp \
+    SerikBelediyesiWebSayfasi/srcV2/mainpagecontroller.cpp
 
 
 
@@ -78,7 +82,11 @@ HEADERS += \
     SerikBelediyesiWebSayfasi/src/yenilikler.h \
     SerikBelediyesiWebSayfasi/src/anonswidget.h \
     SerikBelediyesiWebSayfasi/BaseClass/databasewidget.h \
-    SerikBelediyesiWebSayfasi/src/basindabizwidget.h
+    SerikBelediyesiWebSayfasi/src/basindabizwidget.h \
+    SerikBelediyesiWebSayfasi/srcV2/mainpage.h \
+    SerikBelediyesiWebSayfasi/srcV2/headerpage.h \
+    SerikBelediyesiWebSayfasi/srcV2/slider.h \
+    SerikBelediyesiWebSayfasi/srcV2/mainpagecontroller.h
 
 DISTFILES += \
     ../build-SerikBelediyesiWebSayfasi-Desktop_Qt_5_9_1_MSVC2015_64bit2-Release/docroot/css/mainPage.css \

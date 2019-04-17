@@ -13,7 +13,7 @@ Footer::Footer::Footer()
     SubMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
     SubMainContainer->setMaximumSize(1600,WLength::Auto);
     SubMainContainer->setHeight(150);
-    SubMainContainer->setMargin(50,Side::Top);
+    SubMainContainer->setMargin(75,Side::Top);
 
     auto row = SubMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     row->addStyleClass(Bootstrap::Grid::row);
@@ -203,18 +203,18 @@ Footer::Footer::Footer()
 
         }
 
-        {
-            auto container = mMainContainerWidget->addWidget(cpp14::make_unique<WContainerWidget>());
-            auto layout = container->setLayout(cpp14::make_unique<WHBoxLayout>());
-            container->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
-            {
-                Wt::WLink link = Wt::WLink("http://www.serik.bel.tr:7070");
-                link.setTarget(Wt::LinkTarget::NewWindow);
-                std::unique_ptr<Wt::WAnchor> anchor =
-                        Wt::cpp14::make_unique<Wt::WAnchor>(link,"Kurum içi Portal");
-                layout->addWidget(std::move(anchor),0,AlignmentFlag::Center);
-            }
-        }
+//        {
+//            auto container = mMainContainerWidget->addWidget(cpp14::make_unique<WContainerWidget>());
+//            auto layout = container->setLayout(cpp14::make_unique<WHBoxLayout>());
+//            container->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
+//            {
+//                Wt::WLink link = Wt::WLink("http://www.serik.bel.tr:7070");
+//                link.setTarget(Wt::LinkTarget::NewWindow);
+//                std::unique_ptr<Wt::WAnchor> anchor =
+//                        Wt::cpp14::make_unique<Wt::WAnchor>(link,"Kurum içi Portal");
+//                layout->addWidget(std::move(anchor),0,AlignmentFlag::Center);
+//            }
+//        }
     }
 }
 

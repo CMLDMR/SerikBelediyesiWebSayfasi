@@ -15,22 +15,26 @@ Giris::GirisWidget::GirisWidget(mongocxx::database *_db)
     setPadding(0,AllSides);
     mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
     mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
-    mMainContainer->setMaximumSize(1250,WLength::Auto);
+//    mMainContainer->setMaximumSize(1250,WLength::Auto);
     mMainContainer->setPadding(0,AllSides);
     mMainContainer->setId("GirisWidgetID");
+    mMainContainer->setMargin(90,Side::Top);
+    mMainContainer->setContentAlignment(AlignmentFlag::Center);
 
 
     mHeaderContainer = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     mHeaderContainer->setContentAlignment(AlignmentFlag::Center);
-    mHeaderContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+//    mHeaderContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
     mHeaderContainer->setPadding(0,AllSides);
+    mHeaderContainer->setMaximumSize(1250,WLength::Auto);
 
 
 
     mContentContainer = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     mContentContainer->setContentAlignment(AlignmentFlag::Center);
-    mContentContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+//    mContentContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
     mContentContainer->setPadding(0,AllSides);
+    mContentContainer->setMaximumSize(1250,WLength::Auto);
 
     this->initHeader();
 

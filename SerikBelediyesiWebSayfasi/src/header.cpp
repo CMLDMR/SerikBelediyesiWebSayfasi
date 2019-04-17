@@ -119,6 +119,23 @@ Header::Header::Header()
                     this->showMessage("İnfo","This Page is in Under Construction!. Please Revisit Later");
                 });
             }
+
+//            //2
+//            {
+//                auto trContainer = _container->addWidget(cpp14::make_unique<WContainerWidget>());
+//                trContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_2
+//                                           +Bootstrap::Grid::Small::col_sm_3
+//                                           +Bootstrap::Grid::ExtraSmall::col_xs_4);
+//                auto layout = trContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
+//                auto trText = layout->addWidget(cpp14::make_unique<WText>("e-Belediye"),0,AlignmentFlag::Middle);
+//                trText->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow));
+//                trText->decorationStyle().setCursor(Cursor::PointingHand);
+
+//                trContainer->clicked().connect([=](){
+//                    this->showMessage("Uyarı","e-Belediye Ödeme Sistemi 11 Mart 2019 Tarihinden İtibaren Devreye Alınacaktır.");
+//                });
+//            }
+
             //3
             {
                 auto trContainer = _container->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -131,6 +148,8 @@ Header::Header::Header()
 //                trText->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow));
 //                trText->decorationStyle().setCursor(Cursor::PointingHand);
 
+
+
                 Wt::WLink link = Wt::WLink("https://webportal.serik.bel.tr/web/guest/2");
                 link.setTarget(Wt::LinkTarget::NewWindow);
 
@@ -139,6 +158,7 @@ Header::Header::Header()
                 std::unique_ptr<Wt::WAnchor> anchor =
                         Wt::cpp14::make_unique<Wt::WAnchor>(link,
                                         "e-Belediye");
+
 
                 layout->addWidget(std::move(anchor),1,AlignmentFlag::Middle);
             }

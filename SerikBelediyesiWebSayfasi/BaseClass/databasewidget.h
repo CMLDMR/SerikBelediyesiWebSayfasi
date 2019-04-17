@@ -102,7 +102,7 @@ public:
     DataBaseWidget(mongocxx::database* _db )
         :db(_db)
     {
-        Bucket = this->db->gridfs_bucket();
+        Bucket = this->db->gridfs_bucket();       
     }
 
     mongocxx::collection collection(std::string collection) const{

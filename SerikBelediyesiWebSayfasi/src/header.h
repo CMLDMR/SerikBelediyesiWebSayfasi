@@ -3,6 +3,7 @@
 
 #include <QtCore/qglobal.h>
 #include <QFile>
+#include <QDate>
 
 #include <Wt/WContainerWidget.h>
 #include <Wt/WText.h>

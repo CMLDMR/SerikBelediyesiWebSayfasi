@@ -187,7 +187,6 @@ namespace Body {
 
     };
 
-
     class Slider : public WContainerWidget
     {
     public:
@@ -383,7 +382,7 @@ namespace Body {
                 class AnnounceItem : public WContainerWidget
                 {
                 public:
-                    AnnounceItem(std::string oid ,std::string title, std::string birim );
+                    AnnounceItem( std::string oid , std::string title , std::string birim );
 
                     Signal<std::string> _ClickItem;
                 };
@@ -475,7 +474,6 @@ namespace Body {
 
     };
 
-
     class BaskanaMesajWidget : public DataBaseWidget
     {
     public:
@@ -492,6 +490,7 @@ namespace Body {
     namespace Job {
 
         class ProjectBlock;
+
         class TaskBlock;
 
         class Block : public DataBaseWidget
@@ -504,7 +503,6 @@ namespace Body {
             ProjectBlock* mProjectBlock;
             TaskBlock* mTaskBlock;
         };
-
 
         class ProjectBlock : public DataBaseWidget
         {
@@ -534,9 +532,6 @@ namespace Body {
             Signal<NoClass> _clickProjects;
 
         };
-
-
-
 
         class TaskBlock : public DataBaseWidget
         {
@@ -911,7 +906,6 @@ namespace Body {
         std::string oldtelefon;
     };
 
-
     class MeclisUyeleriWidget : public DataBaseWidget
     {
     public:
@@ -1061,7 +1055,6 @@ namespace Body {
         void initPage();
 
     };
-
 
     class Content : public WContainerWidget
     {

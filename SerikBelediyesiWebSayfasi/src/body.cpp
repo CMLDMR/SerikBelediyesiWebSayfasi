@@ -33,53 +33,53 @@ void Body::Body::initBody()
     mMainContainer->clear();
     wApp->setInternalPath("/initBody",false);
 
-    mSlider = mMainContainer->addWidget(cpp14::make_unique<Slider>(&SliderCollection,Bucket));
-    mSlider->addStyleClass(Bootstrap::Grid::col_full_12);
-    mSlider->mGetOid().connect(this,&Body::setSliderDetail);
+    //    mSlider = mMainContainer->addWidget(cpp14::make_unique<Slider>(&SliderCollection,Bucket));
+    //    mSlider->addStyleClass(Bootstrap::Grid::col_full_12);
+    //    mSlider->mGetOid().connect(this,&Body::setSliderDetail);
 
 
-    mContentWidget = mMainContainer->addWidget(cpp14::make_unique<ContentWidget>(db));
-    mContentWidget->addStyleClass(Bootstrap::Grid::col_full_12);
-    mContentWidget->setMargin( 50 , Side::Top|Side::Bottom );
-    mContentWidget->mVideoWidget->mGetClickVideo().connect(this,&Body::setVideoDetail);
-    mContentWidget->mEventWidget->mGetBaskanClick().connect(this,&Body::setBaskanDetail);
-    mContentWidget->mEventWidget->mGetEventClick().connect(this,&Body::setEventDetail);
+    //    mContentWidget = mMainContainer->addWidget(cpp14::make_unique<ContentWidget>(db));
+    //    mContentWidget->addStyleClass(Bootstrap::Grid::col_full_12);
+    //    mContentWidget->setMargin( 50 , Side::Top|Side::Bottom );
+    //    mContentWidget->mVideoWidget->mGetClickVideo().connect(this,&Body::setVideoDetail);
+    //    mContentWidget->mEventWidget->mGetBaskanClick().connect(this,&Body::setBaskanDetail);
+    //    mContentWidget->mEventWidget->mGetEventClick().connect(this,&Body::setEventDetail);
 
-//    mMainContainer->addWidget(cpp14::make_unique<ContentWidget::EventWidget>(db,true));
+    //    mMainContainer->addWidget(cpp14::make_unique<ContentWidget::EventWidget>(db,true));
 
 
     mNewsAnnounceContent = mMainContainer->addWidget(cpp14::make_unique<NewsAnnounceContent>(db));
 
     mNewsAnnounceContent->addStyleClass(Bootstrap::Grid::col_full_12);
 
-    mNewsAnnounceContent->mNewsPanel->mNewsList->mGetClickOid().connect(this,&Body::setNewsDetail);
+    //    mNewsAnnounceContent->mNewsPanel->mNewsList->mGetClickOid().connect(this,&Body::setNewsDetail);
 
-    mNewsAnnounceContent->mNewsPanel->mNewsList->mGetClickVideoOid().connect(this,&Body::setVideoDetail);
+    //    mNewsAnnounceContent->mNewsPanel->mNewsList->mGetClickVideoOid().connect(this,&Body::setVideoDetail);
 
-    mNewsAnnounceContent->mNewsPanel->mNewsList->mGetClickEtkinlikOid().connect(this,&Body::setEventDetail);
+    //    mNewsAnnounceContent->mNewsPanel->mNewsList->mGetClickEtkinlikOid().connect(this,&Body::setEventDetail);
 
-    mNewsAnnounceContent->mNewsPanel->mNewsList->mGetClickProjeOid().connect(this,&Body::setProjeDetail);
+    //    mNewsAnnounceContent->mNewsPanel->mNewsList->mGetClickProjeOid().connect(this,&Body::setProjeDetail);
 
     mNewsAnnounceContent->mAnnouncePanel->mAnnounceList->mGetOid().connect(this,&Body::setAnnounceDetail);
 
 
-//    mMainContainer->addWidget(cpp14::make_unique<IstatistikAnket>())->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+    //    mMainContainer->addWidget(cpp14::make_unique<IstatistikAnket>())->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
 
-    auto mBasindaBiz = mMainContainer->addWidget(cpp14::make_unique<BasindaBizWidget>(db));
-    mBasindaBiz->addStyleClass(Bootstrap::Grid::col_full_12);
-    mBasindaBiz->getTumilanlar().connect(this,&Body::initBasindaBiz);
-
-
-    auto projeBlock = mMainContainer->addWidget(cpp14::make_unique<Job::Block>(db));
-    projeBlock->addStyleClass(Bootstrap::Grid::col_full_12);
-    projeBlock->mProjectBlock->ClickLastProject().connect(this,&Body::setProjeDetail);
-    projeBlock->mProjectBlock->ClickProjects().connect(this,&Body::initProje);
-    projeBlock->mTaskBlock->ClickTasks().connect(this,&Body::setCalismaDetail);
+    //    auto mBasindaBiz = mMainContainer->addWidget(cpp14::make_unique<BasindaBizWidget>(db));
+    //    mBasindaBiz->addStyleClass(Bootstrap::Grid::col_full_12);
+    //    mBasindaBiz->getTumilanlar().connect(this,&Body::initBasindaBiz);
 
 
-    mMainContainer->addWidget(cpp14::make_unique<ProjectPanel>(db))->addStyleClass(Bootstrap::Grid::col_full_12);
+    //    auto projeBlock = mMainContainer->addWidget(cpp14::make_unique<Job::Block>(db));
+    //    projeBlock->addStyleClass(Bootstrap::Grid::col_full_12);
+    //    projeBlock->mProjectBlock->ClickLastProject().connect(this,&Body::setProjeDetail);
+    //    projeBlock->mProjectBlock->ClickProjects().connect(this,&Body::initProje);
+    //    projeBlock->mTaskBlock->ClickTasks().connect(this,&Body::setCalismaDetail);
 
-    mMainContainer->addWidget(cpp14::make_unique<Partners>())->addStyleClass(Bootstrap::Grid::col_full_12);
+
+    //    mMainContainer->addWidget(cpp14::make_unique<ProjectPanel>(db))->addStyleClass(Bootstrap::Grid::col_full_12);
+
+    //    mMainContainer->addWidget(cpp14::make_unique<Partners>())->addStyleClass(Bootstrap::Grid::col_full_12);
 
     auto iletisim = mMainContainer->addWidget(cpp14::make_unique<Iletisim>());
     iletisim->addStyleClass(Bootstrap::Grid::col_full_12);
@@ -159,13 +159,13 @@ void Body::Body::initiletisim()
     mMainContainer->clear();
     wApp->setInternalPath("/initiletisim",false);
 
-//    auto detailContainer = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//    detailContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-//    detailContainer->setPadding(0,AllSides);
+    //    auto detailContainer = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+    //    detailContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+    //    detailContainer->setPadding(0,AllSides);
 
-//    auto layout = detailContainer->setLayout(cpp14::make_unique<WHBoxLayout>());
-//    layout->setContentsMargins(0,0,0,0);
-//    auto container = layout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Center);
+    //    auto layout = detailContainer->setLayout(cpp14::make_unique<WHBoxLayout>());
+    //    layout->setContentsMargins(0,0,0,0);
+    //    auto container = layout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Center);
 
     mMainContainer->setContentAlignment(AlignmentFlag::Center);
     auto container = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -197,11 +197,11 @@ void Body::Body::initiletisim()
         auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
         _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
         auto _layout = _container->setLayout(cpp14::make_unique<WHBoxLayout>());
-//        _layout->addWidget(cpp14::make_unique<WPushButton>("Geri"),0,AlignmentFlag::Left)->clicked().connect([=](){
-//            this->_clickBack.emit(NoClass());
-//        });
+        //        _layout->addWidget(cpp14::make_unique<WPushButton>("Geri"),0,AlignmentFlag::Left)->clicked().connect([=](){
+        //            this->_clickBack.emit(NoClass());
+        //        });
         _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                     Style::background::color::color(Style::color::Grey::Gainsboro));
+                                      Style::background::color::color(Style::color::Grey::Gainsboro));
 
 
     }
@@ -219,7 +219,7 @@ void Body::Body::initiletisim()
         auto textContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
         textContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
         textContainer->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                     Style::background::color::color(Style::color::White::Snow));
+                                         Style::background::color::color(Style::color::White::Snow));
 
 
 
@@ -233,7 +233,7 @@ void Body::Body::initiletisim()
 
         std::unique_ptr<Wt::WAnchor> anchor =
                 Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                "<h4>Map Link</h4>");
+                                                    "<h4>Map Link</h4>");
 
         layout->addWidget(std::move(anchor),0,AlignmentFlag::Top);
 
@@ -252,11 +252,11 @@ void Body::Body::initiletisim()
         auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
         _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
         auto _layout = _container->setLayout(cpp14::make_unique<WHBoxLayout>());
-//        _layout->addWidget(cpp14::make_unique<WPushButton>("Geri"),0,AlignmentFlag::Left)->clicked().connect([=](){
-//            this->_clickBack.emit(NoClass());
-//        });
+        //        _layout->addWidget(cpp14::make_unique<WPushButton>("Geri"),0,AlignmentFlag::Left)->clicked().connect([=](){
+        //            this->_clickBack.emit(NoClass());
+        //        });
         _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                     Style::background::color::color(Style::color::Grey::Gainsboro));
+                                      Style::background::color::color(Style::color::Grey::Gainsboro));
     }
 
 
@@ -364,7 +364,7 @@ void Body::Body::initBasindaBiz()
 
     // Giris Sayfası
     {
-/*        auto talep = container->addWidget(cpp14::make_unique<Calisma>(db));
+        /*        auto talep = container->addWidget(cpp14::make_unique<Calisma>(db));
         talep->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
         talep->_ClickBack.connect(this,&Body::initBody);*/
 
@@ -380,20 +380,20 @@ void Body::Body::setSliderDetail(std::string oid)
 
     mMainContainer->clear();
     mMainContainer->setContentAlignment(AlignmentFlag::Center);
-//    mMainContainer->setMargin(WLength::Auto,AllSides);
-//    mMainContainer->setPadding(WLength::Auto,AllSides);
-//    mMainContainer->addStyleClass("text-center");
-//    mMainContainer->setFloatSide(Side::CenterX);
+    //    mMainContainer->setMargin(WLength::Auto,AllSides);
+    //    mMainContainer->setPadding(WLength::Auto,AllSides);
+    //    mMainContainer->addStyleClass("text-center");
+    //    mMainContainer->setFloatSide(Side::CenterX);
 
 
     auto container = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//    container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-//    container->setPadding(0,AllSides);
-//    container->setMargin(WLength::Auto,AllSides);
+    //    container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+    //    container->setPadding(0,AllSides);
+    //    container->setMargin(WLength::Auto,AllSides);
 
-//    auto layout = detailContainer->setLayout(cpp14::make_unique<WHBoxLayout>());
-//    layout->setContentsMargins(0,0,0,0);
-//    auto container = layout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Center);
+    //    auto layout = detailContainer->setLayout(cpp14::make_unique<WHBoxLayout>());
+    //    layout->setContentsMargins(0,0,0,0);
+    //    auto container = layout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Center);
     container->setMaximumSize(1250,WLength::Auto);
     container->setPadding(0,AllSides);
 
@@ -424,7 +424,7 @@ void Body::Body::setSliderDetail(std::string oid)
                 auto img = container->addWidget(cpp14::make_unique<WContainerWidget>());
                 img->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
                 std::string path;
-//                img->setOverflow(Overflow::Hidden);
+                //                img->setOverflow(Overflow::Hidden);
 
 
                 try {
@@ -473,7 +473,7 @@ void Body::Body::setSliderDetail(std::string oid)
                 for( auto doc : array )
                 {
                     std::cout << "News Content Downloaded file " << SBLDKeys::downloadifNotExist(Bucket,doc[SBLDKeys::Slider::file].get_oid().value.to_string().c_str(),true);
-//                    std::cout << "Downloaded file " << this->downloadifNotExist(bsoncxx::types::value(doc[SBLDKeys::Slider::file].get_oid()),true) << std::endl;
+                    //                    std::cout << "Downloaded file " << this->downloadifNotExist(bsoncxx::types::value(doc[SBLDKeys::Slider::file].get_oid()),true) << std::endl;
                 }
             }
 
@@ -488,7 +488,7 @@ void Body::Body::setSliderDetail(std::string oid)
                 });
                 back->addStyleClass(Bootstrap::Button::Primary);
                 _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                             Style::background::color::color(Style::color::Grey::Gainsboro));
+                                              Style::background::color::color(Style::color::Grey::Gainsboro));
             }
 
 
@@ -496,7 +496,7 @@ void Body::Body::setSliderDetail(std::string oid)
                 auto textContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
                 textContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
                 textContainer->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                             Style::background::color::color(Style::color::White::Snow));
+                                                 Style::background::color::color(Style::color::White::Snow));
 
 
                 auto layout = textContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
@@ -512,7 +512,7 @@ void Body::Body::setSliderDetail(std::string oid)
                     this->_clickBack.emit(NoClass());
                 });
                 _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                             Style::background::color::color(Style::color::Grey::Gainsboro));
+                                              Style::background::color::color(Style::color::Grey::Gainsboro));
             }
 
 
@@ -536,17 +536,17 @@ void Body::Body::setNewsDetail(std::string oid)
 {
 
 
-//    std::cout << "setNewsDetail " << std::endl;
+    //    std::cout << "setNewsDetail " << std::endl;
     mMainContainer->clear();
     mMainContainer->setContentAlignment(AlignmentFlag::Center);
 
     auto container = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//    container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+    //    container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
     container->setPadding(0,AllSides);
 
-//    auto layout = detailContainer->setLayout(cpp14::make_unique<WHBoxLayout>());
-//    layout->setContentsMargins(0,0,0,0);
-//    auto container = layout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Center);
+    //    auto layout = detailContainer->setLayout(cpp14::make_unique<WHBoxLayout>());
+    //    layout->setContentsMargins(0,0,0,0);
+    //    auto container = layout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Center);
     container->setMaximumSize(1250,WLength::Auto);
     container->setPadding(0,AllSides);
 
@@ -594,7 +594,7 @@ void Body::Body::setNewsDetail(std::string oid)
                 img->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
                 std::string path = SBLDKeys::downloadifNotExist(&bucket,view[SBLDKeys::Haberler::icon].get_oid().value.to_string());
 
-//                img->setAttributeValue(Style::style,Style::background::url(path)+Style::background::size::cover+Style::background::repeat::norepeat+Style::background::position::center_center);
+                //                img->setAttributeValue(Style::style,Style::background::url(path)+Style::background::size::cover+Style::background::repeat::norepeat+Style::background::position::center_center);
                 img->setHeight(150);
                 img->setPadding(0,AllSides);
 
@@ -626,7 +626,7 @@ void Body::Body::setNewsDetail(std::string oid)
                 for( auto doc : array )
                 {
                     std::string path = SBLDKeys::downloadifNotExist(&bucket,doc.get_oid().value.to_string(),true);
-//                    std::cout << "Downloaded: " << path << std::endl;
+                    //                    std::cout << "Downloaded: " << path << std::endl;
                 }
             }
 
@@ -641,7 +641,7 @@ void Body::Body::setNewsDetail(std::string oid)
                 });
                 back->addStyleClass(Bootstrap::Button::Primary);
                 _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                             Style::background::color::color(Style::color::Grey::Gainsboro));
+                                              Style::background::color::color(Style::color::Grey::Gainsboro));
             }
 
 
@@ -649,7 +649,7 @@ void Body::Body::setNewsDetail(std::string oid)
                 auto textContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
                 textContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
                 textContainer->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                             Style::background::color::color(Style::color::White::Snow));
+                                                 Style::background::color::color(Style::color::White::Snow));
 
 
                 auto layout = textContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
@@ -665,7 +665,7 @@ void Body::Body::setNewsDetail(std::string oid)
                     this->_clickBack.emit(NoClass());
                 });
                 _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                             Style::background::color::color(Style::color::Grey::Gainsboro));
+                                              Style::background::color::color(Style::color::Grey::Gainsboro));
             }
 
         }
@@ -731,7 +731,7 @@ void Body::Body::setAnnounceDetail(std::string oid)
     auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
     container->addStyleClass(Bootstrap::Grid::Large::col_lg_9+Bootstrap::Grid::Medium::col_md_9+Bootstrap::Grid::Small::col_sm_10+Bootstrap::Grid::ExtraSmall::col_xs_12);
 
-//    container->setMaximumSize(1250,WLength::Auto);
+    //    container->setMaximumSize(1250,WLength::Auto);
     container->setPadding(0,AllSides);
 
     auto filter = document{};
@@ -791,7 +791,7 @@ void Body::Body::setAnnounceDetail(std::string oid)
                 LastDate = _Llayout->addWidget(cpp14::make_unique<WText>("Son Yayınlanma  Tarihi:"+QDate::fromString(QString::number((int)view[SBLDKeys::Duyurular::endDate].get_double().value),"yyyyMMdd").toString("dddd dd/MM/yyyy").toStdString()));
 
                 _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                             Style::background::color::color(Style::color::Grey::Gainsboro));
+                                              Style::background::color::color(Style::color::Grey::Gainsboro));
             }
 
 
@@ -799,7 +799,7 @@ void Body::Body::setAnnounceDetail(std::string oid)
                 auto textContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
                 textContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
                 textContainer->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                             Style::background::color::color(Style::color::White::Snow));
+                                                 Style::background::color::color(Style::color::White::Snow));
 
                 auto layout = textContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
                 AnnounceContent = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Duyurular::html].get_utf8().value.to_string().c_str(),TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
@@ -811,7 +811,7 @@ void Body::Body::setAnnounceDetail(std::string oid)
                 _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
                 _container->setHeight(20);
                 _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                             Style::background::color::color(Style::color::Grey::Gainsboro));
+                                              Style::background::color::color(Style::color::Grey::Gainsboro));
             }
 
 
@@ -870,12 +870,12 @@ void Body::Body::setVideoDetail(std::string oid)
     mMainContainer->setContentAlignment(AlignmentFlag::Center);
 
     auto container = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//    detailContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-//    detailContainer->setPadding(0,AllSides);
+    //    detailContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+    //    detailContainer->setPadding(0,AllSides);
 
-//    auto layout = detailContainer->setLayout(cpp14::make_unique<WHBoxLayout>());
-//    layout->setContentsMargins(0,0,0,0);
-//    auto container = layout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Center);
+    //    auto layout = detailContainer->setLayout(cpp14::make_unique<WHBoxLayout>());
+    //    layout->setContentsMargins(0,0,0,0);
+    //    auto container = layout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Center);
     container->setMaximumSize(1250,WLength::Auto);
     container->setPadding(0,AllSides);
 
@@ -889,7 +889,7 @@ void Body::Body::setVideoDetail(std::string oid)
         container->addWidget(cpp14::make_unique<WText>(WString("Error: {1}").arg(e.what())));
         return;
     }
-//    std::cout << "Video Detail" << std::endl;
+    //    std::cout << "Video Detail" << std::endl;
 
 
     try {
@@ -933,7 +933,7 @@ void Body::Body::setVideoDetail(std::string oid)
                     this->_clickBack.emit(NoClass());
                 });
                 _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                             Style::background::color::color(Style::color::Grey::Gainsboro));
+                                              Style::background::color::color(Style::color::Grey::Gainsboro));
             }
 
 
@@ -963,7 +963,7 @@ void Body::Body::setVideoDetail(std::string oid)
                 auto textContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
                 textContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
                 textContainer->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                             Style::background::color::color(Style::color::White::Snow));
+                                                 Style::background::color::color(Style::color::White::Snow));
 
                 auto layout = textContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
                 auto text = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Video::VideoExplain].get_utf8().value.to_string().c_str(),TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
@@ -982,7 +982,7 @@ void Body::Body::setVideoDetail(std::string oid)
                     this->_clickBack.emit(NoClass());
                 });
                 _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                             Style::background::color::color(Style::color::Grey::Gainsboro));
+                                              Style::background::color::color(Style::color::Grey::Gainsboro));
             }
 
 
@@ -1003,12 +1003,12 @@ void Body::Body::setBaskanDetail(std::string oid)
     mMainContainer->setContentAlignment(AlignmentFlag::Center);
 
     auto container = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//    detailContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-//    detailContainer->setPadding(0,AllSides);
+    //    detailContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+    //    detailContainer->setPadding(0,AllSides);
 
-//    auto layout = detailContainer->setLayout(cpp14::make_unique<WHBoxLayout>());
-//    layout->setContentsMargins(0,0,0,0);
-//    auto container = layout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Center);
+    //    auto layout = detailContainer->setLayout(cpp14::make_unique<WHBoxLayout>());
+    //    layout->setContentsMargins(0,0,0,0);
+    //    auto container = layout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Center);
     container->setMaximumSize(1250,WLength::Auto);
     container->setPadding(0,AllSides);
 
@@ -1068,7 +1068,7 @@ void Body::Body::setBaskanDetail(std::string oid)
                     this->_clickBack.emit(NoClass());
                 });
                 _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                             Style::background::color::color(Style::color::Grey::Gainsboro));
+                                              Style::background::color::color(Style::color::Grey::Gainsboro));
             }
 
 
@@ -1090,7 +1090,7 @@ void Body::Body::setBaskanDetail(std::string oid)
                 auto textContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
                 textContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
                 textContainer->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                             Style::background::color::color(Style::color::White::Snow));
+                                                 Style::background::color::color(Style::color::White::Snow));
 
 
                 auto layout = textContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
@@ -1106,7 +1106,7 @@ void Body::Body::setBaskanDetail(std::string oid)
                     this->_clickBack.emit(NoClass());
                 });
                 _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                             Style::background::color::color(Style::color::Grey::Gainsboro));
+                                              Style::background::color::color(Style::color::Grey::Gainsboro));
             }
 
 
@@ -1140,7 +1140,7 @@ void Body::Body::setBaskanDetail(std::string oid)
 void Body::Body::setEventDetail(std::string oid)
 {
 
-//    std::cout << "EVENT DETAIL: " << oid << std::endl;
+    //    std::cout << "EVENT DETAIL: " << oid << std::endl;
     mMainContainer->clear();
     mMainContainer->setContentAlignment(AlignmentFlag::Center);
 
@@ -1206,7 +1206,7 @@ void Body::Body::setEventDetail(std::string oid)
                     this->_clickBack.emit(NoClass());
                 });
                 _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                             Style::background::color::color(Style::color::Grey::Gainsboro));
+                                              Style::background::color::color(Style::color::Grey::Gainsboro));
             }
 
 
@@ -1214,13 +1214,13 @@ void Body::Body::setEventDetail(std::string oid)
                 auto array = view[SBLDKeys::Etkinlik::fileList].get_array().value;
                 for( auto doc : array )
                 {
-//                    SBLDKeys::downloadifNotExist<mongocxx::gridfs::bucket,
-//                            QFileInfo,
-//                            QString,
-//                            QFile,
-//                            QByteArray,
-//                            QIODevice,
-//                            bsoncxx::types::value>(Bucket,bsoncxx::types::value(doc.get_oid()),true);
+                    //                    SBLDKeys::downloadifNotExist<mongocxx::gridfs::bucket,
+                    //                            QFileInfo,
+                    //                            QString,
+                    //                            QFile,
+                    //                            QByteArray,
+                    //                            QIODevice,
+                    //                            bsoncxx::types::value>(Bucket,bsoncxx::types::value(doc.get_oid()),true);
                     SBLDKeys::downloadifNotExist(&bucket,doc.get_oid().value.to_string(),true);
                 }
             }
@@ -1229,7 +1229,7 @@ void Body::Body::setEventDetail(std::string oid)
                 auto textContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
                 textContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
                 textContainer->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                             Style::background::color::color(Style::color::White::Snow));
+                                                 Style::background::color::color(Style::color::White::Snow));
 
 
                 auto layout = textContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
@@ -1245,7 +1245,7 @@ void Body::Body::setEventDetail(std::string oid)
                     this->_clickBack.emit(NoClass());
                 });
                 _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                             Style::background::color::color(Style::color::Grey::Gainsboro));
+                                              Style::background::color::color(Style::color::Grey::Gainsboro));
             }
 
 
@@ -1260,102 +1260,102 @@ void Body::Body::setProjeDetail(std::string oid)
 {
 
 
-//    mMainContainer->clear();
+    //    mMainContainer->clear();
 
-//    auto container = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+    //    auto container = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
 
-//    container->setMaximumSize(1250,WLength::Auto);
-//    container->setPadding(0,AllSides);
+    //    container->setMaximumSize(1250,WLength::Auto);
+    //    container->setPadding(0,AllSides);
 
-//    auto filter = document{};
+    //    auto filter = document{};
 
-//    try {
-//        filter.append(kvp(SBLDKeys::Projeler::oid,bsoncxx::oid{oid}));
-//    } catch (bsoncxx::exception &e) {
-//        container->addWidget(cpp14::make_unique<WText>(WString("Error: {1}").arg(e.what())));;
-//        return;
-//    }
+    //    try {
+    //        filter.append(kvp(SBLDKeys::Projeler::oid,bsoncxx::oid{oid}));
+    //    } catch (bsoncxx::exception &e) {
+    //        container->addWidget(cpp14::make_unique<WText>(WString("Error: {1}").arg(e.what())));;
+    //        return;
+    //    }
 
-//    auto collection = db->collection(SBLDKeys::Projeler::collection);
-//    auto bucket = db->gridfs_bucket();
+    //    auto collection = db->collection(SBLDKeys::Projeler::collection);
+    //    auto bucket = db->gridfs_bucket();
 
-//    try {
-//        auto val = collection.find_one(filter.view());
-
-
-//        if( val )
-//        {
-
-//            auto view = val.value().view();
-
-//            auto rowContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
-
-//            rowContainer->addStyleClass(Bootstrap::Grid::row);
+    //    try {
+    //        auto val = collection.find_one(filter.view());
 
 
-//            std::string path = "img/baskanBackGround.JPG";
+    //        if( val )
+    //        {
+
+    //            auto view = val.value().view();
+
+    //            auto rowContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
+
+    //            rowContainer->addStyleClass(Bootstrap::Grid::row);
 
 
-//            {
-//                auto img = rowContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//                img->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+    //            std::string path = "img/baskanBackGround.JPG";
 
 
-//                img->setAttributeValue(Style::style,Style::background::url(path)+Style::background::size::cover+Style::background::repeat::norepeat+Style::background::position::center_center);
-//                img->setHeight(150);
-//                img->setPadding(0,AllSides);
-
-//                auto gradientContainer = img->addWidget(cpp14::make_unique<WContainerWidget>());
-//                gradientContainer->setHeight(150);
-//                gradientContainer->addStyleClass("SliderDetailTextBackground");
-//                auto layout = gradientContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
-//                layout->addStretch(1);
-//                auto serik = layout->addWidget(cpp14::make_unique<WText>("Proje"),0,AlignmentFlag::Bottom|AlignmentFlag::Center);
-//                serik->setAttributeValue(Style::style,Style::font::size::s36px+Style::color::color(Style::color::White::AliceBlue));
-//                auto title = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Projeler::title].get_utf8().value.to_string().c_str()),0,AlignmentFlag::Bottom|AlignmentFlag::Center);
-//                title->setAttributeValue(Style::style,Style::font::size::s48px+Style::color::color(Style::color::White::AliceBlue));
-//                wApp->setInternalPath("/"+title->text().toUTF8(),false);
-//            }
+    //            {
+    //                auto img = rowContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+    //                img->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
 
 
+    //                img->setAttributeValue(Style::style,Style::background::url(path)+Style::background::size::cover+Style::background::repeat::norepeat+Style::background::position::center_center);
+    //                img->setHeight(150);
+    //                img->setPadding(0,AllSides);
 
-////            auto title = rowContainer->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Projeler::title].get_utf8().value.to_string()));
-////            title->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-////            title->setAttributeValue(Style::style,Style::font::weight::bold+Style::font::size::s24px);
-////            title->setMargin(15,AllSides);
-
-//            auto itemlist = view[SBLDKeys::Projeler::slide].get_array().value;
-
-//            for( auto _item : itemlist )
-//            {
-//                std::string path = SBLDKeys::downloadifNotExist(&bucket,_item[SBLDKeys::Projeler::slideItem::img].get_oid().value.to_string());
-
-//                auto itemCOntainer = rowContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//                itemCOntainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-//                itemCOntainer->setMargin(15,AllSides);
-//                itemCOntainer->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::FloralWhite)+Style::Border::border("1px solid gray"));
-
-//                auto img = itemCOntainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//                img->setAttributeValue(Style::style,Style::background::url(path)+Style::background::size::cover+Style::background::position::center_center);
-//                img->setHeight(550);
-
-//                auto _text = itemCOntainer->addWidget(cpp14::make_unique<WText>(_item[SBLDKeys::Projeler::slideItem::text].get_utf8().value.to_string()));
-//                _text->setAttributeValue(Style::style,Style::font::weight::bold+Style::font::size::s16px);
+    //                auto gradientContainer = img->addWidget(cpp14::make_unique<WContainerWidget>());
+    //                gradientContainer->setHeight(150);
+    //                gradientContainer->addStyleClass("SliderDetailTextBackground");
+    //                auto layout = gradientContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
+    //                layout->addStretch(1);
+    //                auto serik = layout->addWidget(cpp14::make_unique<WText>("Proje"),0,AlignmentFlag::Bottom|AlignmentFlag::Center);
+    //                serik->setAttributeValue(Style::style,Style::font::size::s36px+Style::color::color(Style::color::White::AliceBlue));
+    //                auto title = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Projeler::title].get_utf8().value.to_string().c_str()),0,AlignmentFlag::Bottom|AlignmentFlag::Center);
+    //                title->setAttributeValue(Style::style,Style::font::size::s48px+Style::color::color(Style::color::White::AliceBlue));
+    //                wApp->setInternalPath("/"+title->text().toUTF8(),false);
+    //            }
 
 
-//            }
+
+    ////            auto title = rowContainer->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Projeler::title].get_utf8().value.to_string()));
+    ////            title->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+    ////            title->setAttributeValue(Style::style,Style::font::weight::bold+Style::font::size::s24px);
+    ////            title->setMargin(15,AllSides);
+
+    //            auto itemlist = view[SBLDKeys::Projeler::slide].get_array().value;
+
+    //            for( auto _item : itemlist )
+    //            {
+    //                std::string path = SBLDKeys::downloadifNotExist(&bucket,_item[SBLDKeys::Projeler::slideItem::img].get_oid().value.to_string());
+
+    //                auto itemCOntainer = rowContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+    //                itemCOntainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+    //                itemCOntainer->setMargin(15,AllSides);
+    //                itemCOntainer->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::FloralWhite)+Style::Border::border("1px solid gray"));
+
+    //                auto img = itemCOntainer->addWidget(cpp14::make_unique<WContainerWidget>());
+    //                img->setAttributeValue(Style::style,Style::background::url(path)+Style::background::size::cover+Style::background::position::center_center);
+    //                img->setHeight(550);
+
+    //                auto _text = itemCOntainer->addWidget(cpp14::make_unique<WText>(_item[SBLDKeys::Projeler::slideItem::text].get_utf8().value.to_string()));
+    //                _text->setAttributeValue(Style::style,Style::font::weight::bold+Style::font::size::s16px);
 
 
-//        }else{
-//            mMainContainer->addWidget(cpp14::make_unique<WText>(WString("Error: {1}").arg("Document Empty")));
-//            return;
-//        }
+    //            }
 
 
-//    } catch (mongocxx::exception &e) {
-//        mMainContainer->addWidget(cpp14::make_unique<WText>(WString("Error: {1}").arg(e.what())));
-//        return;
-//    }
+    //        }else{
+    //            mMainContainer->addWidget(cpp14::make_unique<WText>(WString("Error: {1}").arg("Document Empty")));
+    //            return;
+    //        }
+
+
+    //    } catch (mongocxx::exception &e) {
+    //        mMainContainer->addWidget(cpp14::make_unique<WText>(WString("Error: {1}").arg(e.what())));
+    //        return;
+    //    }
 
 
 
@@ -1433,13 +1433,13 @@ void Body::Body::setProjeDetail(std::string oid)
 
     }
 
-//    {
-//        auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
-//        auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-//        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Kategori {1}").arg(view[SBLDKeys::Calismalar::kategori].get_utf8().value.to_string().c_str())),0,AlignmentFlag::Middle);
-//        text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
+    //    {
+    //        auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
+    //        auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
+    //        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Kategori {1}").arg(view[SBLDKeys::Calismalar::kategori].get_utf8().value.to_string().c_str())),0,AlignmentFlag::Middle);
+    //        text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
 
-//    }
+    //    }
 
     {
         auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -1449,12 +1449,12 @@ void Body::Body::setProjeDetail(std::string oid)
 
     }
 
-//    {
-//        auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
-//        auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-//        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Tanım: <u>{1}</u>").arg(view[SBLDKeys::Calismalar::tanim].get_utf8().value.to_string().c_str())),0,AlignmentFlag::Middle);
-//        text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
-//    }
+    //    {
+    //        auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
+    //        auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
+    //        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Tanım: <u>{1}</u>").arg(view[SBLDKeys::Calismalar::tanim].get_utf8().value.to_string().c_str())),0,AlignmentFlag::Middle);
+    //        text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
+    //    }
 
 
     {
@@ -1464,17 +1464,17 @@ void Body::Body::setProjeDetail(std::string oid)
     }
 
 
-//    {
-//        auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
-//        container->addStyleClass(Bootstrap::Grid::row);
-//        container->setPadding(10,AllSides);
-//        for( auto mah : view[SBLDKeys::Calismalar::mahalleler].get_array().value )
-//        {
-//            auto text = container->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(mah.get_utf8().value.to_string().c_str())));
-//            text->addStyleClass(Bootstrap::Label::Warning+Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
-//            text->setAttributeValue(Style::style,Style::font::weight::bold+Style::font::size::s16px);
-//        }
-//    }
+    //    {
+    //        auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
+    //        container->addStyleClass(Bootstrap::Grid::row);
+    //        container->setPadding(10,AllSides);
+    //        for( auto mah : view[SBLDKeys::Calismalar::mahalleler].get_array().value )
+    //        {
+    //            auto text = container->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(mah.get_utf8().value.to_string().c_str())));
+    //            text->addStyleClass(Bootstrap::Label::Warning+Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
+    //            text->setAttributeValue(Style::style,Style::font::weight::bold+Style::font::size::s16px);
+    //        }
+    //    }
 
 
     {
@@ -1491,7 +1491,7 @@ void Body::Body::setProjeDetail(std::string oid)
 
 
 
-//        mMainContainer->setPadding(5,Side::Top);
+        //        mMainContainer->setPadding(5,Side::Top);
         auto asamaContainer = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
         auto bucket = this->db->gridfs_bucket();
         try {
@@ -1513,14 +1513,14 @@ void Body::Body::setProjeDetail(std::string oid)
                 frontimgContainer->setHeight(350);
                 frontimgContainer->setAttributeValue(Style::style,Style::background::url(imgPath)+Style::background::size::contain+Style::background::position::center_center+Style::background::repeat::norepeat);
 
-//                auto imgContainer = cpp14::make_unique<WContainerWidget>();
-//                imgContainer->setHeight(550);
-//                imgContainer->setWidth(WLength("100%"));
-//                imgContainer->setAttributeValue(Style::style,Style::background::url(imgPath)+Style::background::size::contain+Style::background::position::center_center+"z-index:-1; ");
-//                imgContainer->addStyleClass("CommanFilter");
-//                imgContainer->setOverflow(Overflow::Hidden);
-//                imgContainer->setPositionScheme(PositionScheme::Absolute);
-//                slideCOntainer->addWidget(std::move(imgContainer));
+                //                auto imgContainer = cpp14::make_unique<WContainerWidget>();
+                //                imgContainer->setHeight(550);
+                //                imgContainer->setWidth(WLength("100%"));
+                //                imgContainer->setAttributeValue(Style::style,Style::background::url(imgPath)+Style::background::size::contain+Style::background::position::center_center+"z-index:-1; ");
+                //                imgContainer->addStyleClass("CommanFilter");
+                //                imgContainer->setOverflow(Overflow::Hidden);
+                //                imgContainer->setPositionScheme(PositionScheme::Absolute);
+                //                slideCOntainer->addWidget(std::move(imgContainer));
 
                 container->addWidget(std::move(slideCOntainer));
 
@@ -1548,7 +1548,7 @@ void Body::Body::setCalismaDetail(std::string oid)
     mMainContainer->clear();
 
 
-//    mTableContainer->addWidget(cpp14::make_unique<WText>(WString("<h2>{1}</h2>").arg(oid.c_str())));
+    //    mTableContainer->addWidget(cpp14::make_unique<WText>(WString("<h2>{1}</h2>").arg(oid.c_str())));
 
     auto filter = document{};
 
@@ -1651,7 +1651,7 @@ void Body::Body::setCalismaDetail(std::string oid)
             auto text = container->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(mah.get_utf8().value.to_string().c_str())));
             text->addStyleClass(Bootstrap::Label::Warning+Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
             text->setAttributeValue(Style::style,Style::font::weight::bold+Style::font::size::s16px);
-//            text->setMargin(5,AllSides);
+            //            text->setMargin(5,AllSides);
         }
     }
 
@@ -1676,7 +1676,7 @@ void Body::Body::setCalismaDetail(std::string oid)
             {
                 auto doc = _asama.get_document().value;
                 auto container = asamaContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//                container->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(0,125),this->getRandom(0,125),this->getRandom(0,125)));
+                //                container->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(0,125),this->getRandom(0,125),this->getRandom(0,125)));
                 auto StackWidget = container->addWidget(cpp14::make_unique<WStackedWidget>());
                 StackWidget->setTransitionAnimation(WAnimation(AnimationEffect::SlideInFromRight,TimingFunction::EaseInOut,250),true);
                 std::vector<std::string> imgPathList;
@@ -1792,7 +1792,7 @@ std::string Body::Body::downloadifNotExist(bsoncxx::types::value oid, bool force
         fullFilename = QString("tempfile/%1").arg(downloader.files_document()["filename"].get_utf8().value.to_string().c_str());
     }else{
         fullFilename = QString("tempfile/%2.%1").arg(info.suffix())
-                    .arg(downloader.files_document()["md5"].get_utf8().value.to_string().c_str());
+                .arg(downloader.files_document()["md5"].get_utf8().value.to_string().c_str());
     }
 
 
@@ -1811,8 +1811,8 @@ std::string Body::Body::downloadifNotExist(bsoncxx::types::value oid, bool force
         mainArray+= ar;
     }
 
-//    std::cout << "Current Dir: " << QDir::currentPath().toStdString() << std::endl;
-//    std::cout << "file Size: " << mainArray.size() << std::endl;
+    //    std::cout << "Current Dir: " << QDir::currentPath().toStdString() << std::endl;
+    //    std::cout << "file Size: " << mainArray.size() << std::endl;
     QFile file( "docroot/"+fullFilename );
     if( file.open(QIODevice::WriteOnly) )
     {
@@ -1848,7 +1848,7 @@ std::string Body::Body::downloadifNotExist(std::string oid, bool forceFilename)
         fullFilename = QString("tempfile/%1").arg(downloader.files_document()["filename"].get_utf8().value.to_string().c_str());
     }else{
         fullFilename = QString("tempfile/%2.%1").arg(info.suffix())
-                    .arg(downloader.files_document()["md5"].get_utf8().value.to_string().c_str());
+                .arg(downloader.files_document()["md5"].get_utf8().value.to_string().c_str());
     }
 
 
@@ -1867,8 +1867,8 @@ std::string Body::Body::downloadifNotExist(std::string oid, bool forceFilename)
         mainArray+= ar;
     }
 
-//    std::cout << "Current Dir: " << QDir::currentPath().toStdString() << std::endl;
-//    std::cout << "file Size: " << mainArray.size() << std::endl;
+    //    std::cout << "Current Dir: " << QDir::currentPath().toStdString() << std::endl;
+    //    std::cout << "file Size: " << mainArray.size() << std::endl;
     QFile file( "docroot/"+fullFilename );
     if( file.open(QIODevice::WriteOnly) )
     {
@@ -1888,11 +1888,11 @@ void Body::Body::showMessage(std::string title, std::string msg)
                  msg,
                  Wt::Icon::Information, Wt::StandardButton::Ok));
 
-        messageBox->buttonClicked().connect([=] {
-            this->removeChild(messageBox);
-        });
+    messageBox->buttonClicked().connect([=] {
+        this->removeChild(messageBox);
+    });
 
-        messageBox->show();
+    messageBox->show();
 }
 
 Body::Slider::Slider(mongocxx::collection *_collectin, mongocxx::gridfs::bucket *_bucket)
@@ -2047,9 +2047,9 @@ void Body::Slider::addItem(std::string oid , int currentIndex, int indexCount, s
         container->addStyleClass(Bootstrap::Grid::Large::col_lg_12+"SliderRightSide");
         container->setMargin(0,AllSides);
         container->setPadding(0,AllSides);
-//        container->setHeight(650);
+        //        container->setHeight(650);
         auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-//        layout->addStretch(1);
+        //        layout->addStretch(1);
         auto text = layout->addWidget(cpp14::make_unique<WText>(title));
         text->setAttributeValue(Style::style,Style::color::color(Style::color::White::White));
         text->addStyleClass("SliderTitleText");
@@ -2057,116 +2057,116 @@ void Body::Slider::addItem(std::string oid , int currentIndex, int indexCount, s
         text->clicked().connect([=](){
             _clickOid.emit(oid);
         });
-//        layout->addStretch(1);
-//        layout->addSpacing(350);
+        //        layout->addStretch(1);
+        //        layout->addSpacing(350);
     }
 
 
     {
-            auto container = RowContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(Bootstrap::Grid::Large::col_lg_12 + "SliderLeftSide");
-    //        container->setHeight(650);
-            container->setMargin(0,AllSides);
-            container->setPadding(0,Side::Left|Side::Right);
-            container->setId("SagTaraf");
+        auto container = RowContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass(Bootstrap::Grid::Large::col_lg_12 + "SliderLeftSide");
+        //        container->setHeight(650);
+        container->setMargin(0,AllSides);
+        container->setPadding(0,Side::Left|Side::Right);
+        container->setId("SagTaraf");
 
-            auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-            layout->addStretch(1);
+        auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
+        layout->addStretch(1);
 
-            auto img = layout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Center);
-            img->setWidth(WLength("100%"));
-            img->decorationStyle().setCursor(Cursor::PointingHand);
-            img->clicked().connect([=](){
-                _clickOid.emit(oid);
-            });
-            img->setAttributeValue(Style::style,Style::background::url(imgPath)+Style::background::size::cover+
-                                   Style::background::repeat::norepeat+
-                                   Style::background::position::center_center+
-                                   Style::background::origin::padding_box);
-            img->addStyleClass(Bootstrap::Grid::container_fluid+"sliderIMG");
-    //        img->setHeight(300);
-            layout->addSpacing(10);
-            auto textWidget = layout->addWidget(cpp14::make_unique<WContainerWidget>());
-            textWidget->setPadding(5,Side::Bottom|Side::Top);
-            textWidget->setMargin(0,Side::Left|Side::Right);
-            textWidget->addWidget(cpp14::make_unique<WText>(text));
-            textWidget->decorationStyle().setCursor(Cursor::PointingHand);
-            textWidget->clicked().connect([=](){
-                _clickOid.emit(oid);
-            });
-            textWidget->setPadding(15,Side::Left|Side::Right);
-            textWidget->addStyleClass("SliderTextSection");
-            layout->addSpacing(10);
+        auto img = layout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Center);
+        img->setWidth(WLength("100%"));
+        img->decorationStyle().setCursor(Cursor::PointingHand);
+        img->clicked().connect([=](){
+            _clickOid.emit(oid);
+        });
+        img->setAttributeValue(Style::style,Style::background::url(imgPath)+Style::background::size::cover+
+                               Style::background::repeat::norepeat+
+                               Style::background::position::center_center+
+                               Style::background::origin::padding_box);
+        img->addStyleClass(Bootstrap::Grid::container_fluid+"sliderIMG");
+        //        img->setHeight(300);
+        layout->addSpacing(10);
+        auto textWidget = layout->addWidget(cpp14::make_unique<WContainerWidget>());
+        textWidget->setPadding(5,Side::Bottom|Side::Top);
+        textWidget->setMargin(0,Side::Left|Side::Right);
+        textWidget->addWidget(cpp14::make_unique<WText>(text));
+        textWidget->decorationStyle().setCursor(Cursor::PointingHand);
+        textWidget->clicked().connect([=](){
+            _clickOid.emit(oid);
+        });
+        textWidget->setPadding(15,Side::Left|Side::Right);
+        textWidget->addStyleClass("SliderTextSection");
+        layout->addSpacing(10);
+        {
+            auto dotContainer = layout->addWidget(cpp14::make_unique<WContainerWidget>());
+            auto _layout = dotContainer->setLayout(cpp14::make_unique<WHBoxLayout>());
+
             {
-                auto dotContainer = layout->addWidget(cpp14::make_unique<WContainerWidget>());
-                auto _layout = dotContainer->setLayout(cpp14::make_unique<WHBoxLayout>());
-
-                {
-                    auto button = _layout->addWidget(cpp14::make_unique<WText>("<"),0,AlignmentFlag::Left);
-                    button->addStyleClass("ChangeSliderButton");
-                    button->clicked().connect([=](){
-                        std::cout << "CurrentINDEX --: " << mCurrentIndex << " - "<< mSlideCount << std::endl;
-                        if( mCurrentIndex <= 0)
-                        {
-                            mCurrentIndex = mSlideCount - 1 ;
-                            sSlideIndex.emit(mCurrentIndex);
-                        }else{
-                            sSlideIndex.emit(mCurrentIndex-1);
-                        }
-                    });
-                }
-
-                _layout->addStretch(1);
-
-
-
-                auto ControlContainer = _layout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Middle);
-                ControlContainer->addStyleClass("DotContainer");
-
-                auto _controlLayout = ControlContainer->setLayout(cpp14::make_unique<WHBoxLayout>());
-
-                for( int i = 0 ; i < indexCount ; i++ )
-                {
+                auto button = _layout->addWidget(cpp14::make_unique<WText>("<"),0,AlignmentFlag::Left);
+                button->addStyleClass("ChangeSliderButton");
+                button->clicked().connect([=](){
+                    std::cout << "CurrentINDEX --: " << mCurrentIndex << " - "<< mSlideCount << std::endl;
+                    if( mCurrentIndex <= 0)
                     {
-                        auto button = _controlLayout->addWidget(cpp14::make_unique<WContainerWidget>());
-                        sliderWidgetListBtn.push_back(button);
-                        if( currentIndex == i )
-                        {
-                            button->addStyleClass("SliderDotSectionActive");
-                        }else{
-                            button->addStyleClass("SliderDotSection");
-                        }
-
-                        button->setMargin(12,AllSides);
-                        button->decorationStyle().setCursor(Cursor::PointingHand);
-                        button->clicked().connect([=](){
-                            if( mCurrentIndex != i )
-                            {
-                                sSlideIndex.emit(i);
-                            }
-                        });
+                        mCurrentIndex = mSlideCount - 1 ;
+                        sSlideIndex.emit(mCurrentIndex);
+                    }else{
+                        sSlideIndex.emit(mCurrentIndex-1);
                     }
-                }
+                });
+            }
+
+            _layout->addStretch(1);
 
 
-                _layout->addStretch(1);
 
+            auto ControlContainer = _layout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Middle);
+            ControlContainer->addStyleClass("DotContainer");
+
+            auto _controlLayout = ControlContainer->setLayout(cpp14::make_unique<WHBoxLayout>());
+
+            for( int i = 0 ; i < indexCount ; i++ )
+            {
                 {
-                    auto button = _layout->addWidget(cpp14::make_unique<WText>(">"),0,AlignmentFlag::Right);
-                    button->addStyleClass("ChangeSliderButton");
+                    auto button = _controlLayout->addWidget(cpp14::make_unique<WContainerWidget>());
+                    sliderWidgetListBtn.push_back(button);
+                    if( currentIndex == i )
+                    {
+                        button->addStyleClass("SliderDotSectionActive");
+                    }else{
+                        button->addStyleClass("SliderDotSection");
+                    }
+
+                    button->setMargin(12,AllSides);
+                    button->decorationStyle().setCursor(Cursor::PointingHand);
                     button->clicked().connect([=](){
-                        if( mCurrentIndex >= mSlideCount )
+                        if( mCurrentIndex != i )
                         {
-                            mCurrentIndex = 0;
-                            sSlideIndex.emit(mCurrentIndex);
-                        }else{
-                            sSlideIndex.emit((mCurrentIndex+1)%mSlideCount);
+                            sSlideIndex.emit(i);
                         }
                     });
                 }
             }
-            layout->addSpacing(10);
+
+
+            _layout->addStretch(1);
+
+            {
+                auto button = _layout->addWidget(cpp14::make_unique<WText>(">"),0,AlignmentFlag::Right);
+                button->addStyleClass("ChangeSliderButton");
+                button->clicked().connect([=](){
+                    if( mCurrentIndex >= mSlideCount )
+                    {
+                        mCurrentIndex = 0;
+                        sSlideIndex.emit(mCurrentIndex);
+                    }else{
+                        sSlideIndex.emit((mCurrentIndex+1)%mSlideCount);
+                    }
+                });
+            }
         }
+        layout->addSpacing(10);
+    }
 
 
 
@@ -2229,10 +2229,10 @@ std::string Body::Slider::downloadifNotExist(bsoncxx::types::value oid, bool for
     if( forceFilename )
     {
         fullFilename = QString("tempfile/%2.%1").arg(info.suffix())
-                    .arg(downloader.files_document()["filename"].get_utf8().value.to_string().c_str());
+                .arg(downloader.files_document()["filename"].get_utf8().value.to_string().c_str());
     }else{
         fullFilename = QString("tempfile/%2.%1").arg(info.suffix())
-                    .arg(downloader.files_document()["md5"].get_utf8().value.to_string().c_str());
+                .arg(downloader.files_document()["md5"].get_utf8().value.to_string().c_str());
     }
 
 
@@ -2293,10 +2293,10 @@ Body::ContentWidget::ContentWidget(mongocxx::database *_db)
         _layout->setContentsMargins(0,0,0,0);
         auto _widget = _layout->addWidget(cpp14::make_unique<WContainerWidget>());
         _widget->setAttributeValue(Style::style,Style::background::url("img/isimizGucumuzSerik.png")+
-                                Style::background::size::contain+
-                                Style::background::origin::border_box+
-                                Style::background::repeat::norepeat+
-                                Style::background::position::center_center);
+                                   Style::background::size::contain+
+                                   Style::background::origin::border_box+
+                                   Style::background::repeat::norepeat+
+                                   Style::background::position::center_center);
         _widget->setPadding(0,AllSides);
         item->addStyleClass(Bootstrap::ImageShape::img_rounded);
     }
@@ -2346,27 +2346,27 @@ Body::ContentWidget::VideoWidget::VideoWidget(mongocxx::database *_db)
             auto view = val.value().view();
 
 
-//            {
-//                auto containerItem = container->addWidget(cpp14::make_unique<WContainerWidget>());
-//                containerItem->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_12
-//                                             +Bootstrap::Grid::Small::col_sm_12
-//                                             +Bootstrap::Grid::ExtraSmall::col_xs_12);
-//                auto layout = containerItem->setLayout(cpp14::make_unique<WVBoxLayout>());
-//                layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Video::title].get_utf8().value.to_string()),0,AlignmentFlag::Middle);
-//                containerItem->setHeight(250);
-//                containerItem->setAttributeValue(Style::style,Style::background::color::color(Style::color::Purple::BlueViolet)+
-//                                                 Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::Snow));
-//            }
+            //            {
+            //                auto containerItem = container->addWidget(cpp14::make_unique<WContainerWidget>());
+            //                containerItem->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_12
+            //                                             +Bootstrap::Grid::Small::col_sm_12
+            //                                             +Bootstrap::Grid::ExtraSmall::col_xs_12);
+            //                auto layout = containerItem->setLayout(cpp14::make_unique<WVBoxLayout>());
+            //                layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Video::title].get_utf8().value.to_string()),0,AlignmentFlag::Middle);
+            //                containerItem->setHeight(250);
+            //                containerItem->setAttributeValue(Style::style,Style::background::color::color(Style::color::Purple::BlueViolet)+
+            //                                                 Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::Snow));
+            //            }
 
 
 
             {
                 auto containerItem1 = container->addWidget(cpp14::make_unique<WContainerWidget>());
                 containerItem1->addStyleClass(Bootstrap::Grid::Large::col_lg_12
-                                             +Bootstrap::Grid::Medium::col_md_12
-                                             +Bootstrap::Grid::Small::col_sm_12
-                                             +Bootstrap::Grid::ExtraSmall::col_xs_12
-                                             +Bootstrap::ImageShape::img_rounded);
+                                              +Bootstrap::Grid::Medium::col_md_12
+                                              +Bootstrap::Grid::Small::col_sm_12
+                                              +Bootstrap::Grid::ExtraSmall::col_xs_12
+                                              +Bootstrap::ImageShape::img_rounded);
 
                 auto containerItem = containerItem1->addWidget(cpp14::make_unique<WContainerWidget>());
                 containerItem->addStyleClass(Bootstrap::ImageShape::img_rounded);
@@ -2378,15 +2378,15 @@ Body::ContentWidget::VideoWidget::VideoWidget(mongocxx::database *_db)
                 auto playContainer = layout->addWidget(cpp14::make_unique<WContainerWidget>());
 
                 playContainer->setAttributeValue(Style::style,Style::background::url("img/videoWidgetPlay.png")+
-                                             Style::background::size::length("100","100")+
-                                             Style::background::repeat::norepeat+
-                                             Style::background::position::center_center);
+                                                 Style::background::size::length("100","100")+
+                                                 Style::background::repeat::norepeat+
+                                                 Style::background::position::center_center);
 
                 std::string path = SBLDKeys::downloadifNotExist(&bucket,view[SBLDKeys::Video::VideoLabel].get_oid().value.to_string(),true);
                 containerItem->setAttributeValue(Style::style,Style::background::url(path)+
-                                             Style::background::size::cover+
-                                             Style::background::repeat::norepeat+
-                                             Style::background::position::center_center);
+                                                 Style::background::size::cover+
+                                                 Style::background::repeat::norepeat+
+                                                 Style::background::position::center_center);
 
                 oid = view[SBLDKeys::Video::oid].get_oid().value.to_string();
                 container->clicked().connect([=](){
@@ -2495,7 +2495,7 @@ Body::ContentWidget::EventWidget::EventWidget(mongocxx::database *_db, bool addO
         item1->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6+"EventWidgetMainContainerItem");
 
         auto item = item1->addWidget(cpp14::make_unique<WContainerWidget>());
-//        item->setMargin(5,AllSides);
+        //        item->setMargin(5,AllSides);
         item->addStyleClass(Bootstrap::ImageShape::img_rounded);
 
 
@@ -2556,10 +2556,10 @@ void Body::ContentWidget::EventWidget::addisimizGucumuz()
     _layout->setContentsMargins(0,0,0,0);
     auto _widget = _layout->addWidget(cpp14::make_unique<WContainerWidget>());
     _widget->setAttributeValue(Style::style,Style::background::url("img/isimizGucumuzSerik.png")+
-                            Style::background::size::contain+
-                            Style::background::origin::border_box+
-                            Style::background::repeat::norepeat+
-                            Style::background::position::center_center);
+                               Style::background::size::contain+
+                               Style::background::origin::border_box+
+                               Style::background::repeat::norepeat+
+                               Style::background::position::center_center);
     _widget->setPadding(0,AllSides);
 
 
@@ -2580,7 +2580,7 @@ void Body::ContentWidget::EventWidget::addBaskan()
         std::cout << "Error: " << e.what() << std::endl;
     }
 
-//    std::cout << bsoncxx::to_json(filter.view());
+    //    std::cout << bsoncxx::to_json(filter.view());
     try {
 
         auto val = collection.find_one(filter.view());
@@ -2606,10 +2606,10 @@ void Body::ContentWidget::EventWidget::addBaskan()
             _layout->setContentsMargins(0,0,0,0);
             auto _widget = _layout->addWidget(cpp14::make_unique<WContainerWidget>());
             _widget->setAttributeValue(Style::style,Style::background::url(baskanimgPath)+
-                                    Style::background::size::cover+
-                                    Style::background::origin::border_box+
-                                    Style::background::repeat::repeat_x_y+
-                                    Style::background::position::center_center);
+                                       Style::background::size::cover+
+                                       Style::background::origin::border_box+
+                                       Style::background::repeat::repeat_x_y+
+                                       Style::background::position::center_center);
             _widget->setPadding(0,AllSides);
             _widget->setMargin(0,AllSides);
             _widget->addStyleClass(Bootstrap::ImageShape::img_rounded);
@@ -2762,7 +2762,7 @@ Body::NewsAnnounceContent::NewsPanel::ControlPanel::ControlPanel()
         comboBox->addItem("Son Projeler");
 
         comboBox->sactivated().connect([=](WString str){
-//            std::cout << str.toUTF8().c_str() << std::endl;
+            //            std::cout << str.toUTF8().c_str() << std::endl;
             if( str.toUTF8() == "Son Haberler" )
             {
                 _ClickPanel.emit(SBLDKeys::Haberler::oid);
@@ -2884,7 +2884,7 @@ Body::NewsAnnounceContent::NewsPanel::ControlPanel::ControlPanel()
     {
         auto container = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-//        container->addStyleClass("ControlPanelMenuItem");
+        //        container->addStyleClass("ControlPanelMenuItem");
         container->setHeight(75);
         container->setAttributeValue(Style::style,Style::background::color::color(Style::color::Grey::Gainsboro));
 
@@ -2937,9 +2937,7 @@ Body::NewsAnnounceContent::NewsPanel::NewsList::NewsList(mongocxx::database *_db
 
     mMainContainer->addStyleClass(Bootstrap::Grid::row);
 
-
     this->initList();
-
 
 }
 
@@ -2976,9 +2974,9 @@ void Body::NewsAnnounceContent::NewsPanel::NewsList::initList(std::string key)
 
     try {
         filter.append(kvp(SBLDKeys::Haberler::Yayinda,SBLDKeys::Haberler::Yayin::Yayinda));
-//        WDate date = WDate::currentDate();
-//        date = date.addDays(-45);
-//        filter.append(kvp(SBLDKeys::Haberler::tarih,make_document(kvp("$gte",QString::fromStdString(date.toString("yyyyMMdd").toUTF8()).toDouble()))));
+        //        WDate date = WDate::currentDate();
+        //        date = date.addDays(-45);
+        //        filter.append(kvp(SBLDKeys::Haberler::tarih,make_document(kvp("$gte",QString::fromStdString(date.toString("yyyyMMdd").toUTF8()).toDouble()))));
     } catch (bsoncxx::exception& e) {
         std::cout << "Error: " << e.what() << std::endl;
     }
@@ -3128,7 +3126,7 @@ void Body::NewsAnnounceContent::NewsPanel::NewsList::initEtkinlikList(std::strin
     mongocxx::options::find findOption;
 
     findOption.limit(6);
-//    findOption.skip(1);
+    //    findOption.skip(1);
 
     auto sortDoc = document{};
 
@@ -3231,7 +3229,7 @@ void Body::NewsAnnounceContent::NewsPanel::NewsList::initProjectList(std::string
             std::string path;
             try {
                 path = SBLDKeys::downloadifNotExist(Bucket,doc[SBLDKeys::Projeler::icon].get_oid().value.to_string());
-//                std::cout << "PATH: " << path << std::endl;
+                //                std::cout << "PATH: " << path << std::endl;
                 try {
 
 
@@ -3272,9 +3270,7 @@ void Body::NewsAnnounceContent::NewsPanel::NewsList::initProjectList(std::string
 
 Signal<std::string> &Body::NewsAnnounceContent::NewsPanel::NewsList::mGetClickOid()
 {
-
     return this->_ClickOid;
-
 }
 
 Signal<std::string> &Body::NewsAnnounceContent::NewsPanel::NewsList::mGetClickVideoOid()
@@ -3365,14 +3361,16 @@ Body::NewsAnnounceContent::AnnouncePanel::AnnouncePanel(mongocxx::database *_db)
       db(_db)
 {
 
-//    setAttributeValue(Style::style,Style::background::color::color(Style::color::Green::LightSeaGreen));
     setPadding(0,AllSides);
 
     auto mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
     mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
+    mMainContainer->setContentAlignment(AlignmentFlag::Center);
     auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     row->addStyleClass(Bootstrap::Grid::row);
     row->setPadding(0,AllSides);
+
+    row->setMaximumSize(720,WLength::Auto);
 
 
     {
@@ -3392,7 +3390,7 @@ Body::NewsAnnounceContent::AnnouncePanel::AnnounceList::AnnounceList(mongocxx::d
       db(_db)
 {
 
-//    setAttributeValue(Style::style,Style::Border::border("3px solid red"));
+    //    setAttributeValue(Style::style,Style::Border::border("3px solid red"));
 
     auto mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
     mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
@@ -3402,7 +3400,7 @@ Body::NewsAnnounceContent::AnnouncePanel::AnnounceList::AnnounceList(mongocxx::d
 
     auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     row->addStyleClass(Bootstrap::Grid::row);
-//    row->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::Azure));
+    //    row->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::Azure));
 
     row->addStyleClass("announceRow");
 
@@ -3448,7 +3446,7 @@ Body::NewsAnnounceContent::AnnouncePanel::AnnounceList::AnnounceList(mongocxx::d
         for( auto doc : cursor )
         {
             auto item = container->addWidget(cpp14::make_unique<AnnounceItem>(doc[SBLDKeys::Duyurular::oid].get_oid().value.to_string(),doc[SBLDKeys::Duyurular::title].get_utf8().value.to_string(),
-                                 doc[SBLDKeys::Duyurular::department].get_utf8().value.to_string()));
+                    doc[SBLDKeys::Duyurular::department].get_utf8().value.to_string()));
             item->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
             item->_ClickItem.connect(this,&AnnounceList::_ClickItem);
         }
@@ -3503,7 +3501,7 @@ Body::NewsAnnounceContent::AnnouncePanel::TaskList::TaskList(mongocxx::database 
 {
 
 
-//    return;
+    //    return;
     Collection = db->collection(SBLDKeys::Calismalar::collection);
 
     setPadding(10,Side::Bottom);
@@ -3640,7 +3638,7 @@ Body::NewsAnnounceContent::AnnouncePanel::TaskList::TaskList(mongocxx::database 
             for( auto doc : cursor )
             {
 
-//                QString str = QString::number(static_cast<int>());
+                //                QString str = QString::number(static_cast<int>());
                 QDate date = QDate::fromJulianDay(doc[SBLDKeys::Calismalar::baslamaTarihi].get_int64().value);
 
                 std::string mahalle;
@@ -3653,8 +3651,8 @@ Body::NewsAnnounceContent::AnnouncePanel::TaskList::TaskList(mongocxx::database 
 
                 addWidget(cpp14::make_unique<TaskItem>(doc[SBLDKeys::Calismalar::baslik].get_utf8().value.to_string().c_str(),
                           doc[SBLDKeys::Calismalar::birim].get_utf8().value.to_string(),
-                          mahalle,
-                          date.toString("dd/MM/yyyy").toStdString()))->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+                        mahalle,
+                        date.toString("dd/MM/yyyy").toStdString()))->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
             }
 
         } catch (mongocxx::exception &e) {
@@ -3693,7 +3691,7 @@ Body::ProjectPanel::ProjectPanel(mongocxx::database *_db)
 {
 
     setAttributeValue(Style::style,Style::background::color::color(Style::color::Grey::Black));
-//    setHeight(650);
+    //    setHeight(650);
 
 
     mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
@@ -3799,13 +3797,13 @@ void Body::ProjectPanel::setCurrentProject()
             blackLine->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
             blackLine->setAttributeValue(Style::style,Style::Border::border("0px solid "+Style::color::Green::DarkOliveGreen)+
                                          Style::background::color::color(Style::color::Grey::LightGray));
-//            blackLine->setHeight(550);
+            //            blackLine->setHeight(550);
             blackLine->addStyleClass("blackLine");
 
             auto layout = blackLine->setLayout(cpp14::make_unique<WVBoxLayout>());
 
             auto imgContainer = layout->addWidget(cpp14::make_unique<WContainerWidget>());
-//            imgContainer->setAttributeValue(Style::style,Style::background::url("img/2.jpg"));
+            //            imgContainer->setAttributeValue(Style::style,Style::background::url("img/2.jpg"));
             imgContainer->addStyleClass("ProjectSliderButtonBackground");
             auto _layout = imgContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
 
@@ -3893,25 +3891,25 @@ void Body::ProjectPanel::setCurrentProject()
 
 
 
-//                auto TextArea = imgRow->addWidget(cpp14::make_unique<WContainerWidget>());
-//                TextArea->addStyleClass("ProjectIMGSlideText");
-//                auto textTitle = TextArea->addWidget(cpp14::make_unique<WText>(pathList.at(SubCurrentIndex).text));
-//                textTitle->setText(WString("{1}/{2} - ").arg(SubCurrentIndex).arg(pathList.size()-1).toUTF8()+pathList.at(SubCurrentIndex).text);
+                //                auto TextArea = imgRow->addWidget(cpp14::make_unique<WContainerWidget>());
+                //                TextArea->addStyleClass("ProjectIMGSlideText");
+                //                auto textTitle = TextArea->addWidget(cpp14::make_unique<WText>(pathList.at(SubCurrentIndex).text));
+                //                textTitle->setText(WString("{1}/{2} - ").arg(SubCurrentIndex).arg(pathList.size()-1).toUTF8()+pathList.at(SubCurrentIndex).text);
 
 
-//                imgRow->clicked().connect([=](){
-//                    SubCurrentIndex++;
-//                    if( SubCurrentIndex >= pathList.size() )
-//                    {
-//                        SubCurrentIndex = 0;
-//                    }
-//                    sliderStackedWidget->setCurrentIndex(SubCurrentIndex);
-//                    textTitle->setText(pathList.at(SubCurrentIndex).text);
-//                    std::cout << "INDEX After : " << SubCurrentIndex << std::endl;
-//                    std::cout << "Text: " << pathList.at(SubCurrentIndex).text << std::endl;
-//                    std::cout << "Size: " << pathList.size() << std::endl;
-//                    std::cout << "Stack Size: " << sliderStackedWidget->count() << std::endl;
-//                });
+                //                imgRow->clicked().connect([=](){
+                //                    SubCurrentIndex++;
+                //                    if( SubCurrentIndex >= pathList.size() )
+                //                    {
+                //                        SubCurrentIndex = 0;
+                //                    }
+                //                    sliderStackedWidget->setCurrentIndex(SubCurrentIndex);
+                //                    textTitle->setText(pathList.at(SubCurrentIndex).text);
+                //                    std::cout << "INDEX After : " << SubCurrentIndex << std::endl;
+                //                    std::cout << "Text: " << pathList.at(SubCurrentIndex).text << std::endl;
+                //                    std::cout << "Size: " << pathList.size() << std::endl;
+                //                    std::cout << "Stack Size: " << sliderStackedWidget->count() << std::endl;
+                //                });
 
 
                 NextBtn->clicked().connect([=](){
@@ -3923,8 +3921,8 @@ void Body::ProjectPanel::setCurrentProject()
                     }
                     sliderStackedWidget->setCurrentIndex(SubCurrentIndex,WAnimation(AnimationEffect::Fade,TimingFunction::EaseInOut,250));
                     // Proje Slide Alt Yazı Tanım
-//                    textTitle->setText(pathList.at(SubCurrentIndex).text);
-//                    textTitle->setText(WString("{1}/{2} - ").arg(SubCurrentIndex).arg(pathList.size()-1).toUTF8()+pathList.at(SubCurrentIndex).text);
+                    //                    textTitle->setText(pathList.at(SubCurrentIndex).text);
+                    //                    textTitle->setText(WString("{1}/{2} - ").arg(SubCurrentIndex).arg(pathList.size()-1).toUTF8()+pathList.at(SubCurrentIndex).text);
 
                 });
 
@@ -3937,7 +3935,7 @@ void Body::ProjectPanel::setCurrentProject()
                     sliderStackedWidget->setCurrentIndex(SubCurrentIndex,WAnimation(AnimationEffect::Fade,TimingFunction::EaseInOut,250));
 
                     // Proje Slide Alt Yazı Tanım
-//                    textTitle->setText(WString("{1}/{2} - ").arg(SubCurrentIndex).arg(pathList.size()-1).toUTF8()+pathList.at(SubCurrentIndex).text);
+                    //                    textTitle->setText(WString("{1}/{2} - ").arg(SubCurrentIndex).arg(pathList.size()-1).toUTF8()+pathList.at(SubCurrentIndex).text);
                 });
 
 
@@ -3950,7 +3948,7 @@ void Body::ProjectPanel::setCurrentProject()
             blackLine->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
             blackLine->setAttributeValue(Style::style,Style::Border::border("0px solid "+Style::color::Green::DarkOliveGreen)+
                                          Style::background::color::color(Style::color::Grey::LightGray));
-//            blackLine->setHeight(550);
+            //            blackLine->setHeight(550);
             blackLine->addStyleClass("blackLine");
             auto layout = blackLine->setLayout(cpp14::make_unique<WVBoxLayout>());
 
@@ -4030,7 +4028,7 @@ void Body::ProjectPanel::refreshList()
                 header.title = doc[SBLDKeys::Projeler::title].get_utf8().value.to_string().c_str();
                 header.img = path;
 
-//                std::cout << "IMGPATH: " << path;
+                //                std::cout << "IMGPATH: " << path;
 
                 list.push_back(header);
 
@@ -4103,15 +4101,15 @@ Body::Partners::Partners()
 
         std::unique_ptr<Wt::WAnchor> anchor =
                 Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                "Serik Belediye Spor");
+                                                    "Serik Belediye Spor");
 
-//        auto text = layout->addWidget(cpp14::make_unique<WText>("Serik Belediye Spor"));
+        //        auto text = layout->addWidget(cpp14::make_unique<WText>("Serik Belediye Spor"));
         auto text = layout->addWidget(std::move(anchor));
         text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::White));
-//        container->clicked().connect([=](){
-//            this->showMessage("Bilgi","www.serikbelediyespor.com Şuanda Yapım Aşamasında. Lütfen Daha Sonra Tekrar Deneyin");
-//        });
-//        container->decorationStyle().setCursor(Cursor::PointingHand);
+        //        container->clicked().connect([=](){
+        //            this->showMessage("Bilgi","www.serikbelediyespor.com Şuanda Yapım Aşamasında. Lütfen Daha Sonra Tekrar Deneyin");
+        //        });
+        //        container->decorationStyle().setCursor(Cursor::PointingHand);
     }
 
 
@@ -4125,15 +4123,15 @@ Body::Partners::Partners()
         img->setAttributeValue(Style::style,Style::background::url("icon/2.png")+Style::background::size::cover);
         img->setHeight(121);
         img->setWidth(140);
-//        auto text = layout->addWidget(cpp14::make_unique<WText>("Serik Genç Fikir"));
+        //        auto text = layout->addWidget(cpp14::make_unique<WText>("Serik Genç Fikir"));
         Wt::WLink link = Wt::WLink("http://www.serikgencfikir.com/");
         link.setTarget(Wt::LinkTarget::NewWindow);
 
         std::unique_ptr<Wt::WAnchor> anchor =
                 Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                "Serik Genç Fikir");
+                                                    "Serik Genç Fikir");
 
-//        auto text = layout->addWidget(cpp14::make_unique<WText>("Serik Belediye Spor"));
+        //        auto text = layout->addWidget(cpp14::make_unique<WText>("Serik Belediye Spor"));
         auto text = layout->addWidget(std::move(anchor));
         text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::White));
 
@@ -4148,15 +4146,15 @@ Body::Partners::Partners()
         img->setAttributeValue(Style::style,Style::background::url("icon/3.png")+Style::background::size::cover);
         img->setHeight(121);
         img->setWidth(140);
-//        auto text = layout->addWidget(cpp14::make_unique<WText>("MOGAT"));
+        //        auto text = layout->addWidget(cpp14::make_unique<WText>("MOGAT"));
         Wt::WLink link = Wt::WLink("http://www.mogat.eu/");
         link.setTarget(Wt::LinkTarget::NewWindow);
 
         std::unique_ptr<Wt::WAnchor> anchor =
                 Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                "MOGAT");
+                                                    "MOGAT");
 
-//        auto text = layout->addWidget(cpp14::make_unique<WText>("Serik Belediye Spor"));
+        //        auto text = layout->addWidget(cpp14::make_unique<WText>("Serik Belediye Spor"));
         auto text = layout->addWidget(std::move(anchor));
         text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::White));
     }
@@ -4171,11 +4169,11 @@ void Body::Partners::showMessage(std::string title, std::string msg)
                  msg,
                  Wt::Icon::Information, Wt::StandardButton::Ok));
 
-        messageBox->buttonClicked().connect([=] {
-            this->removeChild(messageBox);
-        });
+    messageBox->buttonClicked().connect([=] {
+        this->removeChild(messageBox);
+    });
 
-        messageBox->show();
+    messageBox->show();
 }
 
 Body::Iletisim::Iletisim()
@@ -4186,13 +4184,14 @@ Body::Iletisim::Iletisim()
 
     auto mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
     mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
+    mMainContainer->setMargin(90,Side::Top);
 
     auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     row->addStyleClass(Bootstrap::Grid::row);
 
     {
         auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_12);
+        container->addStyleClass(Bootstrap::Grid::Large::col_lg_4+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_12);
 
         auto layout = container->setLayout(cpp14::make_unique<WHBoxLayout>());
         auto img = layout->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -4218,7 +4217,7 @@ Body::Iletisim::Iletisim()
 
     {
         auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_12);
+        container->addStyleClass(Bootstrap::Grid::Large::col_lg_4+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_12);
 
         auto layout = container->setLayout(cpp14::make_unique<WHBoxLayout>());
         auto img = layout->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -4252,7 +4251,7 @@ Body::Iletisim::Iletisim()
 
     {
         auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_12);
+        container->addStyleClass(Bootstrap::Grid::Large::col_lg_4+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_12);
 
         auto layout = container->setLayout(cpp14::make_unique<WHBoxLayout>());
         auto img = layout->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -4282,7 +4281,7 @@ Body::Iletisim::Iletisim()
         });
     }
 
-    {
+    if( 0 ){ //  Disabled Facebook and Twitter
         auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_12);
 
@@ -4328,16 +4327,16 @@ Body::Iletisim::Iletisim()
             text1->decorationStyle().setCursor(Cursor::PointingHand);
         }
 
-//        // YOUTUBE
-//        {
-//            auto text1 = textLayout->addWidget(cpp14::make_unique<WText>("Y"),0,AlignmentFlag::Center);
-//            text1->setAttributeValue(Style::style,Style::Border::border("2px solid AntiqueWhite")+
-//                                     Style::font::size::s24px+Style::font::weight::bold+
-//                                     Style::color::color(Style::color::White::AntiqueWhite));
-//            text1->setMaximumSize(40,40);
-//            text1->setMinimumSize(40,40);
-//            text1->decorationStyle().setCursor(Cursor::PointingHand);
-//        }
+        //        // YOUTUBE
+        //        {
+        //            auto text1 = textLayout->addWidget(cpp14::make_unique<WText>("Y"),0,AlignmentFlag::Center);
+        //            text1->setAttributeValue(Style::style,Style::Border::border("2px solid AntiqueWhite")+
+        //                                     Style::font::size::s24px+Style::font::weight::bold+
+        //                                     Style::color::color(Style::color::White::AntiqueWhite));
+        //            text1->setMaximumSize(40,40);
+        //            text1->setMinimumSize(40,40);
+        //            text1->decorationStyle().setCursor(Cursor::PointingHand);
+        //        }
     }
 
 }
@@ -4357,11 +4356,11 @@ void Body::Iletisim::showMessage(std::string title, std::string msg)
                  msg,
                  Wt::Icon::Information, Wt::StandardButton::Ok));
 
-        messageBox->buttonClicked().connect([=] {
-            this->removeChild(messageBox);
-        });
+    messageBox->buttonClicked().connect([=] {
+        this->removeChild(messageBox);
+    });
 
-        messageBox->show();
+    messageBox->show();
 }
 
 Body::IstatistikAnket::IstatistikAnket()
@@ -4380,10 +4379,11 @@ Body::Meclis::Meclis(mongocxx::database *_db)
 
     auto mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
     mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
-//    mMainContainer->setAttributeValue(Style::style,Style::Border::border("2px solid red"));
+    //    mMainContainer->setAttributeValue(Style::style,Style::Border::border("2px solid red"));
 
+    mMainContainer->setMargin(90,Side::Top);
 
-//    mMainContainer->clear();
+    //    mMainContainer->clear();
 
     auto detailContainer = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     detailContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
@@ -4396,172 +4396,172 @@ Body::Meclis::Meclis(mongocxx::database *_db)
     container->setMaximumSize(1250,WLength::Auto);
     container->setPadding(0,AllSides);
 
-        {
-            std::string path = "img/baskanBackGround.JPG";
+    {
+        std::string path = "img/baskanBackGround.JPG";
 
-            auto img = container->addWidget(cpp14::make_unique<WContainerWidget>());
-            img->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+        auto img = container->addWidget(cpp14::make_unique<WContainerWidget>());
+        img->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
 
-            img->setAttributeValue(Style::style,Style::background::url(path)+Style::background::size::cover+Style::background::repeat::norepeat+Style::background::position::center_center);
-            img->setHeight(150);
-            img->setPadding(0,AllSides);
+        img->setAttributeValue(Style::style,Style::background::url(path)+Style::background::size::cover+Style::background::repeat::norepeat+Style::background::position::center_center);
+        img->setHeight(150);
+        img->setPadding(0,AllSides);
 
-            auto gradientContainer = img->addWidget(cpp14::make_unique<WContainerWidget>());
-            gradientContainer->setHeight(150);
-            gradientContainer->addStyleClass("SliderDetailTextBackground");
-            auto layout = gradientContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
-            layout->addStretch(1);
-            auto serik = layout->addWidget(cpp14::make_unique<WText>("Meclis Kararları"),0,AlignmentFlag::Bottom|AlignmentFlag::Center);
-            serik->setAttributeValue(Style::style,Style::font::size::s36px+Style::color::color(Style::color::White::AliceBlue));
+        auto gradientContainer = img->addWidget(cpp14::make_unique<WContainerWidget>());
+        gradientContainer->setHeight(150);
+        gradientContainer->addStyleClass("SliderDetailTextBackground");
+        auto layout = gradientContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
+        layout->addStretch(1);
+        auto serik = layout->addWidget(cpp14::make_unique<WText>("Meclis Kararları"),0,AlignmentFlag::Bottom|AlignmentFlag::Center);
+        serik->setAttributeValue(Style::style,Style::font::size::s36px+Style::color::color(Style::color::White::AliceBlue));
+    }
+
+
+    {
+        auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
+        _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+        auto _layout = _container->setLayout(cpp14::make_unique<WHBoxLayout>());
+        _layout->addWidget(cpp14::make_unique<WPushButton>("Geri"),0,AlignmentFlag::Left)->clicked().connect([=](){
+            this->_clickBack.emit(NoClass());
+        });
+        _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
+                                      Style::background::color::color(Style::color::Grey::Gainsboro));
+    }
+
+
+
+
+    {
+        auto ContentContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
+        ContentContainer->addStyleClass(Bootstrap::Grid::container_fluid);
+        auto row = ContentContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+        row->addStyleClass(Bootstrap::Grid::row);
+
+        auto SelectContainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
+        SelectContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_2);
+        //            SelectContainer->setHeight(250);
+        SelectContainer->setAttributeValue(Style::style,Style::Border::border("1px solid gray"));
+
+        pdfContainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
+        pdfContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_10);
+        //            pdfContainer->setAttributeValue(Style::style,Style::Border::border("1px solid orange"));
+        //            pdfContainer->setHeight(250);
+
+        auto yilContainer = SelectContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+        //            yilContainer->setAttributeValue(Style::style,Style::Border::border("2px solid gray"));
+
+
+
+        auto table = cpp14::make_unique<WTable>();
+        auto table_ = table.get();
+        table_->setHeaderCount(1);
+
+        table_->elementAt(0, 0)->addWidget(cpp14::make_unique<WText>("Yıl Seçimi"));
+
+        table_->addStyleClass("table form-inline");
+        yilContainer->addWidget(std::move(table));
+
+
+
+        /************************************************************/
+        auto ayContainer = SelectContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+        //            yilContainer->setAttributeValue(Style::style,Style::Border::border("2px solid green"));
+
+        auto tableay = cpp14::make_unique<WTable>();
+        auto table_ay = tableay.get();
+        table_ay->setHeaderCount(1);
+
+        table_ay->elementAt(0, 0)->addWidget(cpp14::make_unique<WText>("Ay Seçimi"));
+        table_ay->addStyleClass("table form-inline");
+        ayContainer->addWidget(std::move(tableay));
+
+
+
+        auto filter = document{};
+
+        try {
+            filter.append(kvp(SBLDKeys::Meclis::online,true));
+        } catch (bsoncxx::exception &e) {
+            container->addWidget(cpp14::make_unique<WText>(WString("Error: {1}").arg(e.what())));
+            return;
         }
 
+        mongocxx::options::find findOption;
 
-        {
-            auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
-            _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-            auto _layout = _container->setLayout(cpp14::make_unique<WHBoxLayout>());
-            _layout->addWidget(cpp14::make_unique<WPushButton>("Geri"),0,AlignmentFlag::Left)->clicked().connect([=](){
-                    this->_clickBack.emit(NoClass());
-            });
-            _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                         Style::background::color::color(Style::color::Grey::Gainsboro));
+        auto projectView = document{};
+        try {
+            projectView.append(kvp(SBLDKeys::Meclis::yil,true));
+            projectView.append(kvp(SBLDKeys::Meclis::ay,true));
+            projectView.append(kvp(SBLDKeys::Meclis::oid,true));
+        } catch (bsoncxx::exception &e) {
+            std::cout << "ERROR: " << e.what() << std::endl;
         }
+        findOption.projection(projectView.view());
+
+        auto collection = db->collection(SBLDKeys::Meclis::collection);
 
 
 
-
-        {
-            auto ContentContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
-            ContentContainer->addStyleClass(Bootstrap::Grid::container_fluid);
-            auto row = ContentContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            row->addStyleClass(Bootstrap::Grid::row);
-
-            auto SelectContainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
-            SelectContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_2);
-//            SelectContainer->setHeight(250);
-            SelectContainer->setAttributeValue(Style::style,Style::Border::border("1px solid gray"));
-
-            pdfContainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
-            pdfContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_10);
-//            pdfContainer->setAttributeValue(Style::style,Style::Border::border("1px solid orange"));
-//            pdfContainer->setHeight(250);
-
-            auto yilContainer = SelectContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//            yilContainer->setAttributeValue(Style::style,Style::Border::border("2px solid gray"));
+        try {
+            auto cursor = collection.find(filter.view());
 
 
 
-            auto table = cpp14::make_unique<WTable>();
-            auto table_ = table.get();
-            table_->setHeaderCount(1);
+            QStringList strList;
+            list.clear();
+            for( auto doc : cursor )
+            {
+                strList.append(QString::number(doc[SBLDKeys::Meclis::yil].get_double().value));
 
-            table_->elementAt(0, 0)->addWidget(cpp14::make_unique<WText>("Yıl Seçimi"));
-
-            table_->addStyleClass("table form-inline");
-            yilContainer->addWidget(std::move(table));
-
-
-
-            /************************************************************/
-            auto ayContainer = SelectContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//            yilContainer->setAttributeValue(Style::style,Style::Border::border("2px solid green"));
-
-            auto tableay = cpp14::make_unique<WTable>();
-            auto table_ay = tableay.get();
-            table_ay->setHeaderCount(1);
-
-            table_ay->elementAt(0, 0)->addWidget(cpp14::make_unique<WText>("Ay Seçimi"));
-            table_ay->addStyleClass("table form-inline");
-            ayContainer->addWidget(std::move(tableay));
-
-
-
-            auto filter = document{};
-
-            try {
-                filter.append(kvp(SBLDKeys::Meclis::online,true));
-            } catch (bsoncxx::exception &e) {
-                container->addWidget(cpp14::make_unique<WText>(WString("Error: {1}").arg(e.what())));
-                return;
+                MeclisItem item;
+                item.oid = doc[SBLDKeys::Meclis::oid].get_oid().value.to_string();
+                item.ay = doc[SBLDKeys::Meclis::ay].get_utf8().value.to_string();
+                item.yil = static_cast<int>(doc[SBLDKeys::Meclis::yil].get_double().value);
+                list.push_back(item);
             }
 
-            mongocxx::options::find findOption;
-
-            auto projectView = document{};
-            try {
-                projectView.append(kvp(SBLDKeys::Meclis::yil,true));
-                projectView.append(kvp(SBLDKeys::Meclis::ay,true));
-                projectView.append(kvp(SBLDKeys::Meclis::oid,true));
-            } catch (bsoncxx::exception &e) {
-                std::cout << "ERROR: " << e.what() << std::endl;
-            }
-            findOption.projection(projectView.view());
-
-            auto collection = db->collection(SBLDKeys::Meclis::collection);
-
-
-
-            try {
-                auto cursor = collection.find(filter.view());
-
-
-
-                QStringList strList;
-                list.clear();
-                for( auto doc : cursor )
-                {
-                    strList.append(QString::number(doc[SBLDKeys::Meclis::yil].get_double().value));
-
-                    MeclisItem item;
-                    item.oid = doc[SBLDKeys::Meclis::oid].get_oid().value.to_string();
-                    item.ay = doc[SBLDKeys::Meclis::ay].get_utf8().value.to_string();
-                    item.yil = static_cast<int>(doc[SBLDKeys::Meclis::yil].get_double().value);
-                    list.push_back(item);
-                }
-
-                strList.removeDuplicates();
-                int row = 1;
-                for( QString str : strList )
-                {
-                    auto yilText = cpp14::make_unique<WText>(str.toStdString().c_str());
-                    yilText->decorationStyle().setCursor(Cursor::PointingHand);
-                    yilText->clicked().connect([=](){
-                        int srow = 1;
-                        table_ay->clear();
-                        table_ay->elementAt(0, 0)->addWidget(cpp14::make_unique<WText>("Ay Seçimi"));
-                        for( auto item : list )
+            strList.removeDuplicates();
+            int row = 1;
+            for( QString str : strList )
+            {
+                auto yilText = cpp14::make_unique<WText>(str.toStdString().c_str());
+                yilText->decorationStyle().setCursor(Cursor::PointingHand);
+                yilText->clicked().connect([=](){
+                    int srow = 1;
+                    table_ay->clear();
+                    table_ay->elementAt(0, 0)->addWidget(cpp14::make_unique<WText>("Ay Seçimi"));
+                    for( auto item : list )
+                    {
+                        if( item.yil == str.toInt() )
                         {
-                            if( item.yil == str.toInt() )
-                            {
-                                auto ayText = cpp14::make_unique<WText>(item.ay.c_str());
-                                ayText->decorationStyle().setCursor(Cursor::PointingHand);
-                                ayText->clicked().connect([=](){
-                                    this->setKararlar(item.oid);
-                                });
-                                table_ay->elementAt(srow++, 0)->addWidget(std::move(ayText));
-                            }
+                            auto ayText = cpp14::make_unique<WText>(item.ay.c_str());
+                            ayText->decorationStyle().setCursor(Cursor::PointingHand);
+                            ayText->clicked().connect([=](){
+                                this->setKararlar(item.oid);
+                            });
+                            table_ay->elementAt(srow++, 0)->addWidget(std::move(ayText));
                         }
-                    });
-                    table_->elementAt(row++, 0)->addWidget(std::move(yilText));
-                }
-
-            } catch (mongocxx::exception &e) {
-                mMainContainer->addWidget(cpp14::make_unique<WText>(WString("Error: {1}").arg(e.what())));
-                return;
+                    }
+                });
+                table_->elementAt(row++, 0)->addWidget(std::move(yilText));
             }
+
+        } catch (mongocxx::exception &e) {
+            mMainContainer->addWidget(cpp14::make_unique<WText>(WString("Error: {1}").arg(e.what())));
+            return;
         }
+    }
 
 
 
-        {
-            auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
-            _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-            auto _layout = _container->setLayout(cpp14::make_unique<WHBoxLayout>());
-            _layout->addWidget(cpp14::make_unique<WPushButton>("Geri"),0,AlignmentFlag::Left)->clicked().connect([=](){
-                    this->_clickBack.emit(NoClass());
-            });
-            _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                         Style::background::color::color(Style::color::Grey::Gainsboro));
+    {
+        auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
+        _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+        auto _layout = _container->setLayout(cpp14::make_unique<WHBoxLayout>());
+        _layout->addWidget(cpp14::make_unique<WPushButton>("Geri"),0,AlignmentFlag::Left)->clicked().connect([=](){
+            this->_clickBack.emit(NoClass());
+        });
+        _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
+                                      Style::background::color::color(Style::color::Grey::Gainsboro));
     }
 }
 
@@ -4581,7 +4581,7 @@ void Body::Meclis::setKararlar(std::string oid)
         std::cout << "Error: " << e.what() << std::endl;
     }
 
-//    std::cout << bsoncxx::to_json(filter.view()) << std::endl;
+    //    std::cout << bsoncxx::to_json(filter.view()) << std::endl;
 
 
     pdfContainer->clear();
@@ -4660,7 +4660,7 @@ Body::Proje::Proje(mongocxx::database *_db)
     mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
     mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
 
-
+    mMainContainer->setMargin(90,Side::Top);
 
     auto detailContainer = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     detailContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
@@ -4701,24 +4701,24 @@ Body::Proje::Proje(mongocxx::database *_db)
         auto _layout = _container->setLayout(cpp14::make_unique<WHBoxLayout>());
         auto anaSayfaBtn = _layout->addWidget(cpp14::make_unique<WPushButton>("Ana Sayfa"),0,AlignmentFlag::Left);
         anaSayfaBtn->clicked().connect([=](){
-                 this->_ClickBack.emit(NoClass());
-         });
+            this->_ClickBack.emit(NoClass());
+        });
         anaSayfaBtn->addStyleClass(Bootstrap::Button::Primary);
-         auto projeListbtn = _layout->addWidget(cpp14::make_unique<WPushButton>("Projeler"),0,AlignmentFlag::Left);
-         projeListbtn->clicked().connect([=](){
-                 this->initPage();
-         });
-         projeListbtn->addStyleClass(Bootstrap::Button::info);
+        auto projeListbtn = _layout->addWidget(cpp14::make_unique<WPushButton>("Projeler"),0,AlignmentFlag::Left);
+        projeListbtn->clicked().connect([=](){
+            this->initPage();
+        });
+        projeListbtn->addStyleClass(Bootstrap::Button::info);
 
-//         auto istatisticbtn = _layout->addWidget(cpp14::make_unique<WPushButton>("İstatistik"),0,AlignmentFlag::Left);
-//         istatisticbtn->clicked().connect([=](){
-//                 this->initIstatistic();
-//         });
-//         istatisticbtn->addStyleClass(Bootstrap::Button::Warning);
+        //         auto istatisticbtn = _layout->addWidget(cpp14::make_unique<WPushButton>("İstatistik"),0,AlignmentFlag::Left);
+        //         istatisticbtn->clicked().connect([=](){
+        //                 this->initIstatistic();
+        //         });
+        //         istatisticbtn->addStyleClass(Bootstrap::Button::Warning);
 
         _layout->addStretch(1);
         _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                     Style::background::color::color(Style::color::Grey::Gainsboro));
+                                      Style::background::color::color(Style::color::Grey::Gainsboro));
     }
 
 
@@ -4744,26 +4744,26 @@ Body::Proje::Proje(mongocxx::database *_db)
         auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
         _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
         auto _layout = _container->setLayout(cpp14::make_unique<WHBoxLayout>());
-       auto anaSayfaBtn = _layout->addWidget(cpp14::make_unique<WPushButton>("Ana Sayfa"),0,AlignmentFlag::Left);
-       anaSayfaBtn->clicked().connect([=](){
-                this->_ClickBack.emit(NoClass());
+        auto anaSayfaBtn = _layout->addWidget(cpp14::make_unique<WPushButton>("Ana Sayfa"),0,AlignmentFlag::Left);
+        anaSayfaBtn->clicked().connect([=](){
+            this->_ClickBack.emit(NoClass());
         });
-       anaSayfaBtn->addStyleClass(Bootstrap::Button::Primary);
+        anaSayfaBtn->addStyleClass(Bootstrap::Button::Primary);
         auto projeListbtn = _layout->addWidget(cpp14::make_unique<WPushButton>("Projeler"),0,AlignmentFlag::Left);
         projeListbtn->clicked().connect([=](){
-                this->initPage();
+            this->initPage();
         });
         projeListbtn->addStyleClass(Bootstrap::Button::info);
 
         auto istatisticbtn = _layout->addWidget(cpp14::make_unique<WPushButton>("İstatistik"),0,AlignmentFlag::Left);
         istatisticbtn->clicked().connect([=](){
-                this->initIstatistic();
+            this->initIstatistic();
         });
         istatisticbtn->addStyleClass(Bootstrap::Button::Warning);
 
         _layout->addStretch(1);
         _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                     Style::background::color::color(Style::color::Grey::Gainsboro));
+                                      Style::background::color::color(Style::color::Grey::Gainsboro));
     }
 }
 
@@ -5114,10 +5114,10 @@ void Body::Proje::initBirimlereGoreDagilim()
     table->setMargin(WLength::Auto, Side::Left | Side::Right);
     table->setSortingEnabled(true);
     table->setModel(model);
-//    table->setColumnWidth(1, 100);
+    //    table->setColumnWidth(1, 100);
     table->setRowHeight(28);
     table->setHeaderHeight(28);
-//    table->setWidth(150 + 100 + 14 + 2);
+    //    table->setWidth(150 + 100 + 14 + 2);
 
 
 
@@ -5125,7 +5125,7 @@ void Body::Proje::initBirimlereGoreDagilim()
      * Create the pie chart.
      */
     Chart::WPieChart *chart =
-        container->addWidget(cpp14::make_unique<Chart::WPieChart>());
+            container->addWidget(cpp14::make_unique<Chart::WPieChart>());
     chart->setModel(model);       // Set the model.
     chart->setLabelsColumn(0);    // Set the column that holds the labels.
     chart->setDataColumn(1);      // Set the column that holds the data.
@@ -5236,7 +5236,7 @@ void Body::Proje::initYillaraGoreDagilim()
      * Create the pie chart.
      */
     Chart::WPieChart *chart =
-        container->addWidget(cpp14::make_unique<Chart::WPieChart>());
+            container->addWidget(cpp14::make_unique<Chart::WPieChart>());
     chart->setModel(model);       // Set the model.
     chart->setLabelsColumn(0);    // Set the column that holds the labels.
     chart->setDataColumn(1);      // Set the column that holds the data.
@@ -5346,7 +5346,7 @@ void Body::Proje::initDurumaGoreDagilim()
      * Create the pie chart.
      */
     Chart::WPieChart *chart =
-        container->addWidget(cpp14::make_unique<Chart::WPieChart>());
+            container->addWidget(cpp14::make_unique<Chart::WPieChart>());
     chart->setModel(model);       // Set the model.
     chart->setLabelsColumn(0);    // Set the column that holds the labels.
     chart->setDataColumn(1);      // Set the column that holds the data.
@@ -5376,7 +5376,7 @@ void Body::Proje::initPage()
 
     auto rowContainer = contentContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     rowContainer->addStyleClass(Bootstrap::Grid::row);
-//    rowContainer->setMargin(5,AllSides);
+    //    rowContainer->setMargin(5,AllSides);
 
     auto filter = document{};
 
@@ -5534,8 +5534,8 @@ void Body::Proje::setselectedProject(std::string oid)
             {
                 auto text = rowCOntainer_->addWidget(cpp14::make_unique<WText>("<h4>Projeler</h4>"));
             }
-//            rowCOntainer_->setMaximumSize(WLength::Auto,950);
-//            rowCOntainer_->setOverflow(Overflow::Scroll);
+            //            rowCOntainer_->setMaximumSize(WLength::Auto,950);
+            //            rowCOntainer_->setOverflow(Overflow::Scroll);
 
             for( item _item : list )
             {
@@ -5625,12 +5625,12 @@ void Body::Proje::setselectedProject(std::string oid)
 
     }
 
-//    {
-//        auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
-//        auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-//        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Kategori {1}").arg(view[SBLDKeys::Calismalar::kategori].get_utf8().value.to_string().c_str())),0,AlignmentFlag::Middle);
-//        text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
-//    }
+    //    {
+    //        auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
+    //        auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
+    //        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Kategori {1}").arg(view[SBLDKeys::Calismalar::kategori].get_utf8().value.to_string().c_str())),0,AlignmentFlag::Middle);
+    //        text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
+    //    }
 
     {
         auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -5640,12 +5640,12 @@ void Body::Proje::setselectedProject(std::string oid)
 
     }
 
-//    {
-//        auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
-//        auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-//        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Tanım: <u>{1}</u>").arg(view[SBLDKeys::Calismalar::tanim].get_utf8().value.to_string().c_str())),0,AlignmentFlag::Middle);
-//        text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
-//    }
+    //    {
+    //        auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
+    //        auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
+    //        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Tanım: <u>{1}</u>").arg(view[SBLDKeys::Calismalar::tanim].get_utf8().value.to_string().c_str())),0,AlignmentFlag::Middle);
+    //        text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
+    //    }
 
 
     {
@@ -5655,17 +5655,17 @@ void Body::Proje::setselectedProject(std::string oid)
     }
 
 
-//    {
-//        auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
-//        container->addStyleClass(Bootstrap::Grid::row);
-//        container->setPadding(10,AllSides);
-//        for( auto mah : view[SBLDKeys::Calismalar::mahalleler].get_array().value )
-//        {
-//            auto text = container->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(mah.get_utf8().value.to_string().c_str())));
-//            text->addStyleClass(Bootstrap::Label::Warning+Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
-//            text->setAttributeValue(Style::style,Style::font::weight::bold+Style::font::size::s16px);
-//        }
-//    }
+    //    {
+    //        auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
+    //        container->addStyleClass(Bootstrap::Grid::row);
+    //        container->setPadding(10,AllSides);
+    //        for( auto mah : view[SBLDKeys::Calismalar::mahalleler].get_array().value )
+    //        {
+    //            auto text = container->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(mah.get_utf8().value.to_string().c_str())));
+    //            text->addStyleClass(Bootstrap::Label::Warning+Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
+    //            text->setAttributeValue(Style::style,Style::font::weight::bold+Style::font::size::s16px);
+    //        }
+    //    }
 
 
     {
@@ -5682,7 +5682,7 @@ void Body::Proje::setselectedProject(std::string oid)
 
 
 
-//        mMainContainer->setPadding(5,Side::Top);
+        //        mMainContainer->setPadding(5,Side::Top);
         auto asamaContainer = ProjectDetailContainer->addWidget(cpp14::make_unique<WContainerWidget>());
         auto bucket = this->getDB()->gridfs_bucket();
         try {
@@ -5711,7 +5711,7 @@ void Body::Proje::setselectedProject(std::string oid)
                 imgContainer->setAttributeValue(Style::style,Style::background::url(imgPath)+Style::background::size::contain+Style::background::position::center_center+"z-index:-1; ");
                 imgContainer->addStyleClass("CommanFilter");
                 imgContainer->setPositionScheme(PositionScheme::Absolute);
-//                imgContainer->setMargin(0,Side::Top|Side::Left);
+                //                imgContainer->setMargin(0,Side::Top|Side::Left);
                 imgContainer->setOffsets(350*topIndex,Side::Top); topIndex++;
                 slideCOntainer->addWidget(std::move(imgContainer));
 
@@ -5743,8 +5743,12 @@ Body::Haber::Haber(mongocxx::database *_db)
     skip = 0;
     count = 0;
 
+
     mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
     mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
+
+    mMainContainer->setMargin(90,Side::Top);
+
 
 
 
@@ -5785,12 +5789,12 @@ Body::Haber::Haber(mongocxx::database *_db)
         auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
         _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
         auto _layout = _container->setLayout(cpp14::make_unique<WHBoxLayout>());
-//        _layout->addWidget(cpp14::make_unique<WPushButton>("Geri"),0,AlignmentFlag::Left)->clicked().connect([=](){
-//                this->_ClickBack.emit(NoClass());
-////            this->initPage();
-//        });
+        //        _layout->addWidget(cpp14::make_unique<WPushButton>("Geri"),0,AlignmentFlag::Left)->clicked().connect([=](){
+        //                this->_ClickBack.emit(NoClass());
+        ////            this->initPage();
+        //        });
         _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                     Style::background::color::color(Style::color::Grey::Gainsboro));
+                                      Style::background::color::color(Style::color::Grey::Gainsboro));
     }
 
 
@@ -5828,7 +5832,7 @@ Body::Haber::Haber(mongocxx::database *_db)
             std::cout << "Error: " << e.what() << std::endl;
         }
 
-//        _layout->addWidget(cpp14::make_unique<WText>("Sayfalar"),0,AlignmentFlag::Left);
+        //        _layout->addWidget(cpp14::make_unique<WText>("Sayfalar"),0,AlignmentFlag::Left);
 
         for( std::int64_t i = 0 ; i <= count/limit ; i++ )
         {
@@ -5857,7 +5861,7 @@ Body::Haber::Haber(mongocxx::database *_db)
         _layout->addStretch(1);
 
         _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                     Style::background::color::color(Style::color::Grey::Gainsboro));
+                                      Style::background::color::color(Style::color::Grey::Gainsboro));
     }
 
 
@@ -5881,8 +5885,8 @@ void Body::Haber::initPage()
 
     auto rowContainer = contentContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     rowContainer->addStyleClass(Bootstrap::Grid::row);
-//    rowContainer->setContentAlignment(AlignmentFlag::Center);
-//    rowContainer->setAttributeValue(Style::style,Style::Border::border("1px solid red"));
+    //    rowContainer->setContentAlignment(AlignmentFlag::Center);
+    //    rowContainer->setAttributeValue(Style::style,Style::Border::border("1px solid red"));
 
 
     auto filter = document{};
@@ -5914,12 +5918,12 @@ void Body::Haber::initPage()
     auto collection = db->collection(SBLDKeys::Haberler::collection);
     auto bucket = db->gridfs_bucket();
 
-//    try {
-//        count = collection.count(filter.view());
-//    } catch (mongocxx::exception &e) {
-//        count = 0 ;
-//        std::cout << "Error: " << e.what() << std::endl;
-//    }
+    //    try {
+    //        count = collection.count(filter.view());
+    //    } catch (mongocxx::exception &e) {
+    //        count = 0 ;
+    //        std::cout << "Error: " << e.what() << std::endl;
+    //    }
 
 
     try {
@@ -5971,23 +5975,26 @@ void Body::Haber::setstatus(std::string e)
 
 void Body::Haber::addItem(WContainerWidget *widget, item _item)
 {
-    auto container = widget->addWidget(cpp14::make_unique<WContainerWidget>());
-    container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
-    container->setHeight(250);
-    container->setAttributeValue(Style::style,Style::Border::border("1px solid gray"));
-//    container->setMargin(5,AllSides);
+    auto _container = widget->addWidget(cpp14::make_unique<WContainerWidget>());
+    _container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
+    _container->setContentAlignment(AlignmentFlag::Center);
 
-    auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
+    auto thumpcontainer = _container->addWidget(cpp14::make_unique<WContainerWidget>());
+    thumpcontainer->setHeight(250);
+    thumpcontainer->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
+
+    auto layout = thumpcontainer->setLayout(cpp14::make_unique<WVBoxLayout>());
     auto img = layout->addWidget(cpp14::make_unique<WContainerWidget>(),1,AlignmentFlag::Justify);
     img->setAttributeValue(Style::style,Style::background::url(_item.iconPath)+Style::background::repeat::norepeat+Style::background::size::cover);
+    img->addStyleClass(Bootstrap::ImageShape::img_rounded);
 
 
     auto text = layout->addWidget(cpp14::make_unique<WText>(_item.title),0,AlignmentFlag::Bottom);
     text->setAttributeValue(Style::style,Style::font::size::s12px+Style::font::weight::bold);
-    container->decorationStyle().setCursor(Cursor::PointingHand);
+    thumpcontainer->decorationStyle().setCursor(Cursor::PointingHand);
 
-    container->clicked().connect([=](){
+    thumpcontainer->clicked().connect([=](){
         this->setNews(_item.oid);
     });
 }
@@ -5998,228 +6005,128 @@ void Body::Haber::setNews(std::string oid)
 
     mMainContainer->clear();
 
+    mMainContainer->setContentAlignment(AlignmentFlag::Center);
 
-    //    std::cout << "setNewsDetail " << std::endl;
-//        mMainContainer->clear();
-        mMainContainer->setContentAlignment(AlignmentFlag::Center);
+    auto container = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+    container->setPadding(0,AllSides);
 
-        auto container = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-    //    container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-        container->setPadding(0,AllSides);
-
-    //    auto layout = detailContainer->setLayout(cpp14::make_unique<WHBoxLayout>());
-    //    layout->setContentsMargins(0,0,0,0);
-    //    auto container = layout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Center);
-        container->setMaximumSize(1250,WLength::Auto);
-        container->setPadding(0,AllSides);
+    container->setMaximumSize(1250,WLength::Auto);
+    container->setPadding(0,AllSides);
 
 
 
 
-        auto filter = document{};
+    auto filter = document{};
 
 
-        try {
-            filter.append(kvp(SBLDKeys::Haberler::Yayinda,SBLDKeys::Haberler::Yayin::Yayinda));
-            filter.append(kvp(SBLDKeys::Haberler::oid,bsoncxx::oid{oid}));
+    try {
+        filter.append(kvp(SBLDKeys::Haberler::Yayinda,SBLDKeys::Haberler::Yayin::Yayinda));
+        filter.append(kvp(SBLDKeys::Haberler::oid,bsoncxx::oid{oid}));
 
-        } catch (bsoncxx::exception &e) {
-            container->addWidget(cpp14::make_unique<WText>(WString("Error: {1}").arg(e.what())));
+    } catch (bsoncxx::exception &e) {
+        container->addWidget(cpp14::make_unique<WText>(WString("Error: {1}").arg(e.what())));
+        return;
+    }
+
+
+    auto update = document{};
+    bool updateOperatorError = false;
+    try {
+        update.append(kvp("$inc",make_document(kvp(SBLDKeys::Haberler::OkunmaSayisi,bsoncxx::types::b_double{1}))));
+    } catch (bsoncxx::exception &e) {
+        updateOperatorError = true;
+    }
+
+
+
+    auto collection = db->collection(SBLDKeys::Haberler::collection);
+    auto bucket = db->gridfs_bucket();
+
+    try {
+        mongocxx::stdx::optional<bsoncxx::document::value> val = collection.find_one_and_update(filter.view(),update.view());
+        if( !val )
+        {
+            container->addWidget(cpp14::make_unique<WText>(WString("Empty Document")));
             return;
-        }
+        }else{
 
+            auto view = val.value().view();
 
-        auto update = document{};
-        bool updateOperatorError = false;
-        try {
-            update.append(kvp("$inc",make_document(kvp(SBLDKeys::Haberler::OkunmaSayisi,bsoncxx::types::b_double{1}))));
-        } catch (bsoncxx::exception &e) {
-            updateOperatorError = true;
-        }
-
-
-
-        auto collection = db->collection(SBLDKeys::Haberler::collection);
-        auto bucket = db->gridfs_bucket();
-
-        try {
-            mongocxx::stdx::optional<bsoncxx::document::value> val = collection.find_one_and_update(filter.view(),update.view());
-            if( !val )
             {
-                container->addWidget(cpp14::make_unique<WText>(WString("Empty Document")));
-                return;
-            }else{
+                auto img = container->addWidget(cpp14::make_unique<WContainerWidget>());
+                img->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+                std::string path = SBLDKeys::downloadifNotExist(&bucket,view[SBLDKeys::Haberler::icon].get_oid().value.to_string());
+                img->setHeight(150);
+                img->setPadding(0,AllSides);
 
-                auto view = val.value().view();
 
+                auto backimg = img->addWidget(cpp14::make_unique<WContainerWidget>());
+                backimg->setPositionScheme(PositionScheme::Absolute);
+                backimg->setHeight(WLength("100%"));
+                backimg->setWidth(WLength("100%"));
+
+
+
+                backimg->setAttributeValue(Style::style,Style::background::url(path)+Style::background::size::cover+Style::background::repeat::norepeat+Style::background::position::center_center+"z-index:  -99;");
+                backimg->addStyleClass("CommanFilter");
+
+
+                auto gradientContainer = img->addWidget(cpp14::make_unique<WContainerWidget>());
+                gradientContainer->setHeight(150);
+                gradientContainer->addStyleClass("SliderDetailTextBackground");
+                auto layout = gradientContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
+                layout->addStretch(1);
+                auto title = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Haberler::Baslik].get_utf8().value.to_string().c_str()),0,AlignmentFlag::Bottom|AlignmentFlag::Center);
+                title->setAttributeValue(Style::style,Style::font::size::s36px+Style::color::color(Style::color::White::AliceBlue));
+                title->addStyleClass("NewsMainTitle");
+                wApp->setInternalPath("/"+title->text().toUTF8(),false);
+            }
+
+            {
+                auto array = view[SBLDKeys::Haberler::fileOidList].get_array().value;
+                for( auto doc : array )
                 {
-                    auto img = container->addWidget(cpp14::make_unique<WContainerWidget>());
-                    img->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-                    std::string path = SBLDKeys::downloadifNotExist(&bucket,view[SBLDKeys::Haberler::icon].get_oid().value.to_string());
-
-    //                img->setAttributeValue(Style::style,Style::background::url(path)+Style::background::size::cover+Style::background::repeat::norepeat+Style::background::position::center_center);
-                    img->setHeight(150);
-                    img->setPadding(0,AllSides);
-
-
-                    auto backimg = img->addWidget(cpp14::make_unique<WContainerWidget>());
-                    backimg->setPositionScheme(PositionScheme::Absolute);
-                    backimg->setHeight(WLength("100%"));
-                    backimg->setWidth(WLength("100%"));
-
-
-
-                    backimg->setAttributeValue(Style::style,Style::background::url(path)+Style::background::size::cover+Style::background::repeat::norepeat+Style::background::position::center_center+"z-index:  -99;");
-                    backimg->addStyleClass("CommanFilter");
-
-
-                    auto gradientContainer = img->addWidget(cpp14::make_unique<WContainerWidget>());
-                    gradientContainer->setHeight(150);
-                    gradientContainer->addStyleClass("SliderDetailTextBackground");
-                    auto layout = gradientContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
-                    layout->addStretch(1);
-                    auto title = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Haberler::Baslik].get_utf8().value.to_string().c_str()),0,AlignmentFlag::Bottom|AlignmentFlag::Center);
-                    title->setAttributeValue(Style::style,Style::font::size::s36px+Style::color::color(Style::color::White::AliceBlue));
-                    title->addStyleClass("NewsMainTitle");
-                    wApp->setInternalPath("/"+title->text().toUTF8(),false);
+                    std::string path = SBLDKeys::downloadifNotExist(&bucket,doc.get_oid().value.to_string(),true);
                 }
-
-                {
-                    auto array = view[SBLDKeys::Haberler::fileOidList].get_array().value;
-                    for( auto doc : array )
-                    {
-                        std::string path = SBLDKeys::downloadifNotExist(&bucket,doc.get_oid().value.to_string(),true);
-    //                    std::cout << "Downloaded: " << path << std::endl;
-                    }
-                }
+            }
 
 
-                {
-                    auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
-                    _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-                    auto _layout = _container->setLayout(cpp14::make_unique<WHBoxLayout>());
-//                    auto back = _layout->addWidget(cpp14::make_unique<WPushButton>("Ana Sayfa"),0,AlignmentFlag::Left);
-//                    back->clicked().connect([=](){
-//                        this->_clickBack.emit(NoClass());
-//                    });
-//                    back->addStyleClass(Bootstrap::Button::Primary);
-                    _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                                 Style::background::color::color(Style::color::Grey::Gainsboro));
-                }
+            {
+                auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
+                _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+                auto _layout = _container->setLayout(cpp14::make_unique<WHBoxLayout>());
+                _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
+                                              Style::background::color::color(Style::color::Grey::Gainsboro));
+            }
 
 
-                {
-                    auto textContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
-                    textContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-                    textContainer->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
+            {
+                auto textContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
+                textContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+                textContainer->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
                                                  Style::background::color::color(Style::color::White::Snow));
 
 
-                    auto layout = textContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
-                    auto text = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Haberler::html].get_utf8().value.to_string().c_str(),TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
-                }
-
-
-                {
-                    auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
-                    _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-                    auto _layout = _container->setLayout(cpp14::make_unique<WHBoxLayout>());
-//                    _layout->addWidget(cpp14::make_unique<WPushButton>("Geri"),0,AlignmentFlag::Left)->clicked().connect([=](){
-//                        this->_clickBack.emit(NoClass());
-//                    });
-                    _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                                 Style::background::color::color(Style::color::Grey::Gainsboro));
-                }
-
+                auto layout = textContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
+                auto text = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Haberler::html].get_utf8().value.to_string().c_str(),TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
             }
-        } catch (mongocxx::exception &e) {
-            mMainContainer->addWidget(cpp14::make_unique<WText>(WString("Error: {1}").arg(e.what())));
-            return;
+
+
+            {
+                auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
+                _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+                auto _layout = _container->setLayout(cpp14::make_unique<WHBoxLayout>());
+
+                _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
+                                              Style::background::color::color(Style::color::Grey::Gainsboro));
+            }
+
         }
+    } catch (mongocxx::exception &e) {
+        mMainContainer->addWidget(cpp14::make_unique<WText>(WString("Error: {1}").arg(e.what())));
+        return;
+    }
 
-//    auto detailContainer = contentContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//    detailContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-//    detailContainer->setPadding(0,AllSides);
-
-//    auto layout = detailContainer->setLayout(cpp14::make_unique<WHBoxLayout>());
-//    layout->setContentsMargins(0,0,0,0);
-//    auto container = layout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Center);
-//    container->setMaximumSize(1250,WLength::Auto);
-//    container->setPadding(0,AllSides);
-
-//    auto filter = document{};
-
-
-//    try {
-//        filter.append(kvp(SBLDKeys::Haberler::Yayinda,SBLDKeys::Haberler::Yayin::Yayinda));
-//        filter.append(kvp(SBLDKeys::Haberler::oid,bsoncxx::oid{oid}));
-
-//    } catch (bsoncxx::exception &e) {
-//        container->addWidget(cpp14::make_unique<WText>(WString("Error: {1}").arg(e.what())));
-//        return;
-//    }
-
-//    auto collection = db->collection(SBLDKeys::Haberler::collection);
-//    auto bucket = db->gridfs_bucket();
-
-//    try {
-//        mongocxx::stdx::optional<bsoncxx::document::value> val = collection.find_one(filter.view());
-//        if( !val )
-//        {
-//            container->addWidget(cpp14::make_unique<WText>(WString("Empty Document")));
-//            return;
-//        }else{
-
-//            auto view = val.value().view();
-
-//            {
-//                auto img = container->addWidget(cpp14::make_unique<WContainerWidget>());
-//                img->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-//                std::string path = SBLDKeys::downloadifNotExist(&bucket,view[SBLDKeys::Haberler::icon].get_oid().value.to_string());
-
-//                std::cout << "OUT PATH: " << path << std::endl;
-//                img->setAttributeValue(Style::style,Style::background::url(path)+Style::background::size::cover+Style::background::repeat::norepeat+Style::background::position::center_center);
-//                img->setHeight(300);
-//                img->setPadding(0,AllSides);
-
-//                auto gradientContainer = img->addWidget(cpp14::make_unique<WContainerWidget>());
-//                gradientContainer->setHeight(300);
-//                gradientContainer->addStyleClass("SliderDetailTextBackground");
-//                auto layout = gradientContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
-//                layout->addStretch(1);
-//                auto title = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Haberler::Baslik].get_utf8().value.to_string().c_str()),0,AlignmentFlag::Bottom|AlignmentFlag::Center);
-//                title->setAttributeValue(Style::style,Style::font::size::s36px+Style::color::color(Style::color::White::AliceBlue));
-//            }
-
-//            {
-//                try {
-//                    auto array = view[SBLDKeys::Haberler::fileOidList].get_array().value;
-//                    for( auto doc : array )
-//                    {
-//                        SBLDKeys::downloadifNotExist(&bucket,doc.get_oid().value.to_string(),true);
-//                    }
-//                } catch (bsoncxx::exception &e) {
-//                    std::cout << "ERROR: " << e.what() << std::endl;
-//                }
-
-//            }
-
-//            {
-//                auto textContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
-//                textContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-//                textContainer->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-//                                             Style::background::color::color(Style::color::White::Snow));
-
-
-//                auto layout = textContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
-//                auto text = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Haberler::html].get_utf8().value.to_string().c_str(),TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
-//            }
-
-//        }
-//    } catch (mongocxx::exception &e) {
-//        mMainContainer->addWidget(cpp14::make_unique<WText>(WString("Error: {1}").arg(e.what())));
-//        return;
-//    }
 
 }
 
@@ -6234,6 +6141,7 @@ Body::Etkinlik::Etkinlik(mongocxx::database *_db)
     mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
     mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
 
+    mMainContainer->setMargin(90,Side::Top);
 
 
     auto detailContainer = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -6271,14 +6179,15 @@ Body::Etkinlik::Etkinlik(mongocxx::database *_db)
 
     {
         auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
+        _container->setId("_containerID");
         _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
         auto _layout = _container->setLayout(cpp14::make_unique<WHBoxLayout>());
-//        _layout->addWidget(cpp14::make_unique<WPushButton>("Geri"),0,AlignmentFlag::Left)->clicked().connect([=](){
-//                this->_ClickBack.emit(NoClass());
-////            this->initPage();
-//        });
+                _layout->addWidget(cpp14::make_unique<WPushButton>("Etkinlik Anasayfa"),0,AlignmentFlag::Left)->clicked().connect([=](){
+//                        this->_ClickBack.emit(NoClass());
+                    this->initPage();
+                });
         _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                     Style::background::color::color(Style::color::Grey::Gainsboro));
+                                      Style::background::color::color(Style::color::Grey::Gainsboro));
     }
 
 
@@ -6316,7 +6225,7 @@ Body::Etkinlik::Etkinlik(mongocxx::database *_db)
             std::cout << "Error: " << e.what() << std::endl;
         }
 
-//        _layout->addWidget(cpp14::make_unique<WText>("Sayfalar"),0,AlignmentFlag::Left);
+        //        _layout->addWidget(cpp14::make_unique<WText>("Sayfalar"),0,AlignmentFlag::Left);
 
         for( std::int64_t i = 0 ; i <= count/limit ; i++ )
         {
@@ -6345,7 +6254,7 @@ Body::Etkinlik::Etkinlik(mongocxx::database *_db)
         _layout->addStretch(1);
 
         _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                     Style::background::color::color(Style::color::Grey::Gainsboro));
+                                      Style::background::color::color(Style::color::Grey::Gainsboro));
     }
 }
 
@@ -6367,14 +6276,14 @@ void Body::Etkinlik::initPage()
 
     auto rowContainer = contentContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     rowContainer->addStyleClass(Bootstrap::Grid::row);
-//    rowContainer->setContentAlignment(AlignmentFlag::Center);
-//    rowContainer->setAttributeValue(Style::style,Style::Border::border("1px solid red"));
+    //    rowContainer->setContentAlignment(AlignmentFlag::Center);
+    //    rowContainer->setAttributeValue(Style::style,Style::Border::border("1px solid red"));
 
 
     auto filter = document{};
 
     try {
-//        filter.append(kvp(SBLDKeys::Haberler::Yayinda,SBLDKeys::Haberler::Yayin::Yayinda));
+        //        filter.append(kvp(SBLDKeys::Haberler::Yayinda,SBLDKeys::Haberler::Yayin::Yayinda));
     } catch (bsoncxx::exception &e) {
         setstatus(e);
         return;
@@ -6450,14 +6359,15 @@ void Body::Etkinlik::addItem(WContainerWidget *widget, item _item)
     auto container = widget->addWidget(cpp14::make_unique<WContainerWidget>());
     container->addStyleClass(Bootstrap::Grid::Large::col_lg_3);
     container->setHeight(250);
-    container->setAttributeValue(Style::style,Style::Border::border("1px solid gray"));
-//    container->setMargin(5,AllSides);
+
+    auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
+    _container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
     auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
 
     auto img = layout->addWidget(cpp14::make_unique<WContainerWidget>(),1,AlignmentFlag::Justify);
     img->setAttributeValue(Style::style,Style::background::url(_item.iconPath)+Style::background::repeat::norepeat+Style::background::size::cover);
-
+    img->addStyleClass(Bootstrap::ImageShape::img_rounded);
 
     auto text = layout->addWidget(cpp14::make_unique<WText>(_item.title),0,AlignmentFlag::Bottom);
     text->setAttributeValue(Style::style,Style::font::size::s12px+Style::font::weight::bold);
@@ -6487,7 +6397,7 @@ void Body::Etkinlik::setEtkinlik(std::string oid)
 
 
     try {
-//        filter.append(kvp(SBLDKeys::Haberler::Yayinda,SBLDKeys::Haberler::Yayin::Yayinda));
+        //        filter.append(kvp(SBLDKeys::Haberler::Yayinda,SBLDKeys::Haberler::Yayin::Yayinda));
         filter.append(kvp(SBLDKeys::Haberler::oid,bsoncxx::oid{oid}));
 
     } catch (bsoncxx::exception &e) {
@@ -6513,7 +6423,7 @@ void Body::Etkinlik::setEtkinlik(std::string oid)
                 img->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
                 std::string path = SBLDKeys::downloadifNotExist(&bucket,view[SBLDKeys::Etkinlik::iconFile].get_oid().value.to_string());
 
-//                std::cout << "OUT PATH: " << path << std::endl;
+                //                std::cout << "OUT PATH: " << path << std::endl;
                 img->setAttributeValue(Style::style,Style::background::url(path)+Style::background::size::cover+Style::background::repeat::norepeat+Style::background::position::center_center);
                 img->setHeight(300);
                 img->setPadding(0,AllSides);
@@ -6544,7 +6454,7 @@ void Body::Etkinlik::setEtkinlik(std::string oid)
                 auto textContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
                 textContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
                 textContainer->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                             Style::background::color::color(Style::color::White::Snow));
+                                                 Style::background::color::color(Style::color::White::Snow));
 
 
                 auto layout = textContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
@@ -6608,12 +6518,12 @@ Body::Video::Video(mongocxx::database *_db)
         auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
         _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
         auto _layout = _container->setLayout(cpp14::make_unique<WHBoxLayout>());
-//        _layout->addWidget(cpp14::make_unique<WPushButton>("Geri"),0,AlignmentFlag::Left)->clicked().connect([=](){
-//                this->_ClickBack.emit(NoClass());
-////            this->initPage();
-//        });
+        //        _layout->addWidget(cpp14::make_unique<WPushButton>("Geri"),0,AlignmentFlag::Left)->clicked().connect([=](){
+        //                this->_ClickBack.emit(NoClass());
+        ////            this->initPage();
+        //        });
         _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                     Style::background::color::color(Style::color::Grey::Gainsboro));
+                                      Style::background::color::color(Style::color::Grey::Gainsboro));
     }
 
 
@@ -6651,7 +6561,7 @@ Body::Video::Video(mongocxx::database *_db)
             std::cout << "Error: " << e.what() << std::endl;
         }
 
-//        _layout->addWidget(cpp14::make_unique<WText>("Sayfalar"),0,AlignmentFlag::Left);
+        //        _layout->addWidget(cpp14::make_unique<WText>("Sayfalar"),0,AlignmentFlag::Left);
 
         for( std::int64_t i = 0 ; i <= count/limit ; i++ )
         {
@@ -6680,7 +6590,7 @@ Body::Video::Video(mongocxx::database *_db)
         _layout->addStretch(1);
 
         _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                     Style::background::color::color(Style::color::Grey::Gainsboro));
+                                      Style::background::color::color(Style::color::Grey::Gainsboro));
     }
 }
 
@@ -6702,14 +6612,14 @@ void Body::Video::initPage()
 
     auto rowContainer = contentContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     rowContainer->addStyleClass(Bootstrap::Grid::row);
-//    rowContainer->setContentAlignment(AlignmentFlag::Center);
-//    rowContainer->setAttributeValue(Style::style,Style::Border::border("1px solid red"));
+    //    rowContainer->setContentAlignment(AlignmentFlag::Center);
+    //    rowContainer->setAttributeValue(Style::style,Style::Border::border("1px solid red"));
 
 
     auto filter = document{};
 
     try {
-//        filter.append(kvp(SBLDKeys::Haberler::Yayinda,SBLDKeys::Haberler::Yayin::Yayinda));
+        //        filter.append(kvp(SBLDKeys::Haberler::Yayinda,SBLDKeys::Haberler::Yayin::Yayinda));
     } catch (bsoncxx::exception &e) {
         setstatus(e);
         return;
@@ -6786,7 +6696,7 @@ void Body::Video::addItem(WContainerWidget *widget, item _item)
     container->addStyleClass(Bootstrap::Grid::Large::col_lg_3);
     container->setHeight(250);
     container->setAttributeValue(Style::style,Style::Border::border("1px solid gray"));
-//    container->setMargin(5,AllSides);
+    //    container->setMargin(5,AllSides);
 
     auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
 
@@ -6829,7 +6739,7 @@ void Body::Video::setVideo(std::string oid)
         container->addWidget(cpp14::make_unique<WText>(WString("Error: {1}").arg(e.what())));
         return;
     }
-//    std::cout << "Video Detail" << std::endl;
+    //    std::cout << "Video Detail" << std::endl;
 
 
     auto collection = db->collection(SBLDKeys::Video::collection);
@@ -6874,7 +6784,7 @@ void Body::Video::setVideo(std::string oid)
                     this->_ClickBack.emit(NoClass());
                 });
                 _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                             Style::background::color::color(Style::color::Grey::Gainsboro));
+                                              Style::background::color::color(Style::color::Grey::Gainsboro));
             }
 
 
@@ -6904,7 +6814,7 @@ void Body::Video::setVideo(std::string oid)
                 auto textContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
                 textContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
                 textContainer->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                             Style::background::color::color(Style::color::White::Snow));
+                                                 Style::background::color::color(Style::color::White::Snow));
 
                 auto layout = textContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
                 auto text = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Video::VideoExplain].get_utf8().value.to_string().c_str(),TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
@@ -6915,16 +6825,16 @@ void Body::Video::setVideo(std::string oid)
 
 
 
-//            {
-//                auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
-//                _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-//                auto _layout = _container->setLayout(cpp14::make_unique<WHBoxLayout>());
-//                _layout->addWidget(cpp14::make_unique<WPushButton>("Geri"),0,AlignmentFlag::Left)->clicked().connect([=](){
-//                    this->_ClickBack.emit(NoClass());
-//                });
-//                _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-//                                             Style::background::color::color(Style::color::Grey::Gainsboro));
-//            }
+            //            {
+            //                auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
+            //                _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+            //                auto _layout = _container->setLayout(cpp14::make_unique<WHBoxLayout>());
+            //                _layout->addWidget(cpp14::make_unique<WPushButton>("Geri"),0,AlignmentFlag::Left)->clicked().connect([=](){
+            //                    this->_ClickBack.emit(NoClass());
+            //                });
+            //                _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
+            //                                             Style::background::color::color(Style::color::Grey::Gainsboro));
+            //            }
 
 
         }
@@ -7016,7 +6926,7 @@ Body::Talep::Talep(mongocxx::database *_db)
                 auto text = layout->addWidget(cpp14::make_unique<WText>("Telefon"),3,0,AlignmentFlag::Middle);
                 mTelefon = layout->addWidget(cpp14::make_unique<WLineEdit>(),3,1);
                 mTelefon->setPlaceholderText("Cep Telefonu Numaranızı Giriniz(05321234567)");
-//                mTelefon->setInputMask("99999999999");
+                //                mTelefon->setInputMask("99999999999");
             }
 
         }
@@ -7108,11 +7018,11 @@ void Body::Talep::showMessage(std::string title, std::string msg)
                  msg,
                  Wt::Icon::Information, Wt::StandardButton::Ok));
 
-        messageBox->buttonClicked().connect([=] {
-            this->removeChild(messageBox);
-        });
+    messageBox->buttonClicked().connect([=] {
+        this->removeChild(messageBox);
+    });
 
-        messageBox->show();
+    messageBox->show();
 
 }
 
@@ -7288,14 +7198,14 @@ void Body::Talep::TCChanged()
 
             for( decltype (isim.size()) i = 1 ; i < isim.size()-1 ; i++ )
             {
-                    if( isim.at(i) == ' ' )
-                    {
-                        i += 2;
-                    }
-                    if( i < isim.size() )
-                    {
-                        isim.replace(i,1,"*");
-                    }
+                if( isim.at(i) == ' ' )
+                {
+                    i += 2;
+                }
+                if( i < isim.size() )
+                {
+                    isim.replace(i,1,"*");
+                }
             }
 
             mAdSoyad->setText(isim.c_str());
@@ -7312,14 +7222,14 @@ void Body::Talep::TCChanged()
 
             for( decltype (tel.size()) i = 3 ; i < tel.size()-3 ; i++ )
             {
-                    if( i == tel.size()/2-1 )
-                    {
-                        i += 1;
-                    }
-                    if( i < tel.size() )
-                    {
-                        tel.replace(i,1,"*");
-                    }
+                if( i == tel.size()/2-1 )
+                {
+                    i += 1;
+                }
+                if( i < tel.size() )
+                {
+                    tel.replace(i,1,"*");
+                }
             }
 
             mTelefon->setText(tel.c_str());
@@ -7399,33 +7309,35 @@ Body::BilgiEdin::BilgiEdin::BilgiEdin(mongocxx::database *_db)
 {
     mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
     mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
-    mMainContainer->setMaximumSize(1250,WLength::Auto);
-
+//    mMainContainer->setMaximumSize(1250,WLength::Auto);
+    mMainContainer->setContentAlignment(AlignmentFlag::Center);
+    mMainContainer->setMargin(90,Side::Top);
+    mMainContainer->setId("bilgiEdinmeid");
 
     mHeaderContainer = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     mHeaderContainer->setContentAlignment(AlignmentFlag::Center);
-    mHeaderContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+//    mHeaderContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
     mHeaderContainer->setPadding(0,AllSides);
+    mHeaderContainer->setMaximumSize(1250,WLength::Auto);
+
     this->initHeader();
 
-
-
-
     auto stackContainer = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-    stackContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+    stackContainer->setMaximumSize(1250,WLength::Auto);
+
+//    stackContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
     mContentContainer = stackContainer->addWidget(cpp14::make_unique<WStackedWidget>());
 
     auto controller = std::make_unique<Controller>();
     controller->clickedbasvuru().connect(this,&BilgiEdin::setsayfa);
     mContentContainer->insertWidget(ControlSayfa,std::move(controller));
 
-
     auto bilgiEdin = std::make_unique<Basvuru>(db);
+
     mContentContainer->insertWidget(BilgiEdinSayfa,std::move(bilgiEdin));
 
     auto stratejikPlan = std::make_unique<StratejikPlan>(db);
     mContentContainer->insertWidget(StratejikPlanSayfa,std::move(stratejikPlan));
-
 
     auto performans = std::make_unique<Performans>();
     mContentContainer->insertWidget(PerformansSayfa,std::move(performans));
@@ -7471,15 +7383,15 @@ void Body::BilgiEdin::BilgiEdin::setsayfa(Sayfa sayfa)
 
 
     switch (sayfa) {
-//    case Sayfa::MaliDurumBeklentiSayfa:
-//        this->showMessage("Bilgi","Mali Durum ve Beklentiler Raporu Kullanılabilir Değil");
-//        return;
+    //    case Sayfa::MaliDurumBeklentiSayfa:
+    //        this->showMessage("Bilgi","Mali Durum ve Beklentiler Raporu Kullanılabilir Değil");
+    //        return;
     case Sayfa::BagisSayfa:
         this->showMessage("Bilgi","Yardım ve Bağışlar Raporu Kullanılabilir Değil");
         return;
-//    case Sayfa::KamuHizmet:
-//        this->showMessage("Bilgi","Kamu Hizmetleri Standartları Sayfası Hazırlanma Aşamasında");
-//        return;
+        //    case Sayfa::KamuHizmet:
+        //        this->showMessage("Bilgi","Kamu Hizmetleri Standartları Sayfası Hazırlanma Aşamasında");
+        //        return;
     case Sayfa::SunulanHizmet:
         this->showMessage("Bilgi","Sunulan Hizmetler Tablosu Sayfası Hazırlanma Aşamasında");
         return;
@@ -7497,11 +7409,11 @@ void Body::BilgiEdin::BilgiEdin::showMessage(std::string title, std::string msg)
                  msg,
                  Wt::Icon::Information, Wt::StandardButton::Ok));
 
-        messageBox->buttonClicked().connect([=] {
-            this->removeChild(messageBox);
-        });
+    messageBox->buttonClicked().connect([=] {
+        this->removeChild(messageBox);
+    });
 
-        messageBox->show();
+    messageBox->show();
 }
 
 Body::BilgiEdin::Controller::Controller()
@@ -7537,7 +7449,6 @@ Signal<Body::BilgiEdin::BilgiEdin::Sayfa> &Body::BilgiEdin::Controller::clickedb
 void Body::BilgiEdin::Controller::addButton(std::string title, BilgiEdin::Sayfa sayfa)
 {
 
-
     auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
     container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
 
@@ -7545,6 +7456,7 @@ void Body::BilgiEdin::Controller::addButton(std::string title, BilgiEdin::Sayfa 
     backContainer->setHeight(150);
     backContainer->decorationStyle().setCursor(Cursor::PointingHand);
     backContainer->setMargin(10,Side::Top|Side::Bottom);
+    backContainer->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
     auto layout = backContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
 
@@ -7553,7 +7465,7 @@ void Body::BilgiEdin::Controller::addButton(std::string title, BilgiEdin::Sayfa 
     text->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::weight::bold+Style::font::size::s18px);
     layout->addStretch(1);
 
-    backContainer->setAttributeValue(Style::style,Style::background::color::color(Style::color::Purple::DarkSlateBlue));
+    backContainer->setAttributeValue(Style::style,Style::background::color::color(Style::color::Purple::MediumSlateBlue));
 
     container->clicked().connect([=](){
         _clickbasvuru_.emit(sayfa);
@@ -7569,11 +7481,11 @@ void Body::BilgiEdin::Controller::showMessage(std::string title, std::string msg
                  msg,
                  Wt::Icon::Information, Wt::StandardButton::Ok));
 
-        messageBox->buttonClicked().connect([=] {
-            this->removeChild(messageBox);
-        });
+    messageBox->buttonClicked().connect([=] {
+        this->removeChild(messageBox);
+    });
 
-        messageBox->show();
+    messageBox->show();
 }
 
 Body::BilgiEdin::Basvuru::Basvuru(mongocxx::database *_db)
@@ -7589,9 +7501,9 @@ Body::BilgiEdin::Basvuru::Basvuru(mongocxx::database *_db)
         auto _container = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
         _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
         auto _layout = _container->setLayout(cpp14::make_unique<WHBoxLayout>());
-//        _layout->addWidget(cpp14::make_unique<WPushButton>("Geri"),0,AlignmentFlag::Left)->clicked().connect([=](){
-//                this->_ClickBack.emit(NoClass());
-//        });
+        //        _layout->addWidget(cpp14::make_unique<WPushButton>("Geri"),0,AlignmentFlag::Left)->clicked().connect([=](){
+        //                this->_ClickBack.emit(NoClass());
+        //        });
 
         auto container = _layout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Center);
         container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
@@ -7599,7 +7511,7 @@ Body::BilgiEdin::Basvuru::Basvuru(mongocxx::database *_db)
         text->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold);
 
         _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                     Style::background::color::color(Style::color::Grey::Gainsboro));
+                                      Style::background::color::color(Style::color::Grey::Gainsboro));
     }
 
     auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -7670,7 +7582,7 @@ Body::BilgiEdin::Basvuru::Basvuru(mongocxx::database *_db)
         }
 
         {
-//            layout->addWidget(cpp14::make_unique<WText>("E-Posta"),0,AlignmentFlag::Center);
+            //            layout->addWidget(cpp14::make_unique<WText>("E-Posta"),0,AlignmentFlag::Center);
             lineEditmail = layout->addWidget(cpp14::make_unique<WLineEdit>(),1,AlignmentFlag::Justify);
             lineEditmail->setPlaceholderText("E-Posta isteğe bağlı");
             _row++;
@@ -7690,19 +7602,19 @@ Body::BilgiEdin::Basvuru::Basvuru(mongocxx::database *_db)
             _row++;
         }
 
-//        {
-////            layout->addWidget(cpp14::make_unique<WText>("Adres"),0,AlignmentFlag::Center);
-//            comboBoxGeriDonus = layout->addWidget(cpp14::make_unique<WComboBox>(),1,AlignmentFlag::Justify);
-//            comboBoxGeriDonus->addItem("Geri Dönüş Yolu Seçilmedi");
-////            comboBoxGeriDonus->addItem(SBLDKeys::BilgiEdinme::Basvuru::geriDonusTipiVar::hesaptan);
-//            comboBoxGeriDonus->addItem(SBLDKeys::BilgiEdinme::Basvuru::geriDonusTipiVar::mail);
-//            comboBoxGeriDonus->addItem(SBLDKeys::BilgiEdinme::Basvuru::geriDonusTipiVar::posta);
-//            comboBoxGeriDonus->addItem(SBLDKeys::BilgiEdinme::Basvuru::geriDonusTipiVar::sms);
-//            comboBoxGeriDonus->addItem(SBLDKeys::BilgiEdinme::Basvuru::geriDonusTipiVar::telefon);
+        //        {
+        ////            layout->addWidget(cpp14::make_unique<WText>("Adres"),0,AlignmentFlag::Center);
+        //            comboBoxGeriDonus = layout->addWidget(cpp14::make_unique<WComboBox>(),1,AlignmentFlag::Justify);
+        //            comboBoxGeriDonus->addItem("Geri Dönüş Yolu Seçilmedi");
+        ////            comboBoxGeriDonus->addItem(SBLDKeys::BilgiEdinme::Basvuru::geriDonusTipiVar::hesaptan);
+        //            comboBoxGeriDonus->addItem(SBLDKeys::BilgiEdinme::Basvuru::geriDonusTipiVar::mail);
+        //            comboBoxGeriDonus->addItem(SBLDKeys::BilgiEdinme::Basvuru::geriDonusTipiVar::posta);
+        //            comboBoxGeriDonus->addItem(SBLDKeys::BilgiEdinme::Basvuru::geriDonusTipiVar::sms);
+        //            comboBoxGeriDonus->addItem(SBLDKeys::BilgiEdinme::Basvuru::geriDonusTipiVar::telefon);
 
-//            comboBoxGeriDonus->sactivated().connect(this,&Basvuru::ShowGeriDonusUyari);
-//            _row++;
-//        }
+        //            comboBoxGeriDonus->sactivated().connect(this,&Basvuru::ShowGeriDonusUyari);
+        //            _row++;
+        //        }
 
         {
             lineEditKonu = layout->addWidget(cpp14::make_unique<WLineEdit>(),1,AlignmentFlag::Justify);
@@ -7733,7 +7645,7 @@ Body::BilgiEdin::Basvuru::Basvuru(mongocxx::database *_db)
         save->addStyleClass(Bootstrap::Button::Primary);
         save->clicked().connect(this,&Basvuru::save);
         _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                     Style::background::color::color(Style::color::Grey::Gainsboro));
+                                      Style::background::color::color(Style::color::Grey::Gainsboro));
     }
 
 
@@ -7892,11 +7804,11 @@ void Body::BilgiEdin::Basvuru::showMessage(std::string title, std::string msg)
                  msg,
                  Wt::Icon::Information, Wt::StandardButton::Ok));
 
-        messageBox->buttonClicked().connect([=] {
-            this->removeChild(messageBox);
-        });
+    messageBox->buttonClicked().connect([=] {
+        this->removeChild(messageBox);
+    });
 
-        messageBox->show();
+    messageBox->show();
 }
 
 void Body::BilgiEdin::Basvuru::ShowGeriDonusUyari(WString mesaj)
@@ -7979,7 +7891,7 @@ Body::BilgiEdin::Performans::Performans()
 
             std::unique_ptr<Wt::WAnchor> anchor =
                     Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "2018 Performans Programı");
+                                                        "2018 Performans Programı");
             anchor->setAttributeValue(Style::style,Style::font::size::s20px);
             layout->addWidget(std::move(anchor));
         }
@@ -7989,7 +7901,7 @@ Body::BilgiEdin::Performans::Performans()
 
             std::unique_ptr<Wt::WAnchor> anchor =
                     Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "2017 Performans Programı");
+                                                        "2017 Performans Programı");
             anchor->setAttributeValue(Style::style,Style::font::size::s20px);
             layout->addWidget(std::move(anchor));
         }
@@ -7999,7 +7911,7 @@ Body::BilgiEdin::Performans::Performans()
 
             std::unique_ptr<Wt::WAnchor> anchor =
                     Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "2016 Performans Programı");
+                                                        "2016 Performans Programı");
             anchor->setAttributeValue(Style::style,Style::font::size::s20px);
             layout->addWidget(std::move(anchor));
         }
@@ -8009,7 +7921,7 @@ Body::BilgiEdin::Performans::Performans()
 
             std::unique_ptr<Wt::WAnchor> anchor =
                     Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "2015 Performans Programı");
+                                                        "2015 Performans Programı");
             anchor->setAttributeValue(Style::style,Style::font::size::s20px);
             layout->addWidget(std::move(anchor));
         }
@@ -8048,7 +7960,7 @@ Body::BilgiEdin::faaliyetRapor::faaliyetRapor()
 
             std::unique_ptr<Wt::WAnchor> anchor =
                     Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "2017 Faaliyet Raporu");
+                                                        "2017 Faaliyet Raporu");
             anchor->setAttributeValue(Style::style,Style::font::size::s20px);
             layout->addWidget(std::move(anchor));
         }
@@ -8059,7 +7971,7 @@ Body::BilgiEdin::faaliyetRapor::faaliyetRapor()
 
             std::unique_ptr<Wt::WAnchor> anchor =
                     Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "2016 Faaliyet Raporu");
+                                                        "2016 Faaliyet Raporu");
             anchor->setAttributeValue(Style::style,Style::font::size::s20px);
             layout->addWidget(std::move(anchor));
         }
@@ -8069,7 +7981,7 @@ Body::BilgiEdin::faaliyetRapor::faaliyetRapor()
 
             std::unique_ptr<Wt::WAnchor> anchor =
                     Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "2015 Faaliyet Raporu");
+                                                        "2015 Faaliyet Raporu");
             anchor->setAttributeValue(Style::style,Style::font::size::s20px);
             layout->addWidget(std::move(anchor));
         }
@@ -8079,7 +7991,7 @@ Body::BilgiEdin::faaliyetRapor::faaliyetRapor()
 
             std::unique_ptr<Wt::WAnchor> anchor =
                     Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "2014 Faaliyet Raporu");
+                                                        "2014 Faaliyet Raporu");
             anchor->setAttributeValue(Style::style,Style::font::size::s20px);
             layout->addWidget(std::move(anchor));
         }
@@ -8115,7 +8027,7 @@ Body::BilgiEdin::DenetimRapor::DenetimRapor()
 
             std::unique_ptr<Wt::WAnchor> anchor =
                     Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "2016 Denetim Komisyonu Raporu");
+                                                        "2016 Denetim Komisyonu Raporu");
             anchor->setAttributeValue(Style::style,Style::font::size::s20px);
             layout->addWidget(std::move(anchor));
         }
@@ -8125,7 +8037,7 @@ Body::BilgiEdin::DenetimRapor::DenetimRapor()
 
             std::unique_ptr<Wt::WAnchor> anchor =
                     Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "2015 Sayıştay raporu");
+                                                        "2015 Sayıştay raporu");
             anchor->setAttributeValue(Style::style,Style::font::size::s20px);
             layout->addWidget(std::move(anchor));
         }
@@ -8135,7 +8047,7 @@ Body::BilgiEdin::DenetimRapor::DenetimRapor()
 
             std::unique_ptr<Wt::WAnchor> anchor =
                     Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "2014 Mahalli İdareler Denetim Raporu");
+                                                        "2014 Mahalli İdareler Denetim Raporu");
             anchor->setAttributeValue(Style::style,Style::font::size::s20px);
             layout->addWidget(std::move(anchor));
         }
@@ -8171,7 +8083,7 @@ Body::BilgiEdin::MaliRapor::MaliRapor()
 
             std::unique_ptr<Wt::WAnchor> anchor =
                     Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "2017 Mali Durum ve Beklentiler Raporu");
+                                                        "2017 Mali Durum ve Beklentiler Raporu");
             anchor->setAttributeValue(Style::style,Style::font::size::s20px);
             layout->addWidget(std::move(anchor));
         }
@@ -8185,11 +8097,14 @@ void Body::Serik::Hakkinda::initPage()
 
     auto mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
     mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
+    mMainContainer->setContentAlignment(AlignmentFlag::Center);
+    mMainContainer->setMargin(90,Side::Top);
 
 
 
     auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     row->addStyleClass(Bootstrap::Grid::row);
+    row->setMaximumSize(1270,WLength::Auto);
 
     {
         std::string path = "img/baskanBackGround.JPG";
@@ -8208,7 +8123,6 @@ void Body::Serik::Hakkinda::initPage()
         auto layout = gradientContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
         layout->addStretch(1);
         auto serik = layout->addWidget(cpp14::make_unique<WText>("Serik"),0,AlignmentFlag::Bottom|AlignmentFlag::Center);
-//        serik->addStyleClass(Bootstrap::Label::Warning);
         serik->setAttributeValue(Style::style,Style::font::size::s36px+Style::color::color(Style::color::White::AliceBlue));
     }
 
@@ -8223,9 +8137,9 @@ void Body::Serik::Hakkinda::initPage()
     contents->setTransitionAnimation(WAnimation(WAnimation::Effect::SlideInFromTop,TimingFunction::EaseInOut,500));
 
     Wt::WMenu *menu =
-        menuContainer->addWidget(Wt::cpp14::make_unique<Wt::WMenu>(contents.get()));
+            menuContainer->addWidget(Wt::cpp14::make_unique<Wt::WMenu>(contents.get()));
     menu->setStyleClass("nav nav-pills nav-stacked");
-//    menu->setWidth(150);
+    //    menu->setWidth(150);
 
 
     {
@@ -8357,7 +8271,7 @@ void Body::Serik::Content::selectedContent(std::string oid)
     this->ContentContainer->clear();
     this->ContentContainer->setMargin(25,Side::Top|Side::Bottom);
     this->ContentContainer->setZIndex(-100);
-//    this->ContentContainer->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::FloralWhite)+Style::Border::border("1px solid gray"));
+    //    this->ContentContainer->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::FloralWhite)+Style::Border::border("1px solid gray"));
 
     auto filter = document{};
 
@@ -8432,13 +8346,13 @@ Body::Job::ProjectBlock::ProjectBlock(mongocxx::database *_db, bool _subPage)
 {
     if( !subPage )
     {
-//        addWidget(cpp14::make_unique<WText>("<h3>Projeler</h3>"))->addStyleClass(Bootstrap::ContextualBackGround::bg_primary);
+        //        addWidget(cpp14::make_unique<WText>("<h3>Projeler</h3>"))->addStyleClass(Bootstrap::ContextualBackGround::bg_primary);
     }
-//    setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(0,125),this->getRandom(0,125),this->getRandom(0,125),.12));
+    //    setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(0,125),this->getRandom(0,125),this->getRandom(0,125),.12));
     setPadding(25,Side::Bottom);
 
 
-//    addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
+    //    addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
 
     mContainerFluid = addWidget(cpp14::make_unique<WContainerWidget>());
     mContainerFluid->addStyleClass(Bootstrap::Grid::container_fluid);
@@ -8481,7 +8395,7 @@ Body::Job::ProjectBlock::ProjectBlock(mongocxx::database *_db, bool _subPage)
             container->setAttributeValue(Style::style,Style::background::color::rgb(175,150,225));
             container->decorationStyle().setCursor(Cursor::PointingHand);
             auto title = container->addWidget(cpp14::make_unique<WText>("2019"));
-//            title->setText(Bootstrap::Badges::badget("2019" , "7"));
+            //            title->setText(Bootstrap::Badges::badget("2019" , "7"));
             title->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::weight::bold);
             container->clicked().connect([=](){
                 this->displayinYear(2019);
@@ -8496,7 +8410,7 @@ Body::Job::ProjectBlock::ProjectBlock(mongocxx::database *_db, bool _subPage)
             container->setAttributeValue(Style::style,Style::background::color::rgb(175,150,215));
             container->decorationStyle().setCursor(Cursor::PointingHand);
             auto title = container->addWidget(cpp14::make_unique<WText>("2018"));
-//            title->setText(Bootstrap::Badges::badget("2018" , "98"));
+            //            title->setText(Bootstrap::Badges::badget("2018" , "98"));
             title->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::weight::bold);
             container->clicked().connect([=](){
                 this->displayinYear(2018);
@@ -8511,7 +8425,7 @@ Body::Job::ProjectBlock::ProjectBlock(mongocxx::database *_db, bool _subPage)
             container->setAttributeValue(Style::style,Style::background::color::rgb(175,150,205));
             container->decorationStyle().setCursor(Cursor::PointingHand);
             auto title = container->addWidget(cpp14::make_unique<WText>("2017"));
-//            title->setText(Bootstrap::Badges::badget("2017" , "114"));
+            //            title->setText(Bootstrap::Badges::badget("2017" , "114"));
             title->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::weight::bold);
             container->clicked().connect([=](){
                 this->displayinYear(2017);
@@ -8526,7 +8440,7 @@ Body::Job::ProjectBlock::ProjectBlock(mongocxx::database *_db, bool _subPage)
             container->setAttributeValue(Style::style,Style::background::color::rgb(175,150,195));
             container->decorationStyle().setCursor(Cursor::PointingHand);
             auto title = container->addWidget(cpp14::make_unique<WText>("2016"));
-//            title->setText(Bootstrap::Badges::badget("2016" , "224"));
+            //            title->setText(Bootstrap::Badges::badget("2016" , "224"));
             title->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::weight::bold);
             container->clicked().connect([=](){
                 this->displayinYear(2016);
@@ -8541,7 +8455,7 @@ Body::Job::ProjectBlock::ProjectBlock(mongocxx::database *_db, bool _subPage)
             container->setAttributeValue(Style::style,Style::background::color::rgb(175,150,185));
             container->decorationStyle().setCursor(Cursor::PointingHand);
             auto title = container->addWidget(cpp14::make_unique<WText>("2015"));
-//            title->setText(Bootstrap::Badges::badget("2015" , "152"));
+            //            title->setText(Bootstrap::Badges::badget("2015" , "152"));
             title->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::weight::bold);
             container->clicked().connect([=](){
                 this->displayinYear(2015);
@@ -8556,7 +8470,7 @@ Body::Job::ProjectBlock::ProjectBlock(mongocxx::database *_db, bool _subPage)
             container->setAttributeValue(Style::style,Style::background::color::rgb(175,150,175));
             container->decorationStyle().setCursor(Cursor::PointingHand);
             auto title = container->addWidget(cpp14::make_unique<WText>("2014"));
-//            title->setText(Bootstrap::Badges::badget("2014" , "252"));
+            //            title->setText(Bootstrap::Badges::badget("2014" , "252"));
             title->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::weight::bold);
             container->clicked().connect([=](){
                 this->displayinYear(2014);
@@ -8581,7 +8495,7 @@ Body::Job::ProjectBlock::ProjectBlock(mongocxx::database *_db, bool _subPage)
     {
         auto detaycontainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
         detaycontainer->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
-//        detaycontainer->setAttributeValue(Style::style,Style::background::color::rgb(this->getRandom(),this->getRandom(),this->getRandom()));
+        //        detaycontainer->setAttributeValue(Style::style,Style::background::color::rgb(this->getRandom(),this->getRandom(),this->getRandom()));
 
 
         auto containerFluid = detaycontainer->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -8611,7 +8525,7 @@ Body::Job::ProjectBlock::ProjectBlock(mongocxx::database *_db, bool _subPage)
 
             auto vLayout = container_->setLayout(cpp14::make_unique<WVBoxLayout>());
 
-//            vLayout->addStretch(1);
+            //            vLayout->addStretch(1);
             auto text = vLayout->addWidget(cpp14::make_unique<WText>("Son Proje"),1,AlignmentFlag::Middle);
 
 
@@ -8661,7 +8575,7 @@ Body::Job::ProjectBlock::ProjectBlock(mongocxx::database *_db, bool _subPage)
 
             text->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
             text->setMargin(margin,AllSides);
-//            vLayout->addStretch(1);
+            //            vLayout->addStretch(1);
 
             _container->clicked().connect([=](){
                 _clickProject.emit(_container->attributeValue(Style::dataoid).toUTF8().c_str());
@@ -8669,17 +8583,17 @@ Body::Job::ProjectBlock::ProjectBlock(mongocxx::database *_db, bool _subPage)
 
             _container->decorationStyle().setCursor(Cursor::PointingHand);
 
-//            if( !subPage )
-//            {
-//                auto btn = _row->addWidget(cpp14::make_unique<WPushButton>("İncele"));
-//                btn->addStyleClass(Bootstrap::Button::info);
-//                btn->setMargin(margin+5,Side::Top);
+            //            if( !subPage )
+            //            {
+            //                auto btn = _row->addWidget(cpp14::make_unique<WPushButton>("İncele"));
+            //                btn->addStyleClass(Bootstrap::Button::info);
+            //                btn->setMargin(margin+5,Side::Top);
 
-//                btn->clicked().connect([=](){
-//                    _clickProject.emit(_container->attributeValue(Style::dataoid).toUTF8().c_str());
-//                });
+            //                btn->clicked().connect([=](){
+            //                    _clickProject.emit(_container->attributeValue(Style::dataoid).toUTF8().c_str());
+            //                });
 
-//            }
+            //            }
 
         }
 
@@ -8739,10 +8653,10 @@ void Body::Job::ProjectBlock::displayinYear(int year)
         auto text = hLayout->addWidget(cpp14::make_unique<WText>("Tüm Projeler"));
         auto view = filter.view();
         text->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
-//        text->setMargin(margin,AllSides);
+        //        text->setMargin(margin,AllSides);
         auto ProjeAdetText = hLayout->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(this->count(SBLDKeys::Projeler::collection,view))));
         ProjeAdetText->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
-//        ProjeAdetText->setText(Bootstrap::Badges::badget(WString("{1}").arg(this->count(SBLDKeys::Projeler::collection,view)).toUTF8()));
+        //        ProjeAdetText->setText(Bootstrap::Badges::badget(WString("{1}").arg(this->count(SBLDKeys::Projeler::collection,view)).toUTF8()));
 
 
 
@@ -8791,9 +8705,9 @@ void Body::Job::ProjectBlock::displayinYear(int year)
         auto text = hLayout->addWidget(cpp14::make_unique<WText>("Devam Eden"));
         auto view = filter.view();
         text->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
-//        text->setMargin(margin,AllSides);
+        //        text->setMargin(margin,AllSides);
         auto ProjeAdetText = hLayout->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(this->count(SBLDKeys::Projeler::collection,view))));
-//        ProjeAdetText->addStyleClass(Bootstrap::Button::Primary);
+        //        ProjeAdetText->addStyleClass(Bootstrap::Button::Primary);
         ProjeAdetText->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
 
         vLayout->addStretch(1);
@@ -8838,9 +8752,9 @@ void Body::Job::ProjectBlock::displayinYear(int year)
         auto text = hLayout->addWidget(cpp14::make_unique<WText>("Tamamlanan"));
         auto view = filter.view();
         text->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
-//        text->setMargin(margin,AllSides);
+        //        text->setMargin(margin,AllSides);
         auto ProjeAdetText = hLayout->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(this->count(SBLDKeys::Projeler::collection,view))));
-//        ProjeAdetText->addStyleClass(Bootstrap::Button::Success);
+        //        ProjeAdetText->addStyleClass(Bootstrap::Button::Success);
         ProjeAdetText->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
         vLayout->addStretch(1);
 
@@ -8884,9 +8798,9 @@ void Body::Job::ProjectBlock::displayinYear(int year)
         auto text = hLayout->addWidget(cpp14::make_unique<WText>("Yapılacak"));
         auto view = filter.view();
         text->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
-//        text->setMargin(margin,AllSides);
+        //        text->setMargin(margin,AllSides);
         auto ProjeAdetText = hLayout->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(this->count(SBLDKeys::Projeler::collection,view))));
-//        ProjeAdetText->addStyleClass(Bootstrap::Button::info);
+        //        ProjeAdetText->addStyleClass(Bootstrap::Button::info);
         ProjeAdetText->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
         vLayout->addStretch(1);
 
@@ -8900,14 +8814,14 @@ void Body::Job::ProjectBlock::displayinYear(int year)
 
 
 
-//    if( !subPage )
-//    {
-//        auto btn = _row->addWidget(cpp14::make_unique<WPushButton>("Detaylı İncele"));
-//        btn->addStyleClass(Bootstrap::Button::Primary);
-//        btn->clicked().connect([=](){
-//            _clickProjects.emit(NoClass());
-//        });
-//    }
+    //    if( !subPage )
+    //    {
+    //        auto btn = _row->addWidget(cpp14::make_unique<WPushButton>("Detaylı İncele"));
+    //        btn->addStyleClass(Bootstrap::Button::Primary);
+    //        btn->clicked().connect([=](){
+    //            _clickProjects.emit(NoClass());
+    //        });
+    //    }
 
 
 
@@ -8918,13 +8832,13 @@ void Body::Job::ProjectBlock::displayinYear(int year)
 Body::Job::TaskBlock::TaskBlock(mongocxx::database *_db)
     :DataBaseWidget(_db)
 {
-//    addWidget(cpp14::make_unique<WText>("<h3>Çalışmalar</h3>"));
-//    setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(0,125),this->getRandom(0,125),this->getRandom(0,125),.12));
+    //    addWidget(cpp14::make_unique<WText>("<h3>Çalışmalar</h3>"));
+    //    setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(0,125),this->getRandom(0,125),this->getRandom(0,125),.12));
 
     setPadding(25,Side::Bottom);
 
 
-//    addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
+    //    addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
 
     mContainerFluid = addWidget(cpp14::make_unique<WContainerWidget>());
     mContainerFluid->addStyleClass(Bootstrap::Grid::container_fluid);
@@ -9024,7 +8938,7 @@ Body::Job::TaskBlock::TaskBlock(mongocxx::database *_db)
             container->setAttributeValue(Style::style,Style::background::color::rgb(175,100,175));
             container->decorationStyle().setCursor(Cursor::PointingHand);
             auto title = container->addWidget(cpp14::make_unique<WText>("2014"));
-//            title->setText(Bootstrap::Badges::badget("2014" , "252"));
+            //            title->setText(Bootstrap::Badges::badget("2014" , "252"));
             title->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::weight::bold);
         }
 
@@ -9045,7 +8959,7 @@ Body::Job::TaskBlock::TaskBlock(mongocxx::database *_db)
     {
         auto detaycontainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
         detaycontainer->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
-//        detaycontainer->setAttributeValue(Style::style,Style::background::color::rgb(this->getRandom(),this->getRandom(),this->getRandom()));
+        //        detaycontainer->setAttributeValue(Style::style,Style::background::color::rgb(this->getRandom(),this->getRandom(),this->getRandom()));
 
 
         auto containerFluid = detaycontainer->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -9137,15 +9051,15 @@ Body::Job::TaskBlock::TaskBlock(mongocxx::database *_db)
 
             text->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
             text->setMargin(margin,AllSides);
-//            vLayout->addStretch(1);
+            //            vLayout->addStretch(1);
 
         }
 
-//        {
-//            auto btn = _row->addWidget(cpp14::make_unique<WPushButton>("İncele"));
-//            btn->addStyleClass(Bootstrap::Button::info);
-//            btn->setMargin(margin+5,Side::Top);
-//        }
+        //        {
+        //            auto btn = _row->addWidget(cpp14::make_unique<WPushButton>("İncele"));
+        //            btn->addStyleClass(Bootstrap::Button::info);
+        //            btn->setMargin(margin+5,Side::Top);
+        //        }
 
     }
 }
@@ -9176,7 +9090,7 @@ void Body::Job::TaskBlock::displayinYear(int year)
     {
         auto _container = _row->addWidget(cpp14::make_unique<WContainerWidget>());
         _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-//            _container->setMargin(margin,AllSides);
+        //            _container->setMargin(margin,AllSides);
         _container->setPadding(padding,AllSides);
         _container->setAttributeValue(Style::style,Style::background::url("img/1.jpeg")+Style::background::size::cover);
 
@@ -9325,8 +9239,8 @@ Body::Job::Block::Block(mongocxx::database *_db)
     :DataBaseWidget(_db)
 {
 
-//    setPadding(0,AllSides);
-//    setMargin(50,Side::Bottom|Side::Top);
+    //    setPadding(0,AllSides);
+    //    setMargin(50,Side::Bottom|Side::Top);
 
     auto mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
 
@@ -9448,7 +9362,7 @@ Body::Calisma::Calisma(mongocxx::database *_db)
     mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
     mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
 
-
+    mMainContainer->setMargin(90,Side::Top);
 
     auto detailContainer = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     detailContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
@@ -9491,36 +9405,36 @@ Body::Calisma::Calisma(mongocxx::database *_db)
         auto _layout = _container->setLayout(cpp14::make_unique<WHBoxLayout>());
         auto anaSayfaBtn = _layout->addWidget(cpp14::make_unique<WPushButton>("Ana Sayfa"),0,AlignmentFlag::Left);
         anaSayfaBtn->clicked().connect([=](){
-                 this->_ClickBack.emit(NoClass());
-         });
+            this->_ClickBack.emit(NoClass());
+        });
         anaSayfaBtn->addStyleClass(Bootstrap::Button::Primary);
 
-         auto projeListbtn = _layout->addWidget(cpp14::make_unique<WPushButton>("Zaman Tüneli"),0,AlignmentFlag::Left);
-         projeListbtn->clicked().connect([=](){
+        auto projeListbtn = _layout->addWidget(cpp14::make_unique<WPushButton>("Zaman Tüneli"),0,AlignmentFlag::Left);
+        projeListbtn->clicked().connect([=](){
 
-//             auto filter = document{};
+            //             auto filter = document{};
 
-//             try {
-//                 filter.append(kvp(SBLDKeys::Calismalar::yayin,SBLDKeys::Calismalar::Yayinda::yayinda));
-//             } catch (bsoncxx::exception &e) {
+            //             try {
+            //                 filter.append(kvp(SBLDKeys::Calismalar::yayin,SBLDKeys::Calismalar::Yayinda::yayinda));
+            //             } catch (bsoncxx::exception &e) {
 
-//             }
+            //             }
 
-//             this->initTable(filter.view());
-             this->zamanTuneli();
+            //             this->initTable(filter.view());
+            this->zamanTuneli();
 
-         });
-         projeListbtn->addStyleClass(Bootstrap::Button::info);
+        });
+        projeListbtn->addStyleClass(Bootstrap::Button::info);
 
-//         auto istatisticbtn = _layout->addWidget(cpp14::make_unique<WPushButton>("İstatistik"),0,AlignmentFlag::Left);
-//         istatisticbtn->clicked().connect([=](){
-//                 this->initIstatistic();
-//         });
-//         istatisticbtn->addStyleClass(Bootstrap::Button::Warning);
+        //         auto istatisticbtn = _layout->addWidget(cpp14::make_unique<WPushButton>("İstatistik"),0,AlignmentFlag::Left);
+        //         istatisticbtn->clicked().connect([=](){
+        //                 this->initIstatistic();
+        //         });
+        //         istatisticbtn->addStyleClass(Bootstrap::Button::Warning);
 
         _layout->addStretch(1);
         _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                     Style::background::color::color(Style::color::Grey::Gainsboro));
+                                      Style::background::color::color(Style::color::Grey::Gainsboro));
     }
 
 
@@ -9791,8 +9705,8 @@ void Body::Calisma::addCalismaItemToZamanTuneli(WContainerWidget *widget, bsoncx
             if( LeftSide )
             {
                 auto _colorContainer = hLayout->addWidget(cpp14::make_unique<WContainerWidget>());
-//                _colorContainer->setAttributeValue(Style::style,Style::background::color::rgba(0,77,153,0.85));
-//                _colorContainer->setHeight(25);
+                //                _colorContainer->setAttributeValue(Style::style,Style::background::color::rgba(0,77,153,0.85));
+                //                _colorContainer->setHeight(25);
                 _colorContainer->setMargin(0,Side::Right);
 
 
@@ -9817,8 +9731,8 @@ void Body::Calisma::addCalismaItemToZamanTuneli(WContainerWidget *widget, bsoncx
                 _imgContainer->setMargin(0,Side::Right);
 
                 auto _colorContainer = hLayout->addWidget(cpp14::make_unique<WContainerWidget>());
-//                _colorContainer->setAttributeValue(Style::style,Style::background::color::rgba(0,77,153,0.85));
-//                _colorContainer->setHeight(25);
+                //                _colorContainer->setAttributeValue(Style::style,Style::background::color::rgba(0,77,153,0.85));
+                //                _colorContainer->setHeight(25);
                 _colorContainer->setMargin(0,Side::Left);
 
                 auto text = _colorContainer->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(QDate::fromJulianDay(doc[SBLDKeys::Calismalar::baslamaTarihi].get_int64().value).toString("dd/MMMM/yyyy").toStdString())));
@@ -9855,7 +9769,7 @@ void Body::Calisma::addCalismaItemToZamanTuneli(WContainerWidget *widget, bsoncx
             QString str = doc[SBLDKeys::Calismalar::birim].get_utf8().value.to_string().c_str();
             str = str.mid(0,str.count()-9);
             auto text = hLayout->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(str.toStdString().c_str())));
-//            text->addStyleClass(Bootstrap::Label::Success);
+            //            text->addStyleClass(Bootstrap::Label::Success);
             text->setAttributeValue(Style::style,Style::background::color::color(Style::color::Green::ForestGreen)+Style::color::color(Style::color::White::AliceBlue)+Style::font::weight::bold+Style::font::size::s14px);
             text->addStyleClass("ZamanTuneliFont");
             text->addStyleClass("CommanBoxShadow");
@@ -9880,7 +9794,7 @@ void Body::Calisma::setCalismaDetail(std::string oid)
     mTableContainer->clear();
 
 
-//    mTableContainer->addWidget(cpp14::make_unique<WText>(WString("<h2>{1}</h2>").arg(oid.c_str())));
+    //    mTableContainer->addWidget(cpp14::make_unique<WText>(WString("<h2>{1}</h2>").arg(oid.c_str())));
 
     auto filter = document{};
 
@@ -9983,7 +9897,7 @@ void Body::Calisma::setCalismaDetail(std::string oid)
             auto text = container->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(mah.get_utf8().value.to_string().c_str())));
             text->addStyleClass(Bootstrap::Label::Warning+Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
             text->setAttributeValue(Style::style,Style::font::weight::bold+Style::font::size::s16px);
-//            text->setMargin(5,AllSides);
+            //            text->setMargin(5,AllSides);
         }
     }
 
@@ -10008,7 +9922,7 @@ void Body::Calisma::setCalismaDetail(std::string oid)
             {
                 auto doc = _asama.get_document().value;
                 auto container = asamaContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//                container->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(0,125),this->getRandom(0,125),this->getRandom(0,125)));
+                //                container->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(0,125),this->getRandom(0,125),this->getRandom(0,125)));
                 auto StackWidget = container->addWidget(cpp14::make_unique<WStackedWidget>());
                 StackWidget->setTransitionAnimation(WAnimation(AnimationEffect::SlideInFromRight,TimingFunction::EaseInOut,250),true);
                 std::vector<std::string> imgPathList;
@@ -10355,7 +10269,7 @@ void Body::Calisma::setSelectedCalisma(std::string oid)
     mTableContainer->clear();
 
 
-//    mTableContainer->addWidget(cpp14::make_unique<WText>(WString("<h2>{1}</h2>").arg(oid.c_str())));
+    //    mTableContainer->addWidget(cpp14::make_unique<WText>(WString("<h2>{1}</h2>").arg(oid.c_str())));
 
     auto filter = document{};
 
@@ -10457,7 +10371,7 @@ void Body::Calisma::setSelectedCalisma(std::string oid)
             auto text = container->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(mah.get_utf8().value.to_string().c_str())));
             text->addStyleClass(Bootstrap::Label::Warning+Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
             text->setAttributeValue(Style::style,Style::font::weight::bold+Style::font::size::s16px);
-//            text->setMargin(5,AllSides);
+            //            text->setMargin(5,AllSides);
         }
     }
 
@@ -10482,7 +10396,7 @@ void Body::Calisma::setSelectedCalisma(std::string oid)
             {
                 auto doc = _asama.get_document().value;
                 auto container = asamaContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//                container->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(0,125),this->getRandom(0,125),this->getRandom(0,125)));
+                //                container->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(0,125),this->getRandom(0,125),this->getRandom(0,125)));
                 auto StackWidget = container->addWidget(cpp14::make_unique<WStackedWidget>());
                 StackWidget->setTransitionAnimation(WAnimation(AnimationEffect::SlideInFromRight,TimingFunction::EaseInOut,250),true);
                 std::vector<std::string> imgPathList;
@@ -10596,19 +10510,19 @@ void Body::Calisma::initPage()
 
     this->zamanTuneli();
 
-//    auto filter = document{};
+    //    auto filter = document{};
 
-//    try {
-//        filter.append(kvp(SBLDKeys::Calismalar::yayin,SBLDKeys::Calismalar::Yayinda::yayinda));
-//    } catch (bsoncxx::exception &e) {
+    //    try {
+    //        filter.append(kvp(SBLDKeys::Calismalar::yayin,SBLDKeys::Calismalar::Yayinda::yayinda));
+    //    } catch (bsoncxx::exception &e) {
 
-//    }
+    //    }
 
 
 
-//    TableFilter = filter.extract();
+    //    TableFilter = filter.extract();
 
-//    this->initTable(TableFilter.view());
+    //    this->initTable(TableFilter.view());
 }
 
 void Body::Calisma::initMenu()
@@ -10618,7 +10532,7 @@ void Body::Calisma::initMenu()
 
     mMenuContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
     mMenuContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_2);
-//    mMenuContainer->setAttributeValue(Style::style,Style::Border::border("1px solid black"));
+    //    mMenuContainer->setAttributeValue(Style::style,Style::Border::border("1px solid black"));
 
     const int height = 50;
     const int margin = 3;
@@ -10915,7 +10829,7 @@ void Body::Calisma::initMenu()
 
         auto gteDoc = document{};
 
-//        int yil = QDate::currentDate().year()-1;
+        //        int yil = QDate::currentDate().year()-1;
         try {
             gteDoc.append(kvp("$gte",QDate::fromString(QString("01.01.%1").arg(yil-1),"dd.MM.yyyy").toJulianDay()));
         } catch (bsoncxx::exception &e) {
@@ -10954,7 +10868,7 @@ void Body::Calisma::initMenu()
 
             auto gteDoc = document{};
 
-    //        int yil = QDate::currentDate().year()-1;
+            //        int yil = QDate::currentDate().year()-1;
             try {
                 gteDoc.append(kvp("$gte",QDate::fromString(QString("01.01.%1").arg(yil-1),"dd.MM.yyyy").toJulianDay()));
             } catch (bsoncxx::exception &e) {
@@ -11047,7 +10961,7 @@ void Body::Calisma::initIstatisticBirimlereGore()
 
     auto model_ = std::make_shared<WStandardItemModel>();
     auto model = model_.get();
-//    model->setItemPrototype(cpp14::make_unique<NumericItem>());
+    //    model->setItemPrototype(cpp14::make_unique<NumericItem>());
 
 
     model->insertColumns(model->columnCount(), 4);
@@ -11183,7 +11097,7 @@ void Body::Calisma::initIstatisticBirimlereGore()
     chart->resize(800, 1500);
     chart->setMargin(WLength::Auto, Side::Left | Side::Right);
 
-//    chart->setAttributeValue(Style::style,Style::Border::border("1px solid red"));
+    //    chart->setAttributeValue(Style::style,Style::Border::border("1px solid red"));
 
 }
 
@@ -11197,7 +11111,7 @@ void Body::Calisma::initIstatisticMahallereGore()
 
     auto model_ = std::make_shared<WStandardItemModel>();
     auto model = model_.get();
-//    model->setItemPrototype(cpp14::make_unique<NumericItem>());
+    //    model->setItemPrototype(cpp14::make_unique<NumericItem>());
 
 
     model->insertColumns(model->columnCount(), 4);
@@ -11341,7 +11255,7 @@ void Body::Calisma::initIstatisticBirimMahalle()
 
     auto model_ = std::make_shared<WStandardItemModel>();
     auto model = model_.get();
-//    model->setItemPrototype(cpp14::make_unique<NumericItem>());
+    //    model->setItemPrototype(cpp14::make_unique<NumericItem>());
 
 
     model->insertColumns(model->columnCount(), 4);
@@ -11674,7 +11588,7 @@ Body::BilgiEdin::KamuHizmetRapor::KamuHizmetRapor()
 
             std::unique_ptr<Wt::WAnchor> anchor =
                     Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "Yazı İşleri Müdürlüğü Hizmet Tablosu");
+                                                        "Yazı İşleri Müdürlüğü Hizmet Tablosu");
             anchor->setAttributeValue(Style::style,Style::font::size::s20px);
             layout->addWidget(std::move(anchor));
         }
@@ -11686,7 +11600,7 @@ Body::BilgiEdin::KamuHizmetRapor::KamuHizmetRapor()
 
             std::unique_ptr<Wt::WAnchor> anchor =
                     Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "Veteriner İşleri Müdürlüğü Hizmet Tablosu");
+                                                        "Veteriner İşleri Müdürlüğü Hizmet Tablosu");
             anchor->setAttributeValue(Style::style,Style::font::size::s20px);
             layout->addWidget(std::move(anchor));
         }
@@ -11698,7 +11612,7 @@ Body::BilgiEdin::KamuHizmetRapor::KamuHizmetRapor()
 
             std::unique_ptr<Wt::WAnchor> anchor =
                     Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "Temizlik İşleri Müdürlüğü Hizmet Tablosu");
+                                                        "Temizlik İşleri Müdürlüğü Hizmet Tablosu");
             anchor->setAttributeValue(Style::style,Style::font::size::s20px);
             layout->addWidget(std::move(anchor));
         }
@@ -11709,7 +11623,7 @@ Body::BilgiEdin::KamuHizmetRapor::KamuHizmetRapor()
 
             std::unique_ptr<Wt::WAnchor> anchor =
                     Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "Fen İşleri Müdürlüğü Hizmet Tablosu");
+                                                        "Fen İşleri Müdürlüğü Hizmet Tablosu");
             anchor->setAttributeValue(Style::style,Style::font::size::s20px);
             layout->addWidget(std::move(anchor));
         }
@@ -11720,7 +11634,7 @@ Body::BilgiEdin::KamuHizmetRapor::KamuHizmetRapor()
 
             std::unique_ptr<Wt::WAnchor> anchor =
                     Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "İnsan Kaynakları ve Eğitim Müdürlüğü Hizmet Tablosu");
+                                                        "İnsan Kaynakları ve Eğitim Müdürlüğü Hizmet Tablosu");
             anchor->setAttributeValue(Style::style,Style::font::size::s20px);
             layout->addWidget(std::move(anchor));
         }
@@ -11731,7 +11645,7 @@ Body::BilgiEdin::KamuHizmetRapor::KamuHizmetRapor()
 
             std::unique_ptr<Wt::WAnchor> anchor =
                     Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "Spor İşleri Müdürlüğü Hizmet Tablosu");
+                                                        "Spor İşleri Müdürlüğü Hizmet Tablosu");
             anchor->setAttributeValue(Style::style,Style::font::size::s20px);
             layout->addWidget(std::move(anchor));
         }
@@ -11742,7 +11656,7 @@ Body::BilgiEdin::KamuHizmetRapor::KamuHizmetRapor()
 
             std::unique_ptr<Wt::WAnchor> anchor =
                     Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "Bilgi İşlem Müdürlüğü Hizmet Tablosu");
+                                                        "Bilgi İşlem Müdürlüğü Hizmet Tablosu");
             anchor->setAttributeValue(Style::style,Style::font::size::s20px);
             layout->addWidget(std::move(anchor));
         }
@@ -11754,7 +11668,7 @@ Body::BilgiEdin::KamuHizmetRapor::KamuHizmetRapor()
 
             std::unique_ptr<Wt::WAnchor> anchor =
                     Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "Park ve Bahçeler Müdürlüğü Hizmet Tablosu");
+                                                        "Park ve Bahçeler Müdürlüğü Hizmet Tablosu");
             anchor->setAttributeValue(Style::style,Style::font::size::s20px);
             layout->addWidget(std::move(anchor));
         }
@@ -11766,7 +11680,7 @@ Body::BilgiEdin::KamuHizmetRapor::KamuHizmetRapor()
 
             std::unique_ptr<Wt::WAnchor> anchor =
                     Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "Çevre Koruma ve Kontrol Müdürlüğü Hizmet Tablosu");
+                                                        "Çevre Koruma ve Kontrol Müdürlüğü Hizmet Tablosu");
             anchor->setAttributeValue(Style::style,Style::font::size::s20px);
             layout->addWidget(std::move(anchor));
         }
@@ -11778,7 +11692,7 @@ Body::BilgiEdin::KamuHizmetRapor::KamuHizmetRapor()
 
             std::unique_ptr<Wt::WAnchor> anchor =
                     Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "Zabıta Müdürlüğü/Ruhsat Kısım Amirliği Hizmet Tablosu");
+                                                        "Zabıta Müdürlüğü/Ruhsat Kısım Amirliği Hizmet Tablosu");
             anchor->setAttributeValue(Style::style,Style::font::size::s20px);
             layout->addWidget(std::move(anchor));
         }
@@ -11789,7 +11703,7 @@ Body::BilgiEdin::KamuHizmetRapor::KamuHizmetRapor()
 
             std::unique_ptr<Wt::WAnchor> anchor =
                     Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "Kültür ve Sosyal Hizmetler Müdürlüğü Hizmet Tablosu");
+                                                        "Kültür ve Sosyal Hizmetler Müdürlüğü Hizmet Tablosu");
             anchor->setAttributeValue(Style::style,Style::font::size::s20px);
             layout->addWidget(std::move(anchor));
         }
@@ -11800,7 +11714,7 @@ Body::BilgiEdin::KamuHizmetRapor::KamuHizmetRapor()
 
             std::unique_ptr<Wt::WAnchor> anchor =
                     Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "Hukuk İşleri Müdürlüğü Hizmet Tablosu");
+                                                        "Hukuk İşleri Müdürlüğü Hizmet Tablosu");
             anchor->setAttributeValue(Style::style,Style::font::size::s20px);
             layout->addWidget(std::move(anchor));
         }
@@ -11811,7 +11725,7 @@ Body::BilgiEdin::KamuHizmetRapor::KamuHizmetRapor()
 
             std::unique_ptr<Wt::WAnchor> anchor =
                     Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "İmar ve Şehircilik Müdürlüğü Hizmet Tablosu");
+                                                        "İmar ve Şehircilik Müdürlüğü Hizmet Tablosu");
             anchor->setAttributeValue(Style::style,Style::font::size::s20px);
             layout->addWidget(std::move(anchor));
         }
@@ -11822,7 +11736,7 @@ Body::BilgiEdin::KamuHizmetRapor::KamuHizmetRapor()
 
             std::unique_ptr<Wt::WAnchor> anchor =
                     Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "Destek Hizmetleri Müdürlüğü Hizmet Tablosu");
+                                                        "Destek Hizmetleri Müdürlüğü Hizmet Tablosu");
             anchor->setAttributeValue(Style::style,Style::font::size::s20px);
             layout->addWidget(std::move(anchor));
         }
@@ -11833,7 +11747,7 @@ Body::BilgiEdin::KamuHizmetRapor::KamuHizmetRapor()
 
             std::unique_ptr<Wt::WAnchor> anchor =
                     Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "Muhtarlık İşleri Müdürlüğü Hizmet Tablosu");
+                                                        "Muhtarlık İşleri Müdürlüğü Hizmet Tablosu");
             anchor->setAttributeValue(Style::style,Style::font::size::s20px);
             layout->addWidget(std::move(anchor));
         }
@@ -11845,7 +11759,7 @@ Body::BilgiEdin::KamuHizmetRapor::KamuHizmetRapor()
 
             std::unique_ptr<Wt::WAnchor> anchor =
                     Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "Kadın ve Aile Hizmetleri Müdürlüğü Hizmet Tablosu");
+                                                        "Kadın ve Aile Hizmetleri Müdürlüğü Hizmet Tablosu");
             anchor->setAttributeValue(Style::style,Style::font::size::s20px);
             layout->addWidget(std::move(anchor));
         }
@@ -11857,7 +11771,7 @@ Body::BilgiEdin::KamuHizmetRapor::KamuHizmetRapor()
 
             std::unique_ptr<Wt::WAnchor> anchor =
                     Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "Mali Hizmetler Müdürlüğü Hizmet Tablosu");
+                                                        "Mali Hizmetler Müdürlüğü Hizmet Tablosu");
             anchor->setAttributeValue(Style::style,Style::font::size::s20px);
             layout->addWidget(std::move(anchor));
         }
@@ -11869,7 +11783,7 @@ Body::BilgiEdin::KamuHizmetRapor::KamuHizmetRapor()
 
             std::unique_ptr<Wt::WAnchor> anchor =
                     Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "Özel Kalem Müdürlüğü Hizmet Tablosu");
+                                                        "Özel Kalem Müdürlüğü Hizmet Tablosu");
             anchor->setAttributeValue(Style::style,Style::font::size::s20px);
             layout->addWidget(std::move(anchor));
         }
