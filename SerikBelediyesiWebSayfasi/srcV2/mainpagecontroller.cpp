@@ -11,7 +11,7 @@ MainPageController::MainPageController(mongocxx::database *_db)
     rContainer->addStyleClass(Bootstrap::Grid::row);
     rContainer->setMaximumSize(1270,WLength::Auto);
     auto contentContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-    contentContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_9);
+    contentContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
 
 
     {
@@ -19,10 +19,13 @@ MainPageController::MainPageController(mongocxx::database *_db)
         auto bContainer = contentContainer->addWidget(cpp14::make_unique<WContainerWidget>());
         bContainer->addStyleClass(Bootstrap::Grid::row);
 
+        auto bootsrapString = Bootstrap::Grid::Large::col_lg_3 + Bootstrap::Grid::Medium::col_md_3 + Bootstrap::Grid::Small::col_sm_4 + Bootstrap::Grid::ExtraSmall::col_xs_4;
+
+
 
         {   // HABERLER
             auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(Bootstrap::Grid::Large::col_lg_3);
+            container->addStyleClass(bootsrapString);
             container->setContentAlignment(AlignmentFlag::Center);
 
 
@@ -30,8 +33,8 @@ MainPageController::MainPageController(mongocxx::database *_db)
             btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,50),
                                                                                this->getRandom(25,50),
                                                                                this->getRandom(25,50)));
-            btn->setHeight(150);
-            btn->setWidth(150);
+            btn->setHeight(100);
+            btn->setWidth(100);
             btn->setMargin(15,AllSides);
             btn->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
@@ -48,14 +51,14 @@ MainPageController::MainPageController(mongocxx::database *_db)
 
         {   // ÇALIŞMALAR
             auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(Bootstrap::Grid::Large::col_lg_3);
+            container->addStyleClass(bootsrapString);
             container->setContentAlignment(AlignmentFlag::Center);
             auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
             btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,50),
                                                                                this->getRandom(25,50),
                                                                                this->getRandom(25,50)));
-            btn->setHeight(150);
-            btn->setWidth(150);
+            btn->setHeight(100);
+            btn->setWidth(100);
             btn->setMargin(15,AllSides);
             btn->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
@@ -72,14 +75,14 @@ MainPageController::MainPageController(mongocxx::database *_db)
 
         {   // PROJELER
             auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(Bootstrap::Grid::Large::col_lg_3);
+            container->addStyleClass(bootsrapString);
             container->setContentAlignment(AlignmentFlag::Center);
             auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
             btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,50),
                                                                                this->getRandom(25,50),
                                                                                this->getRandom(25,50)));
-            btn->setHeight(150);
-            btn->setWidth(150);
+            btn->setHeight(100);
+            btn->setWidth(100);
             btn->setMargin(15,AllSides);
             btn->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
@@ -95,14 +98,14 @@ MainPageController::MainPageController(mongocxx::database *_db)
 
         {   // ETKİNLİKLER
             auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(Bootstrap::Grid::Large::col_lg_3);
+            container->addStyleClass(bootsrapString);
             container->setContentAlignment(AlignmentFlag::Center);
             auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
             btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,50),
                                                                                this->getRandom(25,50),
                                                                                this->getRandom(25,50)));
-            btn->setHeight(150);
-            btn->setWidth(150);
+            btn->setHeight(100);
+            btn->setWidth(100);
             btn->setMargin(15,AllSides);
             btn->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
@@ -118,14 +121,14 @@ MainPageController::MainPageController(mongocxx::database *_db)
 
         {   // MECLİS
             auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(Bootstrap::Grid::Large::col_lg_3);
+            container->addStyleClass(bootsrapString);
             container->setContentAlignment(AlignmentFlag::Center);
             auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
             btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,50),
                                                                                this->getRandom(25,50),
                                                                                this->getRandom(25,50)));
-            btn->setHeight(150);
-            btn->setWidth(150);
+            btn->setHeight(100);
+            btn->setWidth(100);
             btn->setMargin(15,AllSides);
             btn->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
@@ -139,6 +142,30 @@ MainPageController::MainPageController(mongocxx::database *_db)
             text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
         }
 
+        {   // DUYURULAR
+            auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+            container->addStyleClass(bootsrapString);
+            container->setContentAlignment(AlignmentFlag::Center);
+            auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
+            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,50),
+                                                                               this->getRandom(25,50),
+                                                                               this->getRandom(25,50)));
+            btn->setHeight(100);
+            btn->setWidth(100);
+            btn->setMargin(15,AllSides);
+            btn->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+
+            btn->decorationStyle().setCursor(Cursor::PointingHand);
+            btn->clicked().connect([=](){
+              _duyurular.emit(NoClass());
+            });
+
+
+            auto layout = btn->setLayout(cpp14::make_unique<WVBoxLayout>());
+            auto text = layout->addWidget(cpp14::make_unique<WText>("DUYURULAR"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+            text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
+        }
+
 //        {   // KURUMSAL
 //            auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
 //            container->addStyleClass(Bootstrap::Grid::Large::col_lg_3);
@@ -147,8 +174,8 @@ MainPageController::MainPageController(mongocxx::database *_db)
 //            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,50),
 //                                                                               this->getRandom(25,50),
 //                                                                               this->getRandom(25,50)));
-//            btn->setHeight(150);
-//            btn->setWidth(150);
+//            btn->setHeight(100);
+//            btn->setWidth(100);
 //            btn->setMargin(15,AllSides);
 //            btn->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
@@ -157,34 +184,34 @@ MainPageController::MainPageController(mongocxx::database *_db)
 //            text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
 //        }
 
-//        {   // GALERİ
-//            auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//            container->addStyleClass(Bootstrap::Grid::Large::col_lg_3);
-//            container->setContentAlignment(AlignmentFlag::Center);
-//            auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
-//            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,50),
-//                                                                               this->getRandom(25,50),
-//                                                                               this->getRandom(25,50)));
-//            btn->setHeight(150);
-//            btn->setWidth(150);
-//            btn->setMargin(15,AllSides);
-//            btn->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
-
-//            auto layout = btn->setLayout(cpp14::make_unique<WVBoxLayout>());
-//            auto text = layout->addWidget(cpp14::make_unique<WText>("GALERİ"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
-//            text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
-//        }
-
-        {   // BİLGİ EDİNME
+        {   // GALERİ
             auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(Bootstrap::Grid::Large::col_lg_3);
+            container->addStyleClass(bootsrapString);
             container->setContentAlignment(AlignmentFlag::Center);
             auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
             btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,50),
                                                                                this->getRandom(25,50),
                                                                                this->getRandom(25,50)));
-            btn->setHeight(150);
-            btn->setWidth(150);
+            btn->setHeight(100);
+            btn->setWidth(100);
+            btn->setMargin(15,AllSides);
+            btn->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+
+            auto layout = btn->setLayout(cpp14::make_unique<WVBoxLayout>());
+            auto text = layout->addWidget(cpp14::make_unique<WText>("GALERİ"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+            text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
+        }
+
+        {   // BİLGİ EDİNME
+            auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+            container->addStyleClass(bootsrapString);
+            container->setContentAlignment(AlignmentFlag::Center);
+            auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
+            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,50),
+                                                                               this->getRandom(25,50),
+                                                                               this->getRandom(25,50)));
+            btn->setHeight(100);
+            btn->setWidth(100);
             btn->setMargin(15,AllSides);
             btn->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
@@ -201,14 +228,14 @@ MainPageController::MainPageController(mongocxx::database *_db)
 
         {   // e-BELEDİYE
             auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(Bootstrap::Grid::Large::col_lg_3);
+            container->addStyleClass(bootsrapString);
             container->setContentAlignment(AlignmentFlag::Center);
             auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
             btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,50),
                                                                                this->getRandom(25,50),
                                                                                this->getRandom(25,50)));
-            btn->setHeight(150);
-            btn->setWidth(150);
+            btn->setHeight(100);
+            btn->setWidth(100);
             btn->setMargin(15,AllSides);
             btn->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
@@ -227,14 +254,14 @@ MainPageController::MainPageController(mongocxx::database *_db)
 
         {   // GİRİŞ
             auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(Bootstrap::Grid::Large::col_lg_3);
+            container->addStyleClass(bootsrapString);
             container->setContentAlignment(AlignmentFlag::Center);
             auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
             btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,50),
                                                                                this->getRandom(25,50),
                                                                                this->getRandom(25,50)));
-            btn->setHeight(150);
-            btn->setWidth(150);
+            btn->setHeight(100);
+            btn->setWidth(100);
             btn->setMargin(15,AllSides);
             btn->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
@@ -249,19 +276,69 @@ MainPageController::MainPageController(mongocxx::database *_db)
             text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
         }
 
+        {   // İLETİSİM
+            auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+            container->addStyleClass(Bootstrap::Grid::Hidden::hidden_lg+Bootstrap::Grid::Hidden::hidden_md);
+            container->addStyleClass(bootsrapString);
+            container->setContentAlignment(AlignmentFlag::Center);
+            auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
+            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,50),
+                                                                               this->getRandom(25,50),
+                                                                               this->getRandom(25,50)));
+            btn->setHeight(100);
+            btn->setWidth(100);
+            btn->setMargin(15,AllSides);
+            btn->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+
+            btn->decorationStyle().setCursor(Cursor::PointingHand);
+            btn->clicked().connect([=](){
+              _iletisim.emit(NoClass());
+            });
+
+
+            auto layout = btn->setLayout(cpp14::make_unique<WVBoxLayout>());
+            auto text = layout->addWidget(cpp14::make_unique<WText>("İLETİŞİM"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+            text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
+        }
+
+        {   // HAKKINDA
+            auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+            container->addStyleClass(Bootstrap::Grid::Hidden::hidden_lg+Bootstrap::Grid::Hidden::hidden_md);
+            container->addStyleClass(bootsrapString);
+            container->setContentAlignment(AlignmentFlag::Center);
+            auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
+            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,50),
+                                                                               this->getRandom(25,50),
+                                                                               this->getRandom(25,50)));
+            btn->setHeight(100);
+            btn->setWidth(100);
+            btn->setMargin(15,AllSides);
+            btn->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+
+            btn->decorationStyle().setCursor(Cursor::PointingHand);
+            btn->clicked().connect([=](){
+              _hakkinda.emit(NoClass());
+            });
+
+
+            auto layout = btn->setLayout(cpp14::make_unique<WVBoxLayout>());
+            auto text = layout->addWidget(cpp14::make_unique<WText>("HAKKINDA"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+            text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
+        }
+
     }
 
 
 
-    auto anounceContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-    anounceContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_3);
+//    auto anounceContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//    anounceContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_3);
 
-    {
-        auto list = anounceContainer->addWidget(cpp14::make_unique<Body::NewsAnnounceContent::AnnouncePanel::AnnounceList>(this->getDB()));
-        list->mGetOid().connect([=](std::string mOid){
-           _Announce.emit(mOid);
-        });
-    }
+//    {
+//        auto list = anounceContainer->addWidget(cpp14::make_unique<Body::NewsAnnounceContent::AnnouncePanel::AnnounceList>(this->getDB()));
+//        list->mGetOid().connect([=](std::string mOid){
+//           _Announce.emit(mOid);
+//        });
+//    }
 }
 
 Signal<NoClass> &MainPageController::ClickHaber()
@@ -302,5 +379,20 @@ Signal<NoClass> &MainPageController::ClickMeclis()
 Signal<std::string> &MainPageController::ClickAnounce()
 {
     return _Announce;
+}
+
+Signal<NoClass> &MainPageController::ClickIletisim()
+{
+    return _iletisim;
+}
+
+Signal<NoClass> &MainPageController::ClickHakkinda()
+{
+    return _hakkinda;
+}
+
+Signal<NoClass> &MainPageController::ClickDuyurular()
+{
+    return _duyurular;
 }
 

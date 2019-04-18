@@ -3392,15 +3392,28 @@ Body::NewsAnnounceContent::AnnouncePanel::AnnounceList::AnnounceList(mongocxx::d
 
     //    setAttributeValue(Style::style,Style::Border::border("3px solid red"));
 
+
     auto mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
     mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
+    mMainContainer->setContentAlignment(AlignmentFlag::Center);
 
-    auto text = mMainContainer->addWidget(cpp14::make_unique<WText>("Duyurular"));
-    text->setAttributeValue(Style::style,Style::font::size::s20px);
+    {
+        auto container = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass(Bootstrap::Grid::row);
+        container->setMaximumSize(1024,WLength::Auto);
+        container->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::Azure));
+
+        auto text = container->addWidget(cpp14::make_unique<WText>("Duyurular"));
+        text->setAttributeValue(Style::style,Style::font::size::s20px);
+    }
+
 
     auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     row->addStyleClass(Bootstrap::Grid::row);
-    //    row->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::Azure));
+    row->setMaximumSize(1024,WLength::Auto);
+    row->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::Azure));
+
+
 
     row->addStyleClass("announceRow");
 
@@ -4393,8 +4406,9 @@ Body::Meclis::Meclis(mongocxx::database *_db)
 
     auto container = detailContainer->addWidget(cpp14::make_unique<WContainerWidget>());
 
-    container->setMaximumSize(1250,WLength::Auto);
+    container->setMaximumSize(1024,WLength::Auto);
     container->setPadding(0,AllSides);
+    container->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::Snow));
 
     {
         std::string path = "img/baskanBackGround.JPG";
@@ -4660,7 +4674,7 @@ Body::Proje::Proje(mongocxx::database *_db)
     mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
     mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
 
-    mMainContainer->setMargin(90,Side::Top);
+    mMainContainer->setPadding(90,Side::Top);
 
     auto detailContainer = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     detailContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
@@ -4672,6 +4686,8 @@ Body::Proje::Proje(mongocxx::database *_db)
 
     container->setMaximumSize(1250,WLength::Auto);
     container->setPadding(0,AllSides);
+    container->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::Snow));
+
 
 
 
@@ -5461,7 +5477,7 @@ void Body::Proje::addItem(WContainerWidget *widget, item _item , bool OneColoum 
 
         auto layoutContainer = grayContainer->addWidget(cpp14::make_unique<WContainerWidget>());
         layoutContainer->setAttributeValue(Style::style,Style::Border::border("1px solid white"));
-        layoutContainer->setHeight(100);
+        layoutContainer->setHeight(75);
         auto layout = layoutContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
 
 
@@ -5491,7 +5507,7 @@ void Body::Proje::addItem(WContainerWidget *widget, item _item , bool OneColoum 
 
         auto layoutContainer = grayContainer->addWidget(cpp14::make_unique<WContainerWidget>());
         layoutContainer->setAttributeValue(Style::style,Style::Border::border("1px solid white"));
-        layoutContainer->setHeight(230);
+        layoutContainer->setHeight(150);
         auto layout = layoutContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
 
 
@@ -5743,11 +5759,11 @@ Body::Haber::Haber(mongocxx::database *_db)
     skip = 0;
     count = 0;
 
-
     mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
     mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
 
-    mMainContainer->setMargin(90,Side::Top);
+//    mMainContainer->setMargin(90,Side::Top);
+    mMainContainer->setPadding(90,Side::Top);
 
 
 
@@ -5760,8 +5776,10 @@ Body::Haber::Haber(mongocxx::database *_db)
 
     container = detailContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     container->setContentAlignment(AlignmentFlag::Center);
-    container->setMaximumSize(1250,WLength::Auto);
+    container->setMaximumSize(1024,WLength::Auto);
     container->setPadding(0,AllSides);
+    container->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::Snow));
+
 
 
 
@@ -5978,6 +5996,7 @@ void Body::Haber::addItem(WContainerWidget *widget, item _item)
     auto _container = widget->addWidget(cpp14::make_unique<WContainerWidget>());
     _container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
     _container->setContentAlignment(AlignmentFlag::Center);
+    _container->setMargin(25,Side::Bottom);
 
     auto thumpcontainer = _container->addWidget(cpp14::make_unique<WContainerWidget>());
     thumpcontainer->setHeight(250);
@@ -5987,7 +6006,8 @@ void Body::Haber::addItem(WContainerWidget *widget, item _item)
     auto layout = thumpcontainer->setLayout(cpp14::make_unique<WVBoxLayout>());
     auto img = layout->addWidget(cpp14::make_unique<WContainerWidget>(),1,AlignmentFlag::Justify);
     img->setAttributeValue(Style::style,Style::background::url(_item.iconPath)+Style::background::repeat::norepeat+Style::background::size::cover);
-    img->addStyleClass(Bootstrap::ImageShape::img_rounded);
+    img->addStyleClass(Bootstrap::ImageShape::img_circle);
+    img->setHeight(150);
 
 
     auto text = layout->addWidget(cpp14::make_unique<WText>(_item.title),0,AlignmentFlag::Bottom);
@@ -6010,7 +6030,7 @@ void Body::Haber::setNews(std::string oid)
     auto container = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     container->setPadding(0,AllSides);
 
-    container->setMaximumSize(1250,WLength::Auto);
+    container->setMaximumSize(1024,WLength::Auto);
     container->setPadding(0,AllSides);
 
 
@@ -6154,6 +6174,7 @@ Body::Etkinlik::Etkinlik(mongocxx::database *_db)
     container->setContentAlignment(AlignmentFlag::Center);
     container->setMaximumSize(1250,WLength::Auto);
     container->setPadding(0,AllSides);
+    container->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::Snow));
 
 
 
@@ -6390,7 +6411,7 @@ void Body::Etkinlik::setEtkinlik(std::string oid)
     auto layout = detailContainer->setLayout(cpp14::make_unique<WHBoxLayout>());
     layout->setContentsMargins(0,0,0,0);
     auto container = layout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Center);
-    container->setMaximumSize(1250,WLength::Auto);
+    container->setMaximumSize(1024,WLength::Auto);
     container->setPadding(0,AllSides);
 
     auto filter = document{};
@@ -6849,8 +6870,9 @@ Body::Talep::Talep(mongocxx::database *_db)
       db(_db)
 {
 
-    mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
 
+    mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
+    mMainContainer->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::Snow));
     mMainContainer->setMargin(25,Side::Top);
 
     mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
@@ -7314,6 +7336,7 @@ Body::BilgiEdin::BilgiEdin::BilgiEdin(mongocxx::database *_db)
     mMainContainer->setMargin(90,Side::Top);
     mMainContainer->setId("bilgiEdinmeid");
 
+
     mHeaderContainer = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     mHeaderContainer->setContentAlignment(AlignmentFlag::Center);
 //    mHeaderContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
@@ -7419,6 +7442,7 @@ void Body::BilgiEdin::BilgiEdin::showMessage(std::string title, std::string msg)
 Body::BilgiEdin::Controller::Controller()
 {
     setMargin(10,Side::Bottom|Side::Top);
+
     auto mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
     mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
     mMainContainer->setMaximumSize(950,WLength::Auto);
@@ -7465,7 +7489,8 @@ void Body::BilgiEdin::Controller::addButton(std::string title, BilgiEdin::Sayfa 
     text->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::weight::bold+Style::font::size::s18px);
     layout->addStretch(1);
 
-    backContainer->setAttributeValue(Style::style,Style::background::color::color(Style::color::Purple::MediumSlateBlue));
+    backContainer->setAttributeValue(Style::style,Style::background::color::rgba(25,50,75));
+    backContainer->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
     container->clicked().connect([=](){
         _clickbasvuru_.emit(sayfa);
@@ -7497,6 +7522,7 @@ Body::BilgiEdin::Basvuru::Basvuru(mongocxx::database *_db)
     auto mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
     mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
 
+
     {
         auto _container = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
         _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
@@ -7516,6 +7542,8 @@ Body::BilgiEdin::Basvuru::Basvuru(mongocxx::database *_db)
 
     auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     row->addStyleClass(Bootstrap::Grid::row);
+    row->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::Snow));
+
 
     //Açıklamalar
     {
@@ -8105,6 +8133,8 @@ void Body::Serik::Hakkinda::initPage()
     auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     row->addStyleClass(Bootstrap::Grid::row);
     row->setMaximumSize(1270,WLength::Auto);
+    row->setAttributeValue(Style::style,Style::background::url("v2/slide/SlidefilterWhite.png")+Style::background::repeat::repeat);
+
 
     {
         std::string path = "img/baskanBackGround.JPG";
@@ -9362,7 +9392,7 @@ Body::Calisma::Calisma(mongocxx::database *_db)
     mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
     mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
 
-    mMainContainer->setMargin(90,Side::Top);
+    mMainContainer->setPadding(90,Side::Top);
 
     auto detailContainer = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     detailContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
@@ -9372,8 +9402,9 @@ Body::Calisma::Calisma(mongocxx::database *_db)
 
     container = detailContainer->addWidget(cpp14::make_unique<WContainerWidget>());
 
-    container->setMaximumSize(1250,WLength::Auto);
+    container->setMaximumSize(1024,WLength::Auto);
     container->setPadding(0,AllSides);
+    container->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::Snow));
 
 
     skip = 0;
@@ -10496,16 +10527,14 @@ void Body::Calisma::setSelectedCalisma(std::string oid)
 
 }
 
-
-
-
-
 void Body::Calisma::initPage()
 {
     mContentContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
     mContentContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_10);
     mTableContainer = mContentContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     mTableContainer->addStyleClass(Bootstrap::Grid::container_fluid);
+    mTableContainer->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::Snow));
+
 
 
     this->zamanTuneli();

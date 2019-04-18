@@ -34,56 +34,23 @@ void MainPage::init()
 
     mContentWidget->clear();
 
-    auto slider = mContentWidget->addWidget(cpp14::make_unique<Slider>(this->getDB()));
-    slider->setPositionScheme(PositionScheme::Absolute);
-    slider->setWidth(WLength("100%"));
-    slider->setAttributeValue(Style::style,"z-index:-1;");
-    slider->setId("sliderid");
-    slider->setHeight(768);
+//    auto slider = mContentWidget->addWidget(cpp14::make_unique<Slider>(this->getDB()));
+//    slider->setPositionScheme(PositionScheme::Absolute);
+//    slider->setWidth(WLength("100%"));
+//    slider->setAttributeValue(Style::style,"z-index:-1;");
+//    slider->setId("sliderid");
+//    slider->setHeight(768);
+    mContentWidget->setContentAlignment(AlignmentFlag::Center);
+
+    auto rContainer = mContentWidget->addWidget(cpp14::make_unique<WContainerWidget>());
+    rContainer->addStyleClass(Bootstrap::Grid::row);
+    rContainer->setMaximumSize(1270,WLength::Auto);
+    rContainer->setPadding(180,Side::Top);
 
     {
-        auto container = mContentWidget->addWidget(cpp14::make_unique<WContainerWidget>());
-        container->setHeight(800);
-        container->setContentAlignment(AlignmentFlag::Center);
-//        container->decorationStyle().setBorder(WBorder(BorderStyle::Solid,BorderWidth::Medium,WColor(0,255,0)));
-
-
-        auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
-        _container->setPositionScheme(PositionScheme::Relative);
-        _container->setHeight(768);
-        _container->setWidth(WLength::Auto);
-        _container->setMaximumSize(1270,WLength::Auto);
-//        _container->decorationStyle().setBorder(WBorder(BorderStyle::Solid,BorderWidth::Medium,WColor(255,0,0)));
-
-        auto content = _container->addWidget(cpp14::make_unique<WContainerWidget>());
-        content->setPositionScheme(PositionScheme::Absolute);
-
-        content->setWidth(550);
-        content->setHeight(250);
-        content->setOffsets(0,Side::Bottom);
-        content->setOffsets(0,Side::Right);
-
-        auto rContainer = content->addWidget(cpp14::make_unique<WContainerWidget>());
-        rContainer->addStyleClass(Bootstrap::Grid::row);
-
-        {
-            auto fotoContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            fotoContainer->addStyleClass(Bootstrap::Grid::Offset::Large::col_lg_4);
-            fotoContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_8);
-            fotoContainer->setHeight(250);
-
-            auto foto = fotoContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            foto->setHeight(250);
-
-            foto->setAttributeValue(Style::style,Style::background::url("v2/baskan/baskan1.png")+
-                                             Style::background::repeat::norepeat+
-                                             Style::background::size::contain+
-                                             Style::background::position::center_center);
-        }
-    }
-
-    {
-        auto controller = mContentWidget->addWidget(cpp14::make_unique<MainPageController>(this->getDB()));
+        auto controller = rContainer->addWidget(cpp14::make_unique<MainPageController>(this->getDB()));
+        controller->addStyleClass(Bootstrap::Grid::Visible::visible_lg);
+        controller->addStyleClass(Bootstrap::Grid::Large::col_lg_9);
         controller->ClickHaber().connect(this,&MainPage::initHaberler);
         controller->ClickCalisma().connect(this,&MainPage::initCalismalar);
         controller->ClickProjeler().connect(this,&MainPage::initProjeler);
@@ -92,7 +59,113 @@ void MainPage::init()
         controller->ClickGiris().connect(this,&MainPage::initGiris);
         controller->ClickMeclis().connect(this,&MainPage::initMeclis);
         controller->ClickAnounce().connect(this,&MainPage::initAnounceDetail);
+        controller->ClickDuyurular().connect(this,&MainPage::initAnounceList);
+
     }
+
+    {
+        auto fotoContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+        fotoContainer->addStyleClass(Bootstrap::Grid::Visible::visible_lg);
+//        fotoContainer->addStyleClass(Bootstrap::Grid::Offset::Large::col_lg_4);
+        fotoContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_3);
+        fotoContainer->setHeight(250);
+
+        auto foto = fotoContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+        foto->setHeight(250);
+
+        foto->setAttributeValue(Style::style,Style::background::url("v2/baskan/baskan1.png")+
+                                         Style::background::repeat::norepeat+
+                                         Style::background::size::contain+
+                                         Style::background::position::center_center);
+    }
+
+    {
+        auto fotoContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+        fotoContainer->addStyleClass(Bootstrap::Grid::Hidden::hidden_lg);
+        fotoContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_3);
+        fotoContainer->setHeight(250);
+
+        auto foto = fotoContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+        foto->setHeight(250);
+
+        foto->setAttributeValue(Style::style,Style::background::url("v2/baskan/baskan1.png")+
+                                         Style::background::repeat::norepeat+
+                                         Style::background::size::contain+
+                                         Style::background::position::center_center);
+    }
+
+    {
+        auto controller = rContainer->addWidget(cpp14::make_unique<MainPageController>(this->getDB()));
+        controller->addStyleClass(Bootstrap::Grid::Hidden::hidden_lg);
+        controller->addStyleClass(Bootstrap::Grid::Large::col_lg_9);
+        controller->ClickHaber().connect(this,&MainPage::initHaberler);
+        controller->ClickCalisma().connect(this,&MainPage::initCalismalar);
+        controller->ClickProjeler().connect(this,&MainPage::initProjeler);
+        controller->ClickEtkinlikler().connect(this,&MainPage::initEtkinlikler);
+        controller->ClickBilgiEdinme().connect(this,&MainPage::initBilgiEdinme);
+        controller->ClickGiris().connect(this,&MainPage::initGiris);
+        controller->ClickMeclis().connect(this,&MainPage::initMeclis);
+        controller->ClickAnounce().connect(this,&MainPage::initAnounceDetail);
+        controller->ClickHakkinda().connect(this,&MainPage::initHakkinda);
+        controller->ClickIletisim().connect(this,&MainPage::initIletisim);
+        controller->ClickDuyurular().connect(this,&MainPage::initAnounceList);
+    }
+
+
+
+
+//    {
+//        auto container = mContentWidget->addWidget(cpp14::make_unique<WContainerWidget>());
+//        container->setHeight(350);
+//        container->setContentAlignment(AlignmentFlag::Center);
+////        container->decorationStyle().setBorder(WBorder(BorderStyle::Solid,BorderWidth::Medium,WColor(0,255,0)));
+
+
+//        auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
+//        _container->setPositionScheme(PositionScheme::Relative);
+//        _container->setHeight(350);
+//        _container->setWidth(WLength::Auto);
+//        _container->setMaximumSize(1270,WLength::Auto);
+////        _container->decorationStyle().setBorder(WBorder(BorderStyle::Solid,BorderWidth::Medium,WColor(255,0,0)));
+
+//        auto content = _container->addWidget(cpp14::make_unique<WContainerWidget>());
+//        content->setPositionScheme(PositionScheme::Absolute);
+
+//        content->setWidth(550);
+//        content->setHeight(250);
+//        content->setOffsets(0,Side::Bottom);
+//        content->setOffsets(0,Side::Right);
+
+//        auto rContainer = content->addWidget(cpp14::make_unique<WContainerWidget>());
+//        rContainer->addStyleClass(Bootstrap::Grid::row);
+
+//        {
+//            auto fotoContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//            fotoContainer->addStyleClass(Bootstrap::Grid::Offset::Large::col_lg_4);
+//            fotoContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_8);
+//            fotoContainer->setHeight(250);
+
+//            auto foto = fotoContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//            foto->setHeight(250);
+
+//            foto->setAttributeValue(Style::style,Style::background::url("v2/baskan/baskan1.png")+
+//                                             Style::background::repeat::norepeat+
+//                                             Style::background::size::contain+
+//                                             Style::background::position::center_center);
+//        }
+//    }
+
+//    {
+//        auto controller = mContentWidget->addWidget(cpp14::make_unique<MainPageController>(this->getDB()));
+//        controller->ClickHaber().connect(this,&MainPage::initHaberler);
+//        controller->ClickCalisma().connect(this,&MainPage::initCalismalar);
+//        controller->ClickProjeler().connect(this,&MainPage::initProjeler);
+//        controller->ClickEtkinlikler().connect(this,&MainPage::initEtkinlikler);
+//        controller->ClickBilgiEdinme().connect(this,&MainPage::initBilgiEdinme);
+//        controller->ClickGiris().connect(this,&MainPage::initGiris);
+//        controller->ClickMeclis().connect(this,&MainPage::initMeclis);
+//        controller->ClickAnounce().connect(this,&MainPage::initAnounceDetail);
+//    }
 }
 
 void MainPage::initHaberler()
@@ -111,36 +184,42 @@ void MainPage::initProjeler()
 {
     mContentWidget->clear();
     auto widget = mContentWidget->addWidget(cpp14::make_unique<Body::Proje>(this->getDB()));
+    widget->setMaximumSize(1024,WLength::Auto);
 }
 
 void MainPage::initEtkinlikler()
 {
     mContentWidget->clear();
     auto widget = mContentWidget->addWidget(cpp14::make_unique<Body::Etkinlik>(this->getDB()));
+    widget->setMaximumSize(1024,WLength::Auto);
 }
 
 void MainPage::initBilgiEdinme()
 {
     mContentWidget->clear();
     auto widget = mContentWidget->addWidget(cpp14::make_unique<Body::BilgiEdin::BilgiEdin>(this->getDB()));
+    widget->setMaximumSize(1024,WLength::Auto);
 }
 
 void MainPage::initGiris()
 {
     mContentWidget->clear();
     auto widget = mContentWidget->addWidget(cpp14::make_unique<Giris::GirisWidget>(this->getDB()));
+    widget->setMaximumSize(1024,WLength::Auto);
 }
 
 void MainPage::initMeclis()
 {
     mContentWidget->clear();
     auto widget = mContentWidget->addWidget(cpp14::make_unique<Body::Meclis>(this->getDB()));
+    widget->setMaximumSize(1024,WLength::Auto);
 }
 
 void MainPage::initHakkinda()
 {
     mContentWidget->clear();
     auto widget = mContentWidget->addWidget(cpp14::make_unique<Body::Serik::Hakkinda>(this->getDB()));
+    widget->setMaximumSize(1024,WLength::Auto);
 }
 
 void MainPage::initIletisim()
@@ -162,7 +241,7 @@ void MainPage::initIletisim()
     mContentWidget->setContentAlignment(AlignmentFlag::Center);
     auto container = mContentWidget->addWidget(cpp14::make_unique<WContainerWidget>());
 
-    container->setMaximumSize(1250,WLength::Auto);
+    container->setMaximumSize(1024,WLength::Auto);
     container->setPadding(0,AllSides);
     container->addStyleClass(Bootstrap::Grid::row);
 
@@ -261,18 +340,38 @@ void MainPage::initIletisim()
     }
 }
 
+void MainPage::initAnounceList()
+{
+
+    mContentWidget->clear();
+
+    auto mMainContainer = mContentWidget->addWidget(cpp14::make_unique<Body::NewsAnnounceContent::AnnouncePanel::AnnounceList>(this->getDB()));
+    mMainContainer->setPadding( 90 , Side::Top );
+    mMainContainer->setContentAlignment(AlignmentFlag::Center);
+
+    mMainContainer->mGetOid().connect([=](std::string mOid){
+        initAnounceDetail(mOid);
+    });
+    //    {
+    //        auto list = anounceContainer->addWidget(cpp14::make_unique<Body::NewsAnnounceContent::AnnouncePanel::AnnounceList>(this->getDB()));
+    //        list->mGetOid().connect([=](std::string mOid){
+    //           _Announce.emit(mOid);
+    //        });
+    //    }
+}
+
 void MainPage::initAnounceDetail( std::string mOid )
 {
     mContentWidget->clear();
 
     auto mMainContainer = mContentWidget->addWidget(cpp14::make_unique<WContainerWidget>());
-    mMainContainer->setMargin( 90 , Side::Top );
+    mMainContainer->setPadding( 90 , Side::Top );
     mMainContainer->setContentAlignment(AlignmentFlag::Center);
 
 
     auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     row->addStyleClass(Bootstrap::Grid::row);
-    row->setMaximumSize(1270,WLength::Auto);
+    row->setMaximumSize(1024,WLength::Auto);
 
     WText* announceTitle = nullptr;;
     WText* AnnounceContent = nullptr;

@@ -31,6 +31,8 @@ public:
 
     void initIletisim();
 
+    void initAnounceList();
+
     void initAnounceDetail( std::string mOid );
 
     std::string downloadifNotExist( bsoncxx::types::value oid , bool forceFilename = false );

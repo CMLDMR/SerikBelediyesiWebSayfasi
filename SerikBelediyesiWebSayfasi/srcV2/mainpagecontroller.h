@@ -43,6 +43,12 @@ public:
 
     Signal<std::string> &ClickAnounce();
 
+    Signal<NoClass> &ClickIletisim();
+
+    Signal<NoClass> &ClickHakkinda();
+
+    Signal<NoClass> &ClickDuyurular();
+
 private:
     Signal<NoClass> _Haber;
 
@@ -60,7 +66,11 @@ private:
 
     Signal<std::string> _Announce;
 
+    Signal<NoClass> _iletisim;
 
+    Signal<NoClass> _hakkinda;
+
+    Signal<NoClass> _duyurular;
 
 };
 

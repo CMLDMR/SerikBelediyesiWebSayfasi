@@ -136,49 +136,30 @@ void MainApplication::init()
 
     root()->addStyleClass("rootBody");
 
+    {
+        auto container = root()->addWidget(cpp14::make_unique<WContainerWidget>());
+
+        container->setWidth(WLength("100%"));
+        container->setHeight(WLength("100%"));
+        container->setPositionScheme(PositionScheme::Fixed);
+        container->addStyleClass("backanimation");
+        container->setZIndex(-100);
+
+
+        auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
+        _container->setWidth(WLength("100%"));
+        _container->setHeight(WLength("100%"));
+        _container->setPositionScheme(PositionScheme::Absolute);
+        _container->setAttributeValue(Style::style,Style::background::url("v2/slide/Slidefilter.png")
+                                     +Style::background::repeat::repeat);
+        _container->setZIndex(-99);
+
+
+    }
+
+
     MainPage* mPage = root()->addWidget(cpp14::make_unique<MainPage>(&db));
 
-//    if( 0 ){
-//        root()->addWidget(cpp14::make_unique<tWidget>());
-
-
-
-//        {
-//            auto container = root()->addWidget(cpp14::make_unique<WContainerWidget>());
-//            auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-
-//            Wt::WLink link = Wt::WLink("https://webportal.serik.bel.tr/web/guest/2");
-//            link.setTarget(Wt::LinkTarget::NewWindow);
-
-//            std::unique_ptr<Wt::WAnchor> anchor =
-//                    Wt::cpp14::make_unique<Wt::WAnchor>(link,
-//                                                        "e-Belediye");
-
-//            layout->addWidget(std::move(anchor),1,AlignmentFlag::Bottom|AlignmentFlag::Center);
-
-//            container->decorationStyle().setBorder(WBorder(BorderStyle::Solid));
-
-//            container->setMargin(25,Side::Top|Side::Bottom);
-//            container->setMargin(WLength::Auto,Side::Left|Side::Right);
-//            container->setMaximumSize(150,WLength::Auto);
-//            container->setAttributeValue(Style::style,Style::background::color::color(Style::color::Grey::Black));
-//        }
-
-
-//        auto girisContainer = root()->addWidget(cpp14::make_unique<WContainerWidget>());
-//        girisContainer->setContentAlignment(AlignmentFlag::Center);
-//        girisContainer->setMargin(25,Side::Bottom);
-
-//        auto trContainer = girisContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//        trContainer->setMaximumSize(150,WLength::Auto);
-//        trContainer->setAttributeValue(Style::style,Style::background::color::rgba(25,25,25));
-
-//        {
-//            trContainer->addStyleClass("HeaderMenuItem");
-//            auto layout = trContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
-//            auto trText = layout->addWidget(cpp14::make_unique<WText>(WString::fromUTF8("Giriş")),0,AlignmentFlag::Middle);
-//        }
-//    }
 
 
 
@@ -190,34 +171,17 @@ void MainApplication::init()
 //    Body::Body* body = root()->addWidget(cpp14::make_unique<Body::Body>(&db,&Bucket));
     Footer::Footer* footer = root()->addWidget(cpp14::make_unique<Footer::Footer>());
 
-//    header->mClickAnaSayfa().connect(body , &Body::Body::initBody);
-//    header->mClickYonetim().connect(body , &Body::Body::initYonetim);
-//    header->mClickMeclis().connect(body , &Body::Body::initMeclis);
-//    header->mClickProje().connect(body , &Body::Body::initProje);
-//    header->mClickHaber().connect(body , &Body::Body::initHaberler);
-//    header->mClickEtkinlik().connect(body , &Body::Body::initEtkinlikler);
-//    header->mClickVideo().connect(body , &Body::Body::initVideo);
-//    header->mClickBilgiEdin().connect(body , &Body::Body::initBilgiEdin);
-//    header->mClickGiris().connect(body , &Body::Body::initGiris);
-//    header->mClickIletisim().connect(body , &Body::Body::initiletisim);
-//    header->mClickHakkinda().connect(body , &Body::Body::initHakkinda);
-//    header->mClickCalisma().connect(body , &Body::Body::initCalismalar);
-
-
-//    trContainer->clicked().connect([=](){
-//        body->initGiris();
-//    });
 
 
 
 
 
 
-    auto device0 = root()->addWidget(cpp14::make_unique<WText>("Serik Belediyesi © 2018"));
-    auto device1 = root()->addWidget(cpp14::make_unique<WText>("Serik Belediyesi © 2018"));
-    auto device2 = root()->addWidget(cpp14::make_unique<WText>("Serik Belediyesi © 2018"));
-    auto device3 = root()->addWidget(cpp14::make_unique<WText>("Serik Belediyesi © 2018"));
-    auto device4 = root()->addWidget(cpp14::make_unique<WText>("Serik Belediyesi © 2018"));
+    auto device0 = root()->addWidget(cpp14::make_unique<WText>("Serik Belediyesi © 2019"));
+    auto device1 = root()->addWidget(cpp14::make_unique<WText>("Serik Belediyesi © 2019"));
+    auto device2 = root()->addWidget(cpp14::make_unique<WText>("Serik Belediyesi © 2019"));
+    auto device3 = root()->addWidget(cpp14::make_unique<WText>("Serik Belediyesi © 2019"));
+    auto device4 = root()->addWidget(cpp14::make_unique<WText>("Serik Belediyesi © 2019"));
 
     device0->addStyleClass("device0");
     device1->addStyleClass("device1");

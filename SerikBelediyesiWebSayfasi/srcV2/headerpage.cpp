@@ -81,7 +81,7 @@ HeaderPage::HeaderPage(mongocxx::database *_db)
             auto rContainer = tContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             rContainer->addStyleClass(Bootstrap::Grid::row);
 
-            {
+            if( 0 ){
                 auto _container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
                 _container->setHeight(65);
                 _container->addStyleClass(Bootstrap::Grid::Offset::Large::col_lg_4+Bootstrap::Grid::Offset::Medium::col_md_4);
@@ -95,7 +95,7 @@ HeaderPage::HeaderPage(mongocxx::database *_db)
                 text->decorationStyle().setCursor(Cursor::PointingHand);
             }
 
-            {
+            if( 0 ){
                 auto _container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
                 _container->setHeight(65);
                 _container->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Hidden::hidden_sm+Bootstrap::Grid::Hidden::hidden_xs);
@@ -108,7 +108,7 @@ HeaderPage::HeaderPage(mongocxx::database *_db)
                 text->decorationStyle().setCursor(Cursor::PointingHand);
             }
 
-            {
+            if( 0 ){
                 auto _container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
                 _container->setHeight(65);
                 _container->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Hidden::hidden_sm+Bootstrap::Grid::Hidden::hidden_xs);
@@ -121,7 +121,7 @@ HeaderPage::HeaderPage(mongocxx::database *_db)
                 text->decorationStyle().setCursor(Cursor::PointingHand);
             }
 
-            {
+            if( 0 ){
                 auto _container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
                 _container->setHeight(65);
                 _container->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Hidden::hidden_sm+Bootstrap::Grid::Hidden::hidden_xs);
@@ -134,7 +134,7 @@ HeaderPage::HeaderPage(mongocxx::database *_db)
                 text->decorationStyle().setCursor(Cursor::PointingHand);
             }
 
-            {
+            if( 0 ){
                 auto _container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
                 _container->setHeight(65);
                 _container->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Hidden::hidden_sm+Bootstrap::Grid::Hidden::hidden_xs);
@@ -150,6 +150,7 @@ HeaderPage::HeaderPage(mongocxx::database *_db)
             {
                 auto _container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
                 _container->setHeight(65);
+                _container->addStyleClass(Bootstrap::Grid::Offset::Large::col_lg_9+Bootstrap::Grid::Offset::Medium::col_md_9);
                 _container->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Hidden::hidden_sm+Bootstrap::Grid::Hidden::hidden_xs);
                 auto layout = _container->setLayout(cpp14::make_unique<WVBoxLayout>());
                 auto text = layout->addWidget(cpp14::make_unique<WText>("İletişim"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
