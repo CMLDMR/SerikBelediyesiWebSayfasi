@@ -21,6 +21,30 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
     wApp->addMetaHeader("description","Serik Belediyesi Resmi Web Sayfası","text/html; charset=utf-8");
 
 
+
+
+
+
+//    std::cout << "SESSION: " << wApp->sessionId() << std::endl;
+//    std::cout << "DEPLOYMENT PATH: " << env.deploymentPath() << std::endl;
+
+//    for (auto str : env.getParameterMap() ) {
+//        std::cout << "First: " << str.first << " - " << std::endl;
+//        for( auto sec : str.second )
+//        {
+//            std::cout << "Second: " << sec << std::endl;
+//        }
+//    }
+
+
+
+
+
+
+
+
+
+
     try {
         mClient = new mongocxx::client(mongocxx::uri(_url));
     } catch (mongocxx::exception& e) {
@@ -32,6 +56,7 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
     Wt::WApplication *app = Wt::WApplication::instance();
     app->setLoadingIndicator(std::make_unique<WOverlayLoadingIndicator>());
     app->loadingIndicator()->setMessage("Yükleniyor...");
+
 
 
 
@@ -67,10 +92,15 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
 
     Wt::WApplication::instance()->useStyleSheet("resources/themes/bootstrap/3/bootstrap-theme.min.css");
     Wt::WApplication::require("script/Script.js");
+//    Wt::WApplication::require("script/testscript.js");
+
+
     Wt::WApplication::require("script/jszip/jszip.min.js");
     Wt::WApplication::require("script/jszip/jszip.js");
     //FileSaver.js
     Wt::WApplication::require("script/jszip/FileSaver.js");
+
+
 
 
 
@@ -118,11 +148,14 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
 
 
 
+
+
+
 }
 
 MainApplication::~MainApplication()
 {
-    std::cout << "--------------Destroy Session-------------" << std::endl;
+    std::cout << "--------------Destroy Session-------------" << wApp->sessionId() << std::endl;
     if( mClient )
     {
         delete  mClient;
@@ -169,8 +202,26 @@ void MainApplication::init()
 
 //    Header::Header* header = root()->addWidget(cpp14::make_unique<Header::Header>());
 //    Body::Body* body = root()->addWidget(cpp14::make_unique<Body::Body>(&db,&Bucket));
-    Footer::Footer* footer = root()->addWidget(cpp14::make_unique<Footer::Footer>());
+//    Footer::Footer* footer = root()->addWidget(cpp14::make_unique<Footer::Footer>());
+//    _signal.connect([=](int _width,int _height){
 
+//       double _w = static_cast<double>(_width);
+//       double _h = static_cast<double>(_height);
+
+//       std::cout << " - VALUE: " << _width << " - " << _height <<  "R: " << _w / _h << std::endl;
+
+//       if( _w / _h > 1.433 ){
+//           footer->setPositionScheme(PositionScheme::Fixed);
+//           footer->setOffsets(0,Side::Bottom);
+//           footer->setWidth(WLength("100%"));
+//       }
+
+
+//    });
+
+//    root()->doJavaScript("var w = window.innerWidth;"
+//                         "var h = window.innerHeight;"
+//                         "console.log(w);console.log(h);" + _signal.createCall({"w,h"}) + ";");
 
 
 

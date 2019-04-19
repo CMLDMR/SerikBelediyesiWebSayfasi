@@ -3403,9 +3403,30 @@ Body::NewsAnnounceContent::AnnouncePanel::AnnounceList::AnnounceList(mongocxx::d
         container->setMaximumSize(1024,WLength::Auto);
         container->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::Azure));
 
-        auto text = container->addWidget(cpp14::make_unique<WText>("Duyurular"));
-        text->setAttributeValue(Style::style,Style::font::size::s20px);
+        {
+            std::string path = "img/baskanBackGround.JPG";
+
+            auto img = container->addWidget(cpp14::make_unique<WContainerWidget>());
+            img->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+
+            img->setAttributeValue(Style::style,Style::background::url(path)+Style::background::size::cover+Style::background::repeat::norepeat+Style::background::position::center_center);
+            img->setHeight(100);
+            img->setPadding(0,AllSides);
+
+            auto gradientContainer = img->addWidget(cpp14::make_unique<WContainerWidget>());
+            gradientContainer->setHeight(100);
+            gradientContainer->addStyleClass("SliderDetailTextBackground");
+            auto layout = gradientContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
+            layout->addStretch(1);
+            auto serik = layout->addWidget(cpp14::make_unique<WText>("Duyurular"),0,AlignmentFlag::Bottom|AlignmentFlag::Center);
+            serik->setAttributeValue(Style::style,Style::font::size::s36px+Style::color::color(Style::color::White::AliceBlue));
+        }
+
+//        auto text = container->addWidget(cpp14::make_unique<WText>("Duyurular"));
+//        text->setAttributeValue(Style::style,Style::font::size::s20px);
     }
+
+
 
 
     auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -3500,7 +3521,6 @@ Body::NewsAnnounceContent::AnnouncePanel::AnnounceList::AnnounceItem::AnnounceIt
         str = str.mid(0,60);
         str.append("...");
     }
-
 
     layout->addWidget(cpp14::make_unique<WText>(str.toStdString()));
 
@@ -6099,7 +6119,8 @@ void Body::Haber::setNews(std::string oid)
                 auto title = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Haberler::Baslik].get_utf8().value.to_string().c_str()),0,AlignmentFlag::Bottom|AlignmentFlag::Center);
                 title->setAttributeValue(Style::style,Style::font::size::s36px+Style::color::color(Style::color::White::AliceBlue));
                 title->addStyleClass("NewsMainTitle");
-                wApp->setInternalPath("/"+title->text().toUTF8(),false);
+//                wApp->setTitle(view["Başlık"].get_utf8().value.to_string());
+//                wApp->setInternalPath("?oid="+view["_id"].get_oid().value.to_string()+"&type=news",false);
             }
 
             {
@@ -6117,6 +6138,12 @@ void Body::Haber::setNews(std::string oid)
                 auto _layout = _container->setLayout(cpp14::make_unique<WHBoxLayout>());
                 _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
                                               Style::background::color::color(Style::color::Grey::Gainsboro));
+//                auto btn = _layout->addWidget(cpp14::make_unique<WPushButton>("Haberler Anasayfa"),0,AlignmentFlag::Center);
+
+//                btn->clicked().connect([=](){
+//                    this->initPage();
+//                });
+
             }
 
 
@@ -7329,6 +7356,7 @@ Body::BilgiEdin::BilgiEdin::BilgiEdin(mongocxx::database *_db)
     :WContainerWidget(),
       db(_db)
 {
+    setAttributeValue(Style::style,Style::background::color::color(Style::color::White::Snow));
     mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
     mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
 //    mMainContainer->setMaximumSize(1250,WLength::Auto);

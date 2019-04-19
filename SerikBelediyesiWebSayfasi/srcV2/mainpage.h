@@ -3,6 +3,7 @@
 
 #include "SerikBelediyesiWebSayfasi/BaseClass/databasewidget.h"
 #include "headerpage.h"
+#include "SerikBelediyesiWebSayfasi/src/footer.h"
 
 class MainPage : public DataBaseWidget
 {
@@ -35,8 +36,14 @@ public:
 
     void initAnounceDetail( std::string mOid );
 
+    void initBaskan();
+
     std::string downloadifNotExist( bsoncxx::types::value oid , bool forceFilename = false );
     std::string downloadifNotExist( std::string oid , bool forceFilename = false );
+
+    JSignal<int,int> _signal;
+
+    Footer::Footer* footer;
 };
 
 #endif // MAINPAGE_H

@@ -40,7 +40,8 @@ SOURCES += main.cpp \
     SerikBelediyesiWebSayfasi/srcV2/mainpage.cpp \
     SerikBelediyesiWebSayfasi/srcV2/headerpage.cpp \
     SerikBelediyesiWebSayfasi/srcV2/slider.cpp \
-    SerikBelediyesiWebSayfasi/srcV2/mainpagecontroller.cpp
+    SerikBelediyesiWebSayfasi/srcV2/mainpagecontroller.cpp \
+    SerikBelediyesiWebSayfasi/srcV2/baskanwidget.cpp
 
 
 
@@ -86,14 +87,16 @@ HEADERS += \
     SerikBelediyesiWebSayfasi/srcV2/mainpage.h \
     SerikBelediyesiWebSayfasi/srcV2/headerpage.h \
     SerikBelediyesiWebSayfasi/srcV2/slider.h \
-    SerikBelediyesiWebSayfasi/srcV2/mainpagecontroller.h
+    SerikBelediyesiWebSayfasi/srcV2/mainpagecontroller.h \
+    SerikBelediyesiWebSayfasi/srcV2/baskanwidget.h
 
 DISTFILES += \
     ../build-SerikBelediyesiWebSayfasi-Desktop_Qt_5_9_1_MSVC2015_64bit2-Release/docroot/css/mainPage.css \
     ../build-SerikBelediyesiWebSayfasi-Desktop_Qt_5_9_1_MSVC2015_64bit2-Release/docroot/css/slider.css \
     ../build-SerikBelediyesiWebSayfasi-Desktop_Qt_5_9_1_MSVC2015_64bit2-Release/docroot/css/eventWidget.css \
     ../build-SerikBelediyesiWebSayfasi-Desktop_Qt_5_9_1_MSVC2015_64bit2-Release/docroot/css/header.css \
-    ../build-SerikBelediyesiWebSayfasi-Desktop_Qt_5_9_1_MSVC2015_64bit2-Release/docroot/script/Script.js
+    ../build-SerikBelediyesiWebSayfasi-Desktop_Qt_5_9_1_MSVC2015_64bit2-Release/docroot/script/Script.js \
+    ../build-SerikBelediyesiWebSayfasi-Desktop_Qt_5_9_1_MSVC2015_64bit2-Release/docroot/script/testscript.js
 
 
 

@@ -95,3 +95,23 @@ void Footer::Footer::showMessage(std::string title, std::string msg)
 
     messageBox->show();
 }
+
+double Footer::Footer::getWidth() const
+{
+    return _width;
+}
+
+void Footer::Footer::setwidth(double width)
+{
+    _width = width;
+}
+
+double Footer::Footer::getHeight() const
+{
+    return _height;
+}
+
+void Footer::Footer::setheight(double height)
+{
+    _height = height;
+}

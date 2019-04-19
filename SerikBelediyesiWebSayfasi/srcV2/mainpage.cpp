@@ -3,9 +3,10 @@
 #include "mainpagecontroller.h"
 #include "SerikBelediyesiWebSayfasi/src/body.h"
 #include "SerikBelediyesiWebSayfasi/src/giriswidget.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/baskanwidget.h"
 
 MainPage::MainPage(mongocxx::database *_db)
-    :DataBaseWidget (_db)
+    :DataBaseWidget (_db),_signal(this,"_signal")
 {
     auto header = addWidget(cpp14::make_unique<HeaderPage>(this->getDB()));
     header->setZIndex(12);
@@ -14,9 +15,7 @@ MainPage::MainPage(mongocxx::database *_db)
     mContentWidget = addWidget(cpp14::make_unique<WContainerWidget>());
     this->init();
 
-    header->ClickAnaSayfa().connect([=](){
-       this->init();
-    });
+
 
     header->ClickHaber().connect(this,&MainPage::initHaberler);
     header->ClickCalisma().connect(this,&MainPage::initCalismalar);
@@ -27,6 +26,43 @@ MainPage::MainPage(mongocxx::database *_db)
     header->ClickMeclis().connect(this,&MainPage::initMeclis);
     header->ClickHakkinda().connect(this,&MainPage::initHakkinda);
     header->ClickIletisim().connect(this,&MainPage::initIletisim);
+    header->ClickBaskan().connect(this,&MainPage::initBaskan);
+
+
+    footer = addWidget(cpp14::make_unique<Footer::Footer>());
+
+
+//    footer->setId("footerid");
+
+    _signal.connect([=](int _width,int _height){
+
+       double _w = static_cast<double>(_width);
+       double _h = static_cast<double>(_height);
+       footer->setwidth(_w);
+       footer->setheight(_h);
+
+       std::cout << " - VALUE: " << _width << " - " << _height << " R: " << _w / _h << std::endl;
+
+       if( footer->getWidth() / footer->getHeight() > 1.433 ){
+             footer->addStyleClass("footerStickAbsolute");
+       }
+
+
+    });
+
+    header->ClickAnaSayfa().connect([=](){
+        if( footer->getWidth() / footer->getHeight() >= 1.333 ){
+            footer->removeStyleClass("footerStickAbsolute");
+            footer->addStyleClass("footerStickAbsolute");
+        }
+       this->init();
+    });
+
+    doJavaScript("var w = window.innerWidth;"
+                 "var h = window.innerHeight;"
+                 "console.log(w);console.log(h);" + _signal.createCall({"w,h"}) + ";");
+
+
 }
 
 void MainPage::init()
@@ -49,8 +85,8 @@ void MainPage::init()
 
     {
         auto controller = rContainer->addWidget(cpp14::make_unique<MainPageController>(this->getDB()));
-        controller->addStyleClass(Bootstrap::Grid::Visible::visible_lg);
-        controller->addStyleClass(Bootstrap::Grid::Large::col_lg_9);
+//        controller->addStyleClass(Bootstrap::Grid::Visible::visible_lg);
+        controller->addStyleClass(Bootstrap::Grid::col_full_12);
         controller->ClickHaber().connect(this,&MainPage::initHaberler);
         controller->ClickCalisma().connect(this,&MainPage::initCalismalar);
         controller->ClickProjeler().connect(this,&MainPage::initProjeler);
@@ -63,53 +99,53 @@ void MainPage::init()
 
     }
 
-    {
-        auto fotoContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-        fotoContainer->addStyleClass(Bootstrap::Grid::Visible::visible_lg);
-//        fotoContainer->addStyleClass(Bootstrap::Grid::Offset::Large::col_lg_4);
-        fotoContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_3);
-        fotoContainer->setHeight(250);
+//    {
+//        auto fotoContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//        fotoContainer->addStyleClass(Bootstrap::Grid::Visible::visible_lg);
+////        fotoContainer->addStyleClass(Bootstrap::Grid::Offset::Large::col_lg_4);
+//        fotoContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_3);
+//        fotoContainer->setHeight(250);
 
-        auto foto = fotoContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-        foto->setHeight(250);
+//        auto foto = fotoContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//        foto->setHeight(250);
 
-        foto->setAttributeValue(Style::style,Style::background::url("v2/baskan/baskan1.png")+
-                                         Style::background::repeat::norepeat+
-                                         Style::background::size::contain+
-                                         Style::background::position::center_center);
-    }
+//        foto->setAttributeValue(Style::style,Style::background::url("v2/baskan/baskan1.png")+
+//                                         Style::background::repeat::norepeat+
+//                                         Style::background::size::contain+
+//                                         Style::background::position::center_center);
+//    }
 
-    {
-        auto fotoContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-        fotoContainer->addStyleClass(Bootstrap::Grid::Hidden::hidden_lg);
-        fotoContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_3);
-        fotoContainer->setHeight(250);
+//    {
+//        auto fotoContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//        fotoContainer->addStyleClass(Bootstrap::Grid::Hidden::hidden_lg);
+//        fotoContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_3);
+//        fotoContainer->setHeight(250);
 
-        auto foto = fotoContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-        foto->setHeight(250);
+//        auto foto = fotoContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//        foto->setHeight(250);
 
-        foto->setAttributeValue(Style::style,Style::background::url("v2/baskan/baskan1.png")+
-                                         Style::background::repeat::norepeat+
-                                         Style::background::size::contain+
-                                         Style::background::position::center_center);
-    }
+//        foto->setAttributeValue(Style::style,Style::background::url("v2/baskan/baskan1.png")+
+//                                         Style::background::repeat::norepeat+
+//                                         Style::background::size::contain+
+//                                         Style::background::position::center_center);
+//    }
 
-    {
-        auto controller = rContainer->addWidget(cpp14::make_unique<MainPageController>(this->getDB()));
-        controller->addStyleClass(Bootstrap::Grid::Hidden::hidden_lg);
-        controller->addStyleClass(Bootstrap::Grid::Large::col_lg_9);
-        controller->ClickHaber().connect(this,&MainPage::initHaberler);
-        controller->ClickCalisma().connect(this,&MainPage::initCalismalar);
-        controller->ClickProjeler().connect(this,&MainPage::initProjeler);
-        controller->ClickEtkinlikler().connect(this,&MainPage::initEtkinlikler);
-        controller->ClickBilgiEdinme().connect(this,&MainPage::initBilgiEdinme);
-        controller->ClickGiris().connect(this,&MainPage::initGiris);
-        controller->ClickMeclis().connect(this,&MainPage::initMeclis);
-        controller->ClickAnounce().connect(this,&MainPage::initAnounceDetail);
-        controller->ClickHakkinda().connect(this,&MainPage::initHakkinda);
-        controller->ClickIletisim().connect(this,&MainPage::initIletisim);
-        controller->ClickDuyurular().connect(this,&MainPage::initAnounceList);
-    }
+//    {
+//        auto controller = rContainer->addWidget(cpp14::make_unique<MainPageController>(this->getDB()));
+//        controller->addStyleClass(Bootstrap::Grid::Hidden::hidden_lg);
+//        controller->addStyleClass(Bootstrap::Grid::Large::col_lg_9);
+//        controller->ClickHaber().connect(this,&MainPage::initHaberler);
+//        controller->ClickCalisma().connect(this,&MainPage::initCalismalar);
+//        controller->ClickProjeler().connect(this,&MainPage::initProjeler);
+//        controller->ClickEtkinlikler().connect(this,&MainPage::initEtkinlikler);
+//        controller->ClickBilgiEdinme().connect(this,&MainPage::initBilgiEdinme);
+//        controller->ClickGiris().connect(this,&MainPage::initGiris);
+//        controller->ClickMeclis().connect(this,&MainPage::initMeclis);
+//        controller->ClickAnounce().connect(this,&MainPage::initAnounceDetail);
+//        controller->ClickHakkinda().connect(this,&MainPage::initHakkinda);
+//        controller->ClickIletisim().connect(this,&MainPage::initIletisim);
+//        controller->ClickDuyurular().connect(this,&MainPage::initAnounceList);
+//    }
 
 
 
@@ -172,12 +208,14 @@ void MainPage::initHaberler()
 {
     mContentWidget->clear();
     auto widget = mContentWidget->addWidget(cpp14::make_unique<Body::Haber>(this->getDB()));
+    footer->removeStyleClass("footerStickAbsolute");
 }
 
 void MainPage::initCalismalar()
 {
     mContentWidget->clear();
     auto widget = mContentWidget->addWidget(cpp14::make_unique<Body::Calisma>(this->getDB()));
+    footer->removeStyleClass("footerStickAbsolute");
 }
 
 void MainPage::initProjeler()
@@ -185,6 +223,7 @@ void MainPage::initProjeler()
     mContentWidget->clear();
     auto widget = mContentWidget->addWidget(cpp14::make_unique<Body::Proje>(this->getDB()));
     widget->setMaximumSize(1024,WLength::Auto);
+    footer->removeStyleClass("footerStickAbsolute");
 }
 
 void MainPage::initEtkinlikler()
@@ -192,6 +231,7 @@ void MainPage::initEtkinlikler()
     mContentWidget->clear();
     auto widget = mContentWidget->addWidget(cpp14::make_unique<Body::Etkinlik>(this->getDB()));
     widget->setMaximumSize(1024,WLength::Auto);
+    footer->removeStyleClass("footerStickAbsolute");
 }
 
 void MainPage::initBilgiEdinme()
@@ -199,6 +239,7 @@ void MainPage::initBilgiEdinme()
     mContentWidget->clear();
     auto widget = mContentWidget->addWidget(cpp14::make_unique<Body::BilgiEdin::BilgiEdin>(this->getDB()));
     widget->setMaximumSize(1024,WLength::Auto);
+    footer->removeStyleClass("footerStickAbsolute");
 }
 
 void MainPage::initGiris()
@@ -206,6 +247,7 @@ void MainPage::initGiris()
     mContentWidget->clear();
     auto widget = mContentWidget->addWidget(cpp14::make_unique<Giris::GirisWidget>(this->getDB()));
     widget->setMaximumSize(1024,WLength::Auto);
+    footer->removeStyleClass("footerStickAbsolute");
 }
 
 void MainPage::initMeclis()
@@ -213,6 +255,7 @@ void MainPage::initMeclis()
     mContentWidget->clear();
     auto widget = mContentWidget->addWidget(cpp14::make_unique<Body::Meclis>(this->getDB()));
     widget->setMaximumSize(1024,WLength::Auto);
+    footer->removeStyleClass("footerStickAbsolute");
 }
 
 void MainPage::initHakkinda()
@@ -220,6 +263,7 @@ void MainPage::initHakkinda()
     mContentWidget->clear();
     auto widget = mContentWidget->addWidget(cpp14::make_unique<Body::Serik::Hakkinda>(this->getDB()));
     widget->setMaximumSize(1024,WLength::Auto);
+    footer->removeStyleClass("footerStickAbsolute");
 }
 
 void MainPage::initIletisim()
@@ -338,6 +382,8 @@ void MainPage::initIletisim()
         auto talep = container->addWidget(cpp14::make_unique<Body::Talep>(this->getDB()));
         talep->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
     }
+
+    footer->removeStyleClass("footerStickAbsolute");
 }
 
 void MainPage::initAnounceList()
@@ -358,6 +404,8 @@ void MainPage::initAnounceList()
     //           _Announce.emit(mOid);
     //        });
     //    }
+
+    footer->removeStyleClass("footerStickAbsolute");
 }
 
 void MainPage::initAnounceDetail( std::string mOid )
@@ -542,6 +590,16 @@ void MainPage::initAnounceDetail( std::string mOid )
 //            return;
 //        }
 //    });
+
+}
+
+void MainPage::initBaskan()
+{
+
+    mContentWidget->clear();
+    auto widget = mContentWidget->addWidget(cpp14::make_unique<BaskanWidget>(this->getDB()));
+    widget->setMaximumSize(1024,WLength::Auto);
+    footer->removeStyleClass("footerStickAbsolute");
 
 }
 

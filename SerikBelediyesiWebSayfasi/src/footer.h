@@ -38,6 +38,17 @@ namespace Footer {
 
         void showMessage( std::string title , std::string msg );
 
+
+        double getWidth() const;
+        void setwidth(double width);
+
+        double getHeight() const;
+        void setheight(double height);
+
+    private:
+        double _width;
+        double _height;
+
     };
 
 }

@@ -73,28 +73,28 @@ MainPageController::MainPageController(mongocxx::database *_db)
             text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
         }
 
-        {   // PROJELER
-            auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(bootsrapString);
-            container->setContentAlignment(AlignmentFlag::Center);
-            auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
-            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,50),
-                                                                               this->getRandom(25,50),
-                                                                               this->getRandom(25,50)));
-            btn->setHeight(100);
-            btn->setWidth(100);
-            btn->setMargin(15,AllSides);
-            btn->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+//        {   // PROJELER
+//            auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//            container->addStyleClass(bootsrapString);
+//            container->setContentAlignment(AlignmentFlag::Center);
+//            auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
+//            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,50),
+//                                                                               this->getRandom(25,50),
+//                                                                               this->getRandom(25,50)));
+//            btn->setHeight(100);
+//            btn->setWidth(100);
+//            btn->setMargin(15,AllSides);
+//            btn->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
-            btn->decorationStyle().setCursor(Cursor::PointingHand);
-            btn->clicked().connect([=](){
-              _Projeler.emit(NoClass());
-            });
+//            btn->decorationStyle().setCursor(Cursor::PointingHand);
+//            btn->clicked().connect([=](){
+//              _Projeler.emit(NoClass());
+//            });
 
-            auto layout = btn->setLayout(cpp14::make_unique<WVBoxLayout>());
-            auto text = layout->addWidget(cpp14::make_unique<WText>("PROJELER"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
-            text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
-        }
+//            auto layout = btn->setLayout(cpp14::make_unique<WVBoxLayout>());
+//            auto text = layout->addWidget(cpp14::make_unique<WText>("PROJELER"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+//            text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
+//        }
 
         {   // ETKİNLİKLER
             auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -184,23 +184,23 @@ MainPageController::MainPageController(mongocxx::database *_db)
 //            text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
 //        }
 
-        {   // GALERİ
-            auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(bootsrapString);
-            container->setContentAlignment(AlignmentFlag::Center);
-            auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
-            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,50),
-                                                                               this->getRandom(25,50),
-                                                                               this->getRandom(25,50)));
-            btn->setHeight(100);
-            btn->setWidth(100);
-            btn->setMargin(15,AllSides);
-            btn->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+//        {   // GALERİ
+//            auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//            container->addStyleClass(bootsrapString);
+//            container->setContentAlignment(AlignmentFlag::Center);
+//            auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
+//            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,50),
+//                                                                               this->getRandom(25,50),
+//                                                                               this->getRandom(25,50)));
+//            btn->setHeight(100);
+//            btn->setWidth(100);
+//            btn->setMargin(15,AllSides);
+//            btn->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
-            auto layout = btn->setLayout(cpp14::make_unique<WVBoxLayout>());
-            auto text = layout->addWidget(cpp14::make_unique<WText>("GALERİ"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
-            text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
-        }
+//            auto layout = btn->setLayout(cpp14::make_unique<WVBoxLayout>());
+//            auto text = layout->addWidget(cpp14::make_unique<WText>("GALERİ"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+//            text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
+//        }
 
         {   // BİLGİ EDİNME
             auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());

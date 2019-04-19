@@ -30,6 +30,8 @@ public:
 
     Signal<NoClass> &ClickIletisim();
 
+    Signal<NoClass> &ClickBaskan();
+
 private:
     Signal<NoClass> _Anasayfa;
 
@@ -50,6 +52,9 @@ private:
     Signal<NoClass> _Hakkinda;
 
     Signal<NoClass> _Iletisim;
+
+    Signal<NoClass> _baskan;
+
 };
 
 #endif // HEADERPAGE_H

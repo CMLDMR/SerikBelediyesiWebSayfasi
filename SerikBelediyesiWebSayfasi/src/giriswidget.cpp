@@ -12,6 +12,7 @@ Giris::GirisWidget::GirisWidget(mongocxx::database *_db)
       User(document{}.view())
 {
 
+    setAttributeValue(Style::style,Style::background::color::color(Style::color::White::Snow));
     setPadding(0,AllSides);
     mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
     mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
