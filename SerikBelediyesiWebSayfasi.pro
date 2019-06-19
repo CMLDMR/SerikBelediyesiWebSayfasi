@@ -22,6 +22,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += main.cpp \
+    SerikBelediyesiWebSayfasi/srcV2/kadinailestock.cpp \
     main.cpp \
     mainapplication.cpp \
     SerikBelediyesiWebSayfasi/src/header.cpp \
@@ -64,6 +65,7 @@ INCLUDEPATH += $$PWD/../../Comman
 DEPENDPATH += $$PWD/../../Comman
 
 HEADERS += \
+    SerikBelediyesiWebSayfasi/srcV2/kadinailestock.h \
     mainapplication.h \
     Necessary \
     SerikBelediyesiWebSayfasi/src/header.h \
