@@ -376,7 +376,7 @@ public:
     mongocxx::stdx::optional<bsoncxx::document::value> find_one(std::string collection , const bsoncxx::document::view &view = document{}.view(), mongocxx::options::find options = mongocxx::options::find());
 
     std::int64_t count(std::string collection , bsoncxx::document::view &filter);
-    std::int64_t count(std::string collection , document &filter = document{} );
+//    std::int64_t count(std::string collection , document &filter = document{} );
     std::int64_t count(std::string collection , bsoncxx::document::value val );
 
 
@@ -826,6 +826,36 @@ public:
 private:
     WContainerWidget* mMainContainer;
     WContainerWidget* mContentContainer;
+};
+
+class GirisCikisWidget : public ContainerWidget
+{
+public:
+    GirisCikisWidget(mongocxx::database* _db , bsoncxx::document::value _user );
+    WComboBox* mYearSelect;
+    WComboBox* mMounthSelect;
+    WPushButton* mGosterBtn;
+    WContainerWidget* mContentContainer;
+
+    void initGirisCikis();
+
+    void initPersonelMenu();
+
+
+    void addRow(QDate date);
+
+
+
+private:
+    void addRow(QString personeloid , qint64 julianDay);
+    void addNinRow(QString personeloid , QString BirimName);
+    void initBaskanMenu();
+    WPushButton* mBugunBtn;
+    void initBugun();
+    WComboBox* mCurrentBirim;
+
+    Wt::WCalendar *mCalender;
+    void initSelectedDay(qint64 julianDay);
 };
 
 

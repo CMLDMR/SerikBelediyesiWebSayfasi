@@ -76,12 +76,41 @@ void MainPage::init()
 //    slider->setAttributeValue(Style::style,"z-index:-1;");
 //    slider->setId("sliderid");
 //    slider->setHeight(768);
+
+
     mContentWidget->setContentAlignment(AlignmentFlag::Center);
+
+    // Meclis Canlı Yayın
+//    {
+//        auto container = mContentWidget->addWidget(cpp14::make_unique<WContainerWidget>());
+//        container->setPadding(90,Side::Top);
+//        container->setContentAlignment(AlignmentFlag::Center);
+//        auto text = container->addWidget(cpp14::make_unique<WText>("<h2>Meclis Canlı Yayın</b>",TextFormat::UnsafeXHTML));
+//        text->setAttributeValue(Style::style,Style::color::rgb("255,255,255"));
+//    }
+
+//    {
+
+//        auto container = mContentWidget->addWidget(cpp14::make_unique<WContainerWidget>());
+//        container->addStyleClass("CanliYayin");
+//        container->setPadding(90,Side::Top);
+//        container->setContentAlignment(AlignmentFlag::Center);
+//        auto text = container->addWidget(cpp14::make_unique<WText>("<iframe src=\"https://www.youtube.com/embed/IqWNR7X-fvk?autoplay=1\" style=\"border:0px #ffffff none;\" name=\"myiFrame\" scrolling=\"no\" frameborder=\"1\" marginheight=\"5px\" marginwidth=\"5px\" height=\"100%\" width=\"100%\" "
+//                                                                   "allow=\"accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",TextFormat::UnsafeXHTML));
+//        text->setMaximumSize(1280,WLength::Auto);
+//    }
+
+
+//    <iframe width="1280" height="720" src="https://www.youtube.com/embed/IqWNR7X-fvk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 
     auto rContainer = mContentWidget->addWidget(cpp14::make_unique<WContainerWidget>());
     rContainer->addStyleClass(Bootstrap::Grid::row);
     rContainer->setMaximumSize(1270,WLength::Auto);
     rContainer->setPadding(180,Side::Top);
+
+
+
 
     {
         auto controller = rContainer->addWidget(cpp14::make_unique<MainPageController>(this->getDB()));
@@ -96,8 +125,15 @@ void MainPage::init()
         controller->ClickMeclis().connect(this,&MainPage::initMeclis);
         controller->ClickAnounce().connect(this,&MainPage::initAnounceDetail);
         controller->ClickDuyurular().connect(this,&MainPage::initAnounceList);
-
+        controller->ClickHakkinda().connect(this,&MainPage::initHakkinda);
+        controller->ClickIletisim().connect(this,&MainPage::initIletisim);
+        controller->ClickDuyurular().connect(this,&MainPage::initAnounceList);
     }
+
+
+
+
+
 
 //    {
 //        auto fotoContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());

@@ -169,6 +169,35 @@ void MainApplication::init()
 
     root()->addStyleClass("rootBody");
 
+    std::cout << "Julian Day: " << QDate::currentDate().toJulianDay() << std::endl;
+
+    // Afis Ön Görsel
+//    if( true ){
+
+//        auto container = root()->addWidget(cpp14::make_unique<WContainerWidget>());
+
+//        container->setWidth(WLength("100%"));
+//        container->setHeight(WLength("100%"));
+//        container->setPositionScheme(PositionScheme::Fixed);
+//        container->setAttributeValue(Style::style,Style::background::color::rgba(25,25,25));
+//        container->setZIndex(1000);
+
+//        auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
+//        _container->setWidth(WLength("100%"));
+//        _container->setHeight(WLength("100%"));
+//        _container->setPositionScheme(PositionScheme::Fixed);
+//        _container->setAttributeValue(Style::style,Style::background::url("v2/img/serik-spor.jpg")
+//                                     +Style::background::size::contain
+//                                      +Style::background::position::center_center
+//                                      +Style::background::repeat::norepeat);
+//        _container->setZIndex(1000);
+
+//        _container->clicked().connect([=](){
+//           root()->removeWidget(container);
+//        });
+//    }
+
+
     {
         auto container = root()->addWidget(cpp14::make_unique<WContainerWidget>());
 
@@ -186,8 +215,6 @@ void MainApplication::init()
         _container->setAttributeValue(Style::style,Style::background::url("v2/slide/Slidefilter.png")
                                      +Style::background::repeat::repeat);
         _container->setZIndex(-99);
-
-
     }
 
 

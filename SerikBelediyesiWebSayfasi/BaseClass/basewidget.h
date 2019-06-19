@@ -8,6 +8,7 @@
 #include <QDir>
 #include <QDate>
 #include <QString>
+#include <QTime>
 
 #include <Wt/WContainerWidget.h>
 #include <Wt/WText.h>
@@ -52,6 +53,7 @@
 #include <Wt/WSignal.h>
 #include <Wt/WTime.h>
 #include <Wt/WJavaScript.h>
+#include <Wt/WCalendar.h>
 
 
 
