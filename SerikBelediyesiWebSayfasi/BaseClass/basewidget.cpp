@@ -120,22 +120,33 @@ std::unique_ptr<WPushButton> BaseClass::BaseWidget::createColorButton(const char
 
 
 
-//int64_t BaseClass::BaseWidget::count(std::string collection, bsoncxx::document::view &filter)
+int64_t BaseClass::BaseWidget::count(std::string collection, bsoncxx::document::view &filter)
+{
+    std::int64_t count = 0;
+    try {
+        count = this->db()->collection(collection).count(filter);
+    } catch (mongocxx::exception &e) {
+
+    }
+    return count;
+}
+
+int64_t BaseClass::BaseWidget::count(std::string collection, bsoncxx::document::value val)
+{
+    std::int64_t count = 0;
+    try {
+        count = this->db()->collection(collection).count(val.view());
+    } catch (mongocxx::exception &e) {
+
+    }
+    return count;
+}
+
+//int64_t BaseClass::BaseWidget::count(std::string collection, bsoncxx::builder::basic::document &filter)
 //{
 //    std::int64_t count = 0;
 //    try {
-//        count = this->db()->collection(collection).count(filter);
-//    } catch (mongocxx::exception &e) {
-
-//    }
-//    return count;
-//}
-
-//int64_t BaseClass::BaseWidget::count(std::string collection, bsoncxx::document::value val)
-//{
-//    std::int64_t count = 0;
-//    try {
-//        count = this->db()->collection(collection).count(val.view());
+//        count = this->db()->collection(collection).count(filter.view());
 //    } catch (mongocxx::exception &e) {
 
 //    }

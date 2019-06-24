@@ -120,8 +120,9 @@ public:
 
 //    mongocxx::stdx::optional<bsoncxx::document::value> find_one(std::string collection , const bsoncxx::document::view &view = document{}.view(), mongocxx::options::find options = mongocxx::options::find());
 
-//    std::int64_t count(std::string collection , bsoncxx::document::view &filter);
-//    std::int64_t count(std::string collection , bsoncxx::document::value val );
+    std::int64_t count(std::string collection , bsoncxx::document::view &filter);
+    std::int64_t count(std::string collection , bsoncxx::document::value val );
+//    std::int64_t count(std::string collection , document &filter = document{} );
 
 
     std::string UserBirim(){
