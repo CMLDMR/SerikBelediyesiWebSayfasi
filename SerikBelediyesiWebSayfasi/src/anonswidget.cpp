@@ -872,7 +872,7 @@ void Device::setDurum(const std::string &durum)
 
     mDurum = durum;
 
-    std::cout << "Durum: " << "u8"+mDurum << durum << std::endl;
+//    std::cout << "Durum: " << "u8"+mDurum << durum << std::endl;
 
     if( mDurum == u8"Arızalı" )
     {
