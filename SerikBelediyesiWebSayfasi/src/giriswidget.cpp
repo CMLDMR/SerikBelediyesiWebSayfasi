@@ -4,6 +4,7 @@
 
 #include "anonswidget.h"
 
+#include "SerikBelediyesiWebSayfasi/srcV2/kadinailestock.h"
 
 
 Giris::GirisWidget::GirisWidget(mongocxx::database *_db)
@@ -152,7 +153,7 @@ void Giris::GirisWidget::initPersonelMenu(bsoncxx::document::value vatandas)
         return;
     }
 
-    std::cout << "147: add Personel Widget" << std::endl;
+//    std::cout << "147: add Personel Widget" << std::endl;
 
     mContentContainer->addWidget(cpp14::make_unique<Personel::PersonelWidget>(db,str));
 
@@ -3585,6 +3586,12 @@ void Giris::Personel::PersonelWidget::initMenu()
     {
     }
 
+    if(this->User().view()[SBLDKeys::Personel::statu].get_utf8().value.to_string() == SBLDKeys::Personel::statuType::baskan ||
+            this->User().view()[SBLDKeys::Personel::birimi].get_utf8().value.to_string() == "Kadın ve Aile Hizmetleri Müdürlüğü" )
+    {
+        menu->addItem(WString::fromUTF8("Stok Yardım"), Wt::cpp14::make_unique<KadinAileStock>(db(),User()));
+    }
+
 
     menu->addItem("Anons Sistemi", Wt::cpp14::make_unique<AnonsWidget>(db(),User()));
 
@@ -3647,6 +3654,7 @@ void Giris::Personel::PersonelWidget::initHeader(WContainerWidget* _row)
     auto bucket = db()->gridfs_bucket();
     std::string imgPath = SBLDKeys::downloadifNotExist(&bucket,User().view()[SBLDKeys::Personel::fotoOid].get_oid().value.to_string());
     auto img = photoWidget->addWidget(cpp14::make_unique<WImage>(WLink(imgPath)));
+    img->setWidth(120);
 
 
     {
@@ -3835,16 +3843,16 @@ int64_t Giris::Personel::BaseWidget::count(std::string collection, bsoncxx::docu
 
 
 
-//int64_t Giris::Personel::BaseWidget::count(std::string collection, bsoncxx::builder::basic::document &filter)
-//{
-//    std::int64_t count = 0;
-//    try {
-//        count = this->db()->collection(collection).count(filter.view());
-//    } catch (mongocxx::exception &e) {
+int64_t Giris::Personel::BaseWidget::count(std::string collection, bsoncxx::builder::basic::document &filter)
+{
+    std::int64_t count = 0;
+    try {
+        count = this->db()->collection(collection).count(filter.view());
+    } catch (mongocxx::exception &e) {
 
-//    }
-//    return count;
-//}
+    }
+    return count;
+}
 
 int64_t Giris::Personel::BaseWidget::count(std::string collection, bsoncxx::document::value val)
 {
@@ -6604,7 +6612,7 @@ void Giris::Personel::ProjeWidget::initMahallelerdeProje()
 
         }
 
-        std::int64_t toplamProjeSayisi_ = this->count(SBLDKeys::Projeler::collection,filter);
+        std::int64_t toplamProjeSayisi_ = this->count(SBLDKeys::Projeler::collection,filter.view());
         std::int64_t toplamProjeSayisi = toplamProjeSayisi_;
         if( toplamProjeSayisi * 20 > 255 )
         {
@@ -7242,7 +7250,7 @@ void Giris::Personel::ProjeWidget::initBirimMahalleProje()
                             table->elementAt(row, 0)->addWidget(std::move(text));
                         }
                         {
-                            auto text = (cpp14::make_unique<WText>(WString("{1}").arg(this->count(SBLDKeys::Projeler::collection,filter))));
+                            auto text = (cpp14::make_unique<WText>(WString("{1}").arg(this->count(SBLDKeys::Projeler::collection,filter.view()))));
                             text->setAttributeValue(Style::style,Style::font::size::s12px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
                             table->elementAt(row, 1)->addWidget(std::move(text));
                         }
@@ -7266,7 +7274,7 @@ void Giris::Personel::ProjeWidget::initBirimMahalleProje()
                         }
 
                         {
-                            auto text = (cpp14::make_unique<WText>(WString("{1}").arg(this->count(SBLDKeys::Projeler::collection,filter))));
+                            auto text = (cpp14::make_unique<WText>(WString("{1}").arg(this->count(SBLDKeys::Projeler::collection,filter.view()))));
                             text->setAttributeValue(Style::style,Style::font::size::s12px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
                             table->elementAt(row, 2)->addWidget(std::move(text));
                         }
@@ -7291,7 +7299,7 @@ void Giris::Personel::ProjeWidget::initBirimMahalleProje()
                         }
 
 
-                        auto text = cpp14::make_unique<WText>(WString("{1}").arg(this->count(SBLDKeys::Projeler::collection,filter)));
+                        auto text = cpp14::make_unique<WText>(WString("{1}").arg(this->count(SBLDKeys::Projeler::collection,filter.view())));
                         //                        text->addStyleClass(Bootstrap::Label::info);
                         text->setAttributeValue(Style::style,Style::font::size::s12px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
                         table->elementAt(row, 3)->addWidget(std::move(text));
@@ -7316,7 +7324,7 @@ void Giris::Personel::ProjeWidget::initBirimMahalleProje()
                         }
 
 
-                        auto text = cpp14::make_unique<WText>(WString("{1}").arg(this->count(SBLDKeys::Projeler::collection,filter)));
+                        auto text = cpp14::make_unique<WText>(WString("{1}").arg(this->count(SBLDKeys::Projeler::collection,filter.view())));
                         //                        text->addStyleClass(Bootstrap::Label::info);
                         text->setAttributeValue(Style::style,Style::font::size::s12px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
                         table->elementAt(row, 4)->addWidget(std::move(text));
