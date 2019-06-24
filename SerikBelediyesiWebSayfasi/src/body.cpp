@@ -4477,8 +4477,6 @@ Body::Meclis::Meclis(mongocxx::database *_db)
 
         pdfContainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
         pdfContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_10);
-        //            pdfContainer->setAttributeValue(Style::style,Style::Border::border("1px solid orange"));
-        //            pdfContainer->setHeight(250);
 
         auto yilContainer = SelectContainer->addWidget(cpp14::make_unique<WContainerWidget>());
         //            yilContainer->setAttributeValue(Style::style,Style::Border::border("2px solid gray"));
@@ -4615,12 +4613,14 @@ void Body::Meclis::setKararlar(std::string oid)
         std::cout << "Error: " << e.what() << std::endl;
     }
 
-    //    std::cout << bsoncxx::to_json(filter.view()) << std::endl;
 
 
     pdfContainer->clear();
     pdfContainer->addStyleClass(Bootstrap::Grid::container_fluid);
     auto titleContainer = pdfContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+    titleContainer->addStyleClass(Bootstrap::Grid::container_fluid);
+    auto titleVideoContainer = titleContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+    titleVideoContainer->addStyleClass(Bootstrap::Grid::row);
 
     auto listContainer = pdfContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     listContainer->addStyleClass(Bootstrap::Grid::row);
@@ -4631,16 +4631,47 @@ void Body::Meclis::setKararlar(std::string oid)
 
     try {
 
-        auto collection = db->collection(SBLDKeys::Meclis::collection);
+//        auto collection = db->collection(SBLDKeys::Meclis::collection);
 
-        auto val = collection.find_one(filter.view());
+        auto val = db->collection(SBLDKeys::Meclis::collection).find_one(filter.view());
 
         if( val )
         {
             auto view = val.value().view();
 
-            auto title = titleContainer->addWidget(cpp14::make_unique<WText>(QString::number(view[SBLDKeys::Meclis::yil].get_double().value).toStdString() + " " + view[SBLDKeys::Meclis::ay].get_utf8().value.to_string().c_str()));
-            title->setAttributeValue(Style::style,Style::font::size::s24px);
+            try {
+                auto container = titleVideoContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+                container->addStyleClass(Bootstrap::Grid::col_full_12);
+                container->setHeight(320);
+                auto title = container->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Meclis::youtubeembed].get_utf8().value.to_string(),TextFormat::UnsafeXHTML));
+                title->setAttributeValue(Style::style,Style::font::size::s24px);
+            } catch (bsoncxx::exception &e) {
+                auto container = titleVideoContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+                container->addStyleClass(Bootstrap::Grid::col_full_12);
+                auto title = titleContainer->addWidget(cpp14::make_unique<WText>(e.what()));
+                title->setAttributeValue(Style::style,Style::font::size::s24px);
+            }
+
+
+
+
+
+
+
+            try {
+                auto container = titleVideoContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+                container->addStyleClass(Bootstrap::Grid::col_full_12);
+                auto title = container->addWidget(cpp14::make_unique<WText>(QString::number(view[SBLDKeys::Meclis::yil].get_double().value).toStdString() + " " + view[SBLDKeys::Meclis::ay].get_utf8().value.to_string().c_str()));
+                title->setAttributeValue(Style::style,Style::font::size::s24px);
+            } catch (bsoncxx::exception &e) {
+                auto container = titleVideoContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+                container->addStyleClass(Bootstrap::Grid::col_full_12);
+                auto title = container->addWidget(cpp14::make_unique<WText>(e.what()));
+                title->setAttributeValue(Style::style,Style::font::size::s24px);
+            }
+
+
+
 
 
             auto arlist = view[SBLDKeys::Meclis::kararlar].get_array().value;
@@ -4660,7 +4691,7 @@ void Body::Meclis::setKararlar(std::string oid)
                                         Style::font::size::s12px+
                                         Style::Border::border("1px solid gray"));
                 text->setMargin(15,AllSides);
-                text->addStyleClass(Bootstrap::Grid::Large::col_lg_1);
+                text->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_4);
                 text->decorationStyle().setCursor(Cursor::PointingHand);
                 text->clicked().connect([=](){
                     this->setKarar(oid);
