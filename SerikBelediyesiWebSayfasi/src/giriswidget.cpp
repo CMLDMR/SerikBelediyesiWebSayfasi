@@ -5,6 +5,7 @@
 #include "anonswidget.h"
 
 #include "SerikBelediyesiWebSayfasi/srcV2/kadinailestock.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/ik.h"
 
 
 Giris::GirisWidget::GirisWidget(mongocxx::database *_db)
@@ -3590,6 +3591,12 @@ void Giris::Personel::PersonelWidget::initMenu()
             this->User().view()[SBLDKeys::Personel::birimi].get_utf8().value.to_string() == "Kadın ve Aile Hizmetleri Müdürlüğü" )
     {
         menu->addItem(WString::fromUTF8("Stok Yardım"), Wt::cpp14::make_unique<KadinAileStock>(db(),User()));
+    }
+
+    if(this->User().view()[SBLDKeys::Personel::statu].get_utf8().value.to_string() == SBLDKeys::Personel::statuType::baskan ||
+            this->User().view()[SBLDKeys::Personel::birimi].get_utf8().value.to_string() == "Kadın ve Aile Hizmetleri Müdürlüğü" )
+    {
+        menu->addItem(WString::fromUTF8("IK"), Wt::cpp14::make_unique<IK>(db(),User()));
     }
 
 
