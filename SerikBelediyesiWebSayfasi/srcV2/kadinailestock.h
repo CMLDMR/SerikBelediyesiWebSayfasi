@@ -170,6 +170,8 @@ public:
 
     void Save();
 
+    void Load(const std::string &mtcno);
+
 private:
     WLineEdit* mtcinput;
     WLineEdit* misiminput;

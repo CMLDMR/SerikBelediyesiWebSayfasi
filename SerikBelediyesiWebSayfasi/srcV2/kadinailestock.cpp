@@ -789,6 +789,17 @@ TCKayit::TCKayit(mongocxx::database *_db, bsoncxx::document::value _user)
         container->addStyleClass(Bootstrap::Grid::row);
         mtcinput = container->addWidget(cpp14::make_unique<WLineEdit>());
         mtcinput->setPlaceholderText("TCNO Giriniz");
+        mtcinput->textInput().connect([=](){
+            if( mtcinput->text().toUTF8().size() == 11 )
+            {
+                this->Load(mtcinput->text().toUTF8());
+            }else{
+                misiminput->setText("");
+                mtelinput->setText("");
+                maddressinput->setText("");
+                mMahalle->setCurrentIndex(0);
+            }
+        });
     }
 
     {
@@ -838,7 +849,9 @@ TCKayit::TCKayit(mongocxx::database *_db, bsoncxx::document::value _user)
     {
         auto container = this->getContentRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::row);
+        container->setMargin(15,Side::Top);
         auto saveBtn = container->addWidget(cpp14::make_unique<WPushButton>("Kaydet"));
+        saveBtn->addStyleClass(Bootstrap::Button::Primary);
         saveBtn->clicked().connect(this,&TCKayit::Save);
     }
 
@@ -857,6 +870,29 @@ void TCKayit::Save()
         this->showMessage("Bilgi","Kayıt Başarılı");
     }else{
         this->showMessage("Uyarı","Kayıt Edilemedi!");
+    }
+}
+
+void TCKayit::Load(const std::string &mtcno)
+{
+    if( mTC->LoadTC(mtcno) ){
+        misiminput->setText(mTC->isimSoyisim());
+        mtelinput->setText(mTC->tel());
+        maddressinput->setText(mTC->address());
+
+        for( int i = 0 ; i < mMahalle->count() ; i++ )
+        {
+            if( mMahalle->itemText(i) == mTC->mahalle() )
+            {
+                mMahalle->setCurrentIndex(i);
+                break;
+            }
+        }
+    }else{
+        misiminput->setText("");
+        mtelinput->setText("");
+        maddressinput->setText("");
+        mMahalle->setCurrentIndex(0);
     }
 }
 
