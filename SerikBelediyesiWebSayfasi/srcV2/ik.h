@@ -6,6 +6,11 @@
 
 using namespace Wt;
 
+
+class BirimWidget;
+
+
+
 class IK : public BaseClass::ContainerWidget
 {
 public:
@@ -15,6 +20,8 @@ public:
 
 
 private:
+
+    BirimWidget* mBirimContainer;
 
     WContainerWidget* mPersonelListFilterContainer;
     WComboBox* mBirimFilterComboBox;
@@ -28,6 +35,7 @@ private:
 
     WContainerWidget* mPersonelContainer;
     WContainerWidget* mFotoContainer;
+    WFileUpload* mFileUploader;
     void LoadPersonelWidgets();
 
     WText* mPersonelOidText;
@@ -45,12 +53,20 @@ private:
     void loadPersonelList(bsoncxx::builder::basic::document filter = document{} , const int &skip = 0 );
 
     int mCurrentSkip;
-    const int mCurrentLimit = 10;
+    const int mCurrentLimit = 20;
 
     void _loadPersonel( const document &filter );
 
     void _savePersonel();
 
+    void _holdPersonel();
+
+    void _loadBirimFilterList();
+
+    void _loadPersonelWidgetBirimList();
+
+
+    QString rootnewFileName;
 
 
 private:
@@ -69,6 +85,36 @@ private:
 
 
     const std::string ErrorImgPath{"img/feature_5.png"};
+
+    void setFotoContainerWidget( const std::string& fotoPath );
 };
+
+
+
+class BirimWidget : public BaseClass::ContainerWidget
+{
+public:
+    BirimWidget(mongocxx::database* _db , bsoncxx::document::value _user) ;
+
+
+
+    Signal<NoClass> &BirimListChanged();
+
+private:
+    void LoadBirim();
+
+    std::string deleteBirim( const std::string& birimadi);
+
+private:
+    const std::string Collection{"Müdürlükler"};
+    const std::string CollectionPersonel{"Personel"};
+
+    const std::string KEYBirim{"Birim"};
+
+
+    Signal<NoClass> _BirimListChanged;
+
+};
+
 
 #endif // IK_H
