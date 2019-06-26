@@ -12579,9 +12579,14 @@ void Giris::Personel::CalismaGirWidget::setCalismaDetail(std::string oid)
 void Giris::Personel::CalismaGirWidget::addUploader(WContainerWidget *rContainer)
 {
 
+
+
     auto progresBarContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     progresBarContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
     auto progresBar = progresBarContainer->addWidget(cpp14::make_unique<WProgressBar>());
+
+
+
 
     auto iconContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     iconContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
@@ -12599,11 +12604,17 @@ void Giris::Personel::CalismaGirWidget::addUploader(WContainerWidget *rContainer
     fu->setProgressBar(progresBar);
 
 
+
+
     // Provide a button to start uploading.
     Wt::WPushButton *uploadButton = iconContainer->addWidget(Wt::cpp14::make_unique<Wt::WPushButton>("Resimleri Yükle"));
     uploadButton->setMargin(10, Wt::Side::Left | Wt::Side::Right);
 
+
+
     Wt::WText *out = iconContainer->addWidget(Wt::cpp14::make_unique<Wt::WText>());
+
+
 
     // Upload when the button is clicked.
     uploadButton->clicked().connect([=] {
