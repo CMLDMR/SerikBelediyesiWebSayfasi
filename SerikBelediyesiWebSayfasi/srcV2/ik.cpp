@@ -1,7 +1,7 @@
-#include "ik.h"
+﻿#include "ik.h"
 
 IK::IK(mongocxx::database *_db, bsoncxx::document::value _user)
-    :BaseClass::ContainerWidget (_db,_user,"İnsan Kaynakları")
+    :BaseClass::ContainerWidget (_db,_user,u8"İnsan Kaynakları")
 {
 
     this->getHeaderRowContainer()->setMargin(15,Side::Top);
@@ -45,8 +45,8 @@ IK::IK(mongocxx::database *_db, bsoncxx::document::value _user)
             mBirimFilterComboBox = layout->addWidget(cpp14::make_unique<WComboBox>(),0,AlignmentFlag::Center);
 
             try {
-                auto cursor = this->db()->collection("Müdürlükler").find(document{}.view());
-                mBirimFilterComboBox->addItem("Tümü");
+                auto cursor = this->db()->collection(u8"Müdürlükler").find(document{}.view());
+                mBirimFilterComboBox->addItem(u8"Tümü");
 
                 for( auto doc : cursor )
                 {
@@ -55,20 +55,21 @@ IK::IK(mongocxx::database *_db, bsoncxx::document::value _user)
             } catch (mongocxx::exception &e) {
             }
 
-            mBuroPersonelComboBox = layout->addWidget(cpp14::make_unique<WComboBox>());
-            mBuroPersonelComboBox->addItem("Tümü");
-            mBuroPersonelComboBox->addItem("Büro Personeli");
-            mBuroPersonelComboBox->addItem("Saha Personeli");
+            mBuroPersonelFilterComboBox = layout->addWidget(cpp14::make_unique<WComboBox>());
+            mBuroPersonelFilterComboBox->addItem(u8"Tümü");
+            mBuroPersonelFilterComboBox->addItem(u8"Büro Personeli");
+            mBuroPersonelFilterComboBox->addItem(u8"Saha Personeli");
 
 
-            auto mFilterBtn = layout->addWidget(cpp14::make_unique<WPushButton>("Listele"),0,AlignmentFlag::Center);
+            auto mFilterBtn = layout->addWidget(cpp14::make_unique<WPushButton>(u8"Listele"),0,AlignmentFlag::Center);
             mFilterBtn->addStyleClass(Bootstrap::Button::Primary);
             mFilterBtn->clicked().connect([=](){
+                mCurrentSkip = 0;
                 this->loadPersonelList();
             });
 
 
-            mTotalPersonelCount = layout->addWidget(cpp14::make_unique<WText>("Total Personel"),0,AlignmentFlag::Center);
+            mTotalPersonelCount = layout->addWidget(cpp14::make_unique<WText>(u8"Total Personel"),0,AlignmentFlag::Center);
             mTotalPersonelCount->addStyleClass(Bootstrap::Label::Primary);
 
 
@@ -106,7 +107,10 @@ IK::IK(mongocxx::database *_db, bsoncxx::document::value _user)
                 this->loadPersonelList();
             });
 
-            auto mNextBtn = layout->addWidget(cpp14::make_unique<WPushButton>("İleri"),0,AlignmentFlag::Right);
+            mListIndexText = layout->addWidget(cpp14::make_unique<WText>(u8""),0,AlignmentFlag::Center);
+            mListIndexText->addStyleClass(Bootstrap::Label::info);
+
+            auto mNextBtn = layout->addWidget(cpp14::make_unique<WPushButton>(u8"İleri"),0,AlignmentFlag::Right);
             mNextBtn->addStyleClass(Bootstrap::Button::Primary);
             mNextBtn->clicked().connect([=](){
                 mCurrentSkip += mCurrentLimit;
@@ -119,57 +123,182 @@ IK::IK(mongocxx::database *_db, bsoncxx::document::value _user)
     }
 
 
-    {
-        this->mPersonelContainer->clear();
-        auto container = this->mPersonelContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-        container->setWidth(WLength("100%"));
-        container->setContentAlignment(AlignmentFlag::Center);
-        auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        auto fotoContainer = layout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Center);
-        fotoContainer->decorationStyle().setBorder(WBorder(BorderStyle::Solid,1,WColor(50,50,50,125)),AllSides);
-        fotoContainer->setHeight(WLength("100%"));
-        fotoContainer->setWidth(120);
-        fotoContainer->setHeight(160);
-
-        mPersonelOidText = layout->addWidget(cpp14::make_unique<WText>(" "),0,AlignmentFlag::Center);
-
-        mStatuComboBox = layout->addWidget(cpp14::make_unique<WComboBox>(),0,AlignmentFlag::Center);
-        mStatuComboBox->addItem("Başkan");
-        mStatuComboBox->addItem("Başkan Yardımcısı");
-        mStatuComboBox->addItem("Müdür");
-        mStatuComboBox->addItem("Personel");
-
-        misimLineEdit = layout->addWidget(cpp14::make_unique<WLineEdit>(),0,AlignmentFlag::Center);
-
-        mtcnoLineEdit = layout->addWidget(cpp14::make_unique<WLineEdit>(),0,AlignmentFlag::Center);
-
-        mtelnoLineEdit = layout->addWidget(cpp14::make_unique<WLineEdit>(),0,AlignmentFlag::Center);
-
-        mBirimComboBox = layout->addWidget(cpp14::make_unique<WComboBox>(),0,AlignmentFlag::Center);
-
-        try {
-            auto cursor = this->db()->collection("Müdürlükler").find(document{}.view());
-
-            for( auto doc : cursor )
-            {
-
-                try {
-                    mBirimComboBox->addItem(doc["Birim"].get_utf8().value.to_string());
-                } catch (bsoncxx::exception &e) {
-
-                }
-            }
-
-        } catch (mongocxx::exception &e) {
-
-        }
-
-
-    }
+    this->LoadPersonelWidgets();
 
     this->loadPersonelList(document{},mCurrentSkip);
 
 
+}
+
+void IK::LoadPersonelWidgets()
+{
+    this->mPersonelContainer->clear();
+    this->mPersonelContainer->setContentAlignment(AlignmentFlag::Center);
+    mFotoContainer = mPersonelContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+    mFotoContainer->decorationStyle().setBorder(WBorder(BorderStyle::Solid,1,WColor(50,50,50,125)),AllSides);
+    mFotoContainer->setHeight(WLength("100%"));
+    mFotoContainer->setWidth(120);
+    mFotoContainer->setHeight(160);
+    mFotoContainer->setMinimumSize(WLength::Auto,190);
+
+    auto container = this->mPersonelContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+    container->setWidth(WLength("100%"));
+    container->setContentAlignment(AlignmentFlag::Center);
+    auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
+
+
+    mPersonelOidText = layout->addWidget(cpp14::make_unique<WText>(" "),0,AlignmentFlag::Center);
+
+    mStatuComboBox = layout->addWidget(cpp14::make_unique<WComboBox>(),0,AlignmentFlag::Center);
+    mStatuComboBox->addItem(u8"Başkan");
+    mStatuComboBox->addItem(u8"Başkan Yardımcısı");
+    mStatuComboBox->addItem(u8"Müdür");
+    mStatuComboBox->addItem(u8"Personel");
+
+    misimLineEdit = layout->addWidget(cpp14::make_unique<WLineEdit>(),0,AlignmentFlag::Center);
+    misimLineEdit->setPlaceholderText(u8"İsim Soyisim Giriniz");
+
+    mtcnoLineEdit = layout->addWidget(cpp14::make_unique<WLineEdit>(),0,AlignmentFlag::Center);
+    mtcnoLineEdit->setPlaceholderText(u8"TCNO Giriniz");
+
+
+    mtelnoLineEdit = layout->addWidget(cpp14::make_unique<WLineEdit>(),0,AlignmentFlag::Center);
+    mtelnoLineEdit->setPlaceholderText(u8"Cep Telefonu Giriniz. 0 Kullanarak");
+
+    mPasswordLineEdit = layout->addWidget(cpp14::make_unique<WLineEdit>(),0,AlignmentFlag::Center);
+    mPasswordLineEdit->setPlaceholderText(u8"Bir Şifre Belirleyiniz");
+
+    mBirimComboBox = layout->addWidget(cpp14::make_unique<WComboBox>(),0,AlignmentFlag::Center);
+
+    mBuroPersonelComboBox = layout->addWidget(cpp14::make_unique<WComboBox>(),0,AlignmentFlag::Center);
+    mBuroPersonelComboBox->addItem(u8"Büro Personeli");
+    mBuroPersonelComboBox->addItem(u8"Saha Personeli");
+
+    try {
+        auto cursor = this->db()->collection(u8"Müdürlükler").find(document{}.view());
+
+        for( auto doc : cursor )
+        {
+
+            try {
+                mBirimComboBox->addItem(doc["Birim"].get_utf8().value.to_string());
+            } catch (bsoncxx::exception &e) {
+
+            }
+        }
+
+    } catch (mongocxx::exception &e) {
+
+    }
+
+    auto mSaveBtn = layout->addWidget(cpp14::make_unique<WPushButton>("Kaydet"));
+    mSaveBtn->addStyleClass(Bootstrap::Button::Primary);
+    mSaveBtn->clicked().connect(this,&IK::_savePersonel);
+
+    auto mNewBtn = layout->addWidget(cpp14::make_unique<WPushButton>(u8"Alanı Temizle"));
+    mNewBtn->addStyleClass(Bootstrap::Button::info);
+    mNewBtn->clicked().connect([=](){
+        this->misimLineEdit->setText("");
+        this->mtelnoLineEdit->setText("");
+        this->mtcnoLineEdit->setText("");
+        this->mPersonelOidText->setText("");
+        this->mPasswordLineEdit->setText("");
+    });
+
+
+
+
+
+
+
+
+     mUpdateinformation = layout->addWidget(cpp14::make_unique<WText>(u8"*"));
+     mUpdateinformation->addStyleClass(Bootstrap::Label::info);
+
+
+
+     auto mMovePersonel = layout->addWidget(cpp14::make_unique<WPushButton>(u8"Bu Personeli Dondur"));
+     mMovePersonel->addStyleClass(Bootstrap::Button::Warning);
+     mMovePersonel->clicked().connect([=](){
+         auto filter = document{};
+         try {
+             filter.append(kvp(this->KEYOid,bsoncxx::oid{this->mPersonelOidText->text().toUTF8()}));
+         } catch (bsoncxx::exception &e) {
+             mUpdateinformation->setText(u8"Taşıma Başarısız E:"+WString::fromUTF8(e.what()));
+             std::cout << "ERROR: " << __LINE__ << " " << __FILE__ << " " << e.what() << std::endl;
+             return;
+         }
+
+         bsoncxx::document::value val(document{}.view());
+
+         try {
+             auto _val = this->db()->collection(Collection).find_one(filter.view());
+
+             if( _val )
+             {
+                 val = _val.value();
+             }else{
+                 mUpdateinformation->setText(u8"Taşıma Başarısız");
+                 return;
+             }
+
+         } catch (mongocxx::exception &e) {
+             mUpdateinformation->setText(u8"Taşıma Başarısız E:"+WString::fromUTF8(e.what()));
+             std::cout << "ERROR: " << __LINE__ << " " << __FILE__ << " " << e.what() << std::endl;
+             return;
+         }
+
+         try {
+             auto del = this->db()->collection(Collection).delete_one(filter.view());
+             if( del )
+             {
+                 if( del.value().deleted_count() )
+                 {
+//                    mUpdateinformation->setText(u8"Taşıma Başarılı");
+                 }else{
+                     mUpdateinformation->setText(u8"Taşıma Başarısız");
+                     return;
+                 }
+             }
+         } catch (mongocxx::exception &e) {
+             mUpdateinformation->setText(u8"Taşıma Başarısız E:"+WString::fromUTF8(e.what()));
+             std::cout << "ERROR: " << __LINE__ << " " << __FILE__ << " " << e.what() << std::endl;
+             return;
+         }
+
+
+         try {
+             auto ins = this->db()->collection(CollectionHold).insert_one(val.view());
+             if( ins )
+             {
+                 if( ins.value().result().inserted_count() )
+                 {
+                     mUpdateinformation->setText(u8"Taşıma Başarılı");
+                     this->misimLineEdit->setText("");
+                     this->mtelnoLineEdit->setText("");
+                     this->mtcnoLineEdit->setText("");
+                     this->mPersonelOidText->setText("");
+                     this->mPasswordLineEdit->setText("");
+                     this->mFotoContainer->setAttributeValue(Style::style,Style::background::url(ErrorImgPath)+
+                                                             Style::background::repeat::norepeat+
+                                                             Style::background::size::contain+
+                                                             Style::background::position::center_center);
+                     this->mFotoContainer->setHeight(160);
+                     this->mFotoContainer->setWidth(120);
+                     this->mFotoContainer->setMinimumSize(120,160);
+
+                 }else{
+                     mUpdateinformation->setText(u8"Taşıma Başarısız");
+                     return;
+                 }
+             }
+         } catch (mongocxx::exception &e) {
+             mUpdateinformation->setText(u8"Taşıma Başarısız E:"+WString::fromUTF8(e.what()));
+             std::cout << "ERROR: " << __LINE__ << " " << __FILE__ << " " << e.what() << std::endl;
+             return;
+         }
+
+     });
 }
 
 void IK::loadPersonel(const std::string &mtcno)
@@ -188,7 +317,7 @@ void IK::loadPersonelList(bsoncxx::builder::basic::document filter, const int &s
 {
 
 
-    if( mBirimFilterComboBox->currentText().toUTF8() != "Tümü" )
+    if( mBirimFilterComboBox->currentText().toUTF8() != u8"Tümü" )
     {
         try {
             filter.append(kvp("Birimi",mBirimFilterComboBox->currentText().toUTF8()));
@@ -197,9 +326,9 @@ void IK::loadPersonelList(bsoncxx::builder::basic::document filter, const int &s
         }
     }
 
-    if( mBuroPersonelComboBox->currentText().toUTF8() != "Tümü" )
+    if( mBuroPersonelFilterComboBox->currentText().toUTF8() != u8"Tümü" )
     {
-        if( mBuroPersonelComboBox->currentText().toUTF8() == "Büro Personeli" )
+        if( mBuroPersonelFilterComboBox->currentText().toUTF8() == u8"Büro Personeli" )
         {
             try {
                 filter.append(kvp(this->KEYBuroPer,true));
@@ -235,6 +364,8 @@ void IK::loadPersonelList(bsoncxx::builder::basic::document filter, const int &s
     {
         mCurrentSkip = count - mCurrentLimit;
     }
+
+    mListIndexText->setText(WString(u8"{1} - {2} / {3}").arg(mCurrentSkip).arg(mCurrentSkip+mCurrentLimit).arg(count));
 
 
     mongocxx::options::find findOptions;
@@ -343,6 +474,22 @@ void IK::_loadPersonel(const bsoncxx::builder::basic::document &filter)
         std::cout << "ERROR: " << __LINE__ << " " << __FILE__ << std::endl;
     }
 
+    try {
+        auto filePath = this->downloadFile(val.view()[this->KEYFotooid].get_oid().value.to_string());
+        this->mFotoContainer->setAttributeValue(Style::style,Style::background::url(filePath)+
+                                                Style::background::repeat::norepeat+
+                                                Style::background::size::contain+
+                                                Style::background::position::center_center);
+        this->mFotoContainer->setHeight(160);
+        this->mFotoContainer->setWidth(120);
+        this->mFotoContainer->setMinimumSize(120,160);
+
+    } catch (bsoncxx::exception &e) {
+        std::cout << "ERROR: " << __LINE__ << " " << __FILE__ << std::endl;
+    }
+
+
+
 
     try {
         mPersonelOidText->setText(val.view()[this->KEYOid].get_oid().value.to_string());
@@ -380,6 +527,18 @@ void IK::_loadPersonel(const bsoncxx::builder::basic::document &filter)
     }
 
 
+    try {
+        if( val.view()[this->KEYBuroPer].get_bool().value )
+        {
+            this->mBuroPersonelComboBox->setCurrentIndex(0);
+        }else{
+            this->mBuroPersonelComboBox->setCurrentIndex(1);
+        }
+    } catch (bsoncxx::exception &e) {
+        std::cout << "ERROR: " << __LINE__ << " " << __FILE__ << std::endl;
+    }
+
+
 
     try {
         misimLineEdit->setText(val.view()[this->KEYadsoyad].get_utf8().value.to_string());
@@ -400,10 +559,186 @@ void IK::_loadPersonel(const bsoncxx::builder::basic::document &filter)
         mtelnoLineEdit->setText(e.what());
     }
 
+    try {
+        mPasswordLineEdit->setText(val.view()[this->KEYPasword].get_utf8().value.to_string());
+    } catch (bsoncxx::exception &e) {
+        mPasswordLineEdit->setText(e.what());
+    }
+
+}
+
+void IK::_savePersonel()
+{
+
+
+    if( mPasswordLineEdit->text().toUTF8().size() < 5 )
+    {
+        this->showMessage(u8"UYARI",u8"Şifre En Az 5 Haneli Olması Gerekir");
+        return;
+    }
+
+    if( mtcnoLineEdit->text().toUTF8().size() != 11 )
+    {
+        this->showMessage(u8"UYARI",u8"TCNO Hanesi Hatalı");
+        return;
+    }
+
+    if( mtelnoLineEdit->text().toUTF8().size() != 11 )
+    {
+        this->showMessage(u8"UYARI",u8"Cep Telefonu Hanesi Hatalı");
+        return;
+    }
+
+    if( misimLineEdit->text().toUTF8().size() < 6 )
+    {
+        this->showMessage(u8"UYARI",u8"İsim Soyisim Yetersiz");
+        return;
+    }
 
 
 
-//    mMahalleComboBox = layout->addWidget(cpp14::make_unique<WComboBox>(),0,AlignmentFlag::Center);
+    auto doc = document{};
+
+    try {
+        doc.append(kvp(this->KEYadsoyad,this->misimLineEdit->text().toUTF8()));
+    } catch (bsoncxx::exception &e) {
+        mUpdateinformation->setText(u8"Kayıt Başarısız E:"+WString::fromUTF8(e.what()));
+        std::cout << "ERROR: " << __LINE__ << " " << __FILE__ << " " << e.what() << std::endl;
+        return;
+    }
+
+    try {
+        doc.append(kvp(this->KEYBirimi,this->mBirimComboBox->currentText().toUTF8()));
+    } catch (bsoncxx::exception &e) {
+        mUpdateinformation->setText(u8"Kayıt Başarısız E:"+WString::fromUTF8(e.what()));
+        std::cout << "ERROR: " << __LINE__ << " " << __FILE__ << " " << e.what() << std::endl;
+        return;
+    }
+
+    try {
+        doc.append(kvp(this->KEYStatu,this->mStatuComboBox->currentText().toUTF8()));
+    } catch (bsoncxx::exception &e) {
+        mUpdateinformation->setText(u8"Kayıt Başarısız E:"+WString::fromUTF8(e.what()));
+        std::cout << "ERROR: " << __LINE__ << " " << __FILE__ << " " << e.what() << std::endl;
+        return;
+    }
+
+    try {
+        if( mBuroPersonelComboBox->currentIndex() == 0 )
+        {
+            doc.append(kvp(this->KEYBuroPer,true));
+        }else{
+            doc.append(kvp(this->KEYBuroPer,false));
+        }
+    } catch (bsoncxx::exception &e) {
+        mUpdateinformation->setText(u8"Kayıt Başarısız E:"+WString::fromUTF8(e.what()));
+        std::cout << "ERROR: " << __LINE__ << " " << __FILE__ << " " << e.what() << std::endl;
+        return;
+    }
+
+    try {
+        doc.append(kvp(this->KEYTel,this->mtelnoLineEdit->text().toUTF8()));
+    } catch (bsoncxx::exception &e) {
+        mUpdateinformation->setText(u8"Kayıt Başarısız E:"+WString::fromUTF8(e.what()));
+        std::cout << "ERROR: " << __LINE__ << " " << __FILE__ << " " << e.what() << std::endl;
+        return;
+    }
+
+    try {
+        doc.append(kvp(this->KEYTcno,this->mtcnoLineEdit->text().toUTF8()));
+    } catch (bsoncxx::exception &e) {
+        mUpdateinformation->setText(u8"Kayıt Başarısız E:"+WString::fromUTF8(e.what()));
+        std::cout << "ERROR: " << __LINE__ << " " << __FILE__ << " " << e.what() << std::endl;
+        return;
+    }
+
+//    try {
+//        doc.append(kvp(this->KEYPasword,this->mtcnoLineEdit->text().toUTF8()));
+//    } catch (bsoncxx::exception &E) {
+
+//    }
+
+    try {
+        doc.append(kvp(this->KEYPasword,this->mPasswordLineEdit->text().toUTF8()));
+    } catch (bsoncxx::exception &e) {
+        mUpdateinformation->setText(u8"Kayıt Başarısız E:"+WString::fromUTF8(e.what()));
+        std::cout << "ERROR: " << __LINE__ << " " << __FILE__ << " " << e.what() << std::endl;
+        return;
+    }
+
+
+
+    if( this->mPersonelOidText->text().toUTF8().size() == 24 )
+    {
+        auto filter = document{};
+
+        try {
+            filter.append(kvp(this->KEYOid,bsoncxx::oid{this->mPersonelOidText->text().toUTF8()}));
+        } catch (bsoncxx::exception &e) {
+            mUpdateinformation->setText(u8"Kayıt Başarısız E:"+WString::fromUTF8(e.what()));
+            std::cout << "ERROR: " << __LINE__ << " " << __FILE__ << " " << e.what() << std::endl;
+            return;
+        }
+
+        auto setDoc = document{};
+
+        try {
+            setDoc.append(kvp("$set",doc));
+        } catch (bsoncxx::exception &e) {
+            mUpdateinformation->setText(u8"Kayıt Başarısız E:"+WString::fromUTF8(e.what()));
+            std::cout << "ERROR: " << __LINE__ << " " << __FILE__ << " " << e.what() << std::endl;
+            return;
+        }
+
+
+        try {
+            auto upt = this->db()->collection(Collection).update_one(filter.view(),setDoc.view());
+            if( upt )
+            {
+                if( upt.value().result().modified_count() )
+                {
+                    mUpdateinformation->setText(u8"Kayıt Başarılı");
+                    this->_loadPersonel(filter);
+                }else{
+                    mUpdateinformation->setText(u8"Kayıt Başarısız");
+                    std::cout << "ERROR: " << __LINE__ << " " << __FILE__ << " NO DOCUMENT UPDATED" <<  std::endl;
+                }
+            }
+        } catch (mongocxx::exception &e) {
+            mUpdateinformation->setText(u8"Kayıt Başarısız E:"+WString::fromUTF8(e.what()));
+            std::cout << "ERROR: " << __LINE__ << " " << __FILE__ << " " << e.what() << std::endl;
+        }
+    }else{
+        try {
+            auto ins = this->db()->collection(Collection).insert_one(doc.view());
+            if( ins )
+            {
+                if( ins.value().result().inserted_count() )
+                {
+                    mUpdateinformation->setText(u8"Kayıt Başarılı");
+
+                    auto filter = document{};
+
+                    try {
+                        filter.append(kvp(this->KEYOid,ins.value().inserted_id().get_oid()));
+                    } catch (bsoncxx::exception &e) {
+                        mUpdateinformation->setText(u8"Yeni Kayıt Yüklenemedi");
+                        std::cout << "ERROR: " << __LINE__ << " " << __FILE__ << " NO DOCUMENT UPDATED" <<  std::endl;
+                        return;
+                    }
+
+                    this->_loadPersonel(filter);
+                    mUpdateinformation->setText(u8"Yeni Kayıt Yüklendi");
+                }else{
+                    mUpdateinformation->setText(u8"Kayıt Başarısız");
+                    std::cout << "ERROR: " << __LINE__ << " " << __FILE__ << " NO DOCUMENT UPDATED" <<  std::endl;
+                }
+            }
+        } catch (mongocxx::exception &e) {
+            mUpdateinformation->setText(u8"Kayıt Başarısız E:"+WString::fromUTF8(e.what()));
+            std::cout << "ERROR: " << __LINE__ << " " << __FILE__ << " " << e.what() << std::endl;
+        }
+    }
 
 
 }
