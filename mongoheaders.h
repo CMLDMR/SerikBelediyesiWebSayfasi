@@ -24,5 +24,8 @@
 #include <mongocxx/stdx.hpp>
 #include <mongocxx/gridfs/bucket.hpp>
 #include <mongocxx/pipeline.hpp>
+#include <mongocxx/exception/gridfs_exception.hpp>
+#include <mongocxx/exception/query_exception.hpp>
+
 
 #endif // MONGOHEADERS_H
