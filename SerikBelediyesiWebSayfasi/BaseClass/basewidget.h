@@ -124,6 +124,10 @@ public:
     std::int64_t count(std::string collection , bsoncxx::document::value val );
 //    std::int64_t count(std::string collection , document &filter = document{} );
 
+    const std::string downloadFile(const std::string &oid , const bool &forceFilename = false);
+
+    const bsoncxx::types::value uploadfile( QString filepath );
+
 
     std::string UserBirim(){
         return this->User().view()[SBLDKeys::Personel::birimi].get_utf8().value.to_string();

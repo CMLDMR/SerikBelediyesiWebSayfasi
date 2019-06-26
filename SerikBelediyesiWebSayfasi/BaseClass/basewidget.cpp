@@ -142,6 +142,131 @@ int64_t BaseClass::BaseWidget::count(std::string collection, bsoncxx::document::
     return count;
 }
 
+const std::string BaseClass::BaseWidget::downloadFile(const std::string &oid , const bool &forceFilename)
+{
+
+
+    if( QFile::exists( QString("docroot/tempfile/%1.indexed").arg(oid.c_str()) ) )
+    {
+        QFile file(QString("docroot/tempfile/%1.indexed").arg(oid.c_str()));
+        if( file.open(QIODevice::ReadOnly) )
+        {
+            QString fileName = QString::fromUtf8(file.readAll());
+            file.close();
+            return fileName.toStdString();
+        }
+    }else{
+        std::cout << "FILE NOT FOUND: " << QString("docroot/tempfile/%1.indexed").arg(oid.c_str()).toStdString() << std::endl;
+    }
+
+
+
+
+    auto doc = bsoncxx::builder::basic::document{};
+
+    try {
+        doc.append(bsoncxx::builder::basic::kvp("key",bsoncxx::oid{oid}));
+    } catch (bsoncxx::exception& e) {
+        std::cout << "Error: " << e.what() << std::endl;
+        return "img/404-header.png";
+    }
+
+//        std::cout << bsoncxx::to_json(doc.view()) << std::endl;
+
+
+    mongocxx::gridfs::downloader downloader;
+    try {
+        auto roid = bsoncxx::types::value(doc.view()["key"].get_oid());
+        downloader = this->db()->gridfs_bucket().open_download_stream(roid);
+
+    } catch (bsoncxx::exception &e) {
+        return "img/error.png";
+    }
+
+//        std::cout << "1... " << std::endl;
+//        std::cout << bsoncxx::to_json(downloader.files_document()) << std::endl;
+
+
+    auto file_length = downloader.file_length();
+    auto bytes_counter = 0;
+
+    QFileInfo info( downloader.files_document()["filename"].get_utf8().value.to_string().c_str() );
+
+    QString fullFilename;
+
+    if( forceFilename )
+    {
+        fullFilename = QString("tempfile/%1").arg(downloader.files_document()["filename"].get_utf8().value.to_string().c_str());
+    }else{
+        fullFilename = QString("tempfile/%2.%1").arg(info.suffix())
+                    .arg(downloader.files_document()["_id"].get_oid().value.to_string().c_str());
+    }
+
+//        if( QFile::exists("docroot/"+fullFilename) )
+//        {
+//            return fullFilename.toStdString();
+//        }
+
+    auto buffer_size = std::min(file_length, static_cast<std::int64_t>(downloader.chunk_size()));
+    auto buffer = bsoncxx::stdx::make_unique<std::uint8_t[]>(static_cast<std::size_t>(buffer_size));
+
+    std::ofstream out;
+
+    out.open("docroot/"+fullFilename.toStdString(),std::ios::out | std::ios::app | std::ios::binary);
+
+
+    if( out.is_open() )
+    {
+
+        while ( auto length_read = downloader.read(buffer.get(), static_cast<std::size_t>(buffer_size)) ) {
+
+            auto bufferPtr = buffer.get();
+            std::cout << "Size Of: " << sizeof ( bufferPtr ) << std::endl;
+            out.write( reinterpret_cast<char*>( bufferPtr ) , length_read );
+
+            bytes_counter += static_cast<std::int32_t>( length_read );
+//                std::cout << "Downloaded: " << file_length << "/" << bytes_counter << " lengRead :" << length_read << " Buffer Size: " << buffer_size << std::endl;
+
+        }
+
+        out.close();
+    }
+
+    else{
+        std::cout << "Error Can Not Open File: " <<"docroot/"+fullFilename.toStdString() << std::endl;
+        return "img/error.png";
+    }
+
+
+    QFile file(QString("docroot/tempfile/%1.indexed").arg(oid.c_str()));
+    if( file.open(QIODevice::ReadWrite) )
+    {
+        file.write(fullFilename.toUtf8());
+        file.close();
+    }else{
+        std::cout << "FILE CAN NOT CREATED: " << file.fileName().toStdString() << fullFilename.toStdString() << std::endl;
+    }
+
+    std::cout << "FILE FORCED : " << forceFilename <<" FILE FILL: " << fullFilename.toStdString() <<" TOTHIS FILE: " << file.fileName().toStdString() << std::endl;
+
+    return fullFilename.toStdString();
+}
+
+const bsoncxx::types::value BaseClass::BaseWidget::uploadfile(QString filepath)
+{
+    QFile file( filepath );
+    if( file.open( QIODevice::ReadOnly ) )
+    {
+        QFileInfo info(filepath);
+        auto uploader = this->db()->gridfs_bucket().open_upload_stream(info.fileName().toStdString().c_str());
+        QByteArray ar = file.readAll();
+        uploader.write((std::uint8_t*)ar.data(),ar.size());
+        auto res = uploader.close();
+        file.close();
+        return res.id();
+    }
+}
+
 //int64_t BaseClass::BaseWidget::count(std::string collection, bsoncxx::builder::basic::document &filter)
 //{
 //    std::int64_t count = 0;
