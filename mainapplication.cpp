@@ -16,7 +16,7 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
     :WApplication(env)
 {
 
-    wApp->addMetaHeader(MetaHeaderType::Meta,"Content-Type","text/html; charset=utf-8");
+    wApp->addMetaHeader(MetaHeaderType::Meta,"Content-Type","text/html; charset=windows-1254");
 
     wApp->addMetaHeader("description","Serik Belediyesi Resmi Web Sayfası","text/html; charset=utf-8");
 
