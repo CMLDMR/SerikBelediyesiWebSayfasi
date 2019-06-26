@@ -9,6 +9,19 @@
 #include <QDate>
 #include <QString>
 #include <QTime>
+#include <QImage>
+#include <QString>
+#include <QXmlStreamWriter>
+#include <QByteArray>
+#include <QDate>
+#include <QTime>
+#include <QStringList>
+#include <QUuid>
+#include <QImage>
+#include <QImageReader>
+#include <QDebug>
+#include <QTextDocument>
+
 
 #include <Wt/WContainerWidget.h>
 #include <Wt/WText.h>
@@ -73,17 +86,7 @@
 #include <random>
 #include <chrono>
 
-#include <QString>
-#include <QXmlStreamWriter>
-#include <QByteArray>
-#include <QDate>
-#include <QTime>
-#include <QStringList>
-#include <QUuid>
-#include <QImage>
-#include <QImageReader>
-#include <QDebug>
-#include <QTextDocument>
+
 
 
 const int RandomImageCount = 15;

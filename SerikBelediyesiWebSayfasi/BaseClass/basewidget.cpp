@@ -171,20 +171,14 @@ const std::string BaseClass::BaseWidget::downloadFile(const std::string &oid , c
         return "img/404-header.png";
     }
 
-//        std::cout << bsoncxx::to_json(doc.view()) << std::endl;
-
-
     mongocxx::gridfs::downloader downloader;
-    try {
-        auto roid = bsoncxx::types::value(doc.view()["key"].get_oid());
-        downloader = this->db()->gridfs_bucket().open_download_stream(roid);
 
-    } catch (bsoncxx::exception &e) {
+    try {
+        downloader = this->db()->gridfs_bucket().open_download_stream(bsoncxx::types::value(bsoncxx::types::b_oid{bsoncxx::oid{oid}}));
+    } catch (mongocxx::gridfs_exception &e) {
+        std::cout << "ERROR: " << __LINE__ << " " << __FILE__ << " " << e.what() << std::endl;
         return "img/error.png";
     }
-
-//        std::cout << "1... " << std::endl;
-//        std::cout << bsoncxx::to_json(downloader.files_document()) << std::endl;
 
 
     auto file_length = downloader.file_length();
@@ -202,10 +196,6 @@ const std::string BaseClass::BaseWidget::downloadFile(const std::string &oid , c
                     .arg(downloader.files_document()["_id"].get_oid().value.to_string().c_str());
     }
 
-//        if( QFile::exists("docroot/"+fullFilename) )
-//        {
-//            return fullFilename.toStdString();
-//        }
 
     auto buffer_size = std::min(file_length, static_cast<std::int64_t>(downloader.chunk_size()));
     auto buffer = bsoncxx::stdx::make_unique<std::uint8_t[]>(static_cast<std::size_t>(buffer_size));
@@ -217,18 +207,11 @@ const std::string BaseClass::BaseWidget::downloadFile(const std::string &oid , c
 
     if( out.is_open() )
     {
-
         while ( auto length_read = downloader.read(buffer.get(), static_cast<std::size_t>(buffer_size)) ) {
-
             auto bufferPtr = buffer.get();
-            std::cout << "Size Of: " << sizeof ( bufferPtr ) << std::endl;
             out.write( reinterpret_cast<char*>( bufferPtr ) , length_read );
-
             bytes_counter += static_cast<std::int32_t>( length_read );
-//                std::cout << "Downloaded: " << file_length << "/" << bytes_counter << " lengRead :" << length_read << " Buffer Size: " << buffer_size << std::endl;
-
         }
-
         out.close();
     }
 
@@ -264,6 +247,8 @@ const bsoncxx::types::value BaseClass::BaseWidget::uploadfile(QString filepath)
         auto res = uploader.close();
         file.close();
         return res.id();
+    }else{
+        this->showMessage("Uyarı","Dosya Açılamadı");
     }
 }
 
