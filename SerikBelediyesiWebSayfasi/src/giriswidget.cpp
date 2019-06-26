@@ -3588,13 +3588,15 @@ void Giris::Personel::PersonelWidget::initMenu()
     }
 
     if(this->User().view()[SBLDKeys::Personel::statu].get_utf8().value.to_string() == SBLDKeys::Personel::statuType::baskan ||
+            this->User().view()[SBLDKeys::Personel::statu].get_utf8().value.to_string() == SBLDKeys::Personel::statuType::baskanyrd ||
             this->User().view()[SBLDKeys::Personel::birimi].get_utf8().value.to_string() == "Kadın ve Aile Hizmetleri Müdürlüğü" )
     {
         menu->addItem(WString::fromUTF8("Stok Yardım"), Wt::cpp14::make_unique<KadinAileStock>(db(),User()));
     }
 
     if(this->User().view()[SBLDKeys::Personel::statu].get_utf8().value.to_string() == SBLDKeys::Personel::statuType::baskan ||
-            this->User().view()[SBLDKeys::Personel::birimi].get_utf8().value.to_string() == "Kadın ve Aile Hizmetleri Müdürlüğü" )
+            this->User().view()[SBLDKeys::Personel::statu].get_utf8().value.to_string() == SBLDKeys::Personel::statuType::baskanyrd ||
+            this->User().view()[SBLDKeys::Personel::birimi].get_utf8().value.to_string() == "İnsan Kaynakları ve Eğitim Müdürlüğü" )
     {
         menu->addItem(WString::fromUTF8("IK"), Wt::cpp14::make_unique<IK>(db(),User()));
     }
