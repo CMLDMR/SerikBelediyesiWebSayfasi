@@ -323,22 +323,7 @@ void IK::LoadPersonelWidgets()
     mBuroPersonelComboBox->addItem("Saha Personeli");
 
     this->_loadPersonelWidgetBirimList();
-//    try {
-//        auto cursor = this->db()->collection("Müdürlükler").find(document{}.view());
 
-//        for( auto doc : cursor )
-//        {
-
-//            try {
-//                mBirimComboBox->addItem(doc["Birim"].get_utf8().value.to_string());
-//            } catch (bsoncxx::exception &e) {
-
-//            }
-//        }
-
-//    } catch (mongocxx::exception &e) {
-
-//    }
 
     auto mSaveBtn = layout->addWidget(cpp14::make_unique<WPushButton>("Kaydet"));
     mSaveBtn->addStyleClass(Bootstrap::Button::Primary);
@@ -353,13 +338,6 @@ void IK::LoadPersonelWidgets()
         this->mPersonelOidText->setText("");
         this->mPasswordLineEdit->setText("");
     });
-
-
-
-
-
-
-
 
     mUpdateinformation = layout->addWidget(cpp14::make_unique<WText>("*"));
     mUpdateinformation->addStyleClass(Bootstrap::Label::info);
@@ -851,7 +829,9 @@ void IK::_holdPersonel()
 
 
     try {
+
         auto ins = this->db()->collection(CollectionHold).insert_one(val.view());
+
         if( ins )
         {
             if( ins.value().result().inserted_count() )
@@ -863,7 +843,7 @@ void IK::_holdPersonel()
                 this->mPersonelOidText->setText("");
                 this->mPasswordLineEdit->setText("");
                 this->setFotoContainerWidget(ErrorImgPath);
-
+                this->loadPersonelList(document{},mCurrentSkip);
             }else{
                 mUpdateinformation->setText("Taşıma Başarısız");
                 return;
