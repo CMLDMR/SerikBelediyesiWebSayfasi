@@ -4624,6 +4624,7 @@ void Body::Meclis::setKararlar(std::string oid)
 
     auto listContainer = pdfContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     listContainer->addStyleClass(Bootstrap::Grid::row);
+    listContainer->setMargin(15,Side::Top|Side::Bottom);
 
     pdflinkContainer = pdfContainer->addWidget(cpp14::make_unique<WContainerWidget>());
 
@@ -4641,6 +4642,8 @@ void Body::Meclis::setKararlar(std::string oid)
 
             try {
                 auto container = titleVideoContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+                container->setMargin(10,Side::Top|Side::Bottom);
+                container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
                 container->addStyleClass(Bootstrap::Grid::col_full_12);
                 container->setHeight(320);
                 auto title = container->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Meclis::youtubeembed].get_utf8().value.to_string(),TextFormat::UnsafeXHTML));
@@ -4651,6 +4654,29 @@ void Body::Meclis::setKararlar(std::string oid)
                 auto title = titleContainer->addWidget(cpp14::make_unique<WText>(e.what()));
                 title->setAttributeValue(Style::style,Style::font::size::s24px);
             }
+
+            {
+
+                auto container = titleVideoContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+                container->setMargin(10,Side::Top|Side::Bottom);
+                container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+                container->addStyleClass(Bootstrap::Grid::col_full_12);
+
+                try {
+                    auto _title = view[SBLDKeys::Meclis::youtubeembed2].get_utf8().value.to_string();
+                    if( _title.size() > 10 )
+                    {
+                        container->setHeight(320);
+                    }else{
+                        container->setHeight(1);
+                    }
+                    auto title = container->addWidget(cpp14::make_unique<WText>(_title,TextFormat::UnsafeXHTML));
+                    title->setAttributeValue(Style::style,Style::font::size::s24px);
+                } catch (bsoncxx::exception &e) {
+                    container->setHeight(1);
+                }
+            }
+
 
 
 
@@ -4686,17 +4712,18 @@ void Body::Meclis::setKararlar(std::string oid)
             for( int i = 0 ; i < kararList.size() ; i++ )
             {
                 std::string oid = kararList.at(i);
-                auto text = (cpp14::make_unique<WText>("Karar"));
+                auto container = listContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+                container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_4);
+                container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+                container->decorationStyle().setCursor(Cursor::PointingHand);
+
+                auto text = (cpp14::make_unique<WText>(WString("Karar {1}").arg(i)));
                 text->setAttributeValue(Style::style,Style::font::weight::bold+
-                                        Style::font::size::s12px+
-                                        Style::Border::border("1px solid gray"));
-                text->setMargin(15,AllSides);
-                text->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_4);
-                text->decorationStyle().setCursor(Cursor::PointingHand);
-                text->clicked().connect([=](){
+                                        Style::font::size::s12px);
+                container->clicked().connect([=](){
                     this->setKarar(oid);
                 });
-                listContainer->addWidget(std::move(text));
+                container->addWidget(std::move(text));
             }
         }
 
