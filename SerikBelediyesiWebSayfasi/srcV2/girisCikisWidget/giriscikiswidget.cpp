@@ -4,12 +4,12 @@ GirisCikisWidget::GirisCikisWidget(mongocxx::database *_db, bsoncxx::document::v
     :BaseClass::ContainerWidget (_db,_user,"Giriş Çıkış Kayıtları")
 {
 
-    setPadding(20,Side::Top);
+    setPadding(20,Side::Bottom);
     if( this->User().view()["Statü"].get_utf8().value.to_string() == "Personel" )
     {
         this->initPersonelMenu();
     }else if ( this->User().view()["Statü"].get_utf8().value.to_string() == "Müdür" ) {
-
+        this->initPersonelMenu();
     }else if ( this->User().view()["Statü"].get_utf8().value.to_string() == "Başkan Yardımcısı" || this->User().view()["Statü"].get_utf8().value.to_string() == "Başkan" ) {
         this->initBaskanMenu();
     }
@@ -100,6 +100,8 @@ void GirisCikisWidget::initBaskanMenu()
     {
         auto container = this->getContentRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
+        container->setMargin(15,Side::Top|Side::Bottom);
+
         mCurrentBirim = container->addWidget(cpp14::make_unique<WComboBox>());
         mCurrentBirim->addItem("Tüm Birim");
 
@@ -135,7 +137,11 @@ void GirisCikisWidget::initBaskanMenu()
         auto container = this->getContentRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
         container->setContentAlignment(AlignmentFlag::Center);
+        container->setMargin(10,Side::Top|Side::Bottom);
         auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
+        _container->setMaximumSize(300,WLength::Auto);
+        _container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+
         mCalender = _container->addWidget(Wt::cpp14::make_unique<Wt::WCalendar>());
         mCalender->setMargin(WLength::Auto,Side::Left|Side::Right);
         mCalender->select(WDate::currentDate());
@@ -250,6 +256,7 @@ void GirisCikisWidget::initSelectedDay(qint64 julianDay)
         auto container = mContentContainer->addWidget(cpp14::make_unique<WContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
         container->setMargin(10,Side::Top|Side::Bottom);
+        container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
         container->setHeight(20);
         container->setAttributeValue(Style::style,Style::background::color::rgb(125,175,125));
     }
@@ -441,13 +448,15 @@ void GirisCikisWidget::addRow(QString personeloid, qint64 julianDay)
     auto container = mContentContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     container->addStyleClass(Bootstrap::Grid::col_full_12);
     //    container->setHeight(110);
-    container->setMargin(10,Side::Top|Side::Bottom);
+    container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+
+    container->setMargin(2,Side::Top|Side::Bottom);
 
     auto rContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
-    rContainer->setAttributeValue(Style::style,Style::Border::border("1px solid black"));
+//    rContainer->setAttributeValue(Style::style,Style::Border::border("1px solid black"));
 
     auto dayContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-    dayContainer->setAttributeValue(Style::style,Style::Border::border("1px solid black"));
+//    dayContainer->setAttributeValue(Style::style,Style::Border::border("1px solid black"));
     dayContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_4+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
     dayContainer->setHeight(80);
 
@@ -475,7 +484,7 @@ void GirisCikisWidget::addRow(QString personeloid, qint64 julianDay)
 
     auto sabahinContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     sabahinContainer->setHeight(80);
-    sabahinContainer->setAttributeValue(Style::style,Style::Border::border("1px solid black"));
+    sabahinContainer->setAttributeValue(Style::style,Style::Border::right::border("1px solid black")+Style::Border::left::border("1px solid black"));
     sabahinContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_3);
     auto sabahinimgContainer = sabahinContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     sabahinimgContainer->setHeight(50);
@@ -483,7 +492,7 @@ void GirisCikisWidget::addRow(QString personeloid, qint64 julianDay)
 
     auto sabahoutContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     sabahoutContainer->setHeight(80);
-    sabahoutContainer->setAttributeValue(Style::style,Style::Border::border("1px solid black"));
+    sabahoutContainer->setAttributeValue(Style::style,Style::Border::right::border("1px solid black"));
     sabahoutContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_3);
     auto sabahoutimgContainer = sabahoutContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     sabahoutimgContainer->setHeight(50);
@@ -492,7 +501,7 @@ void GirisCikisWidget::addRow(QString personeloid, qint64 julianDay)
 
     auto aksaminContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     aksaminContainer->setHeight(80);
-    aksaminContainer->setAttributeValue(Style::style,Style::Border::border("1px solid black"));
+    aksaminContainer->setAttributeValue(Style::style,Style::Border::right::border("1px solid black"));
     aksaminContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_3);
     auto aksaminimgContainer = aksaminContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     aksaminimgContainer->setHeight(50);
@@ -500,7 +509,7 @@ void GirisCikisWidget::addRow(QString personeloid, qint64 julianDay)
 
     auto aksamoutContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     aksamoutContainer->setHeight(80);
-    aksamoutContainer->setAttributeValue(Style::style,Style::Border::border("1px solid black"));
+//    aksamoutContainer->setAttributeValue(Style::style,Style::Border::right::border("1px solid black"));
     aksamoutContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_3);
     auto aksamoutimgContainer = aksamoutContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     aksamoutimgContainer->setHeight(50);
@@ -539,7 +548,8 @@ void GirisCikisWidget::addRow(QString personeloid, qint64 julianDay)
                 auto fileName = SBLDKeys::downloadifNotExist(&bucket,imgoid);
                 sabahinimgContainer->setAttributeValue(Style::style,Style::background::url(fileName)
                                                        +Style::background::size::contain
-                                                       +Style::background::repeat::norepeat);
+                                                       +Style::background::repeat::norepeat
+                                                       +Style::background::position::center_center);
             }
 
             if( currentTime >= QTime(12,0) && currentTime < QTime(13,0) )
@@ -548,7 +558,8 @@ void GirisCikisWidget::addRow(QString personeloid, qint64 julianDay)
                 auto fileName = SBLDKeys::downloadifNotExist(&bucket,imgoid);
                 sabahoutimgContainer->setAttributeValue(Style::style,Style::background::url(fileName)
                                                         +Style::background::size::contain
-                                                        +Style::background::repeat::norepeat);
+                                                        +Style::background::repeat::norepeat
+                                                        +Style::background::position::center_center);
             }
 
             if( currentTime >= QTime(13,0) && currentTime < QTime(14,0) )
@@ -557,7 +568,8 @@ void GirisCikisWidget::addRow(QString personeloid, qint64 julianDay)
                 auto fileName = SBLDKeys::downloadifNotExist(&bucket,imgoid);
                 aksaminimgContainer->setAttributeValue(Style::style,Style::background::url(fileName)
                                                        +Style::background::size::contain
-                                                       +Style::background::repeat::norepeat);
+                                                       +Style::background::repeat::norepeat
+                                                       +Style::background::position::center_center);
             }
 
             if( currentTime >= QTime(17,0) && currentTime < QTime(18,0) )
@@ -566,7 +578,8 @@ void GirisCikisWidget::addRow(QString personeloid, qint64 julianDay)
                 auto fileName = SBLDKeys::downloadifNotExist(&bucket,imgoid);
                 aksamoutimgContainer->setAttributeValue(Style::style,Style::background::url(fileName)
                                                         +Style::background::size::contain
-                                                        +Style::background::repeat::norepeat);
+                                                        +Style::background::repeat::norepeat
+                                                        +Style::background::position::center_center);
             }
 
         }
