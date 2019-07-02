@@ -13,7 +13,13 @@ MainPage::MainPage(mongocxx::database *_db)
     header->addStyleClass("header");
 
     mContentWidget = addWidget(cpp14::make_unique<WContainerWidget>());
-    this->init();
+
+    if( !this->initMeclisCanliYayin() )
+    {
+        this->init();
+    }
+
+
 
 
 
@@ -77,10 +83,9 @@ void MainPage::init()
 //    slider->setId("sliderid");
 //    slider->setHeight(768);
 
-
     mContentWidget->setContentAlignment(AlignmentFlag::Center);
 
-    // Meclis Canlı Yayın
+//     Meclis Canlı Yayın
 //    {
 //        auto container = mContentWidget->addWidget(cpp14::make_unique<WContainerWidget>());
 //        container->setPadding(90,Side::Top);
@@ -89,28 +94,14 @@ void MainPage::init()
 //        text->setAttributeValue(Style::style,Style::color::rgb("255,255,255"));
 //    }
 
-//    {
-
-//        auto container = mContentWidget->addWidget(cpp14::make_unique<WContainerWidget>());
-//        container->addStyleClass("CanliYayin");
-//        container->setPadding(90,Side::Top);
-//        container->setContentAlignment(AlignmentFlag::Center);
-//        auto text = container->addWidget(cpp14::make_unique<WText>("<iframe src=\"https://www.youtube.com/embed/IqWNR7X-fvk?autoplay=1\" style=\"border:0px #ffffff none;\" name=\"myiFrame\" scrolling=\"no\" frameborder=\"1\" marginheight=\"5px\" marginwidth=\"5px\" height=\"100%\" width=\"100%\" "
-//                                                                   "allow=\"accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>",TextFormat::UnsafeXHTML));
-//        text->setMaximumSize(1280,WLength::Auto);
-//    }
-
+//    this->initMeclisCanliYayin();
 
 //    <iframe width="1280" height="720" src="https://www.youtube.com/embed/IqWNR7X-fvk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
 
     auto rContainer = mContentWidget->addWidget(cpp14::make_unique<WContainerWidget>());
     rContainer->addStyleClass(Bootstrap::Grid::row);
     rContainer->setMaximumSize(1270,WLength::Auto);
     rContainer->setPadding(180,Side::Top);
-
-
-
 
     {
         auto controller = rContainer->addWidget(cpp14::make_unique<MainPageController>(this->getDB()));
@@ -130,114 +121,6 @@ void MainPage::init()
         controller->ClickDuyurular().connect(this,&MainPage::initAnounceList);
     }
 
-
-
-
-
-
-//    {
-//        auto fotoContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//        fotoContainer->addStyleClass(Bootstrap::Grid::Visible::visible_lg);
-////        fotoContainer->addStyleClass(Bootstrap::Grid::Offset::Large::col_lg_4);
-//        fotoContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_3);
-//        fotoContainer->setHeight(250);
-
-//        auto foto = fotoContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//        foto->setHeight(250);
-
-//        foto->setAttributeValue(Style::style,Style::background::url("v2/baskan/baskan1.png")+
-//                                         Style::background::repeat::norepeat+
-//                                         Style::background::size::contain+
-//                                         Style::background::position::center_center);
-//    }
-
-//    {
-//        auto fotoContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//        fotoContainer->addStyleClass(Bootstrap::Grid::Hidden::hidden_lg);
-//        fotoContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_3);
-//        fotoContainer->setHeight(250);
-
-//        auto foto = fotoContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//        foto->setHeight(250);
-
-//        foto->setAttributeValue(Style::style,Style::background::url("v2/baskan/baskan1.png")+
-//                                         Style::background::repeat::norepeat+
-//                                         Style::background::size::contain+
-//                                         Style::background::position::center_center);
-//    }
-
-//    {
-//        auto controller = rContainer->addWidget(cpp14::make_unique<MainPageController>(this->getDB()));
-//        controller->addStyleClass(Bootstrap::Grid::Hidden::hidden_lg);
-//        controller->addStyleClass(Bootstrap::Grid::Large::col_lg_9);
-//        controller->ClickHaber().connect(this,&MainPage::initHaberler);
-//        controller->ClickCalisma().connect(this,&MainPage::initCalismalar);
-//        controller->ClickProjeler().connect(this,&MainPage::initProjeler);
-//        controller->ClickEtkinlikler().connect(this,&MainPage::initEtkinlikler);
-//        controller->ClickBilgiEdinme().connect(this,&MainPage::initBilgiEdinme);
-//        controller->ClickGiris().connect(this,&MainPage::initGiris);
-//        controller->ClickMeclis().connect(this,&MainPage::initMeclis);
-//        controller->ClickAnounce().connect(this,&MainPage::initAnounceDetail);
-//        controller->ClickHakkinda().connect(this,&MainPage::initHakkinda);
-//        controller->ClickIletisim().connect(this,&MainPage::initIletisim);
-//        controller->ClickDuyurular().connect(this,&MainPage::initAnounceList);
-//    }
-
-
-
-
-//    {
-//        auto container = mContentWidget->addWidget(cpp14::make_unique<WContainerWidget>());
-//        container->setHeight(350);
-//        container->setContentAlignment(AlignmentFlag::Center);
-////        container->decorationStyle().setBorder(WBorder(BorderStyle::Solid,BorderWidth::Medium,WColor(0,255,0)));
-
-
-//        auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
-//        _container->setPositionScheme(PositionScheme::Relative);
-//        _container->setHeight(350);
-//        _container->setWidth(WLength::Auto);
-//        _container->setMaximumSize(1270,WLength::Auto);
-////        _container->decorationStyle().setBorder(WBorder(BorderStyle::Solid,BorderWidth::Medium,WColor(255,0,0)));
-
-//        auto content = _container->addWidget(cpp14::make_unique<WContainerWidget>());
-//        content->setPositionScheme(PositionScheme::Absolute);
-
-//        content->setWidth(550);
-//        content->setHeight(250);
-//        content->setOffsets(0,Side::Bottom);
-//        content->setOffsets(0,Side::Right);
-
-//        auto rContainer = content->addWidget(cpp14::make_unique<WContainerWidget>());
-//        rContainer->addStyleClass(Bootstrap::Grid::row);
-
-//        {
-//            auto fotoContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//            fotoContainer->addStyleClass(Bootstrap::Grid::Offset::Large::col_lg_4);
-//            fotoContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_8);
-//            fotoContainer->setHeight(250);
-
-//            auto foto = fotoContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//            foto->setHeight(250);
-
-//            foto->setAttributeValue(Style::style,Style::background::url("v2/baskan/baskan1.png")+
-//                                             Style::background::repeat::norepeat+
-//                                             Style::background::size::contain+
-//                                             Style::background::position::center_center);
-//        }
-//    }
-
-//    {
-//        auto controller = mContentWidget->addWidget(cpp14::make_unique<MainPageController>(this->getDB()));
-//        controller->ClickHaber().connect(this,&MainPage::initHaberler);
-//        controller->ClickCalisma().connect(this,&MainPage::initCalismalar);
-//        controller->ClickProjeler().connect(this,&MainPage::initProjeler);
-//        controller->ClickEtkinlikler().connect(this,&MainPage::initEtkinlikler);
-//        controller->ClickBilgiEdinme().connect(this,&MainPage::initBilgiEdinme);
-//        controller->ClickGiris().connect(this,&MainPage::initGiris);
-//        controller->ClickMeclis().connect(this,&MainPage::initMeclis);
-//        controller->ClickAnounce().connect(this,&MainPage::initAnounceDetail);
-//    }
 }
 
 void MainPage::initHaberler()
@@ -636,6 +519,90 @@ void MainPage::initBaskan()
     auto widget = mContentWidget->addWidget(cpp14::make_unique<BaskanWidget>(this->getDB()));
     widget->setMaximumSize(1024,WLength::Auto);
     footer->removeStyleClass("footerStickAbsolute");
+
+}
+
+bool MainPage::initMeclisCanliYayin()
+{
+
+    auto filter = document{};
+
+    try {
+        filter.append(kvp("mecliscanliyayin",bsoncxx::types::b_utf8{"mecliscanliyayin"}));
+    } catch (bsoncxx::exception &e) {
+
+    }
+
+    std::string embedlink;
+    bool online = false;
+
+    try {
+        auto val = this->getDB()->collection("mecliscanli").find_one(filter.view());
+        if( val )
+        {
+            try {
+                online = val.value().view()["online"].get_bool().value;
+            } catch (bsoncxx::exception &e) {
+
+            }
+            if( online )
+            {
+                try {
+                    embedlink = val.value().view()["link"].get_utf8().value.to_string()+"?autoplay=1+";
+                } catch (bsoncxx::exception &e) {
+
+                }
+            }
+        }
+    } catch (mongocxx::exception &e) {
+
+    }
+
+    if( online )
+    {
+        auto mContainer = mContentWidget->addWidget(cpp14::make_unique<WContainerWidget>());
+        mContainer->addStyleClass(Bootstrap::Grid::container_fluid);
+        mContainer->setContentAlignment(AlignmentFlag::Center);
+        mContainer->setMaximumSize(1280,WLength::Auto);
+
+        auto rContaier = mContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+        rContaier->addStyleClass(Bootstrap::Grid::row);
+        rContaier->setContentAlignment(AlignmentFlag::Center);
+        {
+            auto link = "<iframe src=\"" +embedlink+ "\" style=\"border:0px #ffffff none;\" name=\"myiFrame\" scrolling=\"no\" frameborder=\"1\" marginheight=\"5px\" marginwidth=\"5px\" height=\"100%\" width=\"100%\" "
+                                                     "allow=\"accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>";
+
+            auto container = rContaier->addWidget(cpp14::make_unique<WContainerWidget>());
+            container->addStyleClass(Bootstrap::ImageShape::img_thumbnail+Bootstrap::Grid::col_full_12);
+            container->addStyleClass("CanliYayin");
+            container->setPadding(90,Side::Top);
+            container->setContentAlignment(AlignmentFlag::Center);
+            auto text = container->addWidget(cpp14::make_unique<WText>(link,TextFormat::UnsafeXHTML));
+            text->setMaximumSize(1280,WLength::Auto);
+        }
+
+        {
+            auto container = rContaier->addWidget(cpp14::make_unique<WContainerWidget>());
+//            container->setPadding(90,Side::Top);
+            container->setContentAlignment(AlignmentFlag::Center);
+            container->addStyleClass(Bootstrap::ImageShape::img_thumbnail+Bootstrap::Grid::col_full_12);
+            auto text = container->addWidget(cpp14::make_unique<WText>("<h6>Meclis Canlı Yayın</h6>",TextFormat::UnsafeXHTML));
+            text->setAttributeValue(Style::style,Style::color::rgb("25,25,25"));
+        }
+
+        {
+            auto container = rContaier->addWidget(cpp14::make_unique<WContainerWidget>());
+            container->setContentAlignment(AlignmentFlag::Center);
+            container->setMargin(15,Side::Top|Side::Bottom);
+            container->addStyleClass(Bootstrap::Grid::col_full_12);
+            auto mAnaSayfaBtn = container->addWidget(cpp14::make_unique<WPushButton>("Ana Sayfa için Tıklayınız",TextFormat::UnsafeXHTML));
+            mAnaSayfaBtn->addStyleClass(Bootstrap::Button::Warning);
+            mAnaSayfaBtn->clicked().connect(this,&MainPage::init);
+        }
+
+    }
+
+    return online;
 
 }
 
