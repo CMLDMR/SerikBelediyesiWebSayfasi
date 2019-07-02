@@ -7121,8 +7121,9 @@ Body::Talep::Talep(mongocxx::database *_db)
             container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
             container->setAttributeValue(Style::style,Style::background::color::rgba(125,175,225));
             auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-            auto text = layout->addWidget(cpp14::make_unique<WText>("<h5><p><b>Sinek ve İlaçlama İçin Lütfen</b></p><p>ABB Çevre Koruma ve "
-                                                                    "Kontrol Daire Başkanlığı Çevre Sağlığı Şube Müdürlüğünü (Vektörel Mücadele) Arayınız</p>"
+            auto text = layout->addWidget(cpp14::make_unique<WText>("<h5><p><b>Sinek ve İlaçlama İçin Lütfen</b></p>"
+                                                                    "<p>Antalya Büyükşehir Belediyesi</p>"
+                                                                    "<p>Çevre Koruma ve Kontrol Daire Başkanlığı Çevre Sağlığı Şube Müdürlüğünü (Vektörel Mücadele) Arayınız</p>"
                                                                     "<p>İletişim: 0 242 712 66 67</p>"
                                                                     "<p>Arama Saatleri 09:00 - 16:00</p></h5>"));
         }
