@@ -6991,6 +6991,8 @@ Body::Talep::Talep(mongocxx::database *_db)
         {
             auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_6);
+            container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+
             auto layoutContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
 
             auto layout = layoutContainer->setLayout(cpp14::make_unique<WGridLayout>());
@@ -7046,6 +7048,7 @@ Body::Talep::Talep(mongocxx::database *_db)
         {
             auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_6);
+            container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
             auto layoutContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
 
             auto layout = layoutContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
@@ -7105,10 +7108,23 @@ Body::Talep::Talep(mongocxx::database *_db)
             auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
             auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-            auto text = layout->addWidget(cpp14::make_unique<WText>("<h3>Talebinizin Tam Olarak Yerine Getirilebilmesi için "
-                                                                    "Lütfen Bilgilerinizi Eksiksiz Doldurunuz</h3>"));
+            auto text = layout->addWidget(cpp14::make_unique<WText>("<h4>Talebinizin Tam Olarak Yerine Getirilebilmesi için "
+                                                                    "Lütfen Bilgilerinizi Eksiksiz Doldurunuz</h4>"));
             mSave = layout->addWidget(cpp14::make_unique<WPushButton>("Kaydet"));
+            mSave->addStyleClass(Bootstrap::Button::Primary);
             mSave->clicked().connect(this,&Talep::Save);
+        }
+
+        {
+            auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
+            container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+            container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+            container->setAttributeValue(Style::style,Style::background::color::rgba(125,175,225));
+            auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
+            auto text = layout->addWidget(cpp14::make_unique<WText>("<h5><p><b>Sinek ve İlaçlama İçin Lütfen</b></p><p>ABB Çevre Koruma ve "
+                                                                    "Kontrol Daire Başkanlığı Çevre Sağlığı Şube Müdürlüğünü (Vektörel Mücadele) Arayınız</p>"
+                                                                    "<p>İletişim: 0 242 712 66 67</p>"
+                                                                    "<p>Arama Saatleri 09:00 - 16:00</p></h5>"));
         }
 
 
