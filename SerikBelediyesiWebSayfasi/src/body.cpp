@@ -6958,7 +6958,8 @@ Body::Talep::Talep(mongocxx::database *_db)
 
     mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
     mMainContainer->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::Snow));
-    mMainContainer->setMargin(25,Side::Top);
+    mMainContainer->setMargin(25,Side::Top|Side::Bottom);
+    mMainContainer->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
     mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
 
