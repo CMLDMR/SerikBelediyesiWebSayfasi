@@ -376,7 +376,7 @@ void IK::loadPersonelList(bsoncxx::builder::basic::document filter, const int &s
 
     if( mBuroPersonelFilterComboBox->currentText().toUTF8() != "Tümü" )
     {
-        if( mBuroPersonelFilterComboBox->currentText().toUTF8() == u8"Büro Personeli" )
+        if( mBuroPersonelFilterComboBox->currentText().toUTF8() == "Büro Personeli" )
         {
             try {
                 filter.append(kvp(this->KEYBuroPer,true));
