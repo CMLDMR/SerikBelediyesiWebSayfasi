@@ -296,6 +296,13 @@ void GirisCikisWidget::initSelectedDay(qint64 julianDay)
 
         }
 
+
+    try {
+        filter.append(kvp("Büro Personeli",true));
+    } catch (bsoncxx::exception &e) {
+
+    }
+
     {
         auto container = mContentContainer->addWidget(cpp14::make_unique<WContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
