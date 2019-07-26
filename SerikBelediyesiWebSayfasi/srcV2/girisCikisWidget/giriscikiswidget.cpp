@@ -454,6 +454,7 @@ void GirisCikisWidget::addRow(QString personeloid, qint64 julianDay)
 
     auto container = mContentContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     container->addStyleClass(Bootstrap::Grid::col_full_12);
+//    container->setAttributeValue(Style::style,Style::background::color::rgb(this->getRandom(),this->getRandom(),this->getRandom()));
     //    container->setHeight(110);
     container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
@@ -494,7 +495,7 @@ void GirisCikisWidget::addRow(QString personeloid, qint64 julianDay)
     sabahinContainer->setAttributeValue(Style::style,Style::Border::right::border("1px solid black")+Style::Border::left::border("1px solid black"));
     sabahinContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_3);
     auto sabahinimgContainer = sabahinContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-    sabahinimgContainer->setHeight(50);
+    sabahinimgContainer->setHeight(65);
     auto sabahintext = sabahinContainer->addWidget(cpp14::make_unique<WText>("-:-"));
 
     auto sabahoutContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -502,7 +503,7 @@ void GirisCikisWidget::addRow(QString personeloid, qint64 julianDay)
     sabahoutContainer->setAttributeValue(Style::style,Style::Border::right::border("1px solid black"));
     sabahoutContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_3);
     auto sabahoutimgContainer = sabahoutContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-    sabahoutimgContainer->setHeight(50);
+    sabahoutimgContainer->setHeight(65);
     auto sabahouttext = sabahoutContainer->addWidget(cpp14::make_unique<WText>("-:-"));
 
 
@@ -511,7 +512,7 @@ void GirisCikisWidget::addRow(QString personeloid, qint64 julianDay)
     aksaminContainer->setAttributeValue(Style::style,Style::Border::right::border("1px solid black"));
     aksaminContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_3);
     auto aksaminimgContainer = aksaminContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-    aksaminimgContainer->setHeight(50);
+    aksaminimgContainer->setHeight(65);
     auto aksamintext = aksaminContainer->addWidget(cpp14::make_unique<WText>("-:-"));
 
     auto aksamoutContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -519,7 +520,7 @@ void GirisCikisWidget::addRow(QString personeloid, qint64 julianDay)
 //    aksamoutContainer->setAttributeValue(Style::style,Style::Border::right::border("1px solid black"));
     aksamoutContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_3);
     auto aksamoutimgContainer = aksamoutContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-    aksamoutimgContainer->setHeight(50);
+    aksamoutimgContainer->setHeight(65);
     auto aksamouttext = aksamoutContainer->addWidget(cpp14::make_unique<WText>("-:-"));
 
     auto bucket = this->db()->gridfs_bucket();
@@ -630,7 +631,7 @@ void GirisCikisWidget::addNinRow( QString PersonelName , QString BirimName )
     sabahinContainer->setAttributeValue(Style::style,Style::Border::border("1px solid black"));
     sabahinContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_3);
     auto sabahinimgContainer = sabahinContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-    sabahinimgContainer->setHeight(50);
+    sabahinimgContainer->setHeight(65);
     auto sabahintext = sabahinContainer->addWidget(cpp14::make_unique<WText>("Yok"));
 
     auto sabahoutContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -638,7 +639,7 @@ void GirisCikisWidget::addNinRow( QString PersonelName , QString BirimName )
     sabahoutContainer->setAttributeValue(Style::style,Style::Border::border("1px solid black"));
     sabahoutContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_3);
     auto sabahoutimgContainer = sabahoutContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-    sabahoutimgContainer->setHeight(50);
+    sabahoutimgContainer->setHeight(65);
     auto sabahouttext = sabahoutContainer->addWidget(cpp14::make_unique<WText>("Yok"));
 
 
@@ -647,7 +648,7 @@ void GirisCikisWidget::addNinRow( QString PersonelName , QString BirimName )
     aksaminContainer->setAttributeValue(Style::style,Style::Border::border("1px solid black"));
     aksaminContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_3);
     auto aksaminimgContainer = aksaminContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-    aksaminimgContainer->setHeight(50);
+    aksaminimgContainer->setHeight(65);
     auto aksamintext = aksaminContainer->addWidget(cpp14::make_unique<WText>("Yok"));
 
     auto aksamoutContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -655,7 +656,7 @@ void GirisCikisWidget::addNinRow( QString PersonelName , QString BirimName )
     aksamoutContainer->setAttributeValue(Style::style,Style::Border::border("1px solid black"));
     aksamoutContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_3);
     auto aksamoutimgContainer = aksamoutContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-    aksamoutimgContainer->setHeight(50);
+    aksamoutimgContainer->setHeight(65);
     auto aksamouttext = aksamoutContainer->addWidget(cpp14::make_unique<WText>("Yok"));
 
 
