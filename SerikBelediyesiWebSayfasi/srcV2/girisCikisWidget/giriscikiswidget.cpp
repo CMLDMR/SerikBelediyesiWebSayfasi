@@ -455,7 +455,7 @@ void GirisCikisWidget::addRow(QString personeloid, qint64 julianDay)
     auto container = mContentContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     container->addStyleClass(Bootstrap::Grid::col_full_12);
 //    container->setAttributeValue(Style::style,Style::background::color::rgb(this->getRandom(),this->getRandom(),this->getRandom()));
-    //    container->setHeight(110);
+//    container->setHeight(110);
     container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
     container->setMargin(2,Side::Top|Side::Bottom);
