@@ -22,9 +22,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += main.cpp \
+    SerikBelediyesiWebSayfasi/BaseClass/containerwiget.cpp \
+    SerikBelediyesiWebSayfasi/BaseClass/dbclass.cpp \
     SerikBelediyesiWebSayfasi/srcV2/girisCikisWidget/giriscikiswidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/ik.cpp \
     SerikBelediyesiWebSayfasi/srcV2/kadinailestock.cpp \
+    SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/bilgiedinmeyonetim.cpp \
+    SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetimyonetim.cpp \
     main.cpp \
     mainapplication.cpp \
     SerikBelediyesiWebSayfasi/src/header.cpp \
@@ -67,9 +71,14 @@ INCLUDEPATH += $$PWD/../../Comman
 DEPENDPATH += $$PWD/../../Comman
 
 HEADERS += \
+    SerikBelediyesiWebSayfasi/BaseClass/containerwiget.h \
+    SerikBelediyesiWebSayfasi/BaseClass/dbclass.h \
+    SerikBelediyesiWebSayfasi/BaseClass/wtheaders.h \
     SerikBelediyesiWebSayfasi/srcV2/girisCikisWidget/giriscikiswidget.h \
     SerikBelediyesiWebSayfasi/srcV2/ik.h \
     SerikBelediyesiWebSayfasi/srcV2/kadinailestock.h \
+    SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/bilgiedinmeyonetim.h \
+    SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetimyonetim.h \
     mainapplication.h \
     Necessary \
     SerikBelediyesiWebSayfasi/src/header.h \
