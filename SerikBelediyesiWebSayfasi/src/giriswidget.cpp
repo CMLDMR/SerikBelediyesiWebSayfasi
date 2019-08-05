@@ -7,6 +7,7 @@
 #include "SerikBelediyesiWebSayfasi/srcV2/kadinailestock.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/ik.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/girisCikisWidget/giriscikiswidget.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetimyonetim.h"
 
 
 Giris::GirisWidget::GirisWidget(mongocxx::database *_db)
@@ -3633,9 +3634,12 @@ void Giris::Personel::PersonelWidget::initMenu()
         menu->addItem(WString::fromUTF8("Giriş Çıkışlarım"), Wt::cpp14::make_unique<GirisCikisWidget>(db(),User()));
     }
 
-//    if( this->User().view()["Yetkiler"].get_array().value.)
+    if( this->UserYetki().contains("Çağrı Merkezi") )
+    {
+        menu->addItem(WString::fromUTF8("Çağrı Merkezi/Y"), Wt::cpp14::make_unique<SikayetimYonetim>(db(),User()));
+    }
 
-    menu->addItem(WString::fromUTF8("Çağrı Merkezi/Y"), Wt::cpp14::make_unique<CagriMerkezi>(db(),User()));
+
 
 
 
@@ -3830,8 +3834,6 @@ QVector<QString> Giris::Personel::BaseWidget::UserYetki() const
     } catch (bsoncxx::exception &e) {
         std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << e.what() << std::endl;
     }
-
-
     return yetkiler;
 }
 
