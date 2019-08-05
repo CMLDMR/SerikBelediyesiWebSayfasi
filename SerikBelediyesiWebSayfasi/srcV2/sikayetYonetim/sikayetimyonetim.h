@@ -14,6 +14,8 @@ public:
 
 private:
     WContainerWidget* mContentContainer;
+
+    void initBilgiEdinme();
 };
 
 #endif // SIKAYETIMYONETIM_H

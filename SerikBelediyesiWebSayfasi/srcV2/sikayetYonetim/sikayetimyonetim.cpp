@@ -6,9 +6,10 @@ SikayetimYonetim::SikayetimYonetim(mongocxx::database *_db, bsoncxx::document::v
     :BaseClass::ContainerWidget (_db,_user,"Talep/Bilgi Edinme Yönetimi")
 {
 
-    setPadding(15,Side::Top);
     auto rContainer = addWidget(cpp14::make_unique<WContainerWidget>());
     rContainer->addStyleClass(Bootstrap::Grid::row);
+    rContainer->setMargin(15,Side::Top|Side::Bottom);
+
 
     auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     container->addStyleClass(Bootstrap::Grid::col_full_12);
@@ -36,6 +37,31 @@ SikayetimYonetim::SikayetimYonetim(mongocxx::database *_db, bsoncxx::document::v
         text->setAttributeValue(Style::style,Style::font::size::s16px
                                 +Style::color::color(Style::color::White::Snow));
 
+        BilgiEdinmeContainer->decorationStyle().setCursor(Cursor::PointingHand);
+
+        BilgiEdinmeContainer->clicked().connect(this,&SikayetimYonetim::initBilgiEdinme);
+
+    }
+
+    {
+        auto SikayetContainer = _rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+        SikayetContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_6
+                                            +Bootstrap::Grid::Medium::col_md_6
+                                            +Bootstrap::Grid::Small::col_sm_6
+                                            +Bootstrap::Grid::ExtraSmall::col_xs_6);
+        SikayetContainer->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+
+        SikayetContainer->setHeight(100);
+        SikayetContainer->setAttributeValue(Style::style,Style::background::color::rgb(this->getRandom(),this->getRandom(),this->getRandom()));
+
+        auto vLayout = SikayetContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
+
+        auto text = vLayout->addWidget(cpp14::make_unique<WText>("Şikayet Yönetimi"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+        text->setAttributeValue(Style::style,Style::font::size::s16px
+                                +Style::color::color(Style::color::White::Snow));
+
+        SikayetContainer->decorationStyle().setCursor(Cursor::PointingHand);
+
     }
 
 
@@ -44,5 +70,13 @@ SikayetimYonetim::SikayetimYonetim(mongocxx::database *_db, bsoncxx::document::v
     mContentContainer->addStyleClass(Bootstrap::Grid::col_full_12);
     mContentContainer->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
+
+}
+
+void SikayetimYonetim::initBilgiEdinme()
+{
+    mContentContainer->clear();
+
+    mContentContainer->addWidget(cpp14::make_unique<BilgiEdinmeYonetim>(this->db(),this->User()));
 
 }
