@@ -1,11 +1,19 @@
 #ifndef SIKAYETIMYONETIM_H
 #define SIKAYETIMYONETIM_H
 
+#include "SerikBelediyesiWebSayfasi/BaseClass/basewidget.h"
 
-class SikayetimYonetim
+
+class BilgiEdinmeYonetim;
+
+class SikayetimYonetim : public BaseClass::ContainerWidget
 {
 public:
-    SikayetimYonetim();
+    SikayetimYonetim(mongocxx::database* _db , bsoncxx::document::value _user);
+
+
+private:
+    WContainerWidget* mContentContainer;
 };
 
 #endif // SIKAYETIMYONETIM_H
