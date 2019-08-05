@@ -15,13 +15,19 @@ BilgiEdinmeYonetim::BilgiEdinmeYonetim(mongocxx::database *_db, const bsoncxx::d
         {
             auto container = addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::col_full_12);
-            container->addWidget(cpp14::make_unique<BilgiEdinmeWidget>(item.get()));
+            container->addWidget(cpp14::make_unique<BilgiEdinmeListWidget>(item.get()))->ClickBilgiEdinme().connect(this,&BilgiEdinmeYonetim::initBilgiEdinme);
         }
     }
 
 }
 
-BilgiEdinmeWidget::BilgiEdinmeWidget( const BilgiEdinmeItem *_item)
+void BilgiEdinmeYonetim::initBilgiEdinme(const bsoncxx::oid &oid)
+{
+    clear();
+    addWidget(cpp14::make_unique<BilgiEdinmeWidget>(this->db(),oid,this->User()));
+}
+
+BilgiEdinmeListWidget::BilgiEdinmeListWidget( const BilgiEdinmeItem *_item)
     :DBClass (_item->db()),item(_item)
 {
     setWidth(WLength("100%"));
@@ -29,6 +35,9 @@ BilgiEdinmeWidget::BilgiEdinmeWidget( const BilgiEdinmeItem *_item)
     addStyleClass(Bootstrap::ImageShape::img_thumbnail);
     decorationStyle().setCursor(Cursor::PointingHand);
     setMargin(10,Side::Top);
+
+    setHeight(50);
+    setOverflow(Overflow::Hidden);
 
     {
         auto container = addWidget(cpp14::make_unique<WContainerWidget>());
@@ -49,14 +58,41 @@ BilgiEdinmeWidget::BilgiEdinmeWidget( const BilgiEdinmeItem *_item)
         {
             container->addWidget(cpp14::make_unique<WText>("Cevaplandı"));
             setAttributeValue(Style::style,Style::background::color::rgb(this->getRandom(125,150),
-                                                                                    this->getRandom(225,250),
-                                                                                    this->getRandom(125,150)));
+                                                                         this->getRandom(225,250),
+                                                                         this->getRandom(125,150)));
         }else{
             container->addWidget(cpp14::make_unique<WText>("Cevaplanmadı"));
             setAttributeValue(Style::style,Style::background::color::rgb(this->getRandom(225,250),
-                                                                                    this->getRandom(125,150),
-                                                                                    this->getRandom(125,150)));
+                                                                         this->getRandom(125,150),
+                                                                         this->getRandom(125,150)));
         }
     }
 
+
+    clicked().connect([=](){
+        _ClickBilgiEdinme.emit(item->oid());
+    });
+
+}
+
+Signal<bsoncxx::oid> &BilgiEdinmeListWidget::ClickBilgiEdinme()
+{
+    return _ClickBilgiEdinme;
+}
+
+
+BilgiEdinmeWidget::BilgiEdinmeWidget(mongocxx::database *_db, const bsoncxx::oid &_oid, const UserClass &user)
+    :DBClass (_db),UserClass (user)
+{
+
+
+    auto val = BilgiEdinmeItem::LoadBilgiEdinmeItem(this->db(),_oid.to_string());
+
+    if( val )
+    {
+        mItem = (val.value());
+        addWidget(cpp14::make_unique<WText>(mItem->Konu()));
+    }else {
+        std::cout << "ERROR: " << std::endl;
+    }
 }

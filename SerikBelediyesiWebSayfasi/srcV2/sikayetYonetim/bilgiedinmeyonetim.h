@@ -12,18 +12,35 @@ class BilgiEdinmeYonetim : public ContainerWiget , public DBClass , public UserC
 {
 public:
     BilgiEdinmeYonetim(mongocxx::database* _db , const bsoncxx::document::value &_userValue );
+
+    void initBilgiEdinme( const bsoncxx::oid &oid );
 };
 
 
 
-class BilgiEdinmeWidget : public ContainerWiget , public DBClass
+class BilgiEdinmeListWidget : public ContainerWiget , public DBClass
 {
 public:
-    explicit BilgiEdinmeWidget(const BilgiEdinmeItem *_item);
+    explicit BilgiEdinmeListWidget(const BilgiEdinmeItem *_item);
+
+    Signal<bsoncxx::oid> &ClickBilgiEdinme();
 
 private:
 
     const BilgiEdinmeItem *item;
+
+    Signal<bsoncxx::oid> _ClickBilgiEdinme;
+};
+
+
+class BilgiEdinmeWidget : public ContainerWiget , public DBClass , public UserClass
+{
+public:
+    BilgiEdinmeWidget( mongocxx::database* _db , const bsoncxx::oid &_oid , const UserClass &user );
+
+
+private:
+    const BilgiEdinmeItem* mItem;
 };
 
 
