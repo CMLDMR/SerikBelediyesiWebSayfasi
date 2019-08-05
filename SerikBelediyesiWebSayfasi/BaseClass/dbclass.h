@@ -20,7 +20,9 @@ public:
     explicit DBClass( mongocxx::database* _db );
 
 
-    mongocxx::database* db();
+    mongocxx::database *db() const;
+
+
 
     const std::string downloadFile(const std::string &oid , const bool &forceFilename = false);
 

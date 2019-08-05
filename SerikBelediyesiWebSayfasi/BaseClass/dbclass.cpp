@@ -14,7 +14,7 @@ DBClass::DBClass( mongocxx::database* _db )
 
 }
 
-mongocxx::database *DBClass::db()
+mongocxx::database *DBClass::db() const
 {
     return __db;
 }
