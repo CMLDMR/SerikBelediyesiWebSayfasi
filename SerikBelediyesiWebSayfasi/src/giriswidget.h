@@ -370,6 +370,8 @@ public:
 
     bsoncxx::document::value User() const;
 
+    QVector<QString> UserYetki() const;
+
     std::unique_ptr<Wt::WPushButton> createColorButton(const char *className, const Wt::WString& text);
 
     mongocxx::cursor find(std::string collection , const bsoncxx::document::view &view = document{}.view() ,mongocxx::options::find options = mongocxx::options::find());

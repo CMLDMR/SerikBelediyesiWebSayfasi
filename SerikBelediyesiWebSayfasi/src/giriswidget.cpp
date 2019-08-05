@@ -3630,9 +3630,13 @@ void Giris::Personel::PersonelWidget::initMenu()
         menu->addItem(WString::fromUTF8("Evrak Arşivi"), Wt::cpp14::make_unique<EvrakArsiv>(db(),User()));
         menu->addItem(WString::fromUTF8("Başvurularım"), Wt::cpp14::make_unique<Basvurularim>(db(),User()));
         menu->addItem(WString::fromUTF8("Çalışmalar"), Wt::cpp14::make_unique<CalismaGirWidget>(db(),User()));
-
         menu->addItem(WString::fromUTF8("Giriş Çıkışlarım"), Wt::cpp14::make_unique<GirisCikisWidget>(db(),User()));
     }
+
+//    if( this->User().view()["Yetkiler"].get_array().value.)
+
+    menu->addItem(WString::fromUTF8("Çağrı Merkezi/Y"), Wt::cpp14::make_unique<CagriMerkezi>(db(),User()));
+
 
 
 
@@ -3806,6 +3810,29 @@ mongocxx::database *Giris::Personel::BaseWidget::db() const
 bsoncxx::document::value Giris::Personel::BaseWidget::User() const
 {
     return _User;
+}
+
+QVector<QString> Giris::Personel::BaseWidget::UserYetki() const
+{
+    QVector<QString> yetkiler;
+
+    try {
+        auto _array = _User.view()["Yetkiler"].get_array().value;
+
+        for( auto item : _array )
+        {
+            try {
+                yetkiler.push_back(item.get_utf8().value.to_string().c_str());
+            } catch (bsoncxx::exception &e) {
+                std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << e.what() << std::endl;
+            }
+        }
+    } catch (bsoncxx::exception &e) {
+        std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << e.what() << std::endl;
+    }
+
+
+    return QVector<QString>();
 }
 
 std::unique_ptr<WPushButton> Giris::Personel::BaseWidget::createColorButton(const char *className, const WString &text)
@@ -15392,7 +15419,7 @@ Giris::Personel::BaskanMesajlar::BirimGorevlendirmeList::BirimGorevlendirmeList(
     try {
         filter.append(kvp(SBLDKeys::Birimler::alici,make_document(kvp("$ne","NULL"))));
     } catch (bsoncxx::exception &e) {
-
+        std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << e.what() << std::endl;
     }
 
 
