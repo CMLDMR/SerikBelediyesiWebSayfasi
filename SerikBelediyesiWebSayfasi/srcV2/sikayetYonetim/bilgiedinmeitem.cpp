@@ -6,12 +6,12 @@ boost::optional<BilgiEdinmeItem> BilgiEdinmeItem::Create_EmptyItem(mongocxx::dat
     return BilgiEdinmeItem(_db);
 }
 
-boost::optional<BilgiEdinmeItem> BilgiEdinmeItem::LoadBilgiEdinmeItem(mongocxx::database *_db, const std::string &mOid)
+boost::optional<BilgiEdinmeItem *> BilgiEdinmeItem::LoadBilgiEdinmeItem(mongocxx::database *_db, const std::string &mOid)
 {
-    auto filter = document{};
+    auto _filter = document{};
 
     try {
-        filter.append(kvp("_id",bsoncxx::oid{mOid}));
+        _filter.append(kvp("_id",bsoncxx::oid{mOid}));
     } catch (bsoncxx::exception &e) {
         std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << e.what() << std::endl;
         return boost::none;
@@ -19,12 +19,13 @@ boost::optional<BilgiEdinmeItem> BilgiEdinmeItem::LoadBilgiEdinmeItem(mongocxx::
 
 
 
+
     try {
-        auto val = _db->collection(BilgiEdinmeKEY::collection).find_one(filter.view());
+        auto val = _db->collection(BilgiEdinmeKEY::collection).find_one(_filter.view());
 
         if( val )
         {
-            auto item = BilgiEdinmeItem::Create_EmptyItem(_db);
+            auto item = new BilgiEdinmeItem(_db);
 
             std::string konu;
 
@@ -36,15 +37,16 @@ boost::optional<BilgiEdinmeItem> BilgiEdinmeItem::LoadBilgiEdinmeItem(mongocxx::
             }
 
             try {
-                item->setKonu(konu);
+                item->mKonu = konu;
             } catch (std::string &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e;
                 std::cout << str << std::endl;
                 return boost::none;
             }
-
             return item;
 
+        }else{
+            return boost::none;
         }
 
     } catch (mongocxx::exception &e) {
@@ -171,6 +173,13 @@ BilgiEdinmeItem::BilgiEdinmeItem(mongocxx::database *_db)
 BilgiEdinmeItem::BilgiEdinmeItem(mongocxx::database *_db, const bsoncxx::document::view &view)
     :DBClass (_db)
 {
+
+    try {
+        mOid = view["_id"].get_oid().value;
+    } catch (std::string &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e;
+        std::cout << str << std::endl;
+    }
 
     try {
         mKonu = view[BilgiEdinmeKEY::konu].get_utf8().value.to_string();

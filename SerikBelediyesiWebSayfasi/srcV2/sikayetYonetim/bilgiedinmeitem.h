@@ -19,7 +19,7 @@ public:
 
     static boost::optional<BilgiEdinmeItem> Create_EmptyItem(mongocxx::database *_db);
 
-    static boost::optional<BilgiEdinmeItem> LoadBilgiEdinmeItem( mongocxx::database* _db , const std::string &mOid );
+    static boost::optional<BilgiEdinmeItem*> LoadBilgiEdinmeItem( mongocxx::database* _db , const std::string &mOid );
 
     static QVector<boost::optional<BilgiEdinmeItem *> > GetList( mongocxx::database* _db );
 
