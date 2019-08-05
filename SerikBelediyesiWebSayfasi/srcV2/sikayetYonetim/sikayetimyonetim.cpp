@@ -69,6 +69,7 @@ SikayetimYonetim::SikayetimYonetim(mongocxx::database *_db, bsoncxx::document::v
     mContentContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     mContentContainer->addStyleClass(Bootstrap::Grid::col_full_12);
     mContentContainer->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+    mContentContainer->setMargin(25,Side::Top);
 
 
 }
