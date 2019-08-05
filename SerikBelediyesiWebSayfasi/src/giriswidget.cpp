@@ -3832,7 +3832,7 @@ QVector<QString> Giris::Personel::BaseWidget::UserYetki() const
     }
 
 
-    return QVector<QString>();
+    return yetkiler;
 }
 
 std::unique_ptr<WPushButton> Giris::Personel::BaseWidget::createColorButton(const char *className, const WString &text)
