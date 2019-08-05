@@ -2,6 +2,7 @@
 #define CONTAINERWIGET_H
 
 #include "SerikBelediyesiWebSayfasi/BaseClass/wtheaders.h"
+#include <random>
 
 
 
@@ -23,6 +24,14 @@ public:
     };
 
     void setContainerStyle(ContainerStyleType type);
+
+    inline int getRandom(int begin = 0 , int end = 127 ) const
+    {
+        std::random_device rd;
+        std::mt19937 mt(rd());
+        std::uniform_int_distribution<int> dist(begin,end);
+        return dist(mt);
+    }
 
 
     void showMessage( std::string title , std::string msg , std::string btnText = "Tamam");
