@@ -45,6 +45,10 @@ class UserClass
 {
 public:
     explicit UserClass(const bsoncxx::document::value &_userValue);
+    UserClass( const UserClass &_user);
+
+    bsoncxx::document::value UserValue() const;
+    UserClass User() const;
 
 
 private:

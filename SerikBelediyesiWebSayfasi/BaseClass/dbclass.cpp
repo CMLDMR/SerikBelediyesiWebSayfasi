@@ -133,3 +133,19 @@ UserClass::UserClass(const bsoncxx::document::value &_userValue)
 {
 
 }
+
+UserClass::UserClass(const UserClass &_user)
+    :mUserValue(_user.UserValue())
+{
+
+}
+
+bsoncxx::document::value UserClass::UserValue() const
+{
+    return mUserValue;
+}
+
+UserClass UserClass::User() const
+{
+    return *this;
+}
