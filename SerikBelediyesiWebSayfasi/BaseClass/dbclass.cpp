@@ -19,6 +19,46 @@ mongocxx::database *DBClass::db() const
     return __db;
 }
 
+std::vector<std::string> DBClass::BirimList() const
+{
+
+    auto filter = document{};
+
+    try {
+        filter.append(kvp("Haberleşme Kodu",make_document(kvp("$ne","0"))));
+    } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        std::cout << str << std::endl;
+    }
+
+
+    std::vector<std::string> list;
+
+
+    try {
+        auto cursor = this->db()->collection("Müdürlükler").find(filter.view());
+
+        for( auto doc : cursor )
+        {
+            try {
+                list.push_back(doc["Birim"].get_utf8().value.to_string());
+            } catch (bsoncxx::exception &e) {
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                std::cout << str << std::endl;
+            }
+        }
+
+    } catch (mongocxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        std::cout << str << std::endl;
+    }
+
+
+
+    return list;
+
+}
+
 const std::string DBClass::downloadFile(const std::string &oid, const bool &forceFilename)
 {
 

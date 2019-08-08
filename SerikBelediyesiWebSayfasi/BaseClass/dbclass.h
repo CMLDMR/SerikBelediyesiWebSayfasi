@@ -23,6 +23,9 @@ public:
     mongocxx::database *db() const;
 
 
+    std::vector<std::string> BirimList() const;
+
+
 
     const std::string downloadFile(const std::string &oid , const bool &forceFilename = false);
 
