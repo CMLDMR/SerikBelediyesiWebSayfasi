@@ -3,7 +3,7 @@
 
 #include <QtCore/qglobal.h>
 
-#include <Wt/WContainerWidget>
+#include <Wt/WContainerWidget.h>
 #include "bootstrap.h"
 #include "inlinestyle.h"
 #include <Wt/WLink.h>

@@ -20,7 +20,8 @@
 #include <Wt/WMessageBox.h>
 
 
-#include <Wt/WBootstrapTheme>
+#include <Wt/WBootstrapTheme.h>
+//#include <Wt/WBootstrapTheme>
 #include <iostream>
 #include <memory>
 
