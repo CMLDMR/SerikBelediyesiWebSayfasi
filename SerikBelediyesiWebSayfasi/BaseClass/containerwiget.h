@@ -3,8 +3,9 @@
 
 #include "SerikBelediyesiWebSayfasi/BaseClass/wtheaders.h"
 #include <random>
+#include "SerikBelediyesiWebSayfasi/BaseClass/dbclass.h"
 
-
+#include <QString>
 
 class ContainerWiget : public WContainerWidget
 {
@@ -39,5 +40,35 @@ public:
 
 
 };
+
+
+
+class FileUploaderWidget : public ContainerWiget , public DBClass
+{
+public:
+    explicit FileUploaderWidget( mongocxx::database* _db );
+
+
+    bool isUploaded() const;
+
+
+
+    QString fileLocation() const;
+
+    QString doocRootLocation() const;
+
+    Signal<NoClass> &Uploaded();
+
+private:
+    WFileUpload* mFileUploader;
+
+    QString mFileLocation;
+    QString mDoocRootLocation;
+
+    bool mIsUploaded;
+
+    Signal<NoClass> _Uploaded;
+};
+
 
 #endif // CONTAINERWIGET_H
