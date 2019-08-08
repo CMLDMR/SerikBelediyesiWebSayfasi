@@ -41,8 +41,8 @@ public:
     struct Cevap{
         std::string mCevapOid;
         std::string mSaat;
-        std::string mTarih;
-        operator bsoncxx::document::view();
+        std::int64_t mTarih;
+        bsoncxx::document::view view() const;
 
         bool operator==( const Cevap& other );
         Cevap &operator=( const Cevap& other );
