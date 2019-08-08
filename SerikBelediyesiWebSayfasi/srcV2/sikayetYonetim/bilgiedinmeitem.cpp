@@ -175,8 +175,29 @@ BilgiEdinmeItem::BilgiEdinmeItem(const BilgiEdinmeItem *item )
     this->mAdres = item->adres();
     this->mMesaj = item->mesaj();
     this->mCevap = item->cevap();
+    this->mBirim = item->birim();
 
 }
+
+std::string BilgiEdinmeItem::birim() const
+{
+    return mBirim;
+}
+
+bool BilgiEdinmeItem::setBirim(const std::string &birim)
+{
+    if( mBirim == birim ){
+        return true;
+    }
+
+    if( setElement(BilgiEdinmeKEY::birim,birim ) )
+    {
+        mBirim = birim;
+        return true;
+    }
+    return false;
+}
+
 
 
 
@@ -494,6 +515,14 @@ void BilgiEdinmeItem::LoadFromDocumentView(const bsoncxx::document::view &view)
 
     try {
         mAdres = view[BilgiEdinmeKEY::adres].get_utf8().value.to_string();
+    } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        std::cout << str << std::endl;
+    }
+
+
+    try {
+        mBirim = view[BilgiEdinmeKEY::birim].get_utf8().value.to_string();
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
         std::cout << str << std::endl;

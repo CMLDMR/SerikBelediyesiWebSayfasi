@@ -19,6 +19,7 @@ static const std::string telefon{"telefon"};
 static const std::string adres{"adres"};
 static const std::string konu{"konu"};
 static const std::string mesaj{"mesaj"};
+static const std::string birim{"birim"};
 static const std::string cevap{"cevap"};
 namespace Cevap {
 static const std::string cevapoid{"cevapOid"};
@@ -90,6 +91,9 @@ public:
     std::string mesaj() const;
     bool setMesaj(const std::string &mesaj);
 
+    std::string birim() const;
+    bool setBirim(const std::string &birim);
+
 private:
     explicit BilgiEdinmeItem( mongocxx::database* _db );
     BilgiEdinmeItem( mongocxx::database* _db , const bsoncxx::document::view &view );
@@ -109,6 +113,7 @@ private:
     std::string mAdres;
     std::string mMesaj;
     Cevap mCevap;
+    std::string mBirim;
 
     boost::optional<document> filter();
 
