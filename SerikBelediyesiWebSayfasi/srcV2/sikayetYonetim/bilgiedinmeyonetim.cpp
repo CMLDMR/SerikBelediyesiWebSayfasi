@@ -85,14 +85,223 @@ BilgiEdinmeWidget::BilgiEdinmeWidget(mongocxx::database *_db, const bsoncxx::oid
     :DBClass (_db),UserClass (user)
 {
 
+    setPadding(15,Side::Left|Side::Right);
+
+    auto mContainer = addWidget(cpp14::make_unique<ContainerWiget>());
+    mContainer->setContainerStyle(ContainerStyleType::CONTAINERFLUID);
+
+
 
     auto val = BilgiEdinmeItem::LoadBilgiEdinmeItem(this->db(),_oid.to_string());
 
-    if( val )
+
+    if( !val )
     {
-        mItem = (val.value());
-        addWidget(cpp14::make_unique<WText>(mItem->Konu()));
-    }else {
-        std::cout << "ERROR: " << std::endl;
+
+        auto rContainer = mContainer->addWidget(cpp14::make_unique<ContainerWiget>());
+
+        rContainer->setContainerStyle(ContainerStyleType::ROW);
+
+        rContainer->addWidget(cpp14::make_unique<WText>("Bilgi Edinme Dosyası Yüklenemedi"));
+
+        return;
+
     }
+
+    mItem = (val.value());
+
+    auto rContainer = mContainer->addWidget(cpp14::make_unique<ContainerWiget>());
+
+    rContainer->setContainerStyle(ContainerStyleType::ROW);
+
+    {
+        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWiget>());
+        container->addStyleClass(Bootstrap::Grid::col_full_12);
+        auto text = container->addWidget(cpp14::make_unique<WText>(mItem->Tarih()));
+        container->setContentAlignment(AlignmentFlag::Center);
+    }
+
+    {
+        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWiget>());
+        container->addStyleClass(Bootstrap::Grid::col_full_12);
+        auto text = container->addWidget(cpp14::make_unique<WText>("<b><u>"+mItem->Konu()+"</u></b>"));
+        container->setContentAlignment(AlignmentFlag::Center);
+    }
+
+    {
+        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWiget>());
+        container->addStyleClass(Bootstrap::Grid::col_full_12);
+        auto text = container->addWidget(cpp14::make_unique<WText>("TCNO: <b>"+mItem->TCNO()+"</b>"));
+        container->setContentAlignment(AlignmentFlag::Center);
+    }
+
+    {
+        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWiget>());
+        container->addStyleClass(Bootstrap::Grid::col_full_12);
+        auto text = container->addWidget(cpp14::make_unique<WText>("Ad Soyad: <b>"+mItem->AdSoyad()+"</b>"));
+        container->setContentAlignment(AlignmentFlag::Center);
+    }
+
+    {
+        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWiget>());
+        container->addStyleClass(Bootstrap::Grid::col_full_12);
+        auto text = container->addWidget(cpp14::make_unique<WText>("ePosta: "+mItem->ePosta()));
+        container->setContentAlignment(AlignmentFlag::Center);
+    }
+
+    {
+        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWiget>());
+        container->addStyleClass(Bootstrap::Grid::col_full_12);
+        auto text = container->addWidget(cpp14::make_unique<WText>("Telefon: <b>"+mItem->telefon()+"</b>"));
+        container->setContentAlignment(AlignmentFlag::Center);
+    }
+
+    {
+        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWiget>());
+        container->addStyleClass(Bootstrap::Grid::col_full_12);
+        auto text = container->addWidget(cpp14::make_unique<WText>("Adres: "+mItem->adres()));
+        container->setContentAlignment(AlignmentFlag::Center);
+    }
+
+
+    {
+        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWiget>());
+        container->addStyleClass(Bootstrap::Grid::col_full_12);
+
+        container->setMargin(15,Side::Top);
+        container->setAttributeValue(Style::style,Style::background::color::rgb(this->getRandom(200,225),this->getRandom(200,225),this->getRandom(200,225)));
+        auto _rContainer = container->addWidget(cpp14::make_unique<ContainerWiget>());
+        _rContainer->setContainerStyle(ContainerStyleType::ROW);
+
+
+//        auto container_ = _rContainer->addWidget(cpp14::make_unique<ContainerWiget>());
+//        container_->addStyleClass(Bootstrap::Grid::Large::col_lg_5+
+//                                 Bootstrap::Grid::Medium::col_md_5+
+//                                 Bootstrap::Grid::Small::col_sm_5+
+//                                 Bootstrap::Grid::ExtraSmall::col_xs_6);
+//        auto vLayout = container_->setLayout(cpp14::make_unique<WVBoxLayout>());
+//        vLayout->addWidget(cpp14::make_unique<WText>("Birim"),1,AlignmentFlag::Middle|AlignmentFlag::Right);
+
+
+        auto container__ = _rContainer->addWidget(cpp14::make_unique<ContainerWiget>());
+        container__->addStyleClass(Bootstrap::Grid::Large::col_lg_9+
+                                 Bootstrap::Grid::Medium::col_md_9+
+                                 Bootstrap::Grid::Small::col_sm_9+
+                                 Bootstrap::Grid::ExtraSmall::col_xs_8);
+        auto vLayout_ = container__->setLayout(cpp14::make_unique<WVBoxLayout>());
+
+
+        auto birimComboBox = vLayout_->addWidget(cpp14::make_unique<WComboBox>(),1,AlignmentFlag::Middle);
+
+        auto list = this->BirimList();
+        int _index = 0;
+        bool Increment = true;
+        birimComboBox->addItem("Yok");
+        for( auto item : list )
+        {
+            if( mItem->birim() == item )
+            {
+                Increment = false;
+            }else{
+                if( Increment )
+                {
+                    _index++;
+                }
+            }
+            birimComboBox->addItem(item);
+        }
+
+        if( mItem->birim().size() )
+        {
+            birimComboBox->setCurrentIndex(_index+1);
+        }
+
+        auto container___ = _rContainer->addWidget(cpp14::make_unique<ContainerWiget>());
+        container___->addStyleClass(Bootstrap::Grid::Large::col_lg_3+
+                                    Bootstrap::Grid::Medium::col_md_3+
+                                    Bootstrap::Grid::Small::col_sm_3+
+                                    Bootstrap::Grid::ExtraSmall::col_xs_4);
+        auto vLayout__ = container___->setLayout(cpp14::make_unique<WVBoxLayout>());
+
+        auto svBtn = vLayout__->addWidget(cpp14::make_unique<WPushButton>("Kaydet"),0,AlignmentFlag::Middle);
+        svBtn->addStyleClass(Bootstrap::Button::Primary);
+        container___->setContentAlignment(AlignmentFlag::Justify);
+
+        svBtn->clicked().connect([=](){
+            if( birimComboBox->currentText() != "Yok" )
+            {
+                if( mItem->setBirim(birimComboBox->currentText().toUTF8()) ){
+                    this->showMessage("Bilgi","Birim Değiştirildi.");
+                }else{
+                    this->showMessage("Hata","Bir Hata Oluştu");
+                }
+            }else{
+                this->showMessage("Hata","Birim Seçmediniz");
+            }
+
+        });
+    }
+
+
+    {
+        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWiget>());
+        container->addStyleClass(Bootstrap::Grid::col_full_12);
+        container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+        container->setMargin(15,Side::Top);
+
+        auto text = container->addWidget(cpp14::make_unique<WText>("<h4><b>Mesaj</b></h4><p>"+mItem->mesaj()+"</p>"));
+        container->setContentAlignment(AlignmentFlag::Center);
+    }
+
+
+    if( !mItem->cevaplandi() )
+    {
+        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWiget>());
+        container->addStyleClass(Bootstrap::Grid::col_full_12);
+        container->setMargin(15,Side::Top);
+        container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+
+        auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
+
+
+        layout->addWidget(cpp14::make_unique<WText>("Cevap Yok"),0,AlignmentFlag::Top|AlignmentFlag::Center);
+
+
+
+    }else{
+        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWiget>());
+        container->addStyleClass(Bootstrap::Grid::col_full_12);
+        container->setMargin(15,Side::Top);
+        container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+
+        auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
+
+
+        layout->addWidget(cpp14::make_unique<WText>("Cevap"),0,AlignmentFlag::Top|AlignmentFlag::Center);
+
+        layout->addWidget(cpp14::make_unique<WText>("Saat: "+mItem->cevap().mSaat),0,AlignmentFlag::Top|AlignmentFlag::Center);
+
+        layout->addWidget(cpp14::make_unique<WText>("Tarih :"+ WDate::fromJulianDay(mItem->cevap().mTarih).toString("dd/MM/yyyy")),0,AlignmentFlag::Top|AlignmentFlag::Center);
+
+
+        auto fileName = this->downloadFile(mItem->cevap().mCevapOid);
+
+        Wt::WLink link = Wt::WLink(LinkType::Url,"/"+fileName);
+        link.setTarget(Wt::LinkTarget::NewWindow);
+
+        std::unique_ptr<Wt::WAnchor> anchor =
+                Wt::cpp14::make_unique<Wt::WAnchor>(link,
+                                "Cevap Dosyası");
+
+        anchor->addStyleClass(Bootstrap::Label::Primary);
+
+        layout->addWidget(std::move(anchor),0,AlignmentFlag::Top|AlignmentFlag::Center);
+
+    }
+
+
+
+
+
+
 }

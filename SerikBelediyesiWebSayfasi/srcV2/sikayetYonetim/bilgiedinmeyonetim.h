@@ -40,7 +40,7 @@ public:
 
 
 private:
-    const BilgiEdinmeItem* mItem;
+    BilgiEdinmeItem* mItem;
 };
 
 
