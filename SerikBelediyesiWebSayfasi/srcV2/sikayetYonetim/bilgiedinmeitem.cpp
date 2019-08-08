@@ -30,19 +30,19 @@ boost::optional<BilgiEdinmeItem *> BilgiEdinmeItem::LoadBilgiEdinmeItem(mongocxx
             std::string konu;
 
             try {
-                konu = (val.value().view()[BilgiEdinmeKEY::konu].get_utf8().value.to_string());
+                item->mKonu = (val.value().view()[BilgiEdinmeKEY::konu].get_utf8().value.to_string());
             } catch (bsoncxx::exception &e) {
                 std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << e.what() << std::endl;
                 return boost::none;
             }
 
             try {
-                item->mKonu = konu;
-            } catch (std::string &e) {
-                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e;
-                std::cout << str << std::endl;
+                item->mTarih = (val.value().view()[BilgiEdinmeKEY::tarih].get_utf8().value.to_string());
+            } catch (bsoncxx::exception &e) {
+                std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << e.what() << std::endl;
                 return boost::none;
             }
+
             return item;
 
         }else{
