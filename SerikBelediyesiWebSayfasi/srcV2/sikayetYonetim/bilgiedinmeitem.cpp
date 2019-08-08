@@ -26,25 +26,8 @@ boost::optional<BilgiEdinmeItem *> BilgiEdinmeItem::LoadBilgiEdinmeItem(mongocxx
         if( val )
         {
             auto item = new BilgiEdinmeItem(_db);
-
-            std::string konu;
-
-            try {
-                item->mKonu = (val.value().view()[BilgiEdinmeKEY::konu].get_utf8().value.to_string());
-            } catch (bsoncxx::exception &e) {
-                std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << e.what() << std::endl;
-                return boost::none;
-            }
-
-            try {
-                item->mTarih = (val.value().view()[BilgiEdinmeKEY::tarih].get_utf8().value.to_string());
-            } catch (bsoncxx::exception &e) {
-                std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << e.what() << std::endl;
-                return boost::none;
-            }
-
+            item->LoadFromDocumentView(val.value().view());
             return item;
-
         }else{
             return boost::none;
         }
@@ -164,6 +147,7 @@ const std::string BilgiEdinmeItem::Tarih() const
 
 
 
+
 BilgiEdinmeItem::BilgiEdinmeItem(mongocxx::database *_db)
     :DBClass (_db)
 {
@@ -173,45 +157,219 @@ BilgiEdinmeItem::BilgiEdinmeItem(mongocxx::database *_db)
 BilgiEdinmeItem::BilgiEdinmeItem(mongocxx::database *_db, const bsoncxx::document::view &view)
     :DBClass (_db)
 {
-
-    try {
-        mOid = view["_id"].get_oid().value;
-    } catch (std::string &e) {
-        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e;
-        std::cout << str << std::endl;
-    }
-
-    try {
-        mKonu = view[BilgiEdinmeKEY::konu].get_utf8().value.to_string();
-    } catch (std::string &e) {
-        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e;
-        std::cout << str << std::endl;
-    }
-
-    try {
-        mTarih = view[BilgiEdinmeKEY::tarih].get_utf8().value.to_string();
-    } catch (std::string &e) {
-        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e;
-        std::cout << str << std::endl;
-    }
-
-
-    try {
-        mCevaplandi = view[BilgiEdinmeKEY::cevaplandi].get_bool().value;
-    } catch (std::string &e) {
-        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e;
-        std::cout << str << std::endl;
-    }
-
-
+    this->LoadFromDocumentView(view);
 }
 
 BilgiEdinmeItem::BilgiEdinmeItem(const BilgiEdinmeItem *item )
     :DBClass (item->db()),mOid(item->oid())
 {
-
     this->mKonu = item->Konu();
+    this->mTarih = item->Tarih();
+    this->mCevaplandi = item->cevaplandi();
+    this->mSaat = item->saat();
+    this->mTCNO = item->TCNO();
+    this->mAdSoyad = item->AdSoyad();
+    this->mjulianDate = item->julianDate();
+    this->mePosta = item->ePosta();
+    this->mTelefon = item->telefon();
+    this->mAdres = item->adres();
+    this->mMesaj = item->mesaj();
+    this->mCevap = item->cevap();
 
+}
+
+
+
+
+std::string BilgiEdinmeItem::mesaj() const
+{
+    return mMesaj;
+}
+
+bool BilgiEdinmeItem::setMesaj(const std::string &mesaj)
+{
+    if( mMesaj == mesaj ){
+        return true;
+    }
+
+    if( this->setElement(BilgiEdinmeKEY::mesaj,mesaj) )
+    {
+        mMesaj = mesaj;
+        return true;
+    }
+
+    return false;
+}
+
+std::string BilgiEdinmeItem::adres() const
+{
+    return mAdres;
+}
+
+bool BilgiEdinmeItem::setAdres(const std::string &adres)
+{
+
+    if( mAdres == adres ){
+        return true;
+    }
+
+    if( this->setElement(BilgiEdinmeKEY::adres,adres) )
+    {
+        mAdres = adres;
+        return true;
+    }
+
+    return false;
+}
+
+BilgiEdinmeItem::Cevap BilgiEdinmeItem::cevap() const
+{
+    return mCevap;
+}
+
+bool BilgiEdinmeItem::setCevap(const Cevap &cevap)
+{
+
+
+    if( mCevap == cevap )
+    {
+        return true;
+    }
+
+    if( this->setElement(BilgiEdinmeKEY::cevap,cevap ) )
+    {
+        this->mCevap = cevap;
+        return true;
+    }
+
+    return false;
+}
+
+std::string BilgiEdinmeItem::telefon() const
+{
+    return mTelefon;
+}
+
+bool BilgiEdinmeItem::setTelefon(const std::string &telefon_)
+{
+    if( mTelefon == telefon_ )
+    {
+        return true;
+    }
+
+    if( setElement(BilgiEdinmeKEY::telefon,telefon_ ) )
+    {
+        mTelefon = telefon_;
+        return true;
+    }
+    return false;
+}
+
+std::string BilgiEdinmeItem::ePosta() const
+{
+    return mePosta;
+}
+
+bool BilgiEdinmeItem::setePosta(const std::string &value)
+{
+    if( mePosta == value )
+    {
+        return true;
+    }
+
+    if( setElement(BilgiEdinmeKEY::eposta,value) )
+    {
+        mePosta = value;
+        return true;
+    }
+
+    return false;
+}
+
+
+
+
+
+std::string BilgiEdinmeItem::AdSoyad() const
+{
+    return mAdSoyad;
+}
+
+bool BilgiEdinmeItem::setAdSoyad(const std::string &adSoyad)
+{
+
+    if( mAdSoyad == adSoyad )
+    {
+        return true;
+    }
+    if( this->setElement(BilgiEdinmeKEY::cevap,adSoyad) )
+    {
+        mAdSoyad = adSoyad;
+        return true;
+    }
+
+    return false;
+}
+
+std::string BilgiEdinmeItem::TCNO() const
+{
+    return mTCNO;
+}
+
+bool BilgiEdinmeItem::setTCNO(const std::string &tCNO)
+{
+    if( mTCNO == tCNO ){
+        return true;
+    }
+
+    if( this->setElement(BilgiEdinmeKEY::tcno,tCNO) )
+    {
+        mTCNO = tCNO;
+        return true;
+    }else{
+        return false;
+    }
+}
+
+std::int64_t BilgiEdinmeItem::julianDate() const
+{
+    return mjulianDate;
+}
+
+bool BilgiEdinmeItem::setjulianDate(const std::int64_t &value)
+{
+    if( mjulianDate == value ){
+        return true;
+    }
+
+    if( setElement(BilgiEdinmeKEY::julianDate,value) )
+    {
+        this->mjulianDate = value;
+        return true;
+    }else{
+        return false;
+    }
+}
+
+std::string BilgiEdinmeItem::saat() const
+{
+    return mSaat;
+}
+
+bool BilgiEdinmeItem::setSaat(const std::string &saat)
+{
+    if( mSaat == saat )
+    {
+        return true;
+    }
+
+    if( this->setElement(BilgiEdinmeKEY::saat,saat) )
+    {
+        mSaat = saat;
+        return true;
+    }else{
+        return false;
+    }
 
 }
 
@@ -258,6 +416,105 @@ boost::optional<bsoncxx::builder::basic::document> BilgiEdinmeItem::filter()
 
 }
 
+void BilgiEdinmeItem::LoadFromDocumentView(const bsoncxx::document::view &view)
+{
+
+    try {
+        mOid = view["_id"].get_oid().value;
+    } catch (std::string &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e;
+        std::cout << str << std::endl;
+    }
+
+    try {
+        mKonu = view[BilgiEdinmeKEY::konu].get_utf8().value.to_string();
+    } catch (std::string &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e;
+        std::cout << str << std::endl;
+    }
+
+    try {
+        mTarih = view[BilgiEdinmeKEY::tarih].get_utf8().value.to_string();
+    } catch (std::string &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e;
+        std::cout << str << std::endl;
+    }
+
+
+    try {
+        mCevaplandi = view[BilgiEdinmeKEY::cevaplandi].get_bool().value;
+    } catch (std::string &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e;
+        std::cout << str << std::endl;
+    }
+
+    try {
+        mSaat = view[BilgiEdinmeKEY::saat].get_utf8().value.to_string();
+    } catch (std::string &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e;
+        std::cout << str << std::endl;
+    }
+
+    try {
+        mjulianDate = view[BilgiEdinmeKEY::julianDate].get_int64().value;
+    } catch (std::string &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e;
+        std::cout << str << std::endl;
+    }
+
+    try {
+        mTCNO = view[BilgiEdinmeKEY::tcno].get_utf8().value.to_string();
+    } catch (std::string &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e;
+        std::cout << str << std::endl;
+    }
+
+    try {
+        mAdSoyad = view[BilgiEdinmeKEY::adsoyad].get_utf8().value.to_string();
+    } catch (std::string &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e;
+        std::cout << str << std::endl;
+    }
+
+    try {
+        mePosta = view[BilgiEdinmeKEY::eposta].get_utf8().value.to_string();
+    } catch (std::string &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e;
+        std::cout << str << std::endl;
+    }
+
+    try {
+        mTelefon = view[BilgiEdinmeKEY::telefon].get_utf8().value.to_string();
+    } catch (std::string &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e;
+        std::cout << str << std::endl;
+    }
+
+    try {
+        mAdres = view[BilgiEdinmeKEY::adres].get_utf8().value.to_string();
+    } catch (std::string &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e;
+        std::cout << str << std::endl;
+    }
+
+    try {
+        mMesaj = view[BilgiEdinmeKEY::mesaj].get_utf8().value.to_string();
+    } catch (std::string &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e;
+        std::cout << str << std::endl;
+    }
+
+    try {
+        mCevap= view[BilgiEdinmeKEY::cevap].get_document().value;
+    } catch (std::string &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e;
+        std::cout << str << std::endl;
+    }
+
+
+
+}
+
 template<typename T>
 bool BilgiEdinmeItem::setElement(const std::string &elementKey, const T &elementValue)
 {
@@ -291,4 +548,85 @@ bool BilgiEdinmeItem::setElement(const std::string &elementKey, const T &element
         std::cout << str << std::endl;
         throw (str);
     }
+}
+
+BilgiEdinmeItem::Cevap::operator bsoncxx::document::view()
+{
+    auto doc = document{};
+
+    try {
+        doc.append(kvp(BilgiEdinmeKEY::Cevap::saat,mSaat));
+    } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        std::cout << str << std::endl;
+    }
+    try {
+        doc.append(kvp(BilgiEdinmeKEY::Cevap::tarih,mTarih));
+    } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        std::cout << str << std::endl;
+    }
+
+    try {
+        doc.append(kvp(BilgiEdinmeKEY::Cevap::cevapoid,bsoncxx::oid{mCevapOid}));
+    } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        std::cout << str << std::endl;
+    }
+}
+
+bool BilgiEdinmeItem::Cevap::operator==(const BilgiEdinmeItem::Cevap &other)
+{
+    bool returnValue = true;
+
+    if( this->mSaat != other.mSaat )
+    {
+        returnValue = false;
+    }
+
+    if( this->mTarih != other.mTarih )
+    {
+        returnValue = false;
+    }
+
+    if( this->mCevapOid != other.mCevapOid )
+    {
+        returnValue = false;
+    }
+
+    return returnValue;
+}
+
+BilgiEdinmeItem::Cevap &BilgiEdinmeItem::Cevap::operator=(const BilgiEdinmeItem::Cevap &other)
+{
+    this->mSaat = other.mSaat;
+    this->mCevapOid = other.mCevapOid;
+    this->mTarih = other.mTarih;
+    return *this;
+}
+
+BilgiEdinmeItem::Cevap &BilgiEdinmeItem::Cevap::operator=(const bsoncxx::document::view &view)
+{
+    try {
+        this->mSaat = view[BilgiEdinmeKEY::Cevap::saat].get_utf8().value.to_string();
+    } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        std::cout << str << std::endl;
+    }
+
+    try {
+        this->mTarih = view[BilgiEdinmeKEY::Cevap::tarih].get_utf8().value.to_string();
+    } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        std::cout << str << std::endl;
+    }
+
+    try {
+        this->mCevapOid = view[BilgiEdinmeKEY::Cevap::cevapoid].get_oid().value.to_string();
+    } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        std::cout << str << std::endl;
+    }
+
+    return *this;
 }
