@@ -9,14 +9,13 @@
 
 class ContainerWiget : public WContainerWidget
 {
-
-
-
-
 public:
-    ContainerWiget();
+    ContainerWiget(std::string title = "" );
 
 
+    WContainerWidget* Header();
+    WContainerWidget* Content();
+    WContainerWidget* Footer();
 
     enum ContainerStyleType
     {
@@ -37,6 +36,12 @@ public:
 
     void showMessage( std::string title , std::string msg , std::string btnText = "Tamam");
 
+
+
+private:
+    WContainerWidget* mHeaderContainer;
+    WContainerWidget* mContentContainer;
+    WContainerWidget* mFootContainer;
 
 
 };

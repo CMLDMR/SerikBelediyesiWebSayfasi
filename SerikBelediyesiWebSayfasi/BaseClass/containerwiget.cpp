@@ -4,14 +4,67 @@
 #include <QFileInfo>
 #include <QUuid>
 
-ContainerWiget::ContainerWiget()
+ContainerWiget::ContainerWiget(std::string title)
 {
 
+
+    addStyleClass(Bootstrap::Grid::container_fluid);
+
+
+    if( title.size() )
+    {
+        auto container = addWidget(cpp14::make_unique<WContainerWidget>());
+        container->setWidth(WLength("100%"));
+        container->addStyleClass(Bootstrap::Grid::row);
+        container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+        container->setOverflow(Overflow::Hidden);
+
+        auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
+        _container->addWidget(cpp14::make_unique<WText>("<h4>"+title+"</h4>"));
+        _container->setContentAlignment(AlignmentFlag::Center);
+        _container->setAttributeValue(Style::style,Style::background::color::color(Style::color::Grey::Gainsboro));
+        _container->setPadding(5,Side::Top|Side::Bottom);
+        _container->addStyleClass(Bootstrap::Grid::col_full_12);
+    }
+
+
+    mHeaderContainer = addWidget(cpp14::make_unique<WContainerWidget>());
+    mHeaderContainer->addStyleClass(Bootstrap::Grid::row);
+
+
+    mContentContainer = addWidget(cpp14::make_unique<WContainerWidget>());
+    mContentContainer->addStyleClass(Bootstrap::Grid::row);
+
+
+    mFootContainer = addWidget(cpp14::make_unique<WContainerWidget>());
+    mFootContainer->addStyleClass(Bootstrap::Grid::row);
+
+}
+
+WContainerWidget *ContainerWiget::Header()
+{
+
+    return mHeaderContainer;
+
+}
+
+WContainerWidget *ContainerWiget::Content()
+{
+    return mContentContainer;
+}
+
+WContainerWidget *ContainerWiget::Footer()
+{
+    return mFootContainer;
 }
 
 void ContainerWiget::setContainerStyle(ContainerWiget::ContainerStyleType type)
 {
+
+    this->removeStyleClass(Bootstrap::Grid::container_fluid);
+
     switch (type) {
+
     case ROW:
         this->addStyleClass(Bootstrap::Grid::row);
         break;
@@ -19,6 +72,7 @@ void ContainerWiget::setContainerStyle(ContainerWiget::ContainerStyleType type)
     case CONTAINERFLUID:
         this->addStyleClass(Bootstrap::Grid::container_fluid);
         break;
+
     default:
         break;
     }
