@@ -53,6 +53,10 @@ public:
     bsoncxx::document::value UserValue() const;
     UserClass User() const;
 
+    boost::optional<std::string> birim();
+
+    bool yetki  (const std::string &yetkiAdi);
+
 
 private:
     bsoncxx::document::value mUserValue;
