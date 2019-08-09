@@ -40,7 +40,7 @@ boost::optional<BilgiEdinmeItem *> BilgiEdinmeItem::LoadBilgiEdinmeItem(mongocxx
 
 }
 
-QVector<boost::optional<BilgiEdinmeItem*> > BilgiEdinmeItem::GetList(mongocxx::database *_db)
+QVector<boost::optional<BilgiEdinmeItem*> > BilgiEdinmeItem::GetList(mongocxx::database *_db, bsoncxx::builder::basic::document filter)
 {
 
     QVector<boost::optional<BilgiEdinmeItem*>> list;
@@ -59,7 +59,7 @@ QVector<boost::optional<BilgiEdinmeItem*> > BilgiEdinmeItem::GetList(mongocxx::d
     findOptions.sort(sortDoc.view());
 
     try {
-        auto cursor = _db->collection(BilgiEdinmeKEY::collection).find(document{}.view(),findOptions);
+        auto cursor = _db->collection(BilgiEdinmeKEY::collection).find(filter.view(),findOptions);
 
         for( auto doc : cursor )
         {
