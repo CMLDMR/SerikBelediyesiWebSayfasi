@@ -560,37 +560,37 @@ private:
 
 };
 
-class Basvurularim : public BaseWidget
-{
-public:
-    Basvurularim(mongocxx::database* _db , bsoncxx::document::value _user );
+//class Basvurularim : public BaseWidget
+//{
+//public:
+//    Basvurularim(mongocxx::database* _db , bsoncxx::document::value _user );
 
-    WContainerWidget* mMainContainer;
-    WContainerWidget* mContentContainer;
+//    WContainerWidget* mMainContainer;
+//    WContainerWidget* mContentContainer;
 
-    WContainerWidget* toolBarContainer;
-    void toolbarReFresh();
-    std::int64_t countTalepler(std::string filterKey = "Hepsi");
-
-
-    void initList(std::string filterKey = "Hepsi");
-
-    void setBasvuruDetail(std::string oid);
+//    WContainerWidget* toolBarContainer;
+//    void toolbarReFresh();
+//    std::int64_t countTalepler(std::string filterKey = "Hepsi");
 
 
-    struct basvuruStruct
-    {
-        std::string oid;
-        std::string basvuruSahibi;
-        std::string konu;
-        std::string tarih;
-        std::string cevap;
-    };
+//    void initList(std::string filterKey = "Hepsi");
 
-    std::vector<basvuruStruct> list;
+//    void setBasvuruDetail(std::string oid);
 
 
-};
+//    struct basvuruStruct
+//    {
+//        std::string oid;
+//        std::string basvuruSahibi;
+//        std::string konu;
+//        std::string tarih;
+//        std::string cevap;
+//    };
+
+//    std::vector<basvuruStruct> list;
+
+
+//};
 
 class ProjeWidget : public ContainerWidget
 {

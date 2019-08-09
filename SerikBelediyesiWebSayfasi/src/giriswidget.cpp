@@ -8,6 +8,7 @@
 #include "SerikBelediyesiWebSayfasi/srcV2/ik.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/girisCikisWidget/giriscikiswidget.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetimyonetim.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/bilgiedinmeclient.h"
 
 
 Giris::GirisWidget::GirisWidget(mongocxx::database *_db)
@@ -3629,7 +3630,9 @@ void Giris::Personel::PersonelWidget::initMenu()
         menu->addItem("Gelen Mesajlar", Wt::cpp14::make_unique<PersonelV2::GelenMesajlarWidget>(db(),User()));
         menu->addItem("Taleplerim", Wt::cpp14::make_unique<Taleplerim>(db(),User()));
         menu->addItem(WString::fromUTF8("Evrak Arşivi"), Wt::cpp14::make_unique<EvrakArsiv>(db(),User()));
-        menu->addItem(WString::fromUTF8("Başvurularım"), Wt::cpp14::make_unique<Basvurularim>(db(),User()));
+
+        menu->addItem(WString::fromUTF8("Başvurularım"), Wt::cpp14::make_unique<BilgiEdinmeClient>(db(),User()));
+
         menu->addItem(WString::fromUTF8("Çalışmalar"), Wt::cpp14::make_unique<CalismaGirWidget>(db(),User()));
         menu->addItem(WString::fromUTF8("Giriş Çıkışlarım"), Wt::cpp14::make_unique<GirisCikisWidget>(db(),User()));
     }
@@ -6114,229 +6117,229 @@ void Giris::Personel::EvrakArsiv::initTumEvraklar()
     }
 }
 
-Giris::Personel::Basvurularim::Basvurularim(mongocxx::database *_db, bsoncxx::document::value _user)
-    :Giris::Personel::BaseWidget (_db,_user)
-{
+//Giris::Personel::Basvurularim::Basvurularim(mongocxx::database *_db, bsoncxx::document::value _user)
+//    :Giris::Personel::BaseWidget (_db,_user)
+//{
 
-    mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
-    mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
+//    mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
+//    mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
 
-    auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-    row->addWidget(cpp14::make_unique<WContainerWidget>());
-    row->addStyleClass(Bootstrap::Grid::row);
+//    auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//    row->addWidget(cpp14::make_unique<WContainerWidget>());
+//    row->addStyleClass(Bootstrap::Grid::row);
 
-    {
-        auto _container = row->addWidget(cpp14::make_unique<WContainerWidget>());
-        _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-        auto _layout = _container->setLayout(cpp14::make_unique<WHBoxLayout>());
-        {
-            auto container = _layout->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-            auto text = container->addWidget(cpp14::make_unique<WText>("Gelen Başvurular"));
-            text->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold);
-        }
-        _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                      Style::background::color::color(Style::color::Grey::Gainsboro));
-    }
-
-
-    toolBarContainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
-    toolBarContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-
-    mContentContainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
-    mContentContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
-    mContentContainer->setAttributeValue(Style::style,Style::Border::border("1px solid black"));
-
-    this->toolbarReFresh();
+//    {
+//        auto _container = row->addWidget(cpp14::make_unique<WContainerWidget>());
+//        _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+//        auto _layout = _container->setLayout(cpp14::make_unique<WHBoxLayout>());
+//        {
+//            auto container = _layout->addWidget(cpp14::make_unique<WContainerWidget>());
+//            container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+//            auto text = container->addWidget(cpp14::make_unique<WText>("Gelen Başvurular"));
+//            text->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold);
+//        }
+//        _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
+//                                      Style::background::color::color(Style::color::Grey::Gainsboro));
+//    }
 
 
+//    toolBarContainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
+//    toolBarContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
 
+//    mContentContainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
+//    mContentContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
+//    mContentContainer->setAttributeValue(Style::style,Style::Border::border("1px solid black"));
 
-    this->initList();
-
-}
-
-void Giris::Personel::Basvurularim::toolbarReFresh()
-{
-
-    toolBarContainer->clear();
-
-    Wt::WToolBar *toolBar = toolBarContainer->addWidget(Wt::cpp14::make_unique<Wt::WToolBar>());
-    toolBar->setMargin(25,Side::Top|Side::Bottom);
-
-
-    auto tamamlananBtn = createColorButton("btn-success", "Cevaplananlar "+Bootstrap::Badges::badget(std::to_string(this->countTalepler("Cevaplandı"))));
-    tamamlananBtn->clicked().connect([=](){
-        this->initList("Cevaplandı");
-    });
-    toolBar->addButton(std::move(tamamlananBtn));
-
-
-
-    auto beklemeBtn = createColorButton("btn-warning", "Cevaplanmayanlar "+Bootstrap::Badges::badget(std::to_string(this->countTalepler("Cevaplanmayanlar"))));
-    beklemeBtn->clicked().connect([=](){
-        this->initList("Cevaplanmayanlar");
-    });
-    toolBar->addButton(std::move(beklemeBtn));
-
-    toolBar->addSeparator();
-    auto hepsiBtn = createColorButton("btn-default", "Hepsi "+Bootstrap::Badges::badget(std::to_string(this->countTalepler())));
-    hepsiBtn->clicked().connect([=](){
-        this->initList();
-    });
-    toolBar->addButton(std::move(hepsiBtn));
-}
-
-int64_t Giris::Personel::Basvurularim::countTalepler(std::string filterKey)
-{
-
-    auto filter = document{};
-
-    try {
-        filter.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::birim,this->User().view()[SBLDKeys::Personel::birimi].get_utf8().value));
-    } catch (bsoncxx::exception &e) {
-        this->showMessage("Error","Bir Hata Oluştu vatandas",e);
-        return 0;
-    }
+//    this->toolbarReFresh();
 
 
 
 
-    if( filterKey != "Hepsi" )
-    {
-        if( filterKey == "Cevaplandı" )
-        {
-            try {
-                filter.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::geridonus,SBLDKeys::BilgiEdinme::Basvuru::geriDonusVar::yapildi));
-            } catch (bsoncxx::exception &e) {
-                this->showMessage("Error","Bir Hata Oluştu durum",e);
-                return 0 ;
-            }
-        }else {
-            try {
-                filter.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::geridonus,SBLDKeys::BilgiEdinme::Basvuru::geriDonusVar::yapilmadi));
-            } catch (bsoncxx::exception &e) {
-                this->showMessage("Error","Bir Hata Oluştu durum",e);
-                return 0 ;
-            }
-        }
-    }
+//    this->initList();
+
+//}
+
+//void Giris::Personel::Basvurularim::toolbarReFresh()
+//{
+
+//    toolBarContainer->clear();
+
+//    Wt::WToolBar *toolBar = toolBarContainer->addWidget(Wt::cpp14::make_unique<Wt::WToolBar>());
+//    toolBar->setMargin(25,Side::Top|Side::Bottom);
 
 
-    //    std::cout << "BSON: " << bsoncxx::to_json(filter.view())  << std::endl;
-
-    try {
-        auto cursor = this->db()->collection(SBLDKeys::BilgiEdinme::Basvuru::collection).count(filter.view());
-        return cursor;
-    } catch (mongocxx::exception &e) {
-        return 0;
-    }
-}
-
-void Giris::Personel::Basvurularim::initList(std::string filterKey )
-{
-
-    mContentContainer->clear();
-    auto table = mContentContainer->addWidget(cpp14::make_unique<WTable>());
-    table->setMargin(15,Side::Top|Side::Bottom);
-
-    table->setHeaderCount(1);
-    table->setWidth(WLength("100%"));
-
-    table->elementAt(0, 0)->addWidget(cpp14::make_unique<WText>("#"));
-    table->elementAt(0, 1)->addWidget(cpp14::make_unique<WText>("Başvuru Sahibi"));
-    table->elementAt(0, 2)->addWidget(cpp14::make_unique<WText>("Konu"));
-    table->elementAt(0, 3)->addWidget(cpp14::make_unique<WText>("Tarih"));
-    table->elementAt(0, 4)->addWidget(cpp14::make_unique<WText>("Cevap"));
-    table->elementAt(0, 5)->addWidget(cpp14::make_unique<WText>("İncele"));
-
-    table->addStyleClass("table form-inline table-bordered table-hover table-condensed table-striped");
-
-
-    auto filter = document{};
-
-    if( filterKey != "Hepsi" )
-    {
-        if( filterKey == "Cevaplandı" )
-        {
-            try {
-                filter.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::geridonus,SBLDKeys::BilgiEdinme::Basvuru::geriDonusVar::yapildi));
-            } catch (bsoncxx::exception &e) {
-                std::cout << "Error: " << e.what() << std::endl;
-            }
-        }else{
-            try {
-                filter.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::geridonus,SBLDKeys::BilgiEdinme::Basvuru::geriDonusVar::yapilmadi));
-            } catch (bsoncxx::exception &e) {
-                std::cout << "Error: " << e.what() << std::endl;
-            }
-        }
-    }
-
-    try {
-        filter.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::birim,this->User().view()[SBLDKeys::Personel::birimi].get_utf8().value));
-    } catch (bsoncxx::exception &e) {
-        std::cout << "Error: " << e.what() << std::endl;
-    }
-
-
-    try {
-        auto cursor = this->db()->collection(SBLDKeys::BilgiEdinme::Basvuru::collection).find(filter.view());
-        list.clear();
-        for( auto doc : cursor )
-        {
-            basvuruStruct basvuru;
-            basvuru.oid = doc[SBLDKeys::oid].get_oid().value.to_string();
-            basvuru.konu = doc[SBLDKeys::BilgiEdinme::Basvuru::konu].get_utf8().value.to_string();
-            basvuru.basvuruSahibi = doc[SBLDKeys::BilgiEdinme::Basvuru::adsoyad].get_utf8().value.to_string();
-            if( doc[SBLDKeys::BilgiEdinme::Basvuru::geridonus].get_bool().value )
-            {
-                basvuru.cevap = "Cevap Var";
-            }else{
-                basvuru.cevap = "Cevap Yok";
-            }
-            basvuru.tarih = doc[SBLDKeys::BilgiEdinme::Basvuru::tarih].get_utf8().value.to_string();
-            list.push_back(basvuru);
-        }
-
-    } catch (mongocxx::exception &e) {
-
-    }
-
-
-    int row = 1;
-    for( std::size_t i = 0 ; i < list.size() ; i++ )
-    {
-        basvuruStruct item = list.at(i);
-        table->elementAt(row, 0)->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(row)));
-        table->elementAt(row, 1)->addWidget(cpp14::make_unique<WText>(item.basvuruSahibi));
-        table->elementAt(row, 2)->addWidget(cpp14::make_unique<WText>(item.konu));
-        table->elementAt(row, 3)->addWidget(cpp14::make_unique<WText>(item.tarih));
-        table->elementAt(row, 4)->addWidget(cpp14::make_unique<WText>(item.cevap));
-
-
-        auto btn = std::make_unique<WPushButton>("İncele");
-        btn->addStyleClass(Bootstrap::Button::Primary);
-        std::string oid = item.oid;
-        btn->clicked().connect([=](){
-            this->setBasvuruDetail(oid);
-        });
-        table->elementAt(row, 5)->addWidget(std::move(btn));
-    }
+//    auto tamamlananBtn = createColorButton("btn-success", "Cevaplananlar "+Bootstrap::Badges::badget(std::to_string(this->countTalepler("Cevaplandı"))));
+//    tamamlananBtn->clicked().connect([=](){
+//        this->initList("Cevaplandı");
+//    });
+//    toolBar->addButton(std::move(tamamlananBtn));
 
 
 
-}
+//    auto beklemeBtn = createColorButton("btn-warning", "Cevaplanmayanlar "+Bootstrap::Badges::badget(std::to_string(this->countTalepler("Cevaplanmayanlar"))));
+//    beklemeBtn->clicked().connect([=](){
+//        this->initList("Cevaplanmayanlar");
+//    });
+//    toolBar->addButton(std::move(beklemeBtn));
+
+//    toolBar->addSeparator();
+//    auto hepsiBtn = createColorButton("btn-default", "Hepsi "+Bootstrap::Badges::badget(std::to_string(this->countTalepler())));
+//    hepsiBtn->clicked().connect([=](){
+//        this->initList();
+//    });
+//    toolBar->addButton(std::move(hepsiBtn));
+//}
+
+//int64_t Giris::Personel::Basvurularim::countTalepler(std::string filterKey)
+//{
+
+//    auto filter = document{};
+
+//    try {
+//        filter.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::birim,this->User().view()[SBLDKeys::Personel::birimi].get_utf8().value));
+//    } catch (bsoncxx::exception &e) {
+//        this->showMessage("Error","Bir Hata Oluştu vatandas",e);
+//        return 0;
+//    }
 
 
-// TODO: Başvuru Detayları BUrada Gözükecek
-void Giris::Personel::Basvurularim::setBasvuruDetail(std::string oid)
-{
 
 
-    std::cout << "Oid " << oid << std::endl;
+//    if( filterKey != "Hepsi" )
+//    {
+//        if( filterKey == "Cevaplandı" )
+//        {
+//            try {
+//                filter.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::geridonus,SBLDKeys::BilgiEdinme::Basvuru::geriDonusVar::yapildi));
+//            } catch (bsoncxx::exception &e) {
+//                this->showMessage("Error","Bir Hata Oluştu durum",e);
+//                return 0 ;
+//            }
+//        }else {
+//            try {
+//                filter.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::geridonus,SBLDKeys::BilgiEdinme::Basvuru::geriDonusVar::yapilmadi));
+//            } catch (bsoncxx::exception &e) {
+//                this->showMessage("Error","Bir Hata Oluştu durum",e);
+//                return 0 ;
+//            }
+//        }
+//    }
 
-}
+
+//    //    std::cout << "BSON: " << bsoncxx::to_json(filter.view())  << std::endl;
+
+//    try {
+//        auto cursor = this->db()->collection(SBLDKeys::BilgiEdinme::Basvuru::collection).count(filter.view());
+//        return cursor;
+//    } catch (mongocxx::exception &e) {
+//        return 0;
+//    }
+//}
+
+//void Giris::Personel::Basvurularim::initList(std::string filterKey )
+//{
+
+//    mContentContainer->clear();
+//    auto table = mContentContainer->addWidget(cpp14::make_unique<WTable>());
+//    table->setMargin(15,Side::Top|Side::Bottom);
+
+//    table->setHeaderCount(1);
+//    table->setWidth(WLength("100%"));
+
+//    table->elementAt(0, 0)->addWidget(cpp14::make_unique<WText>("#"));
+//    table->elementAt(0, 1)->addWidget(cpp14::make_unique<WText>("Başvuru Sahibi"));
+//    table->elementAt(0, 2)->addWidget(cpp14::make_unique<WText>("Konu"));
+//    table->elementAt(0, 3)->addWidget(cpp14::make_unique<WText>("Tarih"));
+//    table->elementAt(0, 4)->addWidget(cpp14::make_unique<WText>("Cevap"));
+//    table->elementAt(0, 5)->addWidget(cpp14::make_unique<WText>("İncele"));
+
+//    table->addStyleClass("table form-inline table-bordered table-hover table-condensed table-striped");
+
+
+//    auto filter = document{};
+
+//    if( filterKey != "Hepsi" )
+//    {
+//        if( filterKey == "Cevaplandı" )
+//        {
+//            try {
+//                filter.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::geridonus,SBLDKeys::BilgiEdinme::Basvuru::geriDonusVar::yapildi));
+//            } catch (bsoncxx::exception &e) {
+//                std::cout << "Error: " << e.what() << std::endl;
+//            }
+//        }else{
+//            try {
+//                filter.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::geridonus,SBLDKeys::BilgiEdinme::Basvuru::geriDonusVar::yapilmadi));
+//            } catch (bsoncxx::exception &e) {
+//                std::cout << "Error: " << e.what() << std::endl;
+//            }
+//        }
+//    }
+
+//    try {
+//        filter.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::birim,this->User().view()[SBLDKeys::Personel::birimi].get_utf8().value));
+//    } catch (bsoncxx::exception &e) {
+//        std::cout << "Error: " << e.what() << std::endl;
+//    }
+
+
+//    try {
+//        auto cursor = this->db()->collection(SBLDKeys::BilgiEdinme::Basvuru::collection).find(filter.view());
+//        list.clear();
+//        for( auto doc : cursor )
+//        {
+//            basvuruStruct basvuru;
+//            basvuru.oid = doc[SBLDKeys::oid].get_oid().value.to_string();
+//            basvuru.konu = doc[SBLDKeys::BilgiEdinme::Basvuru::konu].get_utf8().value.to_string();
+//            basvuru.basvuruSahibi = doc[SBLDKeys::BilgiEdinme::Basvuru::adsoyad].get_utf8().value.to_string();
+//            if( doc[SBLDKeys::BilgiEdinme::Basvuru::geridonus].get_bool().value )
+//            {
+//                basvuru.cevap = "Cevap Var";
+//            }else{
+//                basvuru.cevap = "Cevap Yok";
+//            }
+//            basvuru.tarih = doc[SBLDKeys::BilgiEdinme::Basvuru::tarih].get_utf8().value.to_string();
+//            list.push_back(basvuru);
+//        }
+
+//    } catch (mongocxx::exception &e) {
+
+//    }
+
+
+//    int row = 1;
+//    for( std::size_t i = 0 ; i < list.size() ; i++ )
+//    {
+//        basvuruStruct item = list.at(i);
+//        table->elementAt(row, 0)->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(row)));
+//        table->elementAt(row, 1)->addWidget(cpp14::make_unique<WText>(item.basvuruSahibi));
+//        table->elementAt(row, 2)->addWidget(cpp14::make_unique<WText>(item.konu));
+//        table->elementAt(row, 3)->addWidget(cpp14::make_unique<WText>(item.tarih));
+//        table->elementAt(row, 4)->addWidget(cpp14::make_unique<WText>(item.cevap));
+
+
+//        auto btn = std::make_unique<WPushButton>("İncele");
+//        btn->addStyleClass(Bootstrap::Button::Primary);
+//        std::string oid = item.oid;
+//        btn->clicked().connect([=](){
+//            this->setBasvuruDetail(oid);
+//        });
+//        table->elementAt(row, 5)->addWidget(std::move(btn));
+//    }
+
+
+
+//}
+
+
+//// TODO: Başvuru Detayları BUrada Gözükecek
+//void Giris::Personel::Basvurularim::setBasvuruDetail(std::string oid)
+//{
+
+
+//    std::cout << "Oid " << oid << std::endl;
+
+//}
 
 
 
