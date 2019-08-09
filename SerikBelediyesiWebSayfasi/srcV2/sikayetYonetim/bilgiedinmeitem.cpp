@@ -29,6 +29,7 @@ boost::optional<BilgiEdinmeItem *> BilgiEdinmeItem::LoadBilgiEdinmeItem(mongocxx
             item->LoadFromDocumentView(val.value().view());
             return item;
         }else{
+            std::cout << "No Value Returned: " << bsoncxx::to_json(_filter.view()) << std::endl;
             return boost::none;
         }
 
@@ -257,11 +258,42 @@ bool BilgiEdinmeItem::setCevap(const Cevap &cevap)
         return true;
     }
 
-    if( this->setElement(BilgiEdinmeKEY::cevap, cevap.view() ) )
-    {
-        this->mCevap = cevap;
-        return true;
+    std::cout << "Set Element" << bsoncxx::to_json(cevap.Document().view()) << std::endl;
+
+    auto setDoc = document{};
+
+    try {
+        setDoc.append(kvp("$set",make_document(kvp(BilgiEdinmeKEY::cevap,cevap.Document()),kvp(BilgiEdinmeKEY::cevaplandi,true))));
+    } catch (bsoncxx::exception &e) {
+        std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << e.what() << std::endl;
+//        throw e.what();
     }
+
+    std::cout << bsoncxx::to_json(setDoc.view()) << std::endl;
+
+
+    try {
+        auto upt = this->db()->collection(BilgiEdinmeKEY::collection).update_one(this->filter()->view(),setDoc.view());
+
+        if( upt )
+        {
+            if( upt.value().modified_count() )
+            {
+                this->mCevap = cevap;
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            throw ("no value Returned");
+        }
+
+    } catch (mongocxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        std::cout << str << std::endl;
+//        throw (str);
+    }
+
 
     return false;
 }
@@ -562,7 +594,6 @@ bool BilgiEdinmeItem::setElement(const std::string &elementKey, const T &element
         throw e.what();
     }
 
-
     try {
         auto upt = this->db()->collection(BilgiEdinmeKEY::collection).update_one(this->filter()->view(),setDoc.view());
 
@@ -589,7 +620,7 @@ bool BilgiEdinmeItem::setElement(const std::string &elementKey, const T &element
 
 
 
-bsoncxx::document::view BilgiEdinmeItem::Cevap::view() const
+document BilgiEdinmeItem::Cevap::Document() const
 {
     auto doc = document{};
 
@@ -612,7 +643,7 @@ bsoncxx::document::view BilgiEdinmeItem::Cevap::view() const
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
         std::cout << str << std::endl;
     }
-    return doc.view();
+    return doc;
 }
 
 bool BilgiEdinmeItem::Cevap::operator==(const BilgiEdinmeItem::Cevap &other)

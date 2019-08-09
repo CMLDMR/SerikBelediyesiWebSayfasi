@@ -43,7 +43,7 @@ public:
         std::string mCevapOid;
         std::string mSaat;
         std::int64_t mTarih;
-        bsoncxx::document::view view() const;
+        bsoncxx::builder::basic::document Document() const;
 
         bool operator==( const Cevap& other );
         Cevap &operator=( const Cevap& other );
