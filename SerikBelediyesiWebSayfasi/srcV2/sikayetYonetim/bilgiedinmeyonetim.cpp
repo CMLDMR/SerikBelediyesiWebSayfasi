@@ -7,17 +7,49 @@ BilgiEdinmeYonetim::BilgiEdinmeYonetim(mongocxx::database *_db, const bsoncxx::d
 {
     setContainerStyle(ContainerStyleType::ROW);
 
-    auto list = BilgiEdinmeItem::GetList(this->db());
-
-    for( auto item : list )
+    if( this->User().yetki("Çağrı Merkezi") )
     {
-        if( item )
+        auto list = BilgiEdinmeItem::GetList(this->db());
+
+        for( auto item : list )
         {
-            auto container = addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(Bootstrap::Grid::col_full_12);
-            container->addWidget(cpp14::make_unique<BilgiEdinmeListWidget>(item.get()))->ClickBilgiEdinme().connect(this,&BilgiEdinmeYonetim::initBilgiEdinme);
+            if( item )
+            {
+                auto container = addWidget(cpp14::make_unique<WContainerWidget>());
+                container->addStyleClass(Bootstrap::Grid::col_full_12);
+                container->addWidget(cpp14::make_unique<BilgiEdinmeListWidget>(item.get()))->ClickBilgiEdinme().connect(this,&BilgiEdinmeYonetim::initBilgiEdinme);
+            }
+        }
+    }else{
+        auto birim = this->User().birim();
+        if( birim )
+        {
+
+            auto filter = document{};
+
+            try {
+                filter.append(kvp(BilgiEdinmeKEY::birim,birim.value()));
+            } catch (bsoncxx::exception &e) {
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                std::cout << str << std::endl;
+            }
+
+            auto list = BilgiEdinmeItem::GetList(this->db(),std::move(filter));
+
+            for( auto item : list )
+            {
+                if( item )
+                {
+                    auto container = addWidget(cpp14::make_unique<WContainerWidget>());
+                    container->addStyleClass(Bootstrap::Grid::col_full_12);
+                    container->addWidget(cpp14::make_unique<BilgiEdinmeListWidget>(item.get()))->ClickBilgiEdinme().connect(this,&BilgiEdinmeYonetim::initBilgiEdinme);
+                }
+            }
+
         }
     }
+
+
 
 }
 
