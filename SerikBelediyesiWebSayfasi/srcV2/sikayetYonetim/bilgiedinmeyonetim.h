@@ -41,6 +41,10 @@ public:
 
 private:
     BilgiEdinmeItem* mItem;
+
+    const bsoncxx::oid mOid;
+
+    void initWidget();
 };
 
 

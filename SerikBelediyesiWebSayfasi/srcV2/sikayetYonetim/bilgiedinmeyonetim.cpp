@@ -82,33 +82,45 @@ Signal<bsoncxx::oid> &BilgiEdinmeListWidget::ClickBilgiEdinme()
 
 
 BilgiEdinmeWidget::BilgiEdinmeWidget(mongocxx::database *_db, const bsoncxx::oid &_oid, const UserClass &user)
-    :DBClass (_db),UserClass (user)
+    :DBClass (_db),UserClass (user),mOid(_oid)
 {
 
     setPadding(15,Side::Left|Side::Right);
 
-    auto mContainer = addWidget(cpp14::make_unique<ContainerWiget>());
-    mContainer->setContainerStyle(ContainerStyleType::CONTAINERFLUID);
 
 
 
-    auto val = BilgiEdinmeItem::LoadBilgiEdinmeItem(this->db(),_oid.to_string());
+
+
+    this->initWidget();
+
+
+}
+
+void BilgiEdinmeWidget::initWidget()
+{
+
+    clear();
+
+
+
+    auto val = BilgiEdinmeItem::LoadBilgiEdinmeItem(this->db(),mOid.to_string());
 
 
     if( !val )
     {
-
-        auto rContainer = mContainer->addWidget(cpp14::make_unique<ContainerWiget>());
-
+        auto rContainer = addWidget(cpp14::make_unique<ContainerWiget>());
         rContainer->setContainerStyle(ContainerStyleType::ROW);
-
-        rContainer->addWidget(cpp14::make_unique<WText>("Bilgi Edinme Dosyası Yüklenemedi"));
-
+        rContainer->addWidget(cpp14::make_unique<WText>("Bilgi Edinme Dosyası Yüklenemedi"))
+                ->addStyleClass(Bootstrap::Label::Danger);
         return;
-
     }
 
     mItem = (val.value());
+
+
+    auto mContainer = addWidget(cpp14::make_unique<ContainerWiget>());
+    mContainer->setContainerStyle(ContainerStyleType::CONTAINERFLUID);
 
     auto rContainer = mContainer->addWidget(cpp14::make_unique<ContainerWiget>());
 
@@ -173,14 +185,6 @@ BilgiEdinmeWidget::BilgiEdinmeWidget(mongocxx::database *_db, const bsoncxx::oid
         auto _rContainer = container->addWidget(cpp14::make_unique<ContainerWiget>());
         _rContainer->setContainerStyle(ContainerStyleType::ROW);
 
-
-//        auto container_ = _rContainer->addWidget(cpp14::make_unique<ContainerWiget>());
-//        container_->addStyleClass(Bootstrap::Grid::Large::col_lg_5+
-//                                 Bootstrap::Grid::Medium::col_md_5+
-//                                 Bootstrap::Grid::Small::col_sm_5+
-//                                 Bootstrap::Grid::ExtraSmall::col_xs_6);
-//        auto vLayout = container_->setLayout(cpp14::make_unique<WVBoxLayout>());
-//        vLayout->addWidget(cpp14::make_unique<WText>("Birim"),1,AlignmentFlag::Middle|AlignmentFlag::Right);
 
 
         auto container__ = _rContainer->addWidget(cpp14::make_unique<ContainerWiget>());
@@ -267,6 +271,27 @@ BilgiEdinmeWidget::BilgiEdinmeWidget(mongocxx::database *_db, const bsoncxx::oid
         layout->addWidget(cpp14::make_unique<WText>("Cevap Yok"),0,AlignmentFlag::Top|AlignmentFlag::Center);
 
 
+        auto cContainer = rContainer->addWidget(cpp14::make_unique<FileUploaderWidget>(this->db()));
+
+
+        cContainer->Uploaded().connect([=](){
+
+            BilgiEdinmeItem::Cevap cevap;
+            cevap.mSaat = WTime::currentServerTime().toString("hh:mm").toUTF8();
+            cevap.mTarih = WDate::currentServerDate().toJulianDay();
+
+            auto val = this->uploadfile(cContainer->fileLocation());
+            cevap.mCevapOid = val.get_oid().value.to_string();
+
+
+            if( mItem->setCevap(cevap) ){
+                this->initWidget();
+            }
+        });
+
+
+
+
 
     }else{
         auto container = rContainer->addWidget(cpp14::make_unique<ContainerWiget>());
@@ -291,17 +316,12 @@ BilgiEdinmeWidget::BilgiEdinmeWidget(mongocxx::database *_db, const bsoncxx::oid
 
         std::unique_ptr<Wt::WAnchor> anchor =
                 Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                "Cevap Dosyası");
+                                "<h5>Cevap Dosyası</h5>");
 
         anchor->addStyleClass(Bootstrap::Label::Primary);
 
         layout->addWidget(std::move(anchor),0,AlignmentFlag::Top|AlignmentFlag::Center);
 
     }
-
-
-
-
-
 
 }
