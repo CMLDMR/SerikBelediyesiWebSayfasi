@@ -2,6 +2,7 @@
 #define DBCLASS_H
 
 #include "mongoheaders.h"
+#include <iostream>
 
 
 using bsoncxx::builder::basic::document;
