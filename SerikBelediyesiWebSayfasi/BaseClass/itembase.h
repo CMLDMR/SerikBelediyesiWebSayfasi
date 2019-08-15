@@ -6,6 +6,7 @@
 #include <QStringList>
 
 
+
 class ItemBase : public DBClass
 {
 public:
@@ -58,16 +59,14 @@ private:
         auto f = this->doc.view().find(key);
         if( *f ){
 
-            auto doc = document{};
-
-
+            auto doc_ = document{};
 
             for( auto _f : this->doc.view() )
             {
                 if( key != _f.key() )
                 {
                     try {
-                        doc.append(kvp(_f.key(),_f.get_value()));
+                        doc_.append(kvp(_f.key(),_f.get_value()));
                     } catch (bsoncxx::exception &e) {
                         std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << e.what() << std::endl;
                         succed = false;
@@ -79,10 +78,10 @@ private:
 
                 this->doc.clear();
 
-                for( auto _f : doc.view() )
+                for( auto _f : doc_.view() )
                 {
                     try {
-                        doc.append(kvp(_f.key(),_f.get_value()));
+                        this->doc.append(kvp(_f.key(),_f.get_value()));
                     } catch (bsoncxx::exception &e) {
                         std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << e.what() << std::endl;
                         succed = false;
@@ -90,7 +89,7 @@ private:
                 }
 
                 try {
-                    doc.append(kvp(key,value));
+                    this->doc.append(kvp(key,value));
                 } catch (bsoncxx::exception &e) {
                     std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << e.what() << std::endl;
                     succed = false;
@@ -100,7 +99,7 @@ private:
 
         }else{
             try {
-                doc.append(kvp(key,value));
+                this->doc.append(kvp(key,value));
             } catch (bsoncxx::exception &e) {
                 std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << e.what() << std::endl;
                 succed = false;
