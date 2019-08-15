@@ -38,7 +38,8 @@ public:
 
 
 private:
-    SikayetItem(mongocxx::database* _db );
+    explicit SikayetItem( mongocxx::database* _db );
+    SikayetItem(mongocxx::database* _db , bsoncxx::document::view view);
 };
 
 }
