@@ -33,6 +33,7 @@ SOURCES += main.cpp \
     SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/bilgiedinmeyonetim.cpp \
     SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetimyonetim.cpp \
     SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetitem.cpp \
+    SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetlistitemwidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetyonetimwidget.cpp \
     main.cpp \
     mainapplication.cpp \
@@ -91,6 +92,7 @@ HEADERS += \
     SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/bilgiedinmeyonetim.h \
     SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetimyonetim.h \
     SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetitem.h \
+    SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetlistitemwidget.h \
     SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetyonetimwidget.h \
     mainapplication.h \
     Necessary \
