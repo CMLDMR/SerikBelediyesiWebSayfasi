@@ -24,6 +24,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += main.cpp \
     SerikBelediyesiWebSayfasi/BaseClass/containerwiget.cpp \
     SerikBelediyesiWebSayfasi/BaseClass/dbclass.cpp \
+    SerikBelediyesiWebSayfasi/BaseClass/itembase.cpp \
     SerikBelediyesiWebSayfasi/srcV2/girisCikisWidget/giriscikiswidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/ik.cpp \
     SerikBelediyesiWebSayfasi/srcV2/kadinailestock.cpp \
@@ -78,6 +79,7 @@ DEPENDPATH += $$PWD/../../Comman
 HEADERS += \
     SerikBelediyesiWebSayfasi/BaseClass/containerwiget.h \
     SerikBelediyesiWebSayfasi/BaseClass/dbclass.h \
+    SerikBelediyesiWebSayfasi/BaseClass/itembase.h \
     SerikBelediyesiWebSayfasi/BaseClass/wtheaders.h \
     SerikBelediyesiWebSayfasi/srcV2/girisCikisWidget/giriscikiswidget.h \
     SerikBelediyesiWebSayfasi/srcV2/ik.h \
