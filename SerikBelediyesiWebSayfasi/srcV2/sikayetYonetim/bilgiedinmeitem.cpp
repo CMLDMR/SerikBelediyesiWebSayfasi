@@ -557,7 +557,7 @@ void BilgiEdinmeItem::LoadFromDocumentView(const bsoncxx::document::view &view)
         mBirim = view[BilgiEdinmeKEY::birim].get_utf8().value.to_string();
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-        std::cout << str << std::endl;
+//        std::cout << str << std::endl;
     }
 
     try {
