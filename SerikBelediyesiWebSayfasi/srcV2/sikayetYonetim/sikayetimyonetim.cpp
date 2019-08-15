@@ -1,6 +1,6 @@
 #include "sikayetimyonetim.h"
-
 #include "bilgiedinmeyonetim.h"
+#include "sikayetyonetimwidget.h"
 
 SikayetimYonetim::SikayetimYonetim(mongocxx::database *_db, bsoncxx::document::value _user)
     :BaseClass::ContainerWidget (_db,_user,"Talep/Bilgi Edinme Yönetimi")
@@ -56,11 +56,12 @@ SikayetimYonetim::SikayetimYonetim(mongocxx::database *_db, bsoncxx::document::v
 
         auto vLayout = SikayetContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
 
-        auto text = vLayout->addWidget(cpp14::make_unique<WText>("Şikayet Yönetimi"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+        auto text = vLayout->addWidget(cpp14::make_unique<WText>("Şikayet Yönetimi\n(Yapım Aşamasında)"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
         text->setAttributeValue(Style::style,Style::font::size::s16px
                                 +Style::color::color(Style::color::White::Snow));
 
         SikayetContainer->decorationStyle().setCursor(Cursor::PointingHand);
+        SikayetContainer->clicked().connect(this,&SikayetimYonetim::initSikayetler);
 
     }
 
@@ -77,7 +78,13 @@ SikayetimYonetim::SikayetimYonetim(mongocxx::database *_db, bsoncxx::document::v
 void SikayetimYonetim::initBilgiEdinme()
 {
     mContentContainer->clear();
-
     mContentContainer->addWidget(cpp14::make_unique<BilgiEdinmeYonetim>(this->db(),this->User()));
+}
 
+
+
+void SikayetimYonetim::initSikayetler()
+{
+    mContentContainer->clear();
+    mContentContainer->addWidget(cpp14::make_unique<SikayetYonetimWidget>(this->db(),this->User()));
 }
