@@ -9,6 +9,12 @@ class SikayetYonetimWidget : public ContainerWiget , public UserClass , public D
 {
 public:
     SikayetYonetimWidget(mongocxx::database* _db , bsoncxx::document::value &userValue);
+
+
+private:
+    Signal<std::string> _ClickFilter;
+
+    void initSikayetler(const std::string &durumFilter);
 };
 
 #endif // SIKAYETYONETIMWIDGET_H
