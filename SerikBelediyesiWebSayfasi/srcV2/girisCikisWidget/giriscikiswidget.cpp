@@ -496,7 +496,17 @@ void GirisCikisWidget::addRow(QString personeloid, qint64 julianDay)
     sabahinContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_3);
     auto sabahinimgContainer = sabahinContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     sabahinimgContainer->setHeight(65);
+
     auto sabahintext = sabahinContainer->addWidget(cpp14::make_unique<WText>("-:-"));
+    sabahintext->setPositionScheme(PositionScheme::Absolute);
+    sabahintext->setOffsets(-3,Side::Bottom);
+    sabahintext->setOffsets(WLength("40%"),Side::Left);
+    sabahinContainer->setPositionScheme(PositionScheme::Relative);
+    sabahinimgContainer->setPositionScheme(PositionScheme::Absolute);
+    sabahinimgContainer->setOffsets(0,Side::Top|Side::Left);
+    sabahinimgContainer->setWidth(WLength("100%"));
+
+
 
     auto sabahoutContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     sabahoutContainer->setHeight(80);
@@ -505,6 +515,13 @@ void GirisCikisWidget::addRow(QString personeloid, qint64 julianDay)
     auto sabahoutimgContainer = sabahoutContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     sabahoutimgContainer->setHeight(65);
     auto sabahouttext = sabahoutContainer->addWidget(cpp14::make_unique<WText>("-:-"));
+    sabahouttext->setPositionScheme(PositionScheme::Absolute);
+    sabahouttext->setOffsets(-3,Side::Bottom);
+    sabahouttext->setOffsets(WLength("40%"),Side::Left);
+    sabahoutContainer->setPositionScheme(PositionScheme::Relative);
+    sabahoutimgContainer->setPositionScheme(PositionScheme::Absolute);
+    sabahoutimgContainer->setOffsets(0,Side::Top|Side::Left);
+    sabahoutimgContainer->setWidth(WLength("100%"));
 
 
     auto aksaminContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -514,6 +531,14 @@ void GirisCikisWidget::addRow(QString personeloid, qint64 julianDay)
     auto aksaminimgContainer = aksaminContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     aksaminimgContainer->setHeight(65);
     auto aksamintext = aksaminContainer->addWidget(cpp14::make_unique<WText>("-:-"));
+    aksamintext->setPositionScheme(PositionScheme::Absolute);
+    aksamintext->setOffsets(-3,Side::Bottom);
+    aksamintext->setOffsets(WLength("40%"),Side::Left);
+
+    aksaminContainer->setPositionScheme(PositionScheme::Relative);
+    aksaminimgContainer->setPositionScheme(PositionScheme::Absolute);
+    aksaminimgContainer->setOffsets(0,Side::Top|Side::Left);
+    aksaminimgContainer->setWidth(WLength("100%"));
 
     auto aksamoutContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     aksamoutContainer->setHeight(80);
@@ -522,6 +547,14 @@ void GirisCikisWidget::addRow(QString personeloid, qint64 julianDay)
     auto aksamoutimgContainer = aksamoutContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     aksamoutimgContainer->setHeight(65);
     auto aksamouttext = aksamoutContainer->addWidget(cpp14::make_unique<WText>("-:-"));
+    aksamouttext->setPositionScheme(PositionScheme::Absolute);
+    aksamouttext->setOffsets(-3,Side::Bottom);
+    aksamouttext->setOffsets(WLength("40%"),Side::Left);
+
+    aksamoutContainer->setPositionScheme(PositionScheme::Relative);
+    aksamoutimgContainer->setPositionScheme(PositionScheme::Absolute);
+    aksamoutimgContainer->setOffsets(0,Side::Top|Side::Left);
+    aksamoutimgContainer->setWidth(WLength("100%"));
 
     auto bucket = this->db()->gridfs_bucket();
     try {
