@@ -68,6 +68,10 @@ SikayetListItemWidget::SikayetListItemWidget(bsoncxx::oid _oid, const std::strin
 
         container->addWidget(cpp14::make_unique<WText>(adsoyad));
     }
+
+    this->clicked().connect([=](){
+        _ClickItem.emit(this->mOid);
+    });
 }
 
 Signal<bsoncxx::oid> &SikayetListItemWidget::ClickItem()
