@@ -10,7 +10,7 @@ SikayetListItemWidget::SikayetListItemWidget(bsoncxx::oid _oid, const std::strin
     this->setWidth(WLength("100%"));
     this->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
     this->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(175,225),this->getRandom(175,225),this->getRandom(175,225)));
-
+    this->decorationStyle().setCursor(Cursor::PointingHand);
     {
         auto container = addWidget(cpp14::make_unique<WContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+
