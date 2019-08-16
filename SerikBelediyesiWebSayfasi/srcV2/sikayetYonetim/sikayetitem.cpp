@@ -13,7 +13,7 @@ boost::optional<Sikayet::SikayetItem> Sikayet::SikayetItem::Create_Sikayet(mongo
     }
 }
 
-boost::optional<Sikayet::SikayetItem> Sikayet::SikayetItem::Load_Sikayet(mongocxx::database *_db, const bsoncxx::oid &oid)
+boost::optional<Sikayet::SikayetItem *> Sikayet::SikayetItem::Load_Sikayet(mongocxx::database *_db, const bsoncxx::oid &oid)
 {
     auto filter = document{};
 
@@ -30,7 +30,7 @@ boost::optional<Sikayet::SikayetItem> Sikayet::SikayetItem::Load_Sikayet(mongocx
 
         if( val )
         {
-            SikayetItem item(_db,val.value().view());
+            SikayetItem* item = new SikayetItem(_db,val.value().view());
             return std::move(item);
         }else{
             return boost::none;

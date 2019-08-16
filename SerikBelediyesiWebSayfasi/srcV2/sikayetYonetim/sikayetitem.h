@@ -32,7 +32,7 @@ class SikayetItem : public ItemBase
 public:
     static boost::optional<SikayetItem> Create_Sikayet(mongocxx::database* _db);
 
-    static boost::optional<SikayetItem> Load_Sikayet( mongocxx::database* _db , const bsoncxx::oid &oid);
+    static boost::optional<SikayetItem*> Load_Sikayet( mongocxx::database* _db , const bsoncxx::oid &oid);
 
     static QVector<SikayetItem*> GetList(mongocxx::database* _db,
                                   bsoncxx::builder::basic::document filter = document{} ,
