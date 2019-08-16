@@ -1,5 +1,6 @@
 #include "sikayetyonetimwidget.h"
 #include "sikayetlistitemwidget.h"
+#include "sikayetitemwidget.h"
 
 SikayetYonetimWidget::SikayetYonetimWidget(mongocxx::database *_db, bsoncxx::document::value &userValue)
     :UserClass (userValue),DBClass(_db)
@@ -182,6 +183,9 @@ void SikayetYonetimWidget::initSikayet(const bsoncxx::oid &oid)
     this->Content()->clear();
     this->Footer()->clear();
 
-    std::cout << __LINE__ << " " << __FUNCTION__ << " " << oid.to_string() << std::endl;
+    this->Content()->addWidget(cpp14::make_unique<SikayetItemWidget>(this->db(),this->User(),oid));
+
+    this->Footer()->setContentAlignment(AlignmentFlag::Center);
+    auto BackBtn = this->Footer()->addWidget(cpp14::make_unique<WText>("Sayfa Sonu"));
 
 }
