@@ -1,4 +1,5 @@
 #include "sikayetyonetimwidget.h"
+#include "sikayetlistitemwidget.h"
 
 SikayetYonetimWidget::SikayetYonetimWidget(mongocxx::database *_db, bsoncxx::document::value &userValue)
     :UserClass (userValue),DBClass(_db)
@@ -24,6 +25,7 @@ SikayetYonetimWidget::SikayetYonetimWidget(mongocxx::database *_db, bsoncxx::doc
 
         auto cursor = this->db()->collection(Sikayet::KEY::collection).aggregate(pipline);
 
+        int Tumu = 0;
         for ( auto&& doc : cursor ) {
 
             auto _container = container->addWidget(cpp14::make_unique<ContainerWiget>());
@@ -34,6 +36,7 @@ SikayetYonetimWidget::SikayetYonetimWidget(mongocxx::database *_db, bsoncxx::doc
             _container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
             _container->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(150,200),this->getRandom(170,220),this->getRandom(180,230)));
             _container->decorationStyle().setCursor(Cursor::PointingHand);
+//            _container->setHeight(60);
 
             auto vLayout = _container->setLayout(cpp14::make_unique<WVBoxLayout>());
 
@@ -48,6 +51,7 @@ SikayetYonetimWidget::SikayetYonetimWidget(mongocxx::database *_db, bsoncxx::doc
             {
                 auto text = vLayout->addWidget(cpp14::make_unique<WText>(),0,AlignmentFlag::Center|AlignmentFlag::Middle);
                 text->setText(WString("<h4>{1}</h4>").arg(Bootstrap::Badges::badget(std::to_string(doc["count"].get_int32().value))));
+                Tumu += doc["count"].get_int32().value;
             }
 
             _container->clicked().connect([=](){
@@ -62,21 +66,26 @@ void SikayetYonetimWidget::initSikayetler(const std::string &durumFilter)
 {
 
     this->Content()->clear();
+    this->Content()->setMargin(25,Side::Top|Side::Bottom);
 
     auto filter = document{};
 
-    try {
-        filter.append(kvp(Sikayet::KEY::durum,durumFilter));
-    } catch (bsoncxx::exception &e) {
-        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-        std::cout << str << std::endl;
+    if( durumFilter != "Tümü" )
+    {
+        try {
+            filter.append(kvp(Sikayet::KEY::durum,durumFilter));
+        } catch (bsoncxx::exception &e) {
+            std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+            std::cout << str << std::endl;
+        }
     }
+
 
 
     mongocxx::options::find findOptions;
 
-    findOptions.limit(50);
-    findOptions.skip(0);
+    findOptions.limit(limit);
+    findOptions.skip(skip);
 
     auto sortDoc = document{};
 
@@ -90,6 +99,20 @@ void SikayetYonetimWidget::initSikayetler(const std::string &durumFilter)
     findOptions.sort(sortDoc.view());
 
     auto list = Sikayet::SikayetItem::GetList(this->db(),std::move(filter),findOptions);
+
+    auto rContainer = this->Content()->addWidget(cpp14::make_unique<WContainerWidget>());
+    rContainer->addStyleClass(Bootstrap::Grid::row);
+
+    for( auto item : list )
+    {
+        auto container = rContainer->addWidget(cpp14::make_unique<SikayetListItemWidget>(item->oid(),item->Element(Sikayet::KEY::durum)->get_utf8().value.to_string(),
+                                                                        item->Element(Sikayet::KEY::tarih).value().get_utf8().value.to_string(),
+                                                                        item->Element(Sikayet::KEY::mahalle).value().get_utf8().value.to_string(),
+                                                                        item->Element(Sikayet::KEY::birim).value().get_utf8().value.to_string(),
+                                                                        item->Element(Sikayet::KEY::kategori).value().get_utf8().value.to_string(),
+                                                                        item->Element(Sikayet::KEY::adSoyad).value().get_utf8().value.to_string()));
+        container->setMargin(5,Side::Top|Side::Bottom);
+    }
 
 
 }

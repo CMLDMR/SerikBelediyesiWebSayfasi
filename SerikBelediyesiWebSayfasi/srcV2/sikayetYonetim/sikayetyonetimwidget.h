@@ -15,6 +15,9 @@ private:
     Signal<std::string> _ClickFilter;
 
     void initSikayetler(const std::string &durumFilter);
+
+    const int limit = 50;
+    int skip = 0;
 };
 
 #endif // SIKAYETYONETIMWIDGET_H
