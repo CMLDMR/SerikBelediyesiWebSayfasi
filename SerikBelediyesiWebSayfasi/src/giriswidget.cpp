@@ -196,6 +196,7 @@ void Giris::GirisWidget::initOption()
         container->decorationStyle().setCursor(Cursor::PointingHand);
         auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
         container->setAttributeValue(Style::style,Style::background::color::color(Style::color::Purple::Fuchsia));
+        container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
         layout->addStretch(1);
         auto text = layout->addWidget(cpp14::make_unique<WText>("Sivil Olarak Devam Et!"));
         text->setAttributeValue(Style::style,Style::font::size::s20px+Style::color::color(Style::color::White::AliceBlue)+Style::font::weight::bold);
@@ -216,6 +217,7 @@ void Giris::GirisWidget::initOption()
         container->decorationStyle().setCursor(Cursor::PointingHand);
         auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
         container->setAttributeValue(Style::style,Style::background::color::color(Style::color::Purple::Indigo));
+        container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
         layout->addStretch(1);
         auto text = layout->addWidget(cpp14::make_unique<WText>("Personel Olarak Devam Et!"));
         text->setAttributeValue(Style::style,Style::font::size::s20px+Style::color::color(Style::color::White::AliceBlue)+Style::font::weight::bold);
@@ -715,7 +717,7 @@ void Giris::LoginWidget::ConfirmLogin()
 
     if( this->checkTCCollection(mTelefonNumarasi->text().toUTF8() ) )
     {
-        std::cout << "phone is exist TC Collection" << std::endl;
+//        std::cout << "phone is exist TC Collection" << std::endl;
         setUserisVatandas(true);
         setUserisPersonel(false);
         this->ConfirmVatandas();
@@ -723,7 +725,7 @@ void Giris::LoginWidget::ConfirmLogin()
         setUserisVatandas(false);
         if( this->checkPersonelCollection(mTelefonNumarasi->text().toUTF8() ) )
         {
-            std::cout << "Personel" << std::endl;
+//            std::cout << "Personel" << std::endl;
             setUserisPersonel(true);
             this->ConfirmPersonel();
         }else {
