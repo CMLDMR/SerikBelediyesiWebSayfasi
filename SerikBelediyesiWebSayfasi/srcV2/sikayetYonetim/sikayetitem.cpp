@@ -18,19 +18,19 @@ QVector<Sikayet::SikayetItem *> Sikayet::SikayetItem::GetList(mongocxx::database
                                                               mongocxx::options::find findOptions)
 {
     QVector<Sikayet::SikayetItem*> list;
-
-
     try {
         auto cursor = _db->collection(KEY::collection).find(filter.view(),findOptions);
 
+        for( auto doc : cursor )
+        {
+            SikayetItem* item = new SikayetItem(_db,doc);
+            list.push_back(item);
+        }
 
     } catch (mongocxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
         std::cout << str << std::endl;
     }
-
-
-
     return list;
 }
 
