@@ -165,7 +165,7 @@ void MainPage::initGiris()
 {
     mContentWidget->clear();
     auto widget = mContentWidget->addWidget(cpp14::make_unique<Giris::GirisWidget>(this->getDB()));
-    widget->setMaximumSize(1024,WLength::Auto);
+    widget->setMaximumSize(1250,WLength::Auto);
     footer->removeStyleClass("footerStickAbsolute");
 }
 
