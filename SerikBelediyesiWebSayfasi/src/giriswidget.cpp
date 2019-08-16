@@ -99,7 +99,7 @@ void Giris::GirisWidget::initMenu(bsoncxx::document::value vatandas)
 
     mContentContainer->clear();
     this->User = vatandas;
-    mPageTitle->setText("INTERAKTİF ALAN");
+    mPageTitle->setText("www.serik.bel.tr");
 
 
 
