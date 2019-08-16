@@ -137,15 +137,13 @@ void SikayetYonetimWidget::initSikayetler(const std::string &durumFilter)
 
     this->Footer()->clear();
 
-//    std::cout << "DURUM COUNT: " << filterListCount[durumFilter] << " Skip:"<< skip << std::endl;
-
     {
         auto container = this->Footer()->addWidget(cpp14::make_unique<WContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::Large::col_lg_4+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_12);
         auto backBtn = container->addWidget(cpp14::make_unique<WPushButton>("Geri"));
         backBtn->addStyleClass(Bootstrap::Button::Primary);
         backBtn->clicked().connect([=](){
-            if( skip > limit )
+            if( skip >= limit )
             {
                 skip -= limit;
                 this->initSikayetler(durumFilter);
