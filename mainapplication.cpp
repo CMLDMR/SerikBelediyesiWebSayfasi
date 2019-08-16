@@ -169,7 +169,7 @@ void MainApplication::init()
 
     root()->addStyleClass("rootBody");
 
-    std::cout << "Julian Day: " << QDate::currentDate().toJulianDay() << std::endl;
+//    std::cout << "Julian Day: " << QDate::currentDate().toJulianDay() << std::endl;
 
     // Afis Ön Görsel
 //    if( true ){
