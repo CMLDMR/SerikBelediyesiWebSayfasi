@@ -591,6 +591,10 @@ void GirisCikisWidget::addRow(QString personeloid, qint64 julianDay)
                                                        +Style::background::size::contain
                                                        +Style::background::repeat::norepeat
                                                        +Style::background::position::center_center);
+                if( currentTime > QTime(8,30) )
+                {
+                    sabahinContainer->setAttributeValue(Style::style,Style::background::color::rgba(250,100,100,0.15)+Style::Border::right::border("1px solid black"));
+                }
             }
 
             if( currentTime >= QTime(12,0) && currentTime < QTime(13,0) )
@@ -601,6 +605,10 @@ void GirisCikisWidget::addRow(QString personeloid, qint64 julianDay)
                                                         +Style::background::size::contain
                                                         +Style::background::repeat::norepeat
                                                         +Style::background::position::center_center);
+                if( currentTime < QTime(12,30) )
+                {
+                    sabahoutContainer->setAttributeValue(Style::style,Style::background::color::rgba(250,100,100,0.15)+Style::Border::right::border("1px solid black"));
+                }
             }
 
             if( currentTime >= QTime(13,0) && currentTime < QTime(14,0) )
@@ -611,6 +619,11 @@ void GirisCikisWidget::addRow(QString personeloid, qint64 julianDay)
                                                        +Style::background::size::contain
                                                        +Style::background::repeat::norepeat
                                                        +Style::background::position::center_center);
+
+                if( currentTime > QTime(13,30) )
+                {
+                    aksaminContainer->setAttributeValue(Style::style,Style::background::color::rgba(250,100,100,0.15)+Style::Border::right::border("1px solid black"));
+                }
             }
 
             if( currentTime >= QTime(17,0) && currentTime < QTime(18,0) )
@@ -621,6 +634,10 @@ void GirisCikisWidget::addRow(QString personeloid, qint64 julianDay)
                                                         +Style::background::size::contain
                                                         +Style::background::repeat::norepeat
                                                         +Style::background::position::center_center);
+                if( currentTime < QTime(17,30) )
+                {
+                    aksamoutContainer->setAttributeValue(Style::style,Style::background::color::rgba(250,100,100,0.15));
+                }
             }
 
         }
