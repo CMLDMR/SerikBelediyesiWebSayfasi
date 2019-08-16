@@ -16,8 +16,9 @@ private:
 
     void initSikayetler(const std::string &durumFilter);
 
-    const int limit = 50;
+    const int limit = 20;
     int skip = 0;
+    std::map<std::string,int> filterListCount;
 };
 
 #endif // SIKAYETYONETIMWIDGET_H
