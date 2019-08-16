@@ -16,6 +16,8 @@ private:
 
     void initSikayetler(const std::string &durumFilter);
 
+    void initSikayet( const bsoncxx::oid &oid );
+
     const int limit = 20;
     int skip = 0;
     std::map<std::string,int> filterListCount;
