@@ -201,6 +201,17 @@ boost::optional<std::string> UserClass::birim()
     }
 }
 
+boost::optional<std::string> UserClass::adSoyad()
+{
+    try {
+        return this->mUserValue.view()["ad soyad"].get_utf8().value.to_string();
+    } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        std::cout << str << std::endl;
+        return boost::none;
+    }
+}
+
 bool UserClass::yetki(const std::string &yetkiAdi)
 {
     bool exist = false;

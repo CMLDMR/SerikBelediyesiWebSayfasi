@@ -56,6 +56,8 @@ public:
 
     boost::optional<std::string> birim();
 
+    boost::optional<std::string> adSoyad();
+
     bool yetki  (const std::string &yetkiAdi);
 
 
