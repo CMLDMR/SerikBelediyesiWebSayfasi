@@ -43,6 +43,16 @@ static const std::string aciklama{"Açıklama"};
 
 }
 
+
+
+namespace DURUM {
+static const std::string beklemede{"Beklemede"};
+static const std::string tekrarAcildi{"Tekrar Açıldı"};
+static const std::string iptalEdildi{"İptal Edildi"};
+static const std::string teyitEdilmemis{"Teyit Edilmemiş"};
+static const std::string tamamlandi{"Tamamlandı"};
+static const std::string devamEdiyor{"Devam Ediyor"};
+}
 static const std::string gorevli{"Görevli Personeller"};
 
 }
