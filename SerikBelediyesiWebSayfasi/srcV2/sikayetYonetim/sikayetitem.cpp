@@ -78,3 +78,102 @@ Sikayet::SikayetItem::SikayetItem(mongocxx::database *_db, bsoncxx::document::vi
 
 
 }
+
+Sikayet::ASAMA::ASAMA(bsoncxx::document::view &_view)
+    :mView(_view)
+{
+
+}
+
+std::string Sikayet::ASAMA::tarih()
+{
+    try {
+        return mView[Sikayet::KEY::ASAMAKEY::tarih_utf8].get_utf8().value.to_string();
+    } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        return str;
+    }
+}
+
+std::string Sikayet::ASAMA::tip()
+{
+    try {
+        return mView[Sikayet::KEY::ASAMAKEY::tip_utf8].get_utf8().value.to_string();
+    } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        return str;
+    }
+}
+
+std::string Sikayet::ASAMA::saat()
+{
+    try {
+        return mView[Sikayet::KEY::ASAMAKEY::saat_utf8].get_utf8().value.to_string();
+    } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        return str;
+    }
+}
+
+std::string Sikayet::ASAMA::birim()
+{
+    try {
+        return mView[Sikayet::KEY::ASAMAKEY::birim_utf8].get_utf8().value.to_string();
+    } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        return str;
+    }
+}
+
+std::string Sikayet::ASAMA::aciklama()
+{
+    try {
+        return mView[Sikayet::KEY::ASAMAKEY::aciklama_utf8].get_utf8().value.to_string();
+    } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        return str;
+    }
+}
+
+std::string Sikayet::ASAMA::degisiklik()
+{
+    try {
+        return mView[Sikayet::KEY::ASAMAKEY::degisim_utf8].get_utf8().value.to_string();
+    } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        return str;
+    }
+}
+
+std::string Sikayet::ASAMA::personelAdi()
+{
+    try {
+        return mView[Sikayet::KEY::ASAMAKEY::personel_doc].get_document().view()[Sikayet::KEY::ASAMAKEY::personel_doc_adsoyad].get_utf8().value.to_string();
+    } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        return str;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
