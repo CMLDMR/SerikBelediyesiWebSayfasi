@@ -16,7 +16,16 @@ private:
 
     void initHeader();
 
+    void initContent();
 
+
+};
+
+
+class AsamaItemWidget : public ContainerWiget, public Sikayet::ASAMA
+{
+public:
+    explicit AsamaItemWidget(bsoncxx::document::view &&view);
 };
 
 #endif // SIKAYETITEMWIDGET_H
