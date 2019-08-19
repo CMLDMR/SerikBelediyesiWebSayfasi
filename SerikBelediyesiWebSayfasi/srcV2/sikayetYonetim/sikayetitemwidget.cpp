@@ -116,14 +116,31 @@ void SikayetItemWidget::initContent()
 
     this->Content()->clear();
 
-    auto array = mCurrentSikayet->Element(Sikayet::KEY::asama).value().get_array().value;
 
-    for( auto _item : array )
+    if( mCurrentSikayet->keyList().contains(Sikayet::KEY::asama.c_str()) )
     {
-        auto item = this->Content()->addWidget(cpp14::make_unique<AsamaItemWidget>(_item.get_document().value));
+        try {
+            auto array = mCurrentSikayet->Element(Sikayet::KEY::asama).value().get_array().value;
+            for( auto _item : array )
+            {
+                this->Content()->addWidget(cpp14::make_unique<AsamaItemWidget>(_item.get_document().value));
+            }
+        } catch (bsoncxx::exception &e) {
+            std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+            std::cout << str << std::endl;
+        }
     }
 
 
+
+
+
+
+}
+
+void SikayetItemWidget::initController()
+{
+    this->Footer()->clear();
 }
 
 AsamaItemWidget::AsamaItemWidget(bsoncxx::document::view &&view)
