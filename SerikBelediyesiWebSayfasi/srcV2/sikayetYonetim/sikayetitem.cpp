@@ -64,6 +64,8 @@ QVector<Sikayet::SikayetItem *> Sikayet::SikayetItem::GetList(mongocxx::database
     return list;
 }
 
+
+
 Sikayet::SikayetItem::SikayetItem(mongocxx::database *_db)
     :ItemBase (_db,KEY::collection)
 {
