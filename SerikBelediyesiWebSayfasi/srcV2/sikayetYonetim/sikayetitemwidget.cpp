@@ -568,14 +568,87 @@ void SikayetItemWidget::initController()
 
 
     Footer()->addWidget(cpp14::make_unique<WBreak>());
-    auto text = this->Footer()->addWidget(cpp14::make_unique<WTextEdit>());
-    text->setWidth(WLength("100%"));
-    text->setHeight(250);
+    auto textEdit = this->Footer()->addWidget(cpp14::make_unique<WTextEdit>());
+    textEdit->setWidth(WLength("100%"));
+    textEdit->setHeight(250);
 
 
     Footer()->addWidget(cpp14::make_unique<WBreak>());
     auto PushBtn = Footer()->addWidget(cpp14::make_unique<WPushButton>("Ekle"));
     PushBtn->addStyleClass(Bootstrap::Button::Primary);
+
+    PushBtn->clicked().connect([=](){
+
+            this->initContent();
+
+            auto pushDoc = document{};
+
+            try {
+                pushDoc.append(kvp(Sikayet::KEY::ASAMAKEY::tip_utf8,Sikayet::KEY::ASAMAKEY::TIP::aciklama));
+            } catch (bsoncxx::exception &e) {
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                std::cout << str << std::endl;
+            }
+
+            try {
+                pushDoc.append(kvp(Sikayet::KEY::ASAMAKEY::aciklama_utf8,textEdit->text().toUTF8()));
+            } catch (bsoncxx::exception &e) {
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                std::cout << str << std::endl;
+            }
+
+            try {
+                pushDoc.append(kvp(Sikayet::KEY::ASAMAKEY::saat_utf8,WTime::currentServerTime().toString("hh:mm").toUTF8()));
+            } catch (bsoncxx::exception &e) {
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                std::cout << str << std::endl;
+            }
+
+            try {
+                pushDoc.append(kvp(Sikayet::KEY::ASAMAKEY::tarih_utf8,WDate::currentServerDate().toString("dd/MM/yyyy").toUTF8()));
+            } catch (bsoncxx::exception &e) {
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                std::cout << str << std::endl;
+            }
+
+            auto userBirim = this->User().birim();
+            if( userBirim )
+            {
+                try {
+                    pushDoc.append(kvp(Sikayet::KEY::ASAMAKEY::birim_utf8,userBirim.value()));
+                } catch (bsoncxx::exception &e) {
+                    std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                    std::cout << str << std::endl;
+                }
+            }
+
+            auto userAdSoyad = this->User().adSoyad();
+            if( userAdSoyad )
+            {
+                try {
+                    pushDoc.append(kvp(Sikayet::KEY::ASAMAKEY::personel_doc,make_document(kvp(Sikayet::KEY::ASAMAKEY::personel_doc_adsoyad,userAdSoyad.value()))));
+                } catch (bsoncxx::exception &e) {
+                    std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                    std::cout << str << std::endl;
+                }
+            }
+
+
+            if( mCurrentSikayet->pushElement(Sikayet::KEY::asama,pushDoc) )
+            {
+                if( mCurrentSikayet->reLoad() )
+                {
+                    this->initHeader();
+                    this->initContent();
+                }
+            }else{
+                std::cout << "Can not PushElement" << std::endl;
+            }
+
+
+
+
+    });
 }
 
 AsamaItemWidget::AsamaItemWidget(bsoncxx::document::view &&view)
