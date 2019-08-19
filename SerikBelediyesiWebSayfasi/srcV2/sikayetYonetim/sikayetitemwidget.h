@@ -19,6 +19,8 @@ private:
     void initContent();
 
 
+    void initController();
+
 };
 
 
