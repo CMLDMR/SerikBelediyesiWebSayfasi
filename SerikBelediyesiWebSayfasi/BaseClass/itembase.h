@@ -20,6 +20,11 @@ public:
         return this->setElement(key,value);
     }
 
+    template<typename T>
+    bool pushElement( const std::string &key , const T &value ){
+        return this->push_Element(key,value);
+    }
+
     bool addElement( const std::string &key , const QString &value ){
         return this->setElement(key,value.toStdString());
     }
@@ -152,6 +157,54 @@ private:
         return succed;
     }
 
+
+    template<typename T>
+    bool push_Element( const std::string &key , const T& value )
+    {
+        bool succed = true;
+
+
+        auto filter = document{};
+
+        try {
+            filter.append(kvp("_id",mOid));
+        } catch (bsoncxx::exception &e) {
+            std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << e.what() << std::endl;
+            succed = false;
+        }
+
+        auto pushDoc = document{};
+
+        try {
+            pushDoc.append(kvp("$push",make_document(kvp(key,value))));
+        } catch (bsoncxx::exception &e) {
+            std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << e.what() << std::endl;
+            succed = false;
+        }
+
+
+        if( succed ){
+            try {
+                auto upt = this->db()->collection(collectionName).update_one(filter.view(),pushDoc.view());
+                if( upt )
+                {
+                    if( upt.value().modified_count() )
+                    {
+
+                    }else{
+                        succed = false;
+                    }
+                }else{
+                    succed = false;
+                }
+            } catch (mongocxx::exception &e) {
+                std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << e.what() << std::endl;
+                succed = false;
+            }
+        }
+
+        return succed;
+    }
 };
 
 
