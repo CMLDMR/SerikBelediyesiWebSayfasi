@@ -46,6 +46,8 @@ public:
     bool deleteItem();
 
 
+    bool reLoad();
+
 private:
 
     document doc;

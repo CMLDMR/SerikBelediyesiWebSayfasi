@@ -35,7 +35,6 @@ ItemBase::ItemBase(mongocxx::database *_db, const std::string &collection, bsonc
             std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << e.what() << std::endl;
             mIsValid = false;
         }
-
     }
 
     if( mIsValid )
@@ -104,6 +103,54 @@ bool ItemBase::deleteItem()
     }
 
     return false;
+
+}
+
+bool ItemBase::reLoad()
+{
+
+
+
+    try {
+        auto val = this->db()->collection(collectionName).find_one(make_document(kvp("_id",this->mOid)));
+
+        if( val )
+        {
+            auto _view = val.value().view();
+            this->doc.clear();
+            for( auto it = _view.cbegin() ; it != _view.cend() ; it++ )
+            {
+                try {
+                    this->doc.append(kvp(it->key(),it->get_value()));
+                } catch (bsoncxx::exception &e) {
+                    std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << e.what() << std::endl;
+                    mIsValid = false;
+                }
+            }
+
+            if( mIsValid )
+            {
+                try {
+                    mOid = this->doc.view()["_id"].get_oid().value;
+                } catch (bsoncxx::exception &e) {
+                    std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << e.what() << std::endl;
+                    mIsValid = false;
+                }
+            }
+
+        }else{
+            return false;
+        }
+
+    } catch (mongocxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        std::cout << str << std::endl;
+        return false;
+    }
+
+
+
+
 
 }
 
