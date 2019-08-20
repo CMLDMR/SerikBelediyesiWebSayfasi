@@ -28,13 +28,14 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
 //    std::cout << "SESSION: " << wApp->sessionId() << std::endl;
 //    std::cout << "DEPLOYMENT PATH: " << env.deploymentPath() << std::endl;
 
-//    for (auto str : env.getParameterMap() ) {
-//        std::cout << "First: " << str.first << " - " << std::endl;
-//        for( auto sec : str.second )
-//        {
-//            std::cout << "Second: " << sec << std::endl;
-//        }
-//    }
+    for (auto str : env.getParameterMap() ) {
+//        std::cout << "First: " << str.first << " " << str.second.size() << " " << str.second.back() << std::endl;
+
+        for( auto sec : str.second )
+        {
+            std::cout << "Parameter: " << str.first << " Value: " << sec << std::endl;
+        }
+    }
 
 
 
