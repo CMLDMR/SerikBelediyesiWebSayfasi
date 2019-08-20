@@ -4,6 +4,7 @@
 #include "SerikBelediyesiWebSayfasi/BaseClass/containerwiget.h"
 #include "SerikBelediyesiWebSayfasi/BaseClass/dbclass.h"
 #include "sikayetitem.h"
+#include "SerikBelediyesiWebSayfasi/baseItem/tcitem.h"
 
 class SikayetItemWidget : public ContainerWiget , public DBClass , public UserClass
 {

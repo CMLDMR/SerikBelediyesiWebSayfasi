@@ -10,8 +10,6 @@ SikayetItemWidget::SikayetItemWidget(mongocxx::database *_db, UserClass &userVal
 
 void SikayetItemWidget::initHeader()
 {
-//    Header()->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
-
     Header()->clear();
 
     {
@@ -161,6 +159,32 @@ void SikayetItemWidget::initHeader()
 
         container->addWidget(cpp14::make_unique<WText>(this->mCurrentSikayet->Element(Sikayet::KEY::konu)->get_utf8().value.to_string()));
     }
+
+    {
+
+        auto container = Header()->addWidget(cpp14::make_unique<WContainerWidget>());
+
+
+
+
+//        mongocxx::options::find findOptions;
+
+//        findOptions.limit(20);
+
+
+//        auto cursor = TC::TCItem::GetList<TC::TCItem>(this->db(),
+//                                                      TC::collection,
+//                                                      document{},
+//                                                      findOptions);
+
+//        for( auto&& item : cursor )
+//        {
+//            std::cout << bsoncxx::to_json(item->view()) << "\n"<<std::endl;
+//        }
+
+    }
+
+
 }
 
 void SikayetItemWidget::initContent()
@@ -261,9 +285,9 @@ void SikayetItemWidget::initController()
 
             auto __container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             __container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+
-                                      Bootstrap::Grid::Medium::col_md_2+
-                                      Bootstrap::Grid::Small::col_sm_2+
-                                      Bootstrap::Grid::ExtraSmall::col_xs_3);
+                                       Bootstrap::Grid::Medium::col_md_2+
+                                       Bootstrap::Grid::Small::col_sm_2+
+                                       Bootstrap::Grid::ExtraSmall::col_xs_3);
             auto setBirimBtn = __container->addWidget(cpp14::make_unique<WPushButton>("Değiştir"));
             setBirimBtn->addStyleClass(Bootstrap::Button::Primary);
 
@@ -406,9 +430,9 @@ void SikayetItemWidget::initController()
 
             auto __container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             __container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+
-                                      Bootstrap::Grid::Medium::col_md_2+
-                                      Bootstrap::Grid::Small::col_sm_2+
-                                      Bootstrap::Grid::ExtraSmall::col_xs_3);
+                                       Bootstrap::Grid::Medium::col_md_2+
+                                       Bootstrap::Grid::Small::col_sm_2+
+                                       Bootstrap::Grid::ExtraSmall::col_xs_3);
             auto setKategoriBtn = __container->addWidget(cpp14::make_unique<WPushButton>("Değiştir"));
             setKategoriBtn->addStyleClass(Bootstrap::Button::Primary);
 
@@ -465,9 +489,9 @@ void SikayetItemWidget::initController()
 
             auto __container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             __container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+
-                                      Bootstrap::Grid::Medium::col_md_2+
-                                      Bootstrap::Grid::Small::col_sm_2+
-                                      Bootstrap::Grid::ExtraSmall::col_xs_3);
+                                       Bootstrap::Grid::Medium::col_md_2+
+                                       Bootstrap::Grid::Small::col_sm_2+
+                                       Bootstrap::Grid::ExtraSmall::col_xs_3);
             auto setDurumBtn = __container->addWidget(cpp14::make_unique<WPushButton>("Değiştir"));
             setDurumBtn->addStyleClass(Bootstrap::Button::Primary);
 
@@ -579,71 +603,71 @@ void SikayetItemWidget::initController()
 
     PushBtn->clicked().connect([=](){
 
-            this->initContent();
+        this->initContent();
 
-            auto pushDoc = document{};
+        auto pushDoc = document{};
 
+        try {
+            pushDoc.append(kvp(Sikayet::KEY::ASAMAKEY::tip_utf8,Sikayet::KEY::ASAMAKEY::TIP::aciklama));
+        } catch (bsoncxx::exception &e) {
+            std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+            std::cout << str << std::endl;
+        }
+
+        try {
+            pushDoc.append(kvp(Sikayet::KEY::ASAMAKEY::aciklama_utf8,textEdit->text().toUTF8()));
+        } catch (bsoncxx::exception &e) {
+            std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+            std::cout << str << std::endl;
+        }
+
+        try {
+            pushDoc.append(kvp(Sikayet::KEY::ASAMAKEY::saat_utf8,WTime::currentServerTime().toString("hh:mm").toUTF8()));
+        } catch (bsoncxx::exception &e) {
+            std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+            std::cout << str << std::endl;
+        }
+
+        try {
+            pushDoc.append(kvp(Sikayet::KEY::ASAMAKEY::tarih_utf8,WDate::currentServerDate().toString("dd/MM/yyyy").toUTF8()));
+        } catch (bsoncxx::exception &e) {
+            std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+            std::cout << str << std::endl;
+        }
+
+        auto userBirim = this->User().birim();
+        if( userBirim )
+        {
             try {
-                pushDoc.append(kvp(Sikayet::KEY::ASAMAKEY::tip_utf8,Sikayet::KEY::ASAMAKEY::TIP::aciklama));
+                pushDoc.append(kvp(Sikayet::KEY::ASAMAKEY::birim_utf8,userBirim.value()));
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
                 std::cout << str << std::endl;
             }
+        }
 
+        auto userAdSoyad = this->User().adSoyad();
+        if( userAdSoyad )
+        {
             try {
-                pushDoc.append(kvp(Sikayet::KEY::ASAMAKEY::aciklama_utf8,textEdit->text().toUTF8()));
+                pushDoc.append(kvp(Sikayet::KEY::ASAMAKEY::personel_doc,make_document(kvp(Sikayet::KEY::ASAMAKEY::personel_doc_adsoyad,userAdSoyad.value()))));
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
                 std::cout << str << std::endl;
             }
+        }
 
-            try {
-                pushDoc.append(kvp(Sikayet::KEY::ASAMAKEY::saat_utf8,WTime::currentServerTime().toString("hh:mm").toUTF8()));
-            } catch (bsoncxx::exception &e) {
-                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-                std::cout << str << std::endl;
-            }
 
-            try {
-                pushDoc.append(kvp(Sikayet::KEY::ASAMAKEY::tarih_utf8,WDate::currentServerDate().toString("dd/MM/yyyy").toUTF8()));
-            } catch (bsoncxx::exception &e) {
-                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-                std::cout << str << std::endl;
-            }
-
-            auto userBirim = this->User().birim();
-            if( userBirim )
+        if( mCurrentSikayet->pushElement(Sikayet::KEY::asama,pushDoc) )
+        {
+            if( mCurrentSikayet->reLoad() )
             {
-                try {
-                    pushDoc.append(kvp(Sikayet::KEY::ASAMAKEY::birim_utf8,userBirim.value()));
-                } catch (bsoncxx::exception &e) {
-                    std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-                    std::cout << str << std::endl;
-                }
+                this->initHeader();
+                this->initContent();
             }
-
-            auto userAdSoyad = this->User().adSoyad();
-            if( userAdSoyad )
-            {
-                try {
-                    pushDoc.append(kvp(Sikayet::KEY::ASAMAKEY::personel_doc,make_document(kvp(Sikayet::KEY::ASAMAKEY::personel_doc_adsoyad,userAdSoyad.value()))));
-                } catch (bsoncxx::exception &e) {
-                    std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-                    std::cout << str << std::endl;
-                }
-            }
-
-
-            if( mCurrentSikayet->pushElement(Sikayet::KEY::asama,pushDoc) )
-            {
-                if( mCurrentSikayet->reLoad() )
-                {
-                    this->initHeader();
-                    this->initContent();
-                }
-            }else{
-                std::cout << "Can not PushElement" << std::endl;
-            }
+        }else{
+            std::cout << "Can not PushElement" << std::endl;
+        }
 
 
 
