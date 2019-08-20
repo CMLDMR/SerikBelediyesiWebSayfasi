@@ -4,7 +4,7 @@
 
 #include "dbclass.h"
 #include <QStringList>
-
+#include <QVector>
 
 
 class ItemBase : public DBClass
@@ -14,6 +14,35 @@ public:
     ItemBase(mongocxx::database* _db , const std::string &collection , bsoncxx::document::view &_view);
 
 //    virtual ~ItemBase();
+
+
+    template<class T>
+    static QVector<T*> GetList(mongocxx::database* _db ,
+                              const std::string &collection ,
+                              document filter = document{} ,
+                               mongocxx::options::find findOptions = mongocxx::options::find() ){
+        QVector<T*> list;
+
+        try {
+            auto cursor = _db->collection(collection).find(filter.view(),findOptions);
+
+            for( auto doc : cursor )
+            {
+                T* item = new T(_db,collection,doc);
+                list.push_back(item);
+            }
+
+        } catch (mongocxx::exception &e) {
+            std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+            std::cout << str << std::endl;
+        }
+
+
+        std::cout << "List Count : " << list.size() << std::endl;
+
+        return list;
+    }
+
 
     template<typename T>
     bool addElement( const std::string &key , const T &value ){

@@ -1,4 +1,5 @@
 #include "itembase.h"
+#include "SerikBelediyesiWebSayfasi/baseItem/tcitem.h"
 
 ItemBase::ItemBase(mongocxx::database *_db, const std::string &collection)
     : DBClass (_db),
@@ -176,3 +177,32 @@ boost::optional<bsoncxx::types::value> ItemBase::Element(const std::string &key)
     }
 
 }
+
+
+//template class ItemBase<TC::TCItem>;
+
+
+//template<class T>
+//QVector<T*> ItemBase::GetList(mongocxx::database *_db, const std::string &collection, bsoncxx::builder::basic::document filter, mongocxx::options::find findOptions)
+//{
+//    QVector<T*> list;
+
+//    try {
+//        auto cursor = _db->collection(collection).find(filter.view(),findOptions);
+
+//        for( auto doc : cursor )
+//        {
+//            T* item = new T(_db,collection,doc);
+//            list.push_back(item);
+//        }
+
+//    } catch (mongocxx::exception &e) {
+//        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//        std::cout << str << std::endl;
+//    }
+
+
+//    return list;
+//}
+
+
