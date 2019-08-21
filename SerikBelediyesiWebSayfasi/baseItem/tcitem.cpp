@@ -13,7 +13,7 @@ boost::optional<TC::TCItem> TC::TCItem::Create_TC(mongocxx::database *_db)
     return boost::none;
 }
 
-boost::optional<TC::TCItem *> TC::TCItem::LoadByTC(mongocxx::database *_db, std::string _tcno)
+boost::optional<TC::TCItem *> TC::TCItem::LoadByTC(mongocxx::database *_db, const std::string &_tcno)
 {
     auto filter = document{};
 
@@ -33,6 +33,27 @@ boost::optional<TC::TCItem *> TC::TCItem::LoadByTC(mongocxx::database *_db, std:
         return boost::none;
     }
 
+}
+
+boost::optional<TC::TCItem *> TC::TCItem::LoadByTel(mongocxx::database *_db, const std::string &_ceptel)
+{
+    auto filter = document{};
+
+    try {
+        filter.append(kvp(KEY::cepTelefonu,_ceptel));
+    } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        std::cout << str << std::endl;
+    }
+
+    auto item = ItemBase::LoadItem<TC::TCItem>(_db,TC::collection,std::move(filter));
+
+    if( item )
+    {
+        return item;
+    }else{
+        return boost::none;
+    }
 }
 
 

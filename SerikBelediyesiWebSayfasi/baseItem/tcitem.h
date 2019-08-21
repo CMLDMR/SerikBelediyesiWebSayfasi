@@ -23,7 +23,9 @@ public:
     static boost::optional<TCItem> Create_TC(mongocxx::database* _db);
 
 
-    static boost::optional<TCItem*> LoadByTC(mongocxx::database* _db , std::string _tcno);
+    static boost::optional<TCItem*> LoadByTC(mongocxx::database* _db ,const std::string &_tcno);
+
+    static boost::optional<TCItem*> LoadByTel(mongocxx::database* _db , const std::string &_ceptel);
 
 
 
