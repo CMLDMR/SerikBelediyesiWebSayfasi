@@ -21,19 +21,38 @@ SikayetYonetimWidget::SikayetYonetimWidget(mongocxx::database *_db, bsoncxx::doc
         container->setContentAlignment(AlignmentFlag::Center);
         container->setMargin(15,Side::Top|Side::Bottom);
         container->setWidth(WLength("100%"));
-        auto sContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
+        {
+            auto sContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
 
-        sContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_6+
-                                  Bootstrap::Grid::Medium::col_md_6+
-                                  Bootstrap::Grid::Small::col_sm_6+
-                                  Bootstrap::Grid::ExtraSmall::col_xs_6+
-                                  Bootstrap::ImageShape::img_thumbnail);
-        sContainer->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(),this->getRandom(),this->getRandom()));
-        sContainer->setContentAlignment(AlignmentFlag::Center);
-        sContainer->decorationStyle().setCursor(Cursor::PointingHand);
-        auto text = sContainer->addWidget(cpp14::make_unique<WText>("Sorgula"));
-        text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow));
+            sContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_6+
+                                      Bootstrap::Grid::Medium::col_md_6+
+                                      Bootstrap::Grid::Small::col_sm_6+
+                                      Bootstrap::Grid::ExtraSmall::col_xs_6+
+                                      Bootstrap::ImageShape::img_thumbnail);
+            sContainer->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(),this->getRandom(),this->getRandom()));
+            sContainer->setContentAlignment(AlignmentFlag::Center);
+            sContainer->decorationStyle().setCursor(Cursor::PointingHand);
+            auto text = sContainer->addWidget(cpp14::make_unique<WText>("Sorgula"));
+            text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow));
+        }
+
+        {
+            auto sContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
+
+            sContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_6+
+                                      Bootstrap::Grid::Medium::col_md_6+
+                                      Bootstrap::Grid::Small::col_sm_6+
+                                      Bootstrap::Grid::ExtraSmall::col_xs_6+
+                                      Bootstrap::ImageShape::img_thumbnail);
+            sContainer->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(),this->getRandom(),this->getRandom()));
+            sContainer->setContentAlignment(AlignmentFlag::Center);
+            sContainer->decorationStyle().setCursor(Cursor::PointingHand);
+            auto text = sContainer->addWidget(cpp14::make_unique<WText>("Yeni oluştur"));
+            text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow));
+        }
+
     }
+
 
     // Kontrol Paneli
     {
