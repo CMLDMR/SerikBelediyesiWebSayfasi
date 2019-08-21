@@ -13,7 +13,26 @@ public:
     explicit ItemBase(mongocxx::database* _db, const std::string &collection);
     ItemBase(mongocxx::database* _db , const std::string &collection , bsoncxx::document::view &_view);
 
-//    virtual ~ItemBase();
+    template<class T>
+    static boost::optional<T*> LoadItem(mongocxx::database* _db ,
+                                       const std::string &collection,
+                                       document filter)
+    {
+        try {
+            auto val = _db->collection(collection).find_one(filter.view());
+            if( val )
+            {
+                T* item = new T(_db,collection,val.value().view());
+                return item;
+            }else{
+                return boost::none;
+            }
+        } catch (mongocxx::exception &e) {
+            std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+            std::cout << str << std::endl;
+            return boost::none;
+        }
+    }
 
 
     template<class T>
