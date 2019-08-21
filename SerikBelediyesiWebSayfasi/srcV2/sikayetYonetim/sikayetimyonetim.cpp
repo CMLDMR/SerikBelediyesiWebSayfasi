@@ -56,7 +56,7 @@ SikayetimYonetim::SikayetimYonetim(mongocxx::database *_db, bsoncxx::document::v
 
         auto vLayout = SikayetContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
 
-        auto text = vLayout->addWidget(cpp14::make_unique<WText>("Şikayet Yönetimi\n(Yapım Aşamasında)"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+        auto text = vLayout->addWidget(cpp14::make_unique<WText>("Şikayet Yönetimi"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
         text->setAttributeValue(Style::style,Style::font::size::s16px
                                 +Style::color::color(Style::color::White::Snow));
 
