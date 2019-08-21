@@ -13,6 +13,28 @@ boost::optional<TC::TCItem> TC::TCItem::Create_TC(mongocxx::database *_db)
     return boost::none;
 }
 
+boost::optional<TC::TCItem *> TC::TCItem::LoadByTC(mongocxx::database *_db, std::string _tcno)
+{
+    auto filter = document{};
+
+    try {
+        filter.append(kvp(KEY::tcno,_tcno));
+    } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        std::cout << str << std::endl;
+    }
+
+    auto item = ItemBase::LoadItem<TC::TCItem>(_db,TC::collection,std::move(filter));
+
+    if( item )
+    {
+        return item;
+    }else{
+        return boost::none;
+    }
+
+}
+
 
 TC::TCItem::TCItem(mongocxx::database *_db)
     :ItemBase (_db,collection)
