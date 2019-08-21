@@ -6,6 +6,7 @@ SikayetYonetimWidget::SikayetYonetimWidget(mongocxx::database *_db, bsoncxx::doc
     :UserClass (userValue),DBClass(_db)
 {
 
+    Header()->setMargin(10,Side::Bottom);
 
     {
         auto container = this->Header()->addWidget(cpp14::make_unique<ContainerWiget>());
