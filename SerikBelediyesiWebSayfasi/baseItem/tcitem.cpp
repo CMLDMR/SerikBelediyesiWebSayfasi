@@ -13,22 +13,6 @@ boost::optional<TC::TCItem> TC::TCItem::Create_TC(mongocxx::database *_db)
     return boost::none;
 }
 
-//QVector<TC::TCItem> TC::TCItem::GetList(mongocxx::database *_db,
-//                                        bsoncxx::builder::basic::document filter,
-//                                        mongocxx::options::find findOptions)
-//{
-//    QVector<TCItem> list;
-
-//    try {
-//        auto cursor = _db->collection(collection).find(filter.view(),findOptions);
-//    } catch (mongocxx::exception &e) {
-//        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//        std::cout << str << std::endl;
-//    }
-
-
-//    return list;
-//}
 
 TC::TCItem::TCItem(mongocxx::database *_db)
     :ItemBase (_db,collection)
