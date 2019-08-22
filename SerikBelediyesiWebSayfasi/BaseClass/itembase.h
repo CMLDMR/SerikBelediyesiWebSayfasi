@@ -57,7 +57,7 @@ public:
         }
 
 
-        std::cout << "List Count : " << list.size() << std::endl;
+//        std::cout << "List Count : " << list.size() << std::endl;
 
         return list;
     }
