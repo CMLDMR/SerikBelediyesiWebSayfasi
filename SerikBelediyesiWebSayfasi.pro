@@ -24,6 +24,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += main.cpp \
     SerikBelediyesiWebSayfasi/BaseClass/containerwiget.cpp \
     SerikBelediyesiWebSayfasi/BaseClass/dbclass.cpp \
+    SerikBelediyesiWebSayfasi/BaseClass/dialog.cpp \
     SerikBelediyesiWebSayfasi/BaseClass/itembase.cpp \
     SerikBelediyesiWebSayfasi/baseItem/tcitem.cpp \
     SerikBelediyesiWebSayfasi/baseWidget/tcitemwidget.cpp \
@@ -85,6 +86,7 @@ DEPENDPATH += $$PWD/../../Comman
 HEADERS += \
     SerikBelediyesiWebSayfasi/BaseClass/containerwiget.h \
     SerikBelediyesiWebSayfasi/BaseClass/dbclass.h \
+    SerikBelediyesiWebSayfasi/BaseClass/dialog.h \
     SerikBelediyesiWebSayfasi/BaseClass/itembase.h \
     SerikBelediyesiWebSayfasi/BaseClass/wtheaders.h \
     SerikBelediyesiWebSayfasi/baseItem/tcitem.h \
