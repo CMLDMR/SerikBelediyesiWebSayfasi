@@ -37,9 +37,20 @@ void SikayetItemWidget::initHeader()
 
         container->setContentAlignment(AlignmentFlag::Left);
 
-        auto text = container->addWidget(cpp14::make_unique<WText>("05335018051 TCNOITEM class Yazılacak"));
-        text->addStyleClass(Bootstrap::Label::Success);
-        text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold);
+
+        auto tcitem = TC::TCItem::LoadByTC(this->db(),this->mCurrentSikayet->Element(Sikayet::KEY::talepSahibi)->get_utf8().value.to_string());
+
+        if( tcitem )
+        {
+            auto text = container->addWidget(cpp14::make_unique<WText>(tcitem.value()->Element(TC::KEY::cepTelefonu)->get_utf8().value.to_string()));
+            text->addStyleClass(Bootstrap::Label::Success);
+            text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold);
+        }else{
+            auto text = container->addWidget(cpp14::make_unique<WText>("!Telefon Bulunamadı!"));
+            text->addStyleClass(Bootstrap::Label::Danger);
+            text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold);
+        }
+
     }
 
 
