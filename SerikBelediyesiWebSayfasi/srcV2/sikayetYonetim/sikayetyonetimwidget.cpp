@@ -375,7 +375,7 @@ void SikayetYonetimWidget::Sorgula()
             tLineEdit->setPlaceholderText("TC Numarasını Yazınız");
             break;
         case 2:
-            tLineEdit->setPlaceholderText("İsim Soyisim Yazınız");
+            tLineEdit->setPlaceholderText("İsim Soyisim Yazınız ( en az 3 harf giriniz )");
             break;
         default:
             break;
@@ -409,7 +409,6 @@ void SikayetYonetimWidget::Sorgula()
         if( tComboBox->currentIndex() == 0 ){
             auto tcitem = TC::TCItem::LoadByTel(this->db(),tLineEdit->text().toUTF8());
 
-            //05494824829 Test Sogru
             if( tcitem )
             {
                 this->initSikayetlerBySahibi(tcitem.value()->Element(TC::KEY::tcno).value().get_utf8().value.to_string());
@@ -418,14 +417,13 @@ void SikayetYonetimWidget::Sorgula()
         }else if (tComboBox->currentIndex() == 1 ) {
             auto tcitem = TC::TCItem::LoadByTC(this->db(),tLineEdit->text().toUTF8());
 
-            //05494824829 Test Sogru
             if( tcitem )
             {
                 this->initSikayetlerBySahibi(tcitem.value()->Element(TC::KEY::tcno).value().get_utf8().value.to_string());
                 wApp->instance()->root()->removeChild(mDialog);
             }
         }else{
-            if( tLineEdit->text().toUTF8().size() > 3 )
+            if( tLineEdit->text().toUTF8().size() > 2 )
             {
                 auto filter = document{};
 
@@ -443,7 +441,6 @@ void SikayetYonetimWidget::Sorgula()
 
                 for( auto _item : list )
                 {
-
                     auto __item = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
                     __item->addStyleClass(Bootstrap::Grid::col_full_12);
 
@@ -452,7 +449,9 @@ void SikayetYonetimWidget::Sorgula()
                     _rContainer->setWidth(WLength("100%"));
 
                     {
-                        auto _adItem = _rContainer->addWidget(cpp14::make_unique<WText>(_item->Element(TC::KEY::adsoyad)->get_utf8().value.to_string()));
+                        QString str = QString::fromStdString(_item->Element(TC::KEY::adsoyad)->get_utf8().value.to_string());
+                        str.replace(QString::fromStdString(tLineEdit->text().toUTF8()),"<mark><b>"+QString::fromStdString(tLineEdit->text().toUTF8())+"</b></mark>",Qt::CaseInsensitive);
+                        auto _adItem = _rContainer->addWidget(cpp14::make_unique<WText>(str.toStdString()));
                         _adItem->addStyleClass(Bootstrap::Grid::Large::col_lg_6+
                                                Bootstrap::Grid::Medium::col_md_6+
                                                Bootstrap::Grid::Small::col_sm_6+
@@ -466,7 +465,6 @@ void SikayetYonetimWidget::Sorgula()
                                                Bootstrap::Grid::Medium::col_md_6+
                                                Bootstrap::Grid::Small::col_sm_6+
                                                Bootstrap::Grid::ExtraSmall::col_xs_12);
-
                     }
 
                     _rContainer->addStyleClass(Bootstrap::ContextualBackGround::bg_info);
@@ -474,7 +472,6 @@ void SikayetYonetimWidget::Sorgula()
                     _rContainer->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
                     _rContainer->decorationStyle().setCursor(Cursor::PointingHand);
                     _rContainer->setAttributeValue(Style::dataoid,_item->Element(TC::KEY::tcno)->get_utf8().value.to_string());
-
 
                     _rContainer->clicked().connect([=](){
 
