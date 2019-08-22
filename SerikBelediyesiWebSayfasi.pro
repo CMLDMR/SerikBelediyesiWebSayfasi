@@ -26,6 +26,7 @@ SOURCES += main.cpp \
     SerikBelediyesiWebSayfasi/BaseClass/dbclass.cpp \
     SerikBelediyesiWebSayfasi/BaseClass/itembase.cpp \
     SerikBelediyesiWebSayfasi/baseItem/tcitem.cpp \
+    SerikBelediyesiWebSayfasi/baseWidget/tcitemwidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/girisCikisWidget/giriscikiswidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/ik.cpp \
     SerikBelediyesiWebSayfasi/srcV2/kadinailestock.cpp \
@@ -87,6 +88,7 @@ HEADERS += \
     SerikBelediyesiWebSayfasi/BaseClass/itembase.h \
     SerikBelediyesiWebSayfasi/BaseClass/wtheaders.h \
     SerikBelediyesiWebSayfasi/baseItem/tcitem.h \
+    SerikBelediyesiWebSayfasi/baseWidget/tcitemwidget.h \
     SerikBelediyesiWebSayfasi/srcV2/girisCikisWidget/giriscikiswidget.h \
     SerikBelediyesiWebSayfasi/srcV2/ik.h \
     SerikBelediyesiWebSayfasi/srcV2/kadinailestock.h \
