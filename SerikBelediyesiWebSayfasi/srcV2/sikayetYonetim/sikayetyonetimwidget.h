@@ -15,7 +15,8 @@ private:
     Signal<std::string> _ClickFilter;
 
     void initSikayetler(const std::string &durumFilter);
-    void initSikayetler(bsoncxx::builder::basic::document &filter );
+    void initSikayetler(bsoncxx::builder::basic::document filter );
+    void initSikayetlerBySahibi( const std::string &sahibi);
 
     void initSikayet( const bsoncxx::oid &oid );
 

@@ -145,13 +145,6 @@ void SikayetYonetimWidget::initSikayetler(const std::string &durumFilter)
         }
     }
 
-    this->initSikayetler(filter);
-
-
-}
-
-void SikayetYonetimWidget::initSikayetler(bsoncxx::builder::basic::document &filter)
-{
     this->Content()->clear();
     this->Content()->setMargin(25,Side::Top|Side::Bottom);
 
@@ -244,6 +237,87 @@ void SikayetYonetimWidget::initSikayetler(bsoncxx::builder::basic::document &fil
         });
     }
 
+
+}
+
+void SikayetYonetimWidget::initSikayetler( bsoncxx::builder::basic::document filter)
+{
+
+
+
+}
+
+void SikayetYonetimWidget::initSikayetlerBySahibi(const std::string &sahibi)
+{
+    this->Content()->clear();
+    this->Content()->setMargin(25,Side::Top|Side::Bottom);
+
+
+    auto filter = document{};
+
+    try {
+        filter.append(kvp(Sikayet::KEY::talepSahibi,sahibi));
+    } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        std::cout << str << std::endl;
+    }
+
+
+    mongocxx::options::find findOptions;
+
+//    findOptions.limit(limit);
+    skip = 0;
+//    findOptions.skip(skip);
+
+    auto sortDoc = document{};
+
+    try {
+        sortDoc.append(kvp("_id",-1));
+    } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        std::cout << str << std::endl;
+    }
+
+    findOptions.sort(sortDoc.view());
+
+
+    auto list = Sikayet::SikayetItem::GetList(this->db(),std::move(filter),findOptions);
+
+
+    auto rContainer = this->Content()->addWidget(cpp14::make_unique<WContainerWidget>());
+    rContainer->addStyleClass(Bootstrap::Grid::row);
+
+    int count = skip+1;
+    for( auto item : list )
+    {
+        auto _Vdurum = item->Element(Sikayet::KEY::durum);
+        auto _Vtarih = item->Element(Sikayet::KEY::tarih);
+        auto _Vmahalle = item->Element(Sikayet::KEY::mahalle);
+        auto _Vbirim = item->Element(Sikayet::KEY::birim);
+        auto _Vkategori = item->Element(Sikayet::KEY::kategori);
+        auto _VadSoyad = item->Element(Sikayet::KEY::adSoyad);
+
+        std::string durum,tarih,mahalle,birim,kategori,adSoyad;
+        if( _Vdurum ){ durum = std::to_string(count++)+ " " + _Vdurum.value().get_utf8().value.to_string();}
+        if( _Vtarih ){ tarih = _Vtarih.value().get_utf8().value.to_string();}
+        if( _Vmahalle ){ mahalle = _Vmahalle.value().get_utf8().value.to_string();}
+        if( _Vbirim ){ birim = _Vbirim.value().get_utf8().value.to_string();}
+        if( _Vkategori ){ kategori = _Vkategori.value().get_utf8().value.to_string();}
+        if( _VadSoyad ){ adSoyad = _VadSoyad.value().get_utf8().value.to_string();}
+
+        auto container = rContainer->addWidget(cpp14::make_unique<SikayetListItemWidget>(item->oid(),durum,
+                                                                                         tarih,
+                                                                                         mahalle,
+                                                                                         birim,
+                                                                                         kategori,
+                                                                                         adSoyad));
+        container->ClickItem().connect(this,&SikayetYonetimWidget::initSikayet);
+        container->setMargin(5,Side::Top|Side::Bottom);
+
+    }
+
+
+
 }
 
 void SikayetYonetimWidget::initSikayet(const bsoncxx::oid &oid)
@@ -311,13 +385,37 @@ void SikayetYonetimWidget::Sorgula()
 
 
     auto tContainer__ = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+
     tContainer__->addStyleClass(Bootstrap::Grid::Large::col_lg_2+
                               Bootstrap::Grid::Medium::col_md_3+
                               Bootstrap::Grid::Small::col_sm_3+
                               Bootstrap::Grid::ExtraSmall::col_xs_3);
 
     auto tSorgulaBtn = tContainer__->addWidget(cpp14::make_unique<WPushButton>("Sorgula"));
+
     tSorgulaBtn->addStyleClass(Bootstrap::Button::Primary);
+
+    tSorgulaBtn->clicked().connect([=](){
+
+        auto filter = document{};
+
+        try {
+            filter.append(kvp(TC::KEY::cepTelefonu,tLineEdit->text().toUTF8()));
+        } catch (bsoncxx::exception &e) {
+            std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+            std::cout << str << std::endl;
+        }
+
+        auto tcitem = TC::TCItem::LoadByTel(this->db(),tLineEdit->text().toUTF8());
+
+        //05494824829 Test Sogru
+        if( tcitem )
+        {
+            this->initSikayetlerBySahibi(tcitem.value()->Element(TC::KEY::tcno).value().get_utf8().value.to_string());
+            wApp->instance()->root()->removeChild(mDialog);
+        }
+
+    });
 
 
     mDialog->show();
