@@ -56,6 +56,27 @@ boost::optional<TC::TCItem *> TC::TCItem::LoadByTel(mongocxx::database *_db, con
     }
 }
 
+boost::optional<TC::TCItem *> TC::TCItem::LoadByOid(mongocxx::database *_db, const std::string &_oid)
+{
+    auto filter = document{};
+
+    try {
+        filter.append(kvp("_id",bsoncxx::oid{_oid}));
+    } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        std::cout << str << std::endl;
+    }
+
+    auto item = ItemBase::LoadItem<TC::TCItem>(_db,TC::collection,std::move(filter));
+
+    if( item )
+    {
+        return item;
+    }else{
+        return boost::none;
+    }
+}
+
 
 TC::TCItem::TCItem(mongocxx::database *_db)
     :ItemBase (_db,collection)
