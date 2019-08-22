@@ -15,12 +15,16 @@ private:
     Signal<std::string> _ClickFilter;
 
     void initSikayetler(const std::string &durumFilter);
+    void initSikayetler(bsoncxx::builder::basic::document &filter );
 
     void initSikayet( const bsoncxx::oid &oid );
 
     const int limit = 20;
     int skip = 0;
     std::map<std::string,int> filterListCount;
+
+
+    void Sorgula();
 };
 
 #endif // SIKAYETYONETIMWIDGET_H

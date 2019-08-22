@@ -1,6 +1,9 @@
 #include "sikayetyonetimwidget.h"
 #include "sikayetlistitemwidget.h"
 #include "sikayetitemwidget.h"
+#include "SerikBelediyesiWebSayfasi/baseWidget/tcitemwidget.h"
+#include "SerikBelediyesiWebSayfasi/BaseClass/dialog.h"
+
 
 SikayetYonetimWidget::SikayetYonetimWidget(mongocxx::database *_db, bsoncxx::document::value &userValue)
     :UserClass (userValue),DBClass(_db)
@@ -22,6 +25,8 @@ SikayetYonetimWidget::SikayetYonetimWidget(mongocxx::database *_db, bsoncxx::doc
         container->setContentAlignment(AlignmentFlag::Center);
         container->setMargin(15,Side::Top|Side::Bottom);
         container->setWidth(WLength("100%"));
+
+
         {
             auto sContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
 
@@ -35,6 +40,8 @@ SikayetYonetimWidget::SikayetYonetimWidget(mongocxx::database *_db, bsoncxx::doc
             sContainer->decorationStyle().setCursor(Cursor::PointingHand);
             auto text = sContainer->addWidget(cpp14::make_unique<WText>("Sorgula"));
             text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow));
+
+            sContainer->clicked().connect(this,&SikayetYonetimWidget::Sorgula);
         }
 
         {
@@ -51,6 +58,20 @@ SikayetYonetimWidget::SikayetYonetimWidget(mongocxx::database *_db, bsoncxx::doc
             auto text = sContainer->addWidget(cpp14::make_unique<WText>("Yeni oluştur"));
             text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow));
         }
+
+        {
+            auto sContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
+
+            sContainer->addStyleClass(Bootstrap::Grid::col_full_12+
+                                      Bootstrap::ImageShape::img_thumbnail);
+            sContainer->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(),this->getRandom(),this->getRandom()));
+            sContainer->setContentAlignment(AlignmentFlag::Center);
+            sContainer->decorationStyle().setCursor(Cursor::PointingHand);
+            auto text = sContainer->addWidget(cpp14::make_unique<WText>("TC Kaydet"));
+            text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow));
+        }
+
+
 
     }
 
@@ -77,7 +98,7 @@ SikayetYonetimWidget::SikayetYonetimWidget(mongocxx::database *_db, bsoncxx::doc
             _container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
             _container->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(150,200),this->getRandom(170,220),this->getRandom(180,230)));
             _container->decorationStyle().setCursor(Cursor::PointingHand);
-//            _container->setHeight(60);
+            //            _container->setHeight(60);
 
             auto vLayout = _container->setLayout(cpp14::make_unique<WVBoxLayout>());
 
@@ -110,8 +131,7 @@ SikayetYonetimWidget::SikayetYonetimWidget(mongocxx::database *_db, bsoncxx::doc
 void SikayetYonetimWidget::initSikayetler(const std::string &durumFilter)
 {
 
-    this->Content()->clear();
-    this->Content()->setMargin(25,Side::Top|Side::Bottom);
+
 
     auto filter = document{};
 
@@ -124,6 +144,16 @@ void SikayetYonetimWidget::initSikayetler(const std::string &durumFilter)
             std::cout << str << std::endl;
         }
     }
+
+    this->initSikayetler(filter);
+
+
+}
+
+void SikayetYonetimWidget::initSikayetler(bsoncxx::builder::basic::document &filter)
+{
+    this->Content()->clear();
+    this->Content()->setMargin(25,Side::Top|Side::Bottom);
 
     mongocxx::options::find findOptions;
 
@@ -165,11 +195,11 @@ void SikayetYonetimWidget::initSikayetler(const std::string &durumFilter)
         if( _VadSoyad ){ adSoyad = _VadSoyad.value().get_utf8().value.to_string();}
 
         auto container = rContainer->addWidget(cpp14::make_unique<SikayetListItemWidget>(item->oid(),durum,
-                                                                        tarih,
-                                                                        mahalle,
-                                                                        birim,
-                                                                        kategori,
-                                                                        adSoyad));
+                                                                                         tarih,
+                                                                                         mahalle,
+                                                                                         birim,
+                                                                                         kategori,
+                                                                                         adSoyad));
         container->ClickItem().connect(this,&SikayetYonetimWidget::initSikayet);
         container->setMargin(5,Side::Top|Side::Bottom);
 
@@ -214,7 +244,6 @@ void SikayetYonetimWidget::initSikayetler(const std::string &durumFilter)
         });
     }
 
-
 }
 
 void SikayetYonetimWidget::initSikayet(const bsoncxx::oid &oid)
@@ -227,5 +256,70 @@ void SikayetYonetimWidget::initSikayet(const bsoncxx::oid &oid)
 
     this->Footer()->setContentAlignment(AlignmentFlag::Center);
     auto BackBtn = this->Footer()->addWidget(cpp14::make_unique<WText>("Sayfa Sonu"));
+
+}
+
+void SikayetYonetimWidget::Sorgula()
+{
+
+    auto mDialog = wApp->instance()->root()->addChild(cpp14::make_unique<Dialog>(this->db(),this->UserValue(),"Şikayet Sorgula"));
+    //    mDialog->contents()->addWidget(cpp14::make_unique<TCItemWidget>(this->db(),this->UserValue()));
+
+    auto rContainer = mDialog->contents()->addWidget(cpp14::make_unique<WContainerWidget>());
+    rContainer->addStyleClass(Bootstrap::Grid::row);
+    rContainer->setWidth(WLength("100%"));
+
+
+    auto tContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+    tContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_3+
+                              Bootstrap::Grid::Medium::col_md_3+
+                              Bootstrap::Grid::Small::col_sm_4+
+                              Bootstrap::Grid::ExtraSmall::col_xs_4);
+
+    auto tComboBox = tContainer->addWidget(cpp14::make_unique<WComboBox>());
+    tComboBox->addItem("Telefon ile");
+    tComboBox->addItem("TC ile");
+    tComboBox->addItem("Ad Soyad ile");
+
+
+
+    auto tContainer_ = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+    tContainer_->addStyleClass(Bootstrap::Grid::Large::col_lg_7+
+                              Bootstrap::Grid::Medium::col_md_7+
+                              Bootstrap::Grid::Small::col_sm_7+
+                              Bootstrap::Grid::ExtraSmall::col_xs_5);
+
+    auto tLineEdit = tContainer_->addWidget(cpp14::make_unique<WLineEdit>());
+    tLineEdit->setPlaceholderText("Cep Telefonu Numarasını Yazınız");
+
+    tComboBox->activated().connect([=](int index){
+        switch (index) {
+        case 0:
+            tLineEdit->setPlaceholderText("Cep Telefonu Numarasını Yazınız");
+            break;
+        case 1:
+            tLineEdit->setPlaceholderText("TC Numarasını Yazınız");
+            break;
+        case 2:
+            tLineEdit->setPlaceholderText("İsim Soyisim Yazınız");
+            break;
+        default:
+            break;
+        }
+
+    });
+
+
+    auto tContainer__ = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+    tContainer__->addStyleClass(Bootstrap::Grid::Large::col_lg_2+
+                              Bootstrap::Grid::Medium::col_md_3+
+                              Bootstrap::Grid::Small::col_sm_3+
+                              Bootstrap::Grid::ExtraSmall::col_xs_3);
+
+    auto tSorgulaBtn = tContainer__->addWidget(cpp14::make_unique<WPushButton>("Sorgula"));
+    tSorgulaBtn->addStyleClass(Bootstrap::Button::Primary);
+
+
+    mDialog->show();
 
 }
