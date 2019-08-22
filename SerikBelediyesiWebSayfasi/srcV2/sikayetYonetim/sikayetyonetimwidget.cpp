@@ -283,7 +283,6 @@ void SikayetYonetimWidget::initSikayetlerBySahibi(const std::string &sahibi)
 
     auto list = Sikayet::SikayetItem::GetList(this->db(),std::move(filter),findOptions);
 
-
     auto rContainer = this->Content()->addWidget(cpp14::make_unique<WContainerWidget>());
     rContainer->addStyleClass(Bootstrap::Grid::row);
 
@@ -339,6 +338,7 @@ void SikayetYonetimWidget::Sorgula()
     auto mDialog = wApp->instance()->root()->addChild(cpp14::make_unique<Dialog>(this->db(),this->UserValue(),"Şikayet Sorgula"));
     //    mDialog->contents()->addWidget(cpp14::make_unique<TCItemWidget>(this->db(),this->UserValue()));
 
+    mDialog->contents()->setContentAlignment(AlignmentFlag::Center);
     auto rContainer = mDialog->contents()->addWidget(cpp14::make_unique<WContainerWidget>());
     rContainer->addStyleClass(Bootstrap::Grid::row);
     rContainer->setWidth(WLength("100%"));
@@ -406,14 +406,85 @@ void SikayetYonetimWidget::Sorgula()
             std::cout << str << std::endl;
         }
 
-        auto tcitem = TC::TCItem::LoadByTel(this->db(),tLineEdit->text().toUTF8());
+        if( tComboBox->currentIndex() == 0 ){
+            auto tcitem = TC::TCItem::LoadByTel(this->db(),tLineEdit->text().toUTF8());
 
-        //05494824829 Test Sogru
-        if( tcitem )
-        {
-            this->initSikayetlerBySahibi(tcitem.value()->Element(TC::KEY::tcno).value().get_utf8().value.to_string());
-            wApp->instance()->root()->removeChild(mDialog);
+            //05494824829 Test Sogru
+            if( tcitem )
+            {
+                this->initSikayetlerBySahibi(tcitem.value()->Element(TC::KEY::tcno).value().get_utf8().value.to_string());
+                wApp->instance()->root()->removeChild(mDialog);
+            }
+        }else if (tComboBox->currentIndex() == 1 ) {
+            auto tcitem = TC::TCItem::LoadByTC(this->db(),tLineEdit->text().toUTF8());
+
+            //05494824829 Test Sogru
+            if( tcitem )
+            {
+                this->initSikayetlerBySahibi(tcitem.value()->Element(TC::KEY::tcno).value().get_utf8().value.to_string());
+                wApp->instance()->root()->removeChild(mDialog);
+            }
+        }else{
+            if( tLineEdit->text().toUTF8().size() > 3 )
+            {
+                auto filter = document{};
+
+                try {
+                    filter.append(kvp(TC::KEY::adsoyad,make_document(kvp("$regex",tLineEdit->text().toUTF8()),kvp("$options","i"))));
+                } catch (bsoncxx::exception &e) {
+                    std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                    std::cout << str << std::endl;
+                }
+
+                auto list = TC::TCItem::GetList<TC::TCItem>(this->db(),TC::collection,std::move(filter));
+
+                rContainer->setHeight(350);
+                rContainer->setOverflow(Overflow::Auto);
+
+                for( auto _item : list )
+                {
+
+                    auto __item = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+                    __item->addStyleClass(Bootstrap::Grid::col_full_12);
+
+                    auto _rContainer = __item->addWidget(cpp14::make_unique<WContainerWidget>());
+                    _rContainer->addStyleClass(Bootstrap::Grid::row);
+                    _rContainer->setWidth(WLength("100%"));
+
+                    {
+                        auto _adItem = _rContainer->addWidget(cpp14::make_unique<WText>(_item->Element(TC::KEY::adsoyad)->get_utf8().value.to_string()));
+                        _adItem->addStyleClass(Bootstrap::Grid::Large::col_lg_6+
+                                               Bootstrap::Grid::Medium::col_md_6+
+                                               Bootstrap::Grid::Small::col_sm_6+
+                                               Bootstrap::Grid::ExtraSmall::col_xs_12);
+
+                    }
+
+                    {
+                        auto _adItem = _rContainer->addWidget(cpp14::make_unique<WText>(_item->Element(TC::KEY::cepTelefonu)->get_utf8().value.to_string()));
+                        _adItem->addStyleClass(Bootstrap::Grid::Large::col_lg_6+
+                                               Bootstrap::Grid::Medium::col_md_6+
+                                               Bootstrap::Grid::Small::col_sm_6+
+                                               Bootstrap::Grid::ExtraSmall::col_xs_12);
+
+                    }
+
+                    _rContainer->addStyleClass(Bootstrap::ContextualBackGround::bg_info);
+                    _rContainer->setMargin(5,Side::Top);
+                    _rContainer->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+                    _rContainer->decorationStyle().setCursor(Cursor::PointingHand);
+                    _rContainer->setAttributeValue(Style::dataoid,_item->Element(TC::KEY::tcno)->get_utf8().value.to_string());
+
+
+                    _rContainer->clicked().connect([=](){
+
+                        this->initSikayetlerBySahibi(_rContainer->attributeValue(Style::dataoid).toUTF8());
+                        wApp->instance()->root()->removeChild(mDialog);
+                    });
+                }
+            }
         }
+
 
     });
 
