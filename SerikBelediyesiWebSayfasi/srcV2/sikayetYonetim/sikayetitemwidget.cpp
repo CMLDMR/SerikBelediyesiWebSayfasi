@@ -1,4 +1,6 @@
 #include "sikayetitemwidget.h"
+#include "SerikBelediyesiWebSayfasi/BaseClass/dialog.h"
+#include "SerikBelediyesiWebSayfasi/baseWidget/tcitemwidget.h"
 
 SikayetItemWidget::SikayetItemWidget(mongocxx::database *_db, UserClass &userValue, const bsoncxx::oid &_oid)
     :DBClass (_db),UserClass (userValue),mCurrentSikayet(Sikayet::SikayetItem::Load_Sikayet(_db,_oid).value())
@@ -7,6 +9,7 @@ SikayetItemWidget::SikayetItemWidget(mongocxx::database *_db, UserClass &userVal
     this->initContent();
     this->initController();
 }
+
 
 void SikayetItemWidget::initHeader()
 {
@@ -178,20 +181,20 @@ void SikayetItemWidget::initHeader()
 
 
 
-//        mongocxx::options::find findOptions;
+        //        mongocxx::options::find findOptions;
 
-//        findOptions.limit(20);
+        //        findOptions.limit(20);
 
 
-//        auto cursor = TC::TCItem::GetList<TC::TCItem>(this->db(),
-//                                                      TC::collection,
-//                                                      document{},
-//                                                      findOptions);
+        //        auto cursor = TC::TCItem::GetList<TC::TCItem>(this->db(),
+        //                                                      TC::collection,
+        //                                                      document{},
+        //                                                      findOptions);
 
-//        for( auto&& item : cursor )
-//        {
-//            std::cout << bsoncxx::to_json(item->view()) << "\n"<<std::endl;
-//        }
+        //        for( auto&& item : cursor )
+        //        {
+        //            std::cout << bsoncxx::to_json(item->view()) << "\n"<<std::endl;
+        //        }
 
     }
 
@@ -722,4 +725,150 @@ AsamaItemWidget::AsamaItemWidget(bsoncxx::document::view &&view)
         birimText->setAttributeValue(Style::style,Style::font::size::s10px);
     }
 
+}
+
+newSikayetItemWidget::newSikayetItemWidget(mongocxx::database *_db, UserClass &userValue)
+    :DBClass (_db),UserClass (userValue)
+{
+    setWidth(WLength("100%"));
+    addStyleClass(Bootstrap::Grid::row+Bootstrap::ImageShape::img_thumbnail);
+    Header()->setMargin(15,Side::Top|Side::Bottom);
+
+    Header()->addWidget(cpp14::make_unique<WText>("<h4>Yeni Şikayet Oluştur</h4>"));
+
+    {
+
+        auto sContainer = Content()->addWidget(cpp14::make_unique<WContainerWidget>());
+        sContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_6+
+                                 Bootstrap::Grid::Medium::col_md_6+
+                                 Bootstrap::Grid::Small::col_sm_6+
+                                 Bootstrap::Grid::ExtraSmall::col_xs_6);
+
+        auto rSorguContainer = sContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+        rSorguContainer->addStyleClass(Bootstrap::Grid::row);
+
+        // Sorgu Container
+        auto sorguContainer = rSorguContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+        sorguContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+
+
+        // tcContainer
+        auto tcContainer = rSorguContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+        tcContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+
+        auto hLayout = sorguContainer->setLayout(cpp14::make_unique<WHBoxLayout>());
+        auto mSorguTipi = hLayout->addWidget(cpp14::make_unique<WComboBox>(),0,AlignmentFlag::Left);
+        mSorguTipi->addItem("TCNO ile");
+        mSorguTipi->addItem("Telefon ile");
+        mSorguTipi->addItem("Ad Soyad ile");
+
+        auto mSorguAlani = hLayout->addWidget(cpp14::make_unique<WLineEdit>(),1,AlignmentFlag::Justify);
+        mSorguAlani->setPlaceholderText("TCNO Giriniz");
+        mSorguTipi->activated().connect([=](int index){
+            switch (index) {
+            case 0:
+                mSorguAlani->setPlaceholderText("TCNO Giriniz");
+                break;
+            case 1:
+                mSorguAlani->setPlaceholderText("Telefon Numarası Giriniz");
+                break;
+            case 2:
+                mSorguAlani->setPlaceholderText("Ad Soyad Giriniz ( en az 3 harf )");
+                break;
+            default:
+                break;
+            }
+        });
+
+        auto mSorguBtn = hLayout->addWidget(cpp14::make_unique<WPushButton>("Sorgula"),0,AlignmentFlag::Right);
+        mSorguBtn->addStyleClass(Bootstrap::Button::Primary);
+
+        mSorguBtn->clicked().connect([=](){
+
+            tcContainer->clear();
+
+            if( mSorguTipi->currentIndex() == 0 ){
+                auto tcitem = TC::TCItem::LoadByTC(this->db(),mSorguAlani->text().toUTF8());
+
+
+                if( tcitem )
+                {
+                    tcContainer->addWidget(cpp14::make_unique<TCItemWidget>(this->db(),this->UserValue(),tcitem.get()));
+                }
+            }else if (mSorguTipi->currentIndex() == 1 ) {
+                auto tcitem = TC::TCItem::LoadByTel(this->db(),mSorguAlani->text().toUTF8());
+
+                if( tcitem )
+                {
+                    tcContainer->addWidget(cpp14::make_unique<TCItemWidget>(this->db(),this->UserValue(),tcitem.get()));
+                }
+            }else{
+                if( mSorguAlani->text().toUTF8().size() > 2 )
+                {
+
+                    auto mDialog = wApp->instance()->root()->addChild(cpp14::make_unique<Dialog>(this->db(),this->UserValue(),"Vatandaş Sorgula"));
+
+                    mDialog->contents()->setContentAlignment(AlignmentFlag::Center);
+                    auto rContainer = mDialog->contents()->addWidget(cpp14::make_unique<WContainerWidget>());
+                    rContainer->addStyleClass(Bootstrap::Grid::row);
+                    rContainer->setWidth(WLength("100%"));
+
+
+                    auto filter = document{};
+
+                    try {
+                        filter.append(kvp(TC::KEY::adsoyad,make_document(kvp("$regex",mSorguAlani->text().toUTF8()),kvp("$options","i"))));
+                    } catch (bsoncxx::exception &e) {
+                        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                        std::cout << str << std::endl;
+                    }
+
+                    auto list = TC::TCItem::GetList<TC::TCItem>(this->db(),TC::collection,std::move(filter));
+
+                    rContainer->setHeight(350);
+                    rContainer->setOverflow(Overflow::Auto);
+
+                    for( auto _item : list )
+                    {
+                        auto __item = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+                        __item->addStyleClass(Bootstrap::Grid::col_full_12);
+
+                        auto _rContainer = __item->addWidget(cpp14::make_unique<WContainerWidget>());
+                        _rContainer->addStyleClass(Bootstrap::Grid::row);
+                        _rContainer->setWidth(WLength("100%"));
+
+                        {
+                            QString str = QString::fromStdString(_item->Element(TC::KEY::adsoyad)->get_utf8().value.to_string());
+                            str.replace(QString::fromStdString(mSorguAlani->text().toUTF8()),"<mark><b>"+QString::fromStdString(mSorguAlani->text().toUTF8())+"</b></mark>",Qt::CaseInsensitive);
+                            auto _adItem = _rContainer->addWidget(cpp14::make_unique<WText>(str.toStdString()));
+                            _adItem->addStyleClass(Bootstrap::Grid::Large::col_lg_6+
+                                                   Bootstrap::Grid::Medium::col_md_6+
+                                                   Bootstrap::Grid::Small::col_sm_6+
+                                                   Bootstrap::Grid::ExtraSmall::col_xs_12);
+
+                        }
+
+                        {
+                            auto _adItem = _rContainer->addWidget(cpp14::make_unique<WText>(_item->Element(TC::KEY::cepTelefonu)->get_utf8().value.to_string()));
+                            _adItem->addStyleClass(Bootstrap::Grid::Large::col_lg_6+
+                                                   Bootstrap::Grid::Medium::col_md_6+
+                                                   Bootstrap::Grid::Small::col_sm_6+
+                                                   Bootstrap::Grid::ExtraSmall::col_xs_12);
+                        }
+
+                        _rContainer->addStyleClass(Bootstrap::ContextualBackGround::bg_info);
+                        _rContainer->setMargin(5,Side::Top);
+                        _rContainer->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+                        _rContainer->decorationStyle().setCursor(Cursor::PointingHand);
+                        _rContainer->setAttributeValue(Style::dataoid,_item->Element(TC::KEY::tcno)->get_utf8().value.to_string());
+
+                        _rContainer->clicked().connect([=](){
+                            wApp->instance()->root()->removeChild(mDialog);
+                        });
+                    }
+                    mDialog->show();
+                }
+            }
+        });
+    }
 }

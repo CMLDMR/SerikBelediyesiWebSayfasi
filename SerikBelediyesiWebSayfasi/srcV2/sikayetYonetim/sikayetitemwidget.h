@@ -6,6 +6,25 @@
 #include "sikayetitem.h"
 #include "SerikBelediyesiWebSayfasi/baseItem/tcitem.h"
 
+class newSikayetItemWidget : public ContainerWiget , public DBClass , public UserClass
+{
+public:
+    newSikayetItemWidget(mongocxx::database* _db , UserClass &userValue );
+
+
+private:
+    Sikayet::SikayetItem* mCurrentSikayet;
+
+//    void initHeader();
+
+//    void initContent();
+
+//    void initController();
+
+};
+
+
+
 class SikayetItemWidget : public ContainerWiget , public DBClass , public UserClass
 {
 public:
@@ -18,7 +37,6 @@ private:
     void initHeader();
 
     void initContent();
-
 
     void initController();
 
