@@ -20,6 +20,8 @@ private:
 
     void initSikayet( const bsoncxx::oid &oid );
 
+    void createNewSikayet();
+
     const int limit = 20;
     int skip = 0;
     std::map<std::string,int> filterListCount;

@@ -57,6 +57,7 @@ SikayetYonetimWidget::SikayetYonetimWidget(mongocxx::database *_db, bsoncxx::doc
             sContainer->decorationStyle().setCursor(Cursor::PointingHand);
             auto text = sContainer->addWidget(cpp14::make_unique<WText>("Yeni oluştur"));
             text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow));
+            sContainer->clicked().connect(this,&SikayetYonetimWidget::createNewSikayet);
         }
 
         {
@@ -327,9 +328,19 @@ void SikayetYonetimWidget::initSikayet(const bsoncxx::oid &oid)
 
     this->Content()->addWidget(cpp14::make_unique<SikayetItemWidget>(this->db(),this->User(),oid));
 
+
+
+}
+
+void SikayetYonetimWidget::createNewSikayet()
+{
+    this->Content()->clear();
+    this->Footer()->clear();
+
+    this->Content()->addWidget(cpp14::make_unique<newSikayetItemWidget>(this->db(),this->User()));
+
     this->Footer()->setContentAlignment(AlignmentFlag::Center);
     auto BackBtn = this->Footer()->addWidget(cpp14::make_unique<WText>("Sayfa Sonu"));
-
 }
 
 void SikayetYonetimWidget::Sorgula()
