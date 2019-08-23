@@ -62,13 +62,28 @@ SikayetYonetimWidget::SikayetYonetimWidget(mongocxx::database *_db, bsoncxx::doc
 
         {
             auto sContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
-
-            sContainer->addStyleClass(Bootstrap::Grid::col_full_12+
+            sContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_6+
+                                      Bootstrap::Grid::Medium::col_md_6+
+                                      Bootstrap::Grid::Small::col_sm_6+
+                                      Bootstrap::Grid::ExtraSmall::col_xs_6+
                                       Bootstrap::ImageShape::img_thumbnail);
             sContainer->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(),this->getRandom(),this->getRandom()));
             sContainer->setContentAlignment(AlignmentFlag::Center);
             sContainer->decorationStyle().setCursor(Cursor::PointingHand);
             auto text = sContainer->addWidget(cpp14::make_unique<WText>("TC Kaydet"));
+            text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow));
+        }
+        {
+            auto sContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
+            sContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_6+
+                                      Bootstrap::Grid::Medium::col_md_6+
+                                      Bootstrap::Grid::Small::col_sm_6+
+                                      Bootstrap::Grid::ExtraSmall::col_xs_6+
+                                      Bootstrap::ImageShape::img_thumbnail);
+            sContainer->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(),this->getRandom(),this->getRandom()));
+            sContainer->setContentAlignment(AlignmentFlag::Center);
+            sContainer->decorationStyle().setCursor(Cursor::PointingHand);
+            auto text = sContainer->addWidget(cpp14::make_unique<WText>("TC Listesi"));
             text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow));
         }
 
