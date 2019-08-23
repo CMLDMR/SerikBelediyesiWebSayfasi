@@ -13,6 +13,9 @@ public:
                  bsoncxx::document::value &userValue ,
                  TC::TCItem* _mTCItem );
 
+
+    bsoncxx::oid oid();
+
 private:
     TC::TCItem* mTCItem;
 
