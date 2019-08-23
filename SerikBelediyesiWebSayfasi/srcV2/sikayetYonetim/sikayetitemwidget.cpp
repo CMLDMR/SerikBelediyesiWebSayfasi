@@ -863,6 +863,16 @@ newSikayetItemWidget::newSikayetItemWidget(mongocxx::database *_db, UserClass &u
                         _rContainer->setAttributeValue(Style::dataoid,_item->Element(TC::KEY::tcno)->get_utf8().value.to_string());
 
                         _rContainer->clicked().connect([=](){
+
+                            auto tcitem = TC::TCItem::LoadByTC(this->db(),_rContainer->attributeValue(Style::dataoid).toUTF8());
+
+
+                            if( tcitem )
+                            {
+                                tcContainer->addWidget(cpp14::make_unique<TCItemWidget>(this->db(),this->UserValue(),tcitem.get()));
+                            }
+
+
                             wApp->instance()->root()->removeChild(mDialog);
                         });
                     }
