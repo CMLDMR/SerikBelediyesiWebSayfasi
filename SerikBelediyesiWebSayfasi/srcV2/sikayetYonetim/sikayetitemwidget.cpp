@@ -733,8 +733,10 @@ newSikayetItemWidget::newSikayetItemWidget(mongocxx::database *_db, UserClass &u
     setWidth(WLength("100%"));
     addStyleClass(Bootstrap::Grid::row+Bootstrap::ImageShape::img_thumbnail);
     Header()->setMargin(15,Side::Top|Side::Bottom);
+    setMargin(25,Side::Top|Side::Bottom);
 
     Header()->addWidget(cpp14::make_unique<WText>("<h4>Yeni Şikayet Oluştur</h4>"));
+    Header()->addStyleClass(Bootstrap::ContextualBackGround::bg_success);
 
     {
 
@@ -743,6 +745,13 @@ newSikayetItemWidget::newSikayetItemWidget(mongocxx::database *_db, UserClass &u
                                  Bootstrap::Grid::Medium::col_md_6+
                                  Bootstrap::Grid::Small::col_sm_6+
                                  Bootstrap::Grid::ExtraSmall::col_xs_6);
+
+        auto mSikayetContainer = Content()->addWidget(cpp14::make_unique<WContainerWidget>());
+        mSikayetContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_6+
+                                        Bootstrap::Grid::Medium::col_md_6+
+                                        Bootstrap::Grid::Small::col_sm_6+
+                                        Bootstrap::Grid::ExtraSmall::col_xs_6+
+                                         Bootstrap::ImageShape::img_thumbnail);
 
         auto rSorguContainer = sContainer->addWidget(cpp14::make_unique<WContainerWidget>());
         rSorguContainer->addStyleClass(Bootstrap::Grid::row);
