@@ -9,9 +9,14 @@ class TCItemWidget : public ContainerWiget , public DBClass , public UserClass
 public:
     TCItemWidget(mongocxx::database* _db , bsoncxx::document::value &userValue);
 
+    TCItemWidget(mongocxx::database* _db ,
+                 bsoncxx::document::value &userValue ,
+                 TC::TCItem* _mTCItem );
 
 private:
     TC::TCItem* mTCItem;
+
+    bool mNewTCItem;
 };
 
 #endif // TCITEMWIDGET_H
