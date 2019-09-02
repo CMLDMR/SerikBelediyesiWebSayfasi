@@ -49,6 +49,8 @@ public:
 
     Signal<NoClass> &ClickDuyurular();
 
+    Signal<NoClass> &ClickNobetciEczane();
+
 private:
     Signal<NoClass> _Haber;
 
@@ -71,6 +73,8 @@ private:
     Signal<NoClass> _hakkinda;
 
     Signal<NoClass> _duyurular;
+
+    Signal<NoClass> _NobetciEczane;
 
 };
 
