@@ -40,6 +40,8 @@ public:
 
     bool initMeclisCanliYayin();
 
+    void initNobetciEczane();
+
     std::string downloadifNotExist( bsoncxx::types::value oid , bool forceFilename = false );
     std::string downloadifNotExist( std::string oid , bool forceFilename = false );
 

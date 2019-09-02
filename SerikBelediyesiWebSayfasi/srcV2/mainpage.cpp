@@ -4,6 +4,7 @@
 #include "SerikBelediyesiWebSayfasi/src/body.h"
 #include "SerikBelediyesiWebSayfasi/src/giriswidget.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/baskanwidget.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/externalWidget/nobetcieczanewidget.h"
 
 MainPage::MainPage(mongocxx::database *_db)
     :DataBaseWidget (_db),_signal(this,"_signal")
@@ -119,6 +120,7 @@ void MainPage::init()
         controller->ClickHakkinda().connect(this,&MainPage::initHakkinda);
         controller->ClickIletisim().connect(this,&MainPage::initIletisim);
         controller->ClickDuyurular().connect(this,&MainPage::initAnounceList);
+        controller->ClickNobetciEczane().connect(this,&MainPage::initNobetciEczane);
     }
 
 }
@@ -604,6 +606,14 @@ bool MainPage::initMeclisCanliYayin()
 
     return online;
 
+}
+
+void MainPage::initNobetciEczane()
+{
+    mContentWidget->clear();
+    auto widget = mContentWidget->addWidget(cpp14::make_unique<NobetciEczaneWidget>());
+    widget->setMaximumSize(1024,WLength::Auto);
+    footer->removeStyleClass("footerStickAbsolute");
 }
 
 std::string MainPage::downloadifNotExist(bsoncxx::types::value oid, bool forceFilename)
