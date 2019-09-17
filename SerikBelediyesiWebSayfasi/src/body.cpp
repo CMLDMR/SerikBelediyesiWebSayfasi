@@ -7441,6 +7441,7 @@ Body::BilgiEdin::BilgiEdin::BilgiEdin(mongocxx::database *_db)
     mMainContainer->setId("bilgiEdinmeid");
 
 
+
     mHeaderContainer = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     mHeaderContainer->setContentAlignment(AlignmentFlag::Center);
 //    mHeaderContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
@@ -7449,11 +7450,16 @@ Body::BilgiEdin::BilgiEdin::BilgiEdin(mongocxx::database *_db)
 
     this->initHeader();
 
+
+//    mMainContainer->addWidget (cpp14::make_unique<WText>("Bilgi Edinme"));
+
     auto stackContainer = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     stackContainer->setMaximumSize(1250,WLength::Auto);
+    stackContainer->setWidth (WLength("100%"));
 
 //    stackContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
     mContentContainer = stackContainer->addWidget(cpp14::make_unique<WStackedWidget>());
+    mContentContainer->setWidth (WLength("100%"));
 
     auto controller = std::make_unique<Controller>();
     controller->clickedbasvuru().connect(this,&BilgiEdin::setsayfa);
@@ -7968,14 +7974,15 @@ void Body::BilgiEdin::Basvuru::resetForm()
 }
 
 Body::BilgiEdin::StratejikPlan::StratejikPlan(mongocxx::database *_db)
-    :WContainerWidget(),
-      db(_db)
+    :WContainerWidget()
 {
 
 
     auto mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
     mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
     mMainContainer->setHeight(1200);
+//    mMainContainer->setHeight (250);
+//    mMainContainer->setAttributeValue (Style::style,Style::background::color::rgb (255,0,0));
 
     auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     row->addStyleClass(Bootstrap::Grid::row);
@@ -7985,10 +7992,18 @@ Body::BilgiEdin::StratejikPlan::StratejikPlan(mongocxx::database *_db)
     title->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
     title->setMargin(25,Side::Top|Side::Bottom);
 
-    std::string path = "http://www.serik.bel.tr/file/2015-2019_stratejik_plan.pdf";
-    std::string link = "<iframe src=\""+path+"\"  height=\"1200px\" width=\"100%\" allowfullscreen></iframe>";
-    auto text = row->addWidget(cpp14::make_unique<WText>(link,TextFormat::UnsafeXHTML));
-    text->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+//    std::string path = "http://www.serik.bel.tr/file/2015-2019_stratejik_plan.pdf";
+//    std::string link = "<iframe src=\""+path+"\"  height=\"1200px\" width=\"100%\" allowfullscreen></iframe>";
+
+    Wt::WLink link = Wt::WLink("http://www.serik.bel.tr/file/2015-2019_stratejik_plan.pdf");
+    link.setTarget(Wt::LinkTarget::NewWindow);
+
+    auto anchor = cpp14::make_unique<WAnchor>(WLink(link));
+
+    row->addWidget (std::move(anchor));
+
+//    auto text = row->addWidget(cpp14::make_unique<WText>(link,TextFormat::UnsafeXHTML));
+//    text->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
 
 
 }

@@ -1003,8 +1003,7 @@ namespace Body {
     public:
         StratejikPlan(mongocxx::database* _db);
 
-    private:
-        mongocxx::database* db;
+
     };
 
     class Performans : public WContainerWidget
