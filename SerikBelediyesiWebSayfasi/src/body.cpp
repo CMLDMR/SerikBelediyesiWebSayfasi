@@ -7508,7 +7508,7 @@ void Body::BilgiEdin::BilgiEdin::initHeader()
     auto layout = gradientContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
     layout->addStretch(1);
     auto serik = layout->addWidget(cpp14::make_unique<WText>("Bilgi Edinme & Raporlar"),0,AlignmentFlag::Bottom|AlignmentFlag::Center);
-    serik->setAttributeValue(Style::style,Style::font::size::s36px+Style::color::color(Style::color::White::AliceBlue));
+    serik->setAttributeValue(Style::style,Style::font::size::s24px+Style::color::color(Style::color::White::AliceBlue));
 }
 
 void Body::BilgiEdin::BilgiEdin::setsayfa(Sayfa sayfa)
@@ -7981,30 +7981,16 @@ Body::BilgiEdin::StratejikPlan::StratejikPlan(mongocxx::database *_db)
     auto mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
     mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
     mMainContainer->setHeight(1200);
-//    mMainContainer->setHeight (250);
-//    mMainContainer->setAttributeValue (Style::style,Style::background::color::rgb (255,0,0));
 
     auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     row->addStyleClass(Bootstrap::Grid::row);
 
-    auto title = row->addWidget(cpp14::make_unique<WText>("2015 - 2019 Strateji Planı"));
-    title->setAttributeValue(Style::style,Style::font::size::s28px+Style::font::weight::bold);
-    title->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-    title->setMargin(25,Side::Top|Side::Bottom);
-
-//    std::string path = "http://www.serik.bel.tr/file/2015-2019_stratejik_plan.pdf";
-//    std::string link = "<iframe src=\""+path+"\"  height=\"1200px\" width=\"100%\" allowfullscreen></iframe>";
-
     Wt::WLink link = Wt::WLink("http://www.serik.bel.tr/file/2015-2019_stratejik_plan.pdf");
     link.setTarget(Wt::LinkTarget::NewWindow);
 
-    auto anchor = cpp14::make_unique<WAnchor>(WLink(link));
+    auto anchor = cpp14::make_unique<WAnchor>(WLink(link),"<h3>2015 - 2019 Strateji Planı</h3>");
 
     row->addWidget (std::move(anchor));
-
-//    auto text = row->addWidget(cpp14::make_unique<WText>(link,TextFormat::UnsafeXHTML));
-//    text->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-
 
 }
 
