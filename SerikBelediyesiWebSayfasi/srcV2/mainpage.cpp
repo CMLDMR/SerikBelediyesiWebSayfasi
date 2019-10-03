@@ -404,18 +404,18 @@ void MainPage::initAnounceDetail( std::string mOid )
             announceTitle->setText(view[SBLDKeys::Duyurular::title].get_utf8().value.to_string().c_str());
 
             {
+
                 try {
                     auto array = view[SBLDKeys::Duyurular::fileList].get_array().value;
+                    auto bucket = this->getDB ()->gridfs_bucket ();
                     for( auto doc : array )
                     {
-                        downloadifNotExist(doc.get_oid().value.to_string(),true);
+                        std::string path = SBLDKeys::downloadifNotExist(&bucket,doc.get_oid().value.to_string(),true);
                     }
                 } catch (bsoncxx::exception &e) {
-                    std::cout << "Error: No Array in Duyuru Item: " << e.what() << std::endl;
+                    std::cout << __LINE__ << " " << __FUNCTION__ << " " <<"Error: No Array in Duyuru Item: " << e.what() << std::endl;
                 }
-
             }
-
 
             {
                 auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -669,43 +669,78 @@ std::string MainPage::downloadifNotExist(std::string oid, bool forceFilename)
     auto doc = bsoncxx::builder::basic::document{};
 
     try {
-        doc.append(bsoncxx::builder::basic::kvp("key",bsoncxx::oid{oid}.to_string()));
+        doc.append(bsoncxx::builder::basic::kvp("key",bsoncxx::oid{oid}));
     } catch (bsoncxx::exception& e) {
         std::cout << "Error: " << e.what() << std::endl;
         return "NULL";
     }
+    std::cout << __LINE__ << " " << bsoncxx::to_json (doc.view ()) << std::endl;
     auto downloader = this->getDB()->gridfs_bucket().open_download_stream(bsoncxx::types::value(doc.view()["key"].get_oid()));
 
+    std::cout << __LINE__ << std::endl;
+
     auto file_length = downloader.file_length();
+    std::cout << __LINE__ << std::endl;
+
     auto bytes_counter = 0;
 
     QFileInfo info( downloader.files_document()["filename"].get_utf8().value.to_string().c_str() );
 
+    std::cout << __LINE__ << " " << bsoncxx::to_json (downloader.files_document ()) <<std::endl;
+
     QString fullFilename;
+
+
 
     if( forceFilename )
     {
         fullFilename = QString("tempfile/%1").arg(downloader.files_document()["filename"].get_utf8().value.to_string().c_str());
     }else{
         fullFilename = QString("tempfile/%2.%1").arg(info.suffix())
-                .arg(downloader.files_document()["oid"].get_oid().value.to_string().c_str());
+                .arg(downloader.files_document()["_id"].get_oid().value.to_string().c_str());
     }
 
+    std::cout << __LINE__ << std::endl;
 
     if( QFile::exists("docroot/"+fullFilename) )
     {
         return fullFilename.toStdString();
     }
 
+    std::cout << __LINE__ << std::endl;
 
     auto buffer_size = std::min(file_length, static_cast<std::int64_t>(downloader.chunk_size()));
+
+    std::cout << __LINE__ << std::endl;
+
+
     auto buffer = bsoncxx::stdx::make_unique<std::uint8_t[]>(static_cast<std::size_t>(buffer_size));
+
+    std::cout << __LINE__ << std::endl;
+
     QByteArray mainArray;
+
+    std::cout << __LINE__ << " " <<buffer_size << " " << file_length << std::endl;
+
     while ( auto length_read = downloader.read(buffer.get(), static_cast<std::size_t>(buffer_size)) ) {
+
+        std::cout << __LINE__ << " " << length_read << std::endl;
+
         bytes_counter += static_cast<std::int32_t>( length_read );
+
+        std::cout << __LINE__ << " " << bytes_counter << std::endl;
+
         QByteArray ar((const char*)buffer.get(),bytes_counter);
+
+        std::cout << __LINE__ << " " << ar.size ()<< std::endl;
+
         mainArray+= ar;
+
+        std::cout << __LINE__ << " " << mainArray.size ()<< "\n"<<std::endl;
+
     }
+
+    std::cout << __LINE__ << std::endl;
 
     //    std::cout << "Current Dir: " << QDir::currentPath().toStdString() << std::endl;
     //    std::cout << "file Size: " << mainArray.size() << std::endl;
