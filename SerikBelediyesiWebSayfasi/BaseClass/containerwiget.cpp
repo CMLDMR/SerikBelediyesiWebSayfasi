@@ -4,7 +4,7 @@
 #include <QFileInfo>
 #include <QUuid>
 
-ContainerWiget::ContainerWiget(std::string title)
+ContainerWidget::ContainerWidget(std::string title)
 {
 
 
@@ -41,24 +41,24 @@ ContainerWiget::ContainerWiget(std::string title)
 
 }
 
-WContainerWidget *ContainerWiget::Header()
+WContainerWidget *ContainerWidget::Header()
 {
 
     return mHeaderContainer;
 
 }
 
-WContainerWidget *ContainerWiget::Content()
+WContainerWidget *ContainerWidget::Content()
 {
     return mContentContainer;
 }
 
-WContainerWidget *ContainerWiget::Footer()
+WContainerWidget *ContainerWidget::Footer()
 {
     return mFootContainer;
 }
 
-void ContainerWiget::setContainerStyle(ContainerWiget::ContainerStyleType type)
+void ContainerWidget::setContainerStyle(ContainerWidget::ContainerStyleType type)
 {
 
     this->removeStyleClass(Bootstrap::Grid::container_fluid);
@@ -78,7 +78,7 @@ void ContainerWiget::setContainerStyle(ContainerWiget::ContainerStyleType type)
     }
 }
 
-void ContainerWiget::showMessage(std::string title, std::string msg, std::string btnText)
+void ContainerWidget::showMessage(std::string title, std::string msg, std::string btnText)
 {
     auto messageBox = this->addChild(
                 Wt::cpp14::make_unique<Wt::WMessageBox>

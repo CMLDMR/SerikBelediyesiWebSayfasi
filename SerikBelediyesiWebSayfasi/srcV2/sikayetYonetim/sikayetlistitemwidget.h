@@ -3,7 +3,7 @@
 
 #include "SerikBelediyesiWebSayfasi/BaseClass/containerwiget.h"
 
-class SikayetListItemWidget : public ContainerWiget
+class SikayetListItemWidget : public ContainerWidget
 {
 public:
     SikayetListItemWidget(bsoncxx::oid _oid ,

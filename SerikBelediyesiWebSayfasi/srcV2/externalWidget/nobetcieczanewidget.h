@@ -4,7 +4,7 @@
 #include "SerikBelediyesiWebSayfasi/BaseClass/containerwiget.h"
 
 
-class NobetciEczaneWidget : public ContainerWiget
+class NobetciEczaneWidget : public ContainerWidget
 {
 public:
     NobetciEczaneWidget();

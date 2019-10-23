@@ -7,7 +7,7 @@
 
 
 
-class BilgiEdinmeClient : public DBClass , public UserClass , public ContainerWiget
+class BilgiEdinmeClient : public DBClass , public UserClass , public ContainerWidget
 {
 public:
     BilgiEdinmeClient(mongocxx::database* _db , bsoncxx::document::value &_user);

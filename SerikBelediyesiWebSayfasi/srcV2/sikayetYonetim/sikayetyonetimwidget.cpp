@@ -12,7 +12,7 @@ SikayetYonetimWidget::SikayetYonetimWidget(mongocxx::database *_db, bsoncxx::doc
     Header()->setMargin(10,Side::Bottom);
 
     {
-        auto container = this->Header()->addWidget(cpp14::make_unique<ContainerWiget>());
+        auto container = this->Header()->addWidget(cpp14::make_unique<ContainerWidget>());
         container->setContainerStyle(ContainerStyleType::ROW);
         container->setContentAlignment(AlignmentFlag::Center);
         container->setWidth(WLength("100%"));
@@ -20,7 +20,7 @@ SikayetYonetimWidget::SikayetYonetimWidget(mongocxx::database *_db, bsoncxx::doc
     }
 
     {
-        auto container = this->Header()->addWidget(cpp14::make_unique<ContainerWiget>());
+        auto container = this->Header()->addWidget(cpp14::make_unique<ContainerWidget>());
         container->setContainerStyle(ContainerStyleType::ROW);
         container->setContentAlignment(AlignmentFlag::Center);
         container->setMargin(15,Side::Top|Side::Bottom);
@@ -94,7 +94,7 @@ SikayetYonetimWidget::SikayetYonetimWidget(mongocxx::database *_db, bsoncxx::doc
 
     // Kontrol Paneli
     {
-        auto container = this->Header()->addWidget(cpp14::make_unique<ContainerWiget>());
+        auto container = this->Header()->addWidget(cpp14::make_unique<ContainerWidget>());
         container->setContainerStyle(ContainerStyleType::ROW);
 
         mongocxx::pipeline pipline;
@@ -106,7 +106,7 @@ SikayetYonetimWidget::SikayetYonetimWidget(mongocxx::database *_db, bsoncxx::doc
         int Tumu = 0;
         for ( auto&& doc : cursor ) {
 
-            auto _container = container->addWidget(cpp14::make_unique<ContainerWiget>());
+            auto _container = container->addWidget(cpp14::make_unique<ContainerWidget>());
             _container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+
                                       Bootstrap::Grid::Medium::col_md_2+
                                       Bootstrap::Grid::Small::col_sm_2+

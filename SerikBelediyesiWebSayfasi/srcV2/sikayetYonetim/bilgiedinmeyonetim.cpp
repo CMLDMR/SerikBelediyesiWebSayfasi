@@ -84,7 +84,7 @@ BilgiEdinmeListWidget::BilgiEdinmeListWidget( const BilgiEdinmeItem *_item)
     }
 
     {
-        auto container = addWidget(cpp14::make_unique<ContainerWiget>());
+        auto container = addWidget(cpp14::make_unique<ContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::Large::col_lg_4);
         if( this->item->cevaplandi() )
         {
@@ -141,7 +141,7 @@ void BilgiEdinmeWidget::initWidget()
 
     if( !val )
     {
-        auto rContainer = addWidget(cpp14::make_unique<ContainerWiget>());
+        auto rContainer = addWidget(cpp14::make_unique<ContainerWidget>());
         rContainer->setContainerStyle(ContainerStyleType::ROW);
         rContainer->addWidget(cpp14::make_unique<WText>("Bilgi Edinme Dosyası Yüklenemedi"))
                 ->addStyleClass(Bootstrap::Label::Danger);
@@ -151,57 +151,57 @@ void BilgiEdinmeWidget::initWidget()
     mItem = (val.value());
 
 
-    auto mContainer = addWidget(cpp14::make_unique<ContainerWiget>());
+    auto mContainer = addWidget(cpp14::make_unique<ContainerWidget>());
     mContainer->setContainerStyle(ContainerStyleType::CONTAINERFLUID);
 
-    auto rContainer = mContainer->addWidget(cpp14::make_unique<ContainerWiget>());
+    auto rContainer = mContainer->addWidget(cpp14::make_unique<ContainerWidget>());
 
     rContainer->setContainerStyle(ContainerStyleType::ROW);
 
     {
-        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWiget>());
+        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
         auto text = container->addWidget(cpp14::make_unique<WText>(mItem->Tarih()));
         container->setContentAlignment(AlignmentFlag::Center);
     }
 
     {
-        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWiget>());
+        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
         auto text = container->addWidget(cpp14::make_unique<WText>("<b><u>"+mItem->Konu()+"</u></b>"));
         container->setContentAlignment(AlignmentFlag::Center);
     }
 
     {
-        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWiget>());
+        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
         auto text = container->addWidget(cpp14::make_unique<WText>("TCNO: <b>"+mItem->TCNO()+"</b>"));
         container->setContentAlignment(AlignmentFlag::Center);
     }
 
     {
-        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWiget>());
+        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
         auto text = container->addWidget(cpp14::make_unique<WText>("Ad Soyad: <b>"+mItem->AdSoyad()+"</b>"));
         container->setContentAlignment(AlignmentFlag::Center);
     }
 
     {
-        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWiget>());
+        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
         auto text = container->addWidget(cpp14::make_unique<WText>("ePosta: "+mItem->ePosta()));
         container->setContentAlignment(AlignmentFlag::Center);
     }
 
     {
-        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWiget>());
+        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
         auto text = container->addWidget(cpp14::make_unique<WText>("Telefon: <b>"+mItem->telefon()+"</b>"));
         container->setContentAlignment(AlignmentFlag::Center);
     }
 
     {
-        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWiget>());
+        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
         auto text = container->addWidget(cpp14::make_unique<WText>("Adres: "+mItem->adres()));
         container->setContentAlignment(AlignmentFlag::Center);
@@ -209,17 +209,17 @@ void BilgiEdinmeWidget::initWidget()
 
 
     {
-        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWiget>());
+        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
 
         container->setMargin(15,Side::Top);
         container->setAttributeValue(Style::style,Style::background::color::rgb(this->getRandom(200,225),this->getRandom(200,225),this->getRandom(200,225)));
-        auto _rContainer = container->addWidget(cpp14::make_unique<ContainerWiget>());
+        auto _rContainer = container->addWidget(cpp14::make_unique<ContainerWidget>());
         _rContainer->setContainerStyle(ContainerStyleType::ROW);
 
 
 
-        auto container__ = _rContainer->addWidget(cpp14::make_unique<ContainerWiget>());
+        auto container__ = _rContainer->addWidget(cpp14::make_unique<ContainerWidget>());
         container__->addStyleClass(Bootstrap::Grid::Large::col_lg_9+
                                  Bootstrap::Grid::Medium::col_md_9+
                                  Bootstrap::Grid::Small::col_sm_9+
@@ -252,7 +252,7 @@ void BilgiEdinmeWidget::initWidget()
             birimComboBox->setCurrentIndex(_index+1);
         }
 
-        auto container___ = _rContainer->addWidget(cpp14::make_unique<ContainerWiget>());
+        auto container___ = _rContainer->addWidget(cpp14::make_unique<ContainerWidget>());
         container___->addStyleClass(Bootstrap::Grid::Large::col_lg_3+
                                     Bootstrap::Grid::Medium::col_md_3+
                                     Bootstrap::Grid::Small::col_sm_3+
@@ -280,7 +280,7 @@ void BilgiEdinmeWidget::initWidget()
 
 
     {
-        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWiget>());
+        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
         container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
         container->setMargin(15,Side::Top);
@@ -292,7 +292,7 @@ void BilgiEdinmeWidget::initWidget()
 
     if( !mItem->cevaplandi() )
     {
-        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWiget>());
+        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
         container->setMargin(15,Side::Top);
         container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
@@ -326,7 +326,7 @@ void BilgiEdinmeWidget::initWidget()
 
 
     }else{
-        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWiget>());
+        auto container = rContainer->addWidget(cpp14::make_unique<ContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
         container->setMargin(15,Side::Top);
         container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);

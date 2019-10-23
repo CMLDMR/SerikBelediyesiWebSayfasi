@@ -3,6 +3,8 @@
 
 #include <QApplication>
 
+#include "db.h"
+
 ///https://www.flaticon.com/packs/essential-collection
 /// https://codepen.io/asfarmed/pen/cfslr
 

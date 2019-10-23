@@ -9,6 +9,7 @@
 #include "SerikBelediyesiWebSayfasi/srcV2/girisCikisWidget/giriscikiswidget.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetimyonetim.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/bilgiedinmeclient.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/dilekceyonetim.h"
 
 
 Giris::GirisWidget::GirisWidget(mongocxx::database *_db)
@@ -3585,11 +3586,12 @@ void Giris::Personel::PersonelWidget::initMenu()
 
     menu->addItem("Bilgilerim", Wt::cpp14::make_unique<Bilgilerim>(db(),User()));
 
-    menu->addItem(WString::fromUTF8("Arıza Kaydı"), Wt::cpp14::make_unique<ArizaKaydi>(db(),User()));
+    menu->addItem(WString::fromUTF8("Dilekçeler"), Wt::cpp14::make_unique<DilekceYonetim>(db(),User()));
 
     if(this->User().view()[SBLDKeys::Personel::statu].get_utf8().value.to_string() == SBLDKeys::Personel::statuType::baskan ||
             this->User().view()[SBLDKeys::Personel::birimi].get_utf8().value.to_string() == "Bilgi İşlem Müdürlüğü" )
     {
+
     }
 
     if(this->User().view()[SBLDKeys::Personel::statu].get_utf8().value.to_string() == SBLDKeys::Personel::statuType::baskan ||

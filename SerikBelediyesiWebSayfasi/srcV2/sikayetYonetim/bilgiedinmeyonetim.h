@@ -8,7 +8,7 @@
 
 
 
-class BilgiEdinmeYonetim : public ContainerWiget , public DBClass , public UserClass
+class BilgiEdinmeYonetim : public ContainerWidget , public DBClass , public UserClass
 {
 public:
     BilgiEdinmeYonetim(mongocxx::database* _db , const bsoncxx::document::value &_userValue );
@@ -18,7 +18,7 @@ public:
 
 
 
-class BilgiEdinmeListWidget : public ContainerWiget , public DBClass
+class BilgiEdinmeListWidget : public ContainerWidget , public DBClass
 {
 public:
     explicit BilgiEdinmeListWidget(const BilgiEdinmeItem *_item);
@@ -33,7 +33,7 @@ private:
 };
 
 
-class BilgiEdinmeWidget : public ContainerWiget , public DBClass , public UserClass
+class BilgiEdinmeWidget : public ContainerWidget , public DBClass , public UserClass
 {
 public:
     BilgiEdinmeWidget( mongocxx::database* _db , const bsoncxx::oid &_oid , const UserClass &user );

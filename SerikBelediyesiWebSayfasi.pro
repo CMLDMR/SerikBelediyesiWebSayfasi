@@ -28,6 +28,8 @@ SOURCES += main.cpp \
     SerikBelediyesiWebSayfasi/BaseClass/itembase.cpp \
     SerikBelediyesiWebSayfasi/baseItem/tcitem.cpp \
     SerikBelediyesiWebSayfasi/baseWidget/tcitemwidget.cpp \
+    SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekceview.cpp \
+    SerikBelediyesiWebSayfasi/srcV2/dilekceyonetim.cpp \
     SerikBelediyesiWebSayfasi/srcV2/externalWidget/nobetcieczanewidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/girisCikisWidget/giriscikiswidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/ik.cpp \
@@ -66,21 +68,6 @@ SOURCES += main.cpp \
 QMAKE_CXXFLAGS += /wd4251 /wd4275 /wd4267 /wd4189 /wd4100 /wd4101 /wd4715 /wd4189
 
 
-#win32: LIBS += -L$$PWD/../../Server/WebServer/Wt-4.0.0-msvs2015-Windows-x64-SDK/lib/ -lwt
-
-#INCLUDEPATH += $$PWD/../../Server/WebServer/Wt-4.0.0-msvs2015-Windows-x64-SDK/include
-#DEPENDPATH += $$PWD/../../Server/WebServer/Wt-4.0.0-msvs2015-Windows-x64-SDK/include
-
-
-#win32: LIBS += -L$$PWD/../../Server/WebServer/Wt-4.0.0-msvs2015-Windows-x64-SDK/lib/ -lwthttp
-
-
-#INCLUDEPATH += $$PWD/../../Server/WebServer/Wt-4.0.0-msvs2015-Windows-x64-SDK/include
-#DEPENDPATH += $$PWD/../../Server/WebServer/Wt-4.0.0-msvs2015-Windows-x64-SDK/include
-
-
-
-
 INCLUDEPATH += $$PWD/../../Comman
 DEPENDPATH += $$PWD/../../Comman
 
@@ -92,6 +79,8 @@ HEADERS += \
     SerikBelediyesiWebSayfasi/BaseClass/wtheaders.h \
     SerikBelediyesiWebSayfasi/baseItem/tcitem.h \
     SerikBelediyesiWebSayfasi/baseWidget/tcitemwidget.h \
+    SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekceview.h \
+    SerikBelediyesiWebSayfasi/srcV2/dilekceyonetim.h \
     SerikBelediyesiWebSayfasi/srcV2/externalWidget/nobetcieczanewidget.h \
     SerikBelediyesiWebSayfasi/srcV2/girisCikisWidget/giriscikiswidget.h \
     SerikBelediyesiWebSayfasi/srcV2/ik.h \
@@ -158,18 +147,13 @@ INCLUDEPATH += $$PWD/include/mongocxx/v_noabi
 DEPENDPATH += $$PWD/include/mongocxx/v_noabi
 
 
-INCLUDEPATH += $$PWD/../../Boost/boost/
-DEPENDPATH += $$PWD/../../Boost/boost/
+
+
+INCLUDEPATH += C:/boost/boost
+DEPENDPATH += C:/boost/boost
 
 
 
-
-
-
-#win32: LIBS += -L$$PWD/../../Server/WebServer/Wt-4.0.0-msvs2015-Windows-x64-SDK/lib/ -llibhpdf
-
-#INCLUDEPATH += $$PWD/../../Server/WebServer/Wt-4.0.0-msvs2015-Windows-x64-SDK/include
-#DEPENDPATH += $$PWD/../../Server/WebServer/Wt-4.0.0-msvs2015-Windows-x64-SDK/include
 
 win32: LIBS += -LC:/Wt-4.1.0-msvs2015-x64/lib/ -lwt
 
@@ -180,3 +164,9 @@ win32: LIBS += -LC:/Wt-4.1.0-msvs2015-x64/lib/ -lwthttp
 
 win32: LIBS += -LC:/Wt-4.1.0-msvs2015-x64/lib/ -llibhpdf
 
+
+
+win32: LIBS += -LC:/SerikBLDCoreRelease/MSVC2015X64/lib/ -lSerikBLDCore
+
+INCLUDEPATH += C:/SerikBLDCoreRelease/MSVC2015X64/include
+DEPENDPATH += C:/SerikBLDCoreRelease/MSVC2015X64/include

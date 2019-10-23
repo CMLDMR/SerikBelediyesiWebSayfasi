@@ -7,10 +7,10 @@
 
 #include <QString>
 
-class ContainerWiget : public WContainerWidget
+class ContainerWidget : public WContainerWidget
 {
 public:
-    ContainerWiget(std::string title = "" );
+    ContainerWidget(std::string title = "" );
 
 
     WContainerWidget* Header();
@@ -35,6 +35,8 @@ public:
 
 
 
+
+
     void showMessage( std::string title , std::string msg , std::string btnText = "Tamam");
 
 
@@ -49,7 +51,7 @@ private:
 
 
 
-class FileUploaderWidget : public ContainerWiget , public DBClass
+class FileUploaderWidget : public ContainerWidget , public DBClass
 {
 public:
     explicit FileUploaderWidget( mongocxx::database* _db );

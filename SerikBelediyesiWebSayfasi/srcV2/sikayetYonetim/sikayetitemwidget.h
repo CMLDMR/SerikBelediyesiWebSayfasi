@@ -6,7 +6,7 @@
 #include "sikayetitem.h"
 #include "SerikBelediyesiWebSayfasi/baseItem/tcitem.h"
 
-class newSikayetItemWidget : public ContainerWiget , public DBClass , public UserClass
+class newSikayetItemWidget : public ContainerWidget , public DBClass , public UserClass
 {
 public:
     newSikayetItemWidget(mongocxx::database* _db , UserClass &userValue );
@@ -25,7 +25,7 @@ private:
 
 
 
-class SikayetItemWidget : public ContainerWiget , public DBClass , public UserClass
+class SikayetItemWidget : public ContainerWidget , public DBClass , public UserClass
 {
 public:
     SikayetItemWidget(mongocxx::database* _db , UserClass &userValue , const bsoncxx::oid &_oid);
@@ -43,7 +43,7 @@ private:
 };
 
 
-class AsamaItemWidget : public ContainerWiget, public Sikayet::ASAMA
+class AsamaItemWidget : public ContainerWidget, public Sikayet::ASAMA
 {
 public:
     explicit AsamaItemWidget(bsoncxx::document::view &&view);
