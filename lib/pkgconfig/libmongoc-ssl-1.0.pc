@@ -1,11 +1,11 @@
-prefix=C:/mongpcxx3.2.rc1/msvc2015/libmongoc
+prefix=F:/mongocxx/mongo-c-driver-1.14.0/install
 exec_prefix=${prefix}
 libdir=${prefix}/lib
 includedir=${exec_prefix}/include
 
 Name: libmongoc-1.0
 Description: SSL support for the libmongoc-1.0 library.
-Version: 1.8.2
+Version: 1.14.0
 Requires: libmongoc-1.0
 Libs:
 Cflags:

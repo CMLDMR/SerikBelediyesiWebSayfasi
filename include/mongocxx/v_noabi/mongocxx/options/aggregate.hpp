@@ -131,32 +131,6 @@ class MONGOCXX_API aggregate {
     const stdx::optional<std::chrono::milliseconds>& max_time() const;
 
     ///
-    /// Sets whether the results of this aggregation should be returned via a cursor.
-    ///
-    /// @note The default for this value depends on the version of the server:
-    ///   - Servers >= 2.6 will use a server-side default of true.
-    ///   - Servers < 2.6 will use a server-side default of false.
-    ///
-    /// If this optional setting is not engaged client-side, the server default will be used.
-    ///
-    /// @see https://docs.mongodb.com/master/reference/command/aggregate/
-    ///
-    /// @return
-    ///   A reference to the object on which this member function is being called. This facilitates
-    ///   method chaining.
-    ///
-    aggregate& use_cursor(bool use_cursor);
-
-    ///
-    /// The current use_cursor setting.
-    ///
-    /// @return the current use_cursor setting
-    ///
-    /// @see https://docs.mongodb.com/master/reference/command/aggregate/
-    ///
-    const stdx::optional<bool>& use_cursor() const;
-
-    ///
     /// Sets the read_preference for this operation.
     ///
     /// @param rp the new read_preference
@@ -256,14 +230,10 @@ class MONGOCXX_API aggregate {
     stdx::optional<std::int32_t> _batch_size;
     stdx::optional<bsoncxx::document::view_or_value> _collation;
     stdx::optional<std::chrono::milliseconds> _max_time;
-    stdx::optional<bool> _use_cursor;
     stdx::optional<class read_preference> _read_preference;
     stdx::optional<bool> _bypass_document_validation;
     stdx::optional<class hint> _hint;
     stdx::optional<class write_concern> _write_concern;
-
-    friend MONGOCXX_API bool MONGOCXX_CALL operator==(const aggregate&, const aggregate&);
-    friend MONGOCXX_API bool MONGOCXX_CALL operator!=(const aggregate&, const aggregate&);
 };
 
 }  // namespace options

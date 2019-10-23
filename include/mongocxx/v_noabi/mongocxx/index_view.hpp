@@ -17,17 +17,10 @@
 #include <string>
 #include <vector>
 
-#include <bsoncxx/builder/basic/array.hpp>
-#include <bsoncxx/builder/basic/document.hpp>
-#include <bsoncxx/document/element.hpp>
 #include <bsoncxx/document/value.hpp>
 #include <bsoncxx/stdx/optional.hpp>
-#include <bsoncxx/types/value.hpp>
-#include <mongocxx/collection.hpp>
+#include <mongocxx/client_session.hpp>
 #include <mongocxx/cursor.hpp>
-#include <mongocxx/exception/error_code.hpp>
-#include <mongocxx/exception/logic_error.hpp>
-#include <mongocxx/exception/operation_exception.hpp>
 #include <mongocxx/index_model.hpp>
 #include <mongocxx/options/index_view.hpp>
 
@@ -38,19 +31,32 @@ MONGOCXX_INLINE_NAMESPACE_BEGIN
 
 class MONGOCXX_API index_view {
    public:
-    index_view() = delete;
-
-    index_view(const index_view&) = delete;
+    index_view(index_view&&) noexcept;
+    index_view& operator=(index_view&&) noexcept;
 
     ~index_view();
 
-    index_view(index_view&&);
-
+    ///
+    /// @{
     ///
     /// Returns a cursor over all the indexes.
     ///
     cursor list();
 
+    ///
+    /// Returns a cursor over all the indexes.
+    ///
+    /// @param session
+    ///   The mongocxx::client_session with which to perform the list operation.
+    ///
+    cursor list(const client_session& session);
+
+    ///
+    /// @}
+    ///
+
+    ///
+    /// @{
     ///
     /// Creates an index. A convenience method that calls create_many.
     ///
@@ -80,6 +86,41 @@ class MONGOCXX_API index_view {
     ///
     /// Creates an index. A convenience method that calls create_many.
     ///
+    /// @param session
+    ///   The mongocxx::client_session with which to perform the operation.
+    /// @param keys
+    ///    A document containing the index keys and their corresponding index types.
+    /// @param index_options
+    ///    A document containing set of options that controls the creation of the index. See
+    ///    https://docs.mongodb.com/manual/reference/method/db.collection.createIndex/.
+    /// @param options
+    ///    Optional arguments for the overall operation, see mongocxx::options::index_view.
+    ///
+    /// @return
+    ///    An optional containing the name of the created index. If and index with the same keys
+    ///    already exists, an empty optional is returned.
+    ///
+    /// @exception
+    ///    Throws operation_exception for any errors encountered by the server or if max_time_ms
+    ///    option is present and the operation exceeds the time limit.
+    ///
+    /// @see https://docs.mongodb.com/manual/reference/method/db.collection.createIndex/
+    ///
+    stdx::optional<std::string> create_one(
+        const client_session& session,
+        const bsoncxx::document::view_or_value& keys,
+        const bsoncxx::document::view_or_value& index_options = {},
+        const options::index_view& options = options::index_view{});
+
+    ///
+    /// @}
+    ///
+
+    ///
+    /// @{
+    ///
+    /// Creates an index. A convenience method that calls create_many.
+    ///
     /// @param index
     ///    Index_model describing the index being created.
     /// @param options
@@ -98,6 +139,37 @@ class MONGOCXX_API index_view {
     stdx::optional<std::string> create_one(
         const index_model& index, const options::index_view& options = options::index_view{});
 
+    ///
+    /// Creates an index. A convenience method that calls create_many.
+    ///
+    /// @param session
+    ///   The mongocxx::client_session with which to perform the operation.
+    /// @param index
+    ///    Index_model describing the index being created.
+    /// @param options
+    ///    Optional arguments for the overall operation, see mongocxx::options::index_view.
+    ///
+    /// @return
+    ///    An optional containing the name of the created index. If and index with the same keys
+    ///    already exists, an empty optional is returned.
+    ///
+    /// @exception
+    ///    Throws operation_exception for any errors encountered by the server or if max_time_ms
+    ///    option is present and the operation exceeds the time limit.
+    ///
+    /// @see https://docs.mongodb.com/manual/reference/method/cursor.maxTimeMS/
+    ///
+    stdx::optional<std::string> create_one(
+        const client_session& session,
+        const index_model& index,
+        const options::index_view& options = options::index_view{});
+
+    ///
+    /// @}
+    ///
+
+    ///
+    /// @{
     ///
     /// Adds a container of indexes to the collection.
     ///
@@ -121,6 +193,37 @@ class MONGOCXX_API index_view {
         const options::index_view& options = options::index_view{});
 
     ///
+    /// Adds a container of indexes to the collection.
+    ///
+    /// @param session
+    ///   The mongocxx::client_session with which to perform the operation.
+    /// @param indexes
+    ///   std::vector containing index models describing the indexes being created.
+    /// @param options
+    ///    Optional arguments for the overall operation, see mongocxx::options::index_view.
+    ///
+    /// @return
+    ///    The result document sent back by the server as if the createIndexes command was run from
+    ///    the shell.
+    ///
+    /// @exception
+    ///     Throws operation_exception for any errors encountered by the server or if max_time_ms
+    ///     option is present and the operation exceeds the time limit.
+    ///
+    /// @see https://docs.mongodb.com/manual/reference/method/cursor.maxTimeMS/
+    ///
+    bsoncxx::document::value create_many(
+        const client_session& session,
+        const std::vector<index_model>& indexes,
+        const options::index_view& options = options::index_view{});
+
+    ///
+    /// @}
+    ///
+
+    ///
+    /// @{
+    ///
     /// Drops a single index by name.
     ///
     /// @param name
@@ -139,6 +242,34 @@ class MONGOCXX_API index_view {
     void drop_one(stdx::string_view name,
                   const options::index_view& options = options::index_view{});
 
+    ///
+    /// Drops a single index by name.
+    ///
+    /// @param session
+    ///   The mongocxx::client_session with which to perform the drop.
+    /// @param name
+    ///    The name of the index being dropped.
+    /// @param options
+    ///    Optional arguments for the overall operation, see mongocxx::options::index_view.
+    ///
+    /// @exception
+    ///   Throws operation_exception for any errors encountered by the server or if max_time_ms
+    ///   option is present and the operation exceeds the time limit.
+    /// @exception
+    ///   Throws logic_error if "*" is passed in for the index name.
+    ///
+    /// @see https://docs.mongodb.com/manual/reference/method/cursor.maxTimeMS/
+    ///
+    void drop_one(const client_session& session,
+                  stdx::string_view name,
+                  const options::index_view& options = options::index_view{});
+
+    ///
+    /// @}
+    ///
+
+    ///
+    /// @{
     ///
     /// Attempts to drop a single index from the collection given the keys and options.
     ///
@@ -166,6 +297,41 @@ class MONGOCXX_API index_view {
                   const options::index_view& options = options::index_view{});
 
     ///
+    /// Attempts to drop a single index from the collection given the keys and options.
+    ///
+    /// @param session
+    ///   The mongocxx::client_session with which to perform the drop.
+    /// @param keys
+    ///    A document containing the index keys and their corresponding index types. If no name
+    ///    option is present in the options, a name based on the keys will be used.
+    /// @param index_options (optional)
+    ///    A document containing set of options used to create the index. Only the name field will
+    ///    be used from here, and if it is not included, a name based on they keys will be used.
+    /// @param options
+    ///    Optional arguments for the overall operation, see mongocxx::options::index_view.
+    ///
+    /// @exception
+    ///   Throws bsoncxx::exception if "name" key is present in options but is not a string.
+    /// @exception
+    ///   Throws operation_exception for any errors encountered by the server or if max_time_ms
+    ///   option is present and the operation exceeds the time limit.
+    /// @exception
+    ///   Throws logic_error if "*" is passed in for the index name
+    ///
+    /// @see https://docs.mongodb.com/manual/reference/method/cursor.maxTimeMS/
+    ///
+    void drop_one(const client_session& session,
+                  const bsoncxx::document::view_or_value& keys,
+                  const bsoncxx::document::view_or_value& index_options = {},
+                  const options::index_view& options = options::index_view{});
+
+    ///
+    /// @}
+    ///
+
+    ///
+    /// @{
+    ///
     /// Attempts to drop a single index from the collection given an index model.
     ///
     /// @param index
@@ -187,6 +353,36 @@ class MONGOCXX_API index_view {
                   const options::index_view& options = options::index_view{});
 
     ///
+    /// Attempts to drop a single index from the collection given an index model.
+    ///
+    /// @param session
+    ///   The mongocxx::client_session with which to perform the drop.
+    /// @param index
+    ///    An index model describing the index being dropped.
+    /// @param options
+    ///    Optional arguments for the overall operation, see mongocxx::options::index_view.
+    ///
+    /// @exception
+    ///   Throws bsoncxx::exception if "name" key is present in options but is not a string.
+    /// @exception
+    ///   Throws operation_exception for any errors encountered by the server or if max_time_ms
+    ///   option is present and the operation exceeds the time limit.
+    /// @exception
+    ///   Throws logic_error if "*" is passed in for the index name
+    ///
+    /// @see https://docs.mongodb.com/manual/reference/method/cursor.maxTimeMS/
+    ///
+    void drop_one(const client_session& session,
+                  const index_model& index,
+                  const options::index_view& options = options::index_view{});
+
+    ///
+    /// @}
+    ///
+
+    ///
+    /// @{
+    ///
     /// Drops all indexes in the collection.
     ///
     /// @param options
@@ -199,6 +395,27 @@ class MONGOCXX_API index_view {
     /// @see https://docs.mongodb.com/manual/reference/method/cursor.maxTimeMS/
     ///
     void drop_all(const options::index_view& options = options::index_view{});
+
+    ///
+    /// Drops all indexes in the collection.
+    ///
+    /// @param session
+    ///   The mongocxx::client_session with which to perform the drop.
+    /// @param options
+    ///    Optional arguments for the overall operation, see mongocxx::options::index_view.
+    ///
+    /// @exception
+    ///   Throws operation_exception for any errors encountered by the server or if max_time_ms
+    ///   option is present and the operation exceeds the time limit.
+    ///
+    /// @see https://docs.mongodb.com/manual/reference/method/cursor.maxTimeMS/
+    ///
+    void drop_all(const client_session& session,
+                  const options::index_view& options = options::index_view{});
+
+    ///
+    /// @}
+    ///
 
    private:
     friend class collection;

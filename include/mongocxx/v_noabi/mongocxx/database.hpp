@@ -19,12 +19,12 @@
 
 #include <bsoncxx/document/view_or_value.hpp>
 #include <bsoncxx/string/view_or_value.hpp>
+#include <mongocxx/client_session.hpp>
 #include <mongocxx/collection.hpp>
 #include <mongocxx/gridfs/bucket.hpp>
 #include <mongocxx/options/create_collection.hpp>
 #include <mongocxx/options/create_view.hpp>
 #include <mongocxx/options/gridfs/bucket.hpp>
-#include <mongocxx/options/modify_collection.hpp>
 #include <mongocxx/read_preference.hpp>
 #include <mongocxx/write_concern.hpp>
 
@@ -40,8 +40,6 @@ class client;
 ///
 /// Acts as a gateway for accessing collections that are contained within a database. It inherits
 /// all of its default settings from the client that creates it.
-///
-/// @todo Add auth functions (add_user, remove_all_users, remove_user)
 ///
 class MONGOCXX_API database {
    public:
@@ -84,6 +82,8 @@ class MONGOCXX_API database {
     explicit operator bool() const noexcept;
 
     ///
+    /// @{
+    ///
     /// Runs a command against this database.
     ///
     /// @see https://docs.mongodb.com/master/reference/method/db.runCommand/
@@ -95,6 +95,25 @@ class MONGOCXX_API database {
     ///
     bsoncxx::document::value run_command(bsoncxx::document::view_or_value command);
 
+    ///
+    /// Runs a command against this database.
+    ///
+    /// @see https://docs.mongodb.com/master/reference/method/db.runCommand/
+    ///
+    /// @param session The mongocxx::client_session with which to run the command.
+    /// @param command document representing the command to be run.
+    /// @return the result of executing the command.
+    ///
+    /// @throws mongocxx::operation_exception if the operation fails.
+    ///
+    bsoncxx::document::value run_command(const client_session& session,
+                                         bsoncxx::document::view_or_value command);
+    ///
+    /// @}
+    ///
+
+    ///
+    /// @{
     ///
     /// Explicitly creates a collection in this database with the specified options.
     ///
@@ -112,15 +131,118 @@ class MONGOCXX_API database {
     /// @exception
     ///   mongocxx::operation_exception if the operation fails.
     ///
-    class collection create_collection(
+    class collection create_collection(stdx::string_view name,
+                                       bsoncxx::document::view_or_value collection_options = {},
+                                       const stdx::optional<write_concern>& write_concern = {});
+
+    ///
+    /// Explicitly creates a collection in this database with the specified options.
+    ///
+    /// @see
+    ///   https://docs.mongodb.com/master/reference/command/create/
+    ///
+    /// @param session
+    ///   The mongocxx::client_session with which to perform the create operation.
+    /// @param name
+    ///   the new collection's name.
+    /// @param collection_options
+    ///   the options for the new collection.
+    /// @param write_concern
+    ///   the write concern to use for this operation. Will default to database
+    ///   set write concern if none passed here.
+    ///
+    /// @exception
+    ///   mongocxx::operation_exception if the operation fails.
+    ///
+    class collection create_collection(const client_session& session,
+                                       stdx::string_view name,
+                                       bsoncxx::document::view_or_value collection_options = {},
+                                       const stdx::optional<write_concern>& write_concern = {});
+
+    ///
+    /// Explicitly creates a collection in this database with the specified options.
+    ///
+    /// @deprecated
+    ///   This overload is deprecated. Call database::create_collection with a
+    ///   bsoncxx::document::view_or_value collection_options instead.
+    ///
+    /// @see
+    ///   https://docs.mongodb.com/master/reference/command/create/
+    ///
+    /// @param name
+    ///   the new collection's name.
+    /// @param collection_options
+    ///   the options for the new collection.
+    /// @param write_concern
+    ///   the write concern to use for this operation. Will default to database
+    ///   set write concern if none passed here.
+    ///
+    /// @exception
+    ///   mongocxx::operation_exception if the operation fails.
+    ///
+    class collection create_collection(bsoncxx::string::view_or_value name,
+                                       const options::create_collection& collection_options,
+                                       const stdx::optional<write_concern>& write_concern = {}) {
+        return create_collection_deprecated(name, collection_options, write_concern);
+    }
+
+    class collection create_collection_deprecated(
         bsoncxx::string::view_or_value name,
-        const options::create_collection& collection_options = options::create_collection{},
+        const options::create_collection& collection_options,
         const stdx::optional<write_concern>& write_concern = {});
 
+    ///
+    /// Explicitly creates a collection in this database with the specified options.
+    ///
+    /// @deprecated
+    ///   This overload is deprecated. Call database::create_collection with a
+    ///   bsoncxx::document::view_or_value collection_options instead.
+    ///
+    /// @see
+    ///   https://docs.mongodb.com/master/reference/command/create/
+    ///
+    /// @param session
+    ///   The mongocxx::client_session with which to perform the create operation.
+    /// @param name
+    ///   the new collection's name.
+    /// @param collection_options
+    ///   the options for the new collection.
+    /// @param write_concern
+    ///   the write concern to use for this operation. Will default to database
+    ///   set write concern if none passed here.
+    ///
+    /// @exception
+    ///   mongocxx::operation_exception if the operation fails.
+    ///
+    class collection create_collection(const client_session& session,
+                                       bsoncxx::string::view_or_value name,
+                                       const options::create_collection& collection_options,
+                                       const stdx::optional<write_concern>& write_concern = {}) {
+        return create_collection_deprecated(session, name, collection_options, write_concern);
+    }
+
+    class collection create_collection_deprecated(
+        const client_session& session,
+        bsoncxx::string::view_or_value name,
+        const options::create_collection& collection_options,
+        const stdx::optional<write_concern>& write_concern = {});
+
+    ///
+    /// @}
+    ///
+
+    ///
+    /// @{
     ///
     /// Creates a non-materialized view in this database with the specified options.
     /// Non-materialized views are represented by the @c collection objects, and support many of the
     /// same read-only operations that regular collections do.
+    ///
+    /// @deprecated
+    ///   This method is deprecated.
+    ///   To create a non-materialized view, use database::create_collection and pass "viewOn":
+    ///   "COLLECTION_NAME", "pipeline": [ ... stages ... ] in the bsoncxx::document::view_or_value
+    ///   collection_options.
     ///
     /// @see https://docs.mongodb.com/master/core/views/
     ///
@@ -131,32 +253,22 @@ class MONGOCXX_API database {
     ///
     /// @throws mongocxx::operation_exception if the operation fails.
     ///
-    class collection create_view(bsoncxx::string::view_or_value name,
-                                 bsoncxx::string::view_or_value view_on,
-                                 const options::create_view& options = options::create_view());
+    MONGOCXX_DEPRECATED class collection create_view(
+        bsoncxx::string::view_or_value name,
+        bsoncxx::string::view_or_value view_on,
+        const options::create_view& options = options::create_view());
+
+    class collection create_view_deprecated(
+        bsoncxx::string::view_or_value name,
+        bsoncxx::string::view_or_value view_on,
+        const options::create_view& options = options::create_view());
 
     ///
-    /// Modify an existing collection.
+    /// @}
     ///
-    /// @deprecated
-    ///   This method is deprecated.  To modify an existing collection, invoke the "collMod" command
-    ///   with database::run_command().
-    ///
-    /// @see https://docs.mongodb.com/master/reference/command/collMod/
-    ///
-    /// @param name the name of the collection to be modified.
-    /// @param options the modifications to be performed.
-    ///
-    /// @return the result of executing the command.
-    ///
-    MONGOCXX_DEPRECATED bsoncxx::document::value modify_collection(
-        stdx::string_view name,
-        const options::modify_collection& options = options::modify_collection());
 
-    bsoncxx::document::value modify_collection_deprecated(
-        stdx::string_view name,
-        const options::modify_collection& options = options::modify_collection());
-
+    ///
+    /// @{
     ///
     /// Drops the database and all its collections.
     ///
@@ -173,6 +285,27 @@ class MONGOCXX_API database {
     void drop(const bsoncxx::stdx::optional<mongocxx::write_concern>& write_concern = {});
 
     ///
+    /// Drops the database and all its collections.
+    ///
+    /// @param session
+    ///   The mongocxx::client_session with which to perform the aggregation.
+    /// @param write_concern (optional)
+    ///   The write concern to be used for this operation. If not passed here, the write concern
+    ///   set on the database will be used.
+    ///
+    /// @exception
+    ///   mongocxx::operation_exception if the operation fails.
+    ///
+    /// @see
+    ///   https://docs.mongodb.com/manual/reference/command/dropDatabase/
+    ///
+    void drop(const client_session& session,
+              const bsoncxx::stdx::optional<mongocxx::write_concern>& write_concern = {});
+    ///
+    /// @}
+    ///
+
+    ///
     /// Checks whether this database contains a collection having the given name.
     ///
     /// @param name the name of the collection.
@@ -185,6 +318,8 @@ class MONGOCXX_API database {
     bool has_collection(bsoncxx::string::view_or_value name) const;
 
     ///
+    /// @{
+    ///
     /// Enumerates the collections in this database.
     ///
     /// @param filter
@@ -192,12 +327,61 @@ class MONGOCXX_API database {
     ///
     /// @return mongocxx::cursor containing the collection information.
     ///
+    /// @see https://docs.mongodb.com/master/reference/command/listCollections/
+    ///
+    cursor list_collections(bsoncxx::document::view_or_value filter = {});
+
+    ///
+    /// Enumerates the collections in this database.
+    ///
+    /// @param session
+    ///   The mongocxx::client_session with which to perform the aggregation.
+    /// @param filter
+    ///   An optional query expression to filter the returned collections.
+    ///
+    /// @return mongocxx::cursor containing the collection information.
+    ///
+    /// @see https://docs.mongodb.com/master/reference/command/listCollections/
+    ///
+    cursor list_collections(const client_session& session,
+                            bsoncxx::document::view_or_value filter = {});
+
+    ///
+    /// Enumerates the collection names in this database.
+    ///
+    /// @param filter
+    ///   An optional query expression to filter the returned collection names.
+    ///
+    /// @return std::vector<std::string> containing the collection names.
+    ///
     /// @throws mongocxx::operation_exception if the underlying 'listCollections'
     /// command fails.
     ///
     /// @see https://docs.mongodb.com/master/reference/command/listCollections/
     ///
-    cursor list_collections(bsoncxx::document::view_or_value filter = {});
+    std::vector<std::string> list_collection_names(bsoncxx::document::view_or_value filter = {});
+
+    ///
+    /// Enumerates the collection names in this database.
+    ///
+    /// @param session
+    ///   The mongocxx::client_session with which to perform the aggregation.
+    /// @param filter
+    ///   An optional query expression to filter the returned collection names.
+    ///
+    /// @return std::vector<std::string> containing the collection names.
+    ///
+    /// @throws mongocxx::operation_exception if the underlying 'listCollections'
+    /// command fails.
+    ///
+    /// @see https://docs.mongodb.com/master/reference/command/listCollections/
+    ///
+    std::vector<std::string> list_collection_names(const client_session& session,
+                                                   bsoncxx::document::view_or_value filter = {});
+
+    ///
+    /// @}
+    ///
 
     ///
     /// Get the name of this database.
@@ -304,11 +488,110 @@ class MONGOCXX_API database {
     class gridfs::bucket gridfs_bucket(
         const options::gridfs::bucket& options = options::gridfs::bucket()) const;
 
+    ///
+    /// @{
+    ///
+    /// Gets a change stream on this database with an empty pipeline.
+    /// Change streams are only supported with a "majority" read concern or no read concern.
+    ///
+    /// @param options
+    ///   The options to use when creating the change stream.
+    ///
+    /// @return
+    ///  A change stream on this database.
+    ///
+    /// @see https://docs.mongodb.com/manual/changeStreams/
+    ///
+    change_stream watch(const options::change_stream& options = {});
+
+    ///
+    /// @param session
+    ///   The mongocxx::client_session with which to perform the watch operation.
+    /// @param options
+    ///   The options to use when creating the change stream.
+    ///
+    /// @return
+    ///  A change stream on this database.
+    ///
+    /// @see https://docs.mongodb.com/manual/changeStreams/
+    ///
+    change_stream watch(const client_session& session, const options::change_stream& options = {});
+
+    ///
+    /// Gets a change stream on this database.
+    /// Change streams are only supported with a "majority" read concern or no read concern.
+    ///
+    /// @param pipe
+    ///   The aggregation pipeline to be used on the change notifications.
+    ///   Only a subset of pipeline operations are supported for change streams. For more
+    ///   information see the change streams documentation.
+    /// @param options
+    ///   The options to use when creating the change stream.
+    ///
+    /// @return
+    ///  A change stream on this database.
+    ///
+    /// @see https://docs.mongodb.com/manual/changeStreams/
+    ///
+    change_stream watch(const pipeline& pipe, const options::change_stream& options = {});
+
+    ///
+    /// Gets a change stream on this database.
+    ///
+    /// @param session
+    ///   The mongocxx::client_session with which to perform the watch operation.
+    /// @param pipe
+    ///   The aggregation pipeline to be used on the change notifications.
+    /// @param options
+    ///   The options to use when creating the change stream.
+    ///
+    /// @return
+    ///  A change stream on this database.
+    ///
+    /// @see https://docs.mongodb.com/manual/changeStreams/
+    ///
+    change_stream watch(const client_session& session,
+                        const pipeline& pipe,
+                        const options::change_stream& options = {});
+
+    ///
+    /// @}
+    ///
+
    private:
     friend class client;
     friend class collection;
 
     MONGOCXX_PRIVATE database(const class client& client, bsoncxx::string::view_or_value name);
+
+    MONGOCXX_PRIVATE bsoncxx::document::value _run_command(
+        const client_session* session, bsoncxx::document::view_or_value command);
+
+    MONGOCXX_PRIVATE class collection _create_collection(
+        const client_session* session,
+        stdx::string_view name,
+        bsoncxx::document::view_or_value collection_options,
+        const stdx::optional<class write_concern>& write_concern);
+
+    MONGOCXX_PRIVATE class collection _create_collection_deprecated(
+        const client_session* session,
+        bsoncxx::string::view_or_value name,
+        const options::create_collection& collection_options,
+        const stdx::optional<class write_concern>& write_concern);
+
+    MONGOCXX_PRIVATE cursor _list_collections(const client_session* session,
+                                              bsoncxx::document::view_or_value filter);
+
+    MONGOCXX_PRIVATE std::vector<std::string> _list_collection_names(
+        const client_session* session, bsoncxx::document::view_or_value filter);
+
+    MONGOCXX_PRIVATE void _drop(
+        const client_session* session,
+        const bsoncxx::stdx::optional<mongocxx::write_concern>& write_concern);
+
+    MONGOCXX_PRIVATE change_stream _watch(const client_session* session,
+                                          const pipeline& pipe,
+                                          const options::change_stream& options);
 
     class MONGOCXX_PRIVATE impl;
 

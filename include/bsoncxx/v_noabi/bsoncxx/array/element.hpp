@@ -37,8 +37,6 @@ class BSONCXX_API element : private document::element {
    public:
     element();
 
-    explicit element(const std::uint8_t* raw, std::uint32_t length, std::uint32_t offset);
-
     using document::element::operator bool;
 
     using document::element::type;
@@ -72,6 +70,15 @@ class BSONCXX_API element : private document::element {
     using document::element::raw;
     using document::element::length;
     using document::element::offset;
+    using document::element::keylen;
+
+   private:
+    friend class view;
+
+    BSONCXX_PRIVATE explicit element(const std::uint8_t* raw,
+                                     std::uint32_t length,
+                                     std::uint32_t offset,
+                                     std::uint32_t keylen);
 };
 
 }  // namespace array

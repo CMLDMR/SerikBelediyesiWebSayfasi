@@ -79,21 +79,8 @@ class BSONCXX_API element {
     element();
 
     ///
-    /// Construct an element as an offset into a buffer of bson bytes.
-    ///
-    /// @param raw
-    ///   A pointer to the raw bson bytes.
-    ///
-    /// @param length
-    ///   The size of the bson buffer.
-    ///
-    /// @param offset
-    ///   The element's offset into the buffer.
-    ///
-    explicit element(const std::uint8_t* raw, std::uint32_t length, std::uint32_t offset);
-
-    ///
-    /// Conversion operator to bool which is true for valid elements.
+    /// Conversion operator to bool which is true for valid elements
+    /// and false for invalid elements.
     ///
     explicit operator bool() const;
 
@@ -105,14 +92,6 @@ class BSONCXX_API element {
     const std::uint8_t* raw() const;
 
     ///
-    /// Setter for the raw bson bytes the element points to.
-    ///
-    /// @param raw
-    ///   The bytes this element should point to.
-    ///
-    void raw(const std::uint8_t* raw);
-
-    ///
     /// Getter for length of the raw bson bytes the element points to.
     ///
     /// @return a pointer to the length of the raw bson bytes.
@@ -120,27 +99,11 @@ class BSONCXX_API element {
     std::uint32_t length() const;
 
     ///
-    /// Setter for length of the raw bson bytes the element points to.
-    ///
-    /// @param length
-    ///   The length of the bytes this element points to.
-    ///
-    void length(std::uint32_t length);
-
-    ///
     /// Getter for the offset into the raw bson bytes the element points to.
     ///
     /// @return the offset into the raw bson bytes.
     ///
     std::uint32_t offset() const;
-
-    ///
-    /// Setter for the offset into the raw bson bytes the element points to.
-    ///
-    /// @param offset
-    ///   The offset into the bytes this element points to.
-    ///
-    void offset(std::uint32_t offset);
 
     ///
     /// Getter for the type of the element.
@@ -159,6 +122,13 @@ class BSONCXX_API element {
     /// @throws bsoncxx::exception if this element is invalid.
     ///
     stdx::string_view key() const;
+
+    ///
+    /// Getter for the element's key length.
+    ///
+    /// @return the element's key length.
+    ///
+    std::uint32_t keylen() const;
 
     ///
     /// Getter for elements of the b_double type.
@@ -390,9 +360,30 @@ class BSONCXX_API element {
     array::element operator[](std::uint32_t i) const;
 
    private:
+    ///
+    /// Construct an element as an offset into a buffer of bson bytes.
+    ///
+    /// @param raw
+    ///   A pointer to the raw bson bytes.
+    ///
+    /// @param length
+    ///   The size of the bson buffer.
+    ///
+    /// @param offset
+    ///   The element's offset into the buffer.
+    ///
+    BSONCXX_PRIVATE explicit element(const std::uint8_t* raw,
+                                     std::uint32_t length,
+                                     std::uint32_t offset,
+                                     std::uint32_t keylen);
+
+    friend class view;
+    friend class array::element;
+
     const std::uint8_t* _raw;
     std::uint32_t _length;
     std::uint32_t _offset;
+    std::uint32_t _keylen;
 };
 
 }  // namespace document

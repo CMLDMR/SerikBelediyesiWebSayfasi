@@ -1,10 +1,10 @@
-prefix=C:/mongpcxx3.2.rc1/msvc2015/libbson
+prefix=F:/mongocxx/mongo-c-driver-1.14.0/install
 exec_prefix=${prefix}
 libdir=${prefix}/lib
 includedir=${exec_prefix}/include
 
 Name: libbson static archive
 Description: The libbson BSON serialization library.
-Version: 1.8.2
+Version: 1.14.0
 Libs: -L${libdir} -lbson-static-1.0  ws2_32
 Cflags: -I${includedir}/libbson-1.0 -DBSON_STATIC

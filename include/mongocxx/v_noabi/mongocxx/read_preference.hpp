@@ -21,6 +21,7 @@
 
 #include <bsoncxx/document/view_or_value.hpp>
 #include <bsoncxx/stdx/optional.hpp>
+#include <mongocxx/options/transaction.hpp>
 #include <mongocxx/stdx.hpp>
 
 #include <mongocxx/config/prelude.hpp>
@@ -32,6 +33,10 @@ class client;
 class collection;
 class database;
 class uri;
+
+namespace events {
+class topology_description;
+}
 
 ///
 /// Class representing a preference for how the driver routes read operations to members of a
@@ -237,6 +242,8 @@ class MONGOCXX_API read_preference {
     friend client;
     friend collection;
     friend database;
+    friend options::transaction;
+    friend events::topology_description;
     friend uri;
 
     ///

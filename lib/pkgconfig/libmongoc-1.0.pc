@@ -1,11 +1,11 @@
-prefix=C:/mongpcxx3.2.rc1/msvc2015/libmongoc
+prefix=F:/mongocxx/mongo-c-driver-1.14.0/install
 exec_prefix=${prefix}
 libdir=${prefix}/lib
 includedir=${exec_prefix}/include
 
 Name: libmongoc
 Description: The libmongoc MongoDB client library.
-Version: 1.8.2
+Version: 1.14.0
 Requires: libbson-1.0
-Libs: -L${libdir} -lmongoc-1.0  -lsecur32.lib -lcrypt32.lib -lShlwapi.lib -lsecur32.lib -lcrypt32.lib -lBcrypt.lib
+Libs: -L${libdir} -lmongoc-1.0
 Cflags: -I${includedir}/libmongoc-1.0

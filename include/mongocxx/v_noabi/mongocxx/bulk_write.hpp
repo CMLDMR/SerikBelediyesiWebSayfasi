@@ -1,4 +1,4 @@
-// Copyright 2014 MongoDB Inc.
+// Copyright 2014-present MongoDB Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,8 +14,10 @@
 
 #pragma once
 
+#include <mongocxx/client_session.hpp>
 #include <mongocxx/model/write.hpp>
 #include <mongocxx/options/bulk_write.hpp>
+#include <mongocxx/result/bulk_write.hpp>
 
 #include <mongocxx/config/prelude.hpp>
 
@@ -31,7 +33,7 @@ class collection;
 /// part of a bulk_write in order to avoid unnecessary network-level round trips between the driver
 /// and the server.
 ///
-/// Bulk writes affect a single collection only and are executed via the collection::bulk_write()
+/// Bulk writes affect a single collection only and are executed via the bulk_write::execute()
 /// method. Options that you would typically specify for individual write operations (such as write
 /// concern) are instead specified for the aggregate operation.
 ///
@@ -40,19 +42,6 @@ class collection;
 ///
 class MONGOCXX_API bulk_write {
    public:
-    ///
-    /// Initializes a new bulk operation to be executed against a mongocxx::collection.
-    ///
-    /// @param options
-    ///   Optional arguments; see mongocxx::options::bulk_write.
-    ///
-    /// @deprecated
-    ///   Bulk writes created with this constructor will not inherit write concerns from the
-    ///   collection, database, or client. mongocxx::collection::create_bulk_operation should be
-    ///   used instead.
-    ///
-    explicit bulk_write(options::bulk_write options = {});
-
     ///
     /// Move constructs a bulk write operation.
     ///
@@ -84,16 +73,33 @@ class MONGOCXX_API bulk_write {
     ///     - model::update_many
     ///     - model::update_one
     ///
+    /// @return
+    ///   A reference to the object on which this member function is being called. This facilitates
+    ///   method chaining.
+    ///
     /// @throws mongocxx::logic_error if the given operation is invalid.
     ///
-    void append(const model::write& operation);
+    bulk_write& append(const model::write& operation);
+
+    ///
+    /// Executes a bulk write.
+    ///
+    /// @throws mongocxx::bulk_write_exception when there are errors processing the writes.
+    ///
+    /// @return The optional result of the bulk operation execution, a result::bulk_write.
+    ///
+    /// @see https://docs.mongodb.com/master/core/bulk-write-operations/
+    ///
+    stdx::optional<result::bulk_write> execute() const;
 
    private:
     friend class collection;
 
     class MONGOCXX_PRIVATE impl;
 
-    MONGOCXX_PRIVATE bulk_write(const collection& coll, const options::bulk_write& options);
+    MONGOCXX_PRIVATE bulk_write(const collection& coll,
+                                const options::bulk_write& options,
+                                const client_session* session = nullptr);
 
     bool _created_from_collection;
     std::unique_ptr<impl> _impl;

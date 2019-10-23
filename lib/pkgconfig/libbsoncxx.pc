@@ -12,13 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-prefix=C:/mongpcxx3.2.rc1/msvc2015/mongo-cxx-driver-r3.2.0-rc0_install
+prefix=F:/mongocxx/mongo-cxx-driver-r3.4.0/build/install
 includedir=${prefix}/include
 libdir=${prefix}/lib
 
 Name: libbsoncxx
 Description: The MongoDB C++11 BSON Library
 URL: http://github.com/mongodb/mongo-cxx-driver
-Version: 3.2.0-rc0
+Version: 3.4.0
 Cflags: -I${includedir}/bsoncxx/v_noabi
 Libs: -L${libdir} -lbsoncxx

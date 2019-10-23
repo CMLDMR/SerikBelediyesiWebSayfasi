@@ -1,4 +1,4 @@
-// Copyright 2014 MongoDB Inc.
+// Copyright 2014-present MongoDB Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,9 +16,10 @@
 
 #include <memory>
 
-#include <bsoncxx/string/view_or_value.hpp>
+#include <mongocxx/client_session.hpp>
 #include <mongocxx/database.hpp>
 #include <mongocxx/options/client.hpp>
+#include <mongocxx/options/client_session.hpp>
 #include <mongocxx/read_concern.hpp>
 #include <mongocxx/read_preference.hpp>
 #include <mongocxx/stdx.hpp>
@@ -32,6 +33,8 @@
 ///
 namespace mongocxx {
 MONGOCXX_INLINE_NAMESPACE_BEGIN
+
+class client_session;
 
 ///
 /// Class representing a client connection to MongoDB.
@@ -206,6 +209,8 @@ class MONGOCXX_API client {
     MONGOCXX_INLINE class database operator[](bsoncxx::string::view_or_value name) const&& = delete;
 
     ///
+    /// @{
+    ///
     /// Enumerates the databases in the client.
     ///
     /// @return A mongocxx::cursor containing a BSON document for each
@@ -220,12 +225,138 @@ class MONGOCXX_API client {
     ///
     cursor list_databases() const;
 
+    ///
+    /// Enumerates the databases in the client.
+    ///
+    /// @param session
+    ///   The mongocxx::client_session with which to perform the aggregation.
+    ///
+    /// @return A mongocxx::cursor containing a BSON document for each
+    ///   database. Each document contains a name field with the database
+    ///   name, a sizeOnDisk field with the total size of the database file on
+    ///   disk in bytes, and an empty field specifying whether the database
+    ///   has any data.
+    ///
+    /// @throws mongocxx::operation_exception if the underlying 'listDatabases' command fails.
+    ///
+    /// @see https://docs.mongodb.com/master/reference/command/listDatabases
+    ///
+    cursor list_databases(const client_session& session) const;
+
+    ///
+    /// Enumerates the databases in the client.
+    ///
+    /// @param filter
+    ///   The filter that documents must match in order to be listed.
+    ///
+    /// @return A mongocxx::cursor containing a BSON document for each
+    ///   database. Each document contains a name field with the database
+    ///   name, a sizeOnDisk field with the total size of the database file on
+    ///   disk in bytes, and an empty field specifying whether the database
+    ///   has any data.
+    ///
+    /// @throws mongocxx::operation_exception if the underlying 'listDatabases' command fails.
+    ///
+    /// @see https://docs.mongodb.com/master/reference/command/listDatabases
+    ///
+    cursor list_databases(const bsoncxx::document::view_or_value filter) const;
+
+    ///
+    /// @}
+    ///
+
+    ///
+    /// Create a client session for a sequence of operations.
+    ///
+    /// @return A client_session object. See `mongocxx::client_session` for more information.
+    ///
+    /// @throws mongocxx::operation_exception if the driver is not built with crypto support, if
+    /// options is misconfigured, or if the session is configured with options that the server does
+    /// not support.
+    ///
+    client_session start_session(const options::client_session& options = {});
+
+    ///
+    /// @{
+    ///
+    /// Gets a change stream on this client with an empty pipeline.
+    /// Change streams are only supported with a "majority" read concern or no read concern.
+    ///
+    /// @param options
+    ///   The options to use when creating the change stream.
+    ///
+    /// @return
+    ///  A change stream on this client.
+    ///
+    /// @see https://docs.mongodb.com/manual/changeStreams/
+    ///
+    change_stream watch(const options::change_stream& options = {});
+
+    ///
+    /// @param session
+    ///   The mongocxx::client_session with which to perform the watch operation.
+    /// @param options
+    ///   The options to use when creating the change stream.
+    ///
+    /// @return
+    ///  A change stream on this client.
+    ///
+    /// @see https://docs.mongodb.com/manual/changeStreams/
+    ///
+    change_stream watch(const client_session& session, const options::change_stream& options = {});
+
+    ///
+    /// Gets a change stream on this client.
+    /// Change streams are only supported with a "majority" read concern or no read concern.
+    ///
+    /// @param pipe
+    ///   The aggregation pipeline to be used on the change notifications.
+    ///   Only a subset of pipeline operations are supported for change streams. For more
+    ///   information see the change streams documentation.
+    /// @param options
+    ///   The options to use when creating the change stream.
+    ///
+    /// @return
+    ///  A change stream on this client.
+    ///
+    /// @see https://docs.mongodb.com/manual/changeStreams/
+    ///
+    change_stream watch(const pipeline& pipe, const options::change_stream& options = {});
+
+    ///
+    /// Gets a change stream on this client.
+    ///
+    /// @param session
+    ///   The mongocxx::client_session with which to perform the watch operation.
+    /// @param pipe
+    ///   The aggregation pipeline to be used on the change notifications.
+    /// @param options
+    ///   The options to use when creating the change stream.
+    ///
+    /// @return
+    ///  A change stream on this client.
+    ///
+    /// @see https://docs.mongodb.com/manual/changeStreams/
+    ///
+    change_stream watch(const client_session& session,
+                        const pipeline& pipe,
+                        const options::change_stream& options = {});
+
+    ///
+    /// @}
+    ///
+
    private:
     friend class collection;
     friend class database;
     friend class pool;
+    friend class client_session;
 
     MONGOCXX_PRIVATE explicit client(void* implementation);
+
+    MONGOCXX_PRIVATE change_stream _watch(const client_session* session,
+                                          const pipeline& pipe,
+                                          const options::change_stream& options);
 
     class MONGOCXX_PRIVATE impl;
 
