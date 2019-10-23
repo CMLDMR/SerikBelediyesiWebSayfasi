@@ -1,4 +1,5 @@
 #include "dilekceyonetim.h"
+#include "dilekce/dilekceview.h"
 
 DilekceYonetim::DilekceYonetim(mongocxx::database *_db, bsoncxx::document::value _user)
     : ContainerWidget ("Dilekçe Yönetim") , DilekceManager (_db) , User(_db,_user)
@@ -206,9 +207,14 @@ void DilekceYonetim::listDilekce(Dilekce &filterDilekce)
 
 void DilekceYonetim::initDilekce(const std::string &dilekceOid)
 {
-
-    this->Content ()->clear ();
-
+    auto dilekce = this->LoadDilekce (dilekceOid);
+    if( dilekce )
+    {
+        this->Content ()->clear ();
+        auto dilekceView = this->Content ()->addWidget (cpp14::make_unique<DilekceView>(dilekce.get ()));
+    }else{
+        this->showMessage ("Hata","Bu Dilekçe Yüklenemedi");
+    }
 }
 
 
