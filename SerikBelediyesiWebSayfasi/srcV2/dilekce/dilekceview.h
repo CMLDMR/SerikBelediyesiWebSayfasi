@@ -19,6 +19,8 @@ private:
     TCManager* mTCManager;
 
     void initTCView();
+
+    void initDilekceView();
 };
 
 #endif // DILEKCEVIEW_H

@@ -1,5 +1,5 @@
 #include "dilekceview.h"
-
+#include <QDateTime>
 
 DilekceView::DilekceView(Dilekce *_dilekce, mongocxx::database *_db)
     : ContainerWidget (),Dilekce(_dilekce),DB(_db)
@@ -10,6 +10,7 @@ DilekceView::DilekceView(Dilekce *_dilekce, mongocxx::database *_db)
     if( _dilekce )
     {
         this->initTCView ();
+        this->initDilekceView ();
     }
 }
 
@@ -70,4 +71,84 @@ void DilekceView::initTCView()
 
         }
     }
+}
+
+void DilekceView::initDilekceView()
+{
+    this->Content ()->clear ();
+    this->Content ()->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+    this->Content ()->setMargin (20,Side::Top|Side::Bottom);
+    this->Content ()->setWidth (WLength("100%"));
+
+    {
+        auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::col_full_12);
+        auto text = container->addWidget (cpp14::make_unique<WText>(this->oid ().value ().to_string ()));
+        text->addStyleClass (Bootstrap::Label::Default);
+    }
+
+    // Dilekçe Konu
+    {
+        auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_6
+                                  +Bootstrap::Grid::Medium::col_md_6
+                                  +Bootstrap::Grid::Small::col_sm_6
+                                  +Bootstrap::Grid::ExtraSmall::col_xs_12);
+        auto text = container->addWidget (cpp14::make_unique<WText>(this->konu ().toStdString ()));
+        container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+    }
+
+    {
+        auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_1
+                                  +Bootstrap::Grid::Medium::col_md_1
+                                  +Bootstrap::Grid::Small::col_sm_1
+                                  +Bootstrap::Grid::ExtraSmall::col_xs_6);
+        auto text = container->addWidget (cpp14::make_unique<WText>(std::to_string (this->sayi ())));
+        container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+    }
+
+    {
+        auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_2
+                                  +Bootstrap::Grid::Medium::col_md_2
+                                  +Bootstrap::Grid::Small::col_sm_2
+                                  +Bootstrap::Grid::ExtraSmall::col_xs_6);
+        QDateTime _time;
+        _time.setTime_t (this->oid ().value ().get_time_t ());
+        auto text = container->addWidget (cpp14::make_unique<WText>(_time.date ().toString ("dd/MM/yyyy").toStdString ()
+                                                                    +" - " + _time.time ().toString ("hh:mm").toStdString ()));
+        container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+    }
+
+    {
+        auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_3
+                                  +Bootstrap::Grid::Medium::col_md_3
+                                  +Bootstrap::Grid::Small::col_sm_3
+                                  +Bootstrap::Grid::ExtraSmall::col_xs_6);
+        auto text = container->addWidget (cpp14::make_unique<WText>(this->icerikTipi ().toStdString ()));
+        container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+    }
+
+    {
+        auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::col_full_12);
+        auto text = container->addWidget (cpp14::make_unique<WText>(this->icerik ().toStdString ()));
+        container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+        container->setMargin (20,Side::Top|Side::Bottom);
+        container->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::OldLace));
+    }
+
+    {
+        auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::col_full_12);
+        container->addWidget (cpp14::make_unique<WText>("<b>Açıklama Ekle</b>"));
+        auto text = container->addWidget (cpp14::make_unique<WTextEdit>());
+        text->setHeight (350);
+        container->setMargin (20,Side::Top|Side::Bottom);
+        auto saveBtn = container->addWidget (cpp14::make_unique<WPushButton>("Kaydet"));
+        saveBtn->addStyleClass (Bootstrap::Button::Primary);
+    }
+
 }
