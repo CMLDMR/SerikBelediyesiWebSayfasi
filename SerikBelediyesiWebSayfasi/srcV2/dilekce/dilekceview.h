@@ -8,11 +8,17 @@
 #include "db.h"
 #include "dilekcemanager.h"
 #include "user.h"
+#include "tcmanager.h"
 
-class DilekceView : public ContainerWidget
+class DilekceView : public ContainerWidget , public Dilekce , public DB
 {
 public:
-    DilekceView();
+    DilekceView(Dilekce* _dilekce , mongocxx::database* _db );
+
+private:
+    TCManager* mTCManager;
+
+    void initTCView();
 };
 
 #endif // DILEKCEVIEW_H
