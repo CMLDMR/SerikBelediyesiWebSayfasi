@@ -2,7 +2,7 @@
 #include "dilekce/dilekceview.h"
 
 DilekceYonetim::DilekceYonetim(mongocxx::database *_db, bsoncxx::document::value _user)
-    : ContainerWidget ("Dilekçe Yönetim") , DilekceManager (_db) , User(_db,_user)
+    : ContainerWidget ("Dilekçe Yönetim") , DilekceManager (_db) , mUser(new User(_db,_user))
 {
     this->initControlPanel ();
 
@@ -15,10 +15,10 @@ void DilekceYonetim::initControlPanel()
     this->Header ()->clear ();
 
 
-    if( this->Statu () == User::Baskan || this->Statu () == User::BaskanYardimcisi )
+    if( this->mUser->Statu () == User::Baskan || this->mUser->Statu () == User::BaskanYardimcisi )
     {
         this->Header ()->addWidget (cpp14::make_unique<WText>("Başkan ve Başkan Yardımcısı Menü"));
-    }else if( this->Statu () == User::Mudur )
+    }else if( this->mUser->Statu () == User::Mudur )
     {
         this->Header ()->addWidget (cpp14::make_unique<WText>("Müdür Menüsü"));
         this->initMudurPanel ();
@@ -38,7 +38,7 @@ void DilekceYonetim::initMudurPanel()
         auto btn = createButton ("Gelen Dilekçeler",Style::color::Green::DarkCyan,Style::color::White::Snow);
         btn->clicked ().connect ([&](){
             Dilekce filter;
-            filter.SetBirim (this->Birimi ().c_str ());
+            filter.SetBirim (this->mUser->Birimi ().c_str ());
             this->listDilekce (filter);
         });
         this->Header ()->addWidget (std::move(btn));
@@ -207,7 +207,7 @@ void DilekceYonetim::initDilekce(const std::string &dilekceOid)
     if( dilekce )
     {
         this->Content ()->clear ();
-        auto dilekceView = this->Content ()->addWidget (cpp14::make_unique<DilekceView>(dilekce.get (),this->db ()));
+        auto dilekceView = this->Content ()->addWidget (cpp14::make_unique<DilekceView>(dilekce.get (),this->db (),this->mUser));
     }else{
         this->showMessage ("Hata","Bu Dilekçe Yüklenemedi");
     }

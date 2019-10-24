@@ -12,7 +12,7 @@
 #include "dilekce.h"
 
 
-class DilekceYonetim : public ContainerWidget , public DilekceManager , public User
+class DilekceYonetim : public ContainerWidget , public DilekceManager
 {
 public:
     DilekceYonetim(mongocxx::database* _db , bsoncxx::document::value _user);
@@ -32,6 +32,8 @@ public:
 private:
 
     Signal<std::string> _clickDilekceItem;
+
+    User* mUser;
 
 
 };
