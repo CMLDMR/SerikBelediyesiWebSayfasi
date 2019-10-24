@@ -10,10 +10,10 @@
 #include "user.h"
 #include "tcmanager.h"
 
-class DilekceView : public ContainerWidget , public Dilekce , public DB
+class DilekceView : public ContainerWidget , public Dilekce , public DilekceManager
 {
 public:
-    DilekceView(Dilekce* _dilekce , mongocxx::database* _db );
+    DilekceView(Dilekce* _dilekce , mongocxx::database *_db, User* _user , bool _mPublicLink = false );
 
 private:
     TCManager* mTCManager;
@@ -23,6 +23,15 @@ private:
     void initDilekceView();
 
     void initCevapView();
+
+private:
+    User* mUser;
+
+    ContainerWidget* mAciklamaContainer;
+
+    void addAciklama(const DilekceAciklama &aciklama);
+
+    bool mPublicLink;
 };
 
 #endif // DILEKCEVIEW_H
