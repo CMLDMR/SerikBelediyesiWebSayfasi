@@ -258,7 +258,7 @@ bool BilgiEdinmeItem::setCevap(const Cevap &cevap)
         return true;
     }
 
-    std::cout << "Set Element" << bsoncxx::to_json(cevap.Document().view()) << std::endl;
+//    std::cout << "Set Element" << bsoncxx::to_json(cevap.Document().view()) << std::endl;
 
     auto setDoc = document{};
 
@@ -269,7 +269,7 @@ bool BilgiEdinmeItem::setCevap(const Cevap &cevap)
 //        throw e.what();
     }
 
-    std::cout << bsoncxx::to_json(setDoc.view()) << std::endl;
+//    std::cout << bsoncxx::to_json(setDoc.view()) << std::endl;
 
 
     try {
