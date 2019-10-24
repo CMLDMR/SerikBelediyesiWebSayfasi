@@ -21,6 +21,8 @@ private:
     void initTCView();
 
     void initDilekceView();
+
+    void initCevapView();
 };
 
 #endif // DILEKCEVIEW_H

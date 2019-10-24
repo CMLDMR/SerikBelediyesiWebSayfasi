@@ -11,6 +11,7 @@ DilekceView::DilekceView(Dilekce *_dilekce, mongocxx::database *_db)
     {
         this->initTCView ();
         this->initDilekceView ();
+        this->initCevapView ();
     }
 }
 
@@ -142,6 +143,16 @@ void DilekceView::initDilekceView()
 
     {
         auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        auto text = container->addWidget (cpp14::make_unique<WText>("Orjinal Evrak"));
+        text->addStyleClass (Bootstrap::ContextualBackGround::bg_primary);
+        container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+        container->setMargin (20,Side::Top|Side::Bottom);
+        container->addStyleClass (Bootstrap::ContextualBackGround::bg_primary);
+        container->decorationStyle ().setCursor (Cursor::PointingHand);
+    }
+
+    {
+        auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
         container->addStyleClass (Bootstrap::Grid::col_full_12);
         container->addWidget (cpp14::make_unique<WText>("<b>Açıklama Ekle</b>"));
         auto text = container->addWidget (cpp14::make_unique<WTextEdit>());
@@ -151,4 +162,19 @@ void DilekceView::initDilekceView()
         saveBtn->addStyleClass (Bootstrap::Button::Primary);
     }
 
+
+
+
+}
+
+void DilekceView::initCevapView()
+{
+    this->Footer ()->clear ();
+    this->Footer ()->setMargin (20,Side::Top);
+    this->Footer ()->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+    this->Footer ()->setWidth (WLength("100%"));
+    this->Footer ()->addWidget (cpp14::make_unique<WText>("<strong>Cevap Ekle</strong>"));
+    this->Footer ()->addWidget (cpp14::make_unique<WBreak>());
+    this->Footer ()->addWidget (cpp14::make_unique<FileUploaderWidget>(this->db ()));
+    this->Footer ()->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::LavenderBlush));
 }
