@@ -30,8 +30,6 @@ void DilekceYonetim::initControlPanel()
 
 }
 
-
-
 void DilekceYonetim::initMudurPanel()
 {
     this->Header ()->clear ();
@@ -64,8 +62,6 @@ void DilekceYonetim::initMudurPanel()
 
 
 }
-
-
 
 std::unique_ptr<ContainerWidget> DilekceYonetim::createButton(const std::string &buttonName , const std::string &backGroundColor , const std::string &textColor )
 {
@@ -211,7 +207,7 @@ void DilekceYonetim::initDilekce(const std::string &dilekceOid)
     if( dilekce )
     {
         this->Content ()->clear ();
-        auto dilekceView = this->Content ()->addWidget (cpp14::make_unique<DilekceView>(dilekce.get ()));
+        auto dilekceView = this->Content ()->addWidget (cpp14::make_unique<DilekceView>(dilekce.get (),this->db ()));
     }else{
         this->showMessage ("Hata","Bu Dilekçe Yüklenemedi");
     }
