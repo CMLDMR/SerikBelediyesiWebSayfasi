@@ -104,7 +104,7 @@ void ContainerWidget::showMessage(std::string title, std::string msg, std::strin
 
 
 
-FileUploaderWidget::FileUploaderWidget(mongocxx::database *_db)
+FileUploaderWidget::FileUploaderWidget(mongocxx::database *_db, const std::string &title)
     :DBClass (_db)
 {
 
@@ -129,7 +129,7 @@ FileUploaderWidget::FileUploaderWidget(mongocxx::database *_db)
         this->showMessage("Hata","Dosya Boyutu Fazla Büyük. Max: 6MB Olmalı");
     });
 
-    Wt::WPushButton *uploadButton = fileUploaderContainer->addWidget(Wt::cpp14::make_unique<Wt::WPushButton>("PDF Cevap Yükle"));
+    Wt::WPushButton *uploadButton = fileUploaderContainer->addWidget(Wt::cpp14::make_unique<Wt::WPushButton>(title));
     uploadButton->setMargin(10, Wt::Side::Left | Wt::Side::Right);
 
     uploadButton->clicked().connect([=] {
