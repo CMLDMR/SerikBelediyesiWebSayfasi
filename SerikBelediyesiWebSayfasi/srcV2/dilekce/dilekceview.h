@@ -9,6 +9,8 @@
 #include "dilekcemanager.h"
 #include "user.h"
 #include "tcmanager.h"
+#include "personelmanager.h"
+#include <QStringList>
 
 class DilekceView : public ContainerWidget , public Dilekce , public DilekceManager
 {
@@ -17,6 +19,7 @@ public:
 
 private:
     TCManager* mTCManager;
+    PersonelManager* mPersonelManager;
 
     void initTCView();
 
@@ -28,8 +31,20 @@ private:
     User* mUser;
 
     ContainerWidget* mAciklamaContainer;
+    ContainerWidget* mGorevliPersonelContainer;
+
+    ContainerWidget* mCevapContainer;
+    ContainerWidget* mCevapFileContainer;
+    FileUploaderWidget* mCevapUploader;
+
+    ContainerWidget* mCevapEklerContainer;
+    FileUploaderWidget* mCevapEkUploader;
+    QStringList mUploadedFilePathList;
 
     void addAciklama(const DilekceAciklama &aciklama);
+
+    void gorevliEkle();
+    void updateGorevliPersonelWidget();
 
     bool mPublicLink;
 };

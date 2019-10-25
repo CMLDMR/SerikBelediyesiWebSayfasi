@@ -1,6 +1,7 @@
 #include "dilekceview.h"
 #include <QDateTime>
 #include "dilekceaciklama.h"
+#include "personel.h"
 
 
 DilekceView::DilekceView(Dilekce *_dilekce, mongocxx::database* _db ,  User *_user, bool _mPublicLink)
@@ -14,6 +15,7 @@ DilekceView::DilekceView(Dilekce *_dilekce, mongocxx::database* _db ,  User *_us
 
 
     mTCManager = new TCManager(this->db ());
+    mPersonelManager = new PersonelManager(this->db ());
 
     if( _dilekce )
     {
@@ -210,13 +212,28 @@ void DilekceView::initDilekceView()
             }
         }
     }
-        this->Content ()->addWidget (cpp14::make_unique<WBreak>());
+
+    this->Content ()->addWidget (cpp14::make_unique<WBreak>());
+
+    {
+        mGorevliPersonelContainer = this->Content ()->addWidget (cpp14::make_unique<ContainerWidget>());
+        mGorevliPersonelContainer->setMargin (20,Side::Top|Side::Bottom);
+        mGorevliPersonelContainer->setWidth (WLength("100%"));
+        mGorevliPersonelContainer->setAttributeValue (Style::style,Style::Border::top::border ("1px solid gray"));
 
 
+        this->updateGorevliPersonelWidget ();
+
+    }
+
+    this->Content ()->addWidget (cpp14::make_unique<WBreak>());
 
     {
         mAciklamaContainer = this->Content ()->addWidget (cpp14::make_unique<ContainerWidget>());
         mAciklamaContainer->setWidth (WLength("100%"));
+        mAciklamaContainer->setMargin (20,Side::Top|Side::Bottom);
+        mAciklamaContainer->setAttributeValue (Style::style,Style::Border::top::border ("1px solid gray"));
+
         auto _dilekceOid = this->oid ().value ().to_string ();
         auto list = this->findAciklama (_dilekceOid);
         for( auto item : list )
@@ -224,6 +241,8 @@ void DilekceView::initDilekceView()
             this->addAciklama (item);
         }
     }
+
+
 
     if( !mPublicLink ){
         auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
@@ -268,12 +287,94 @@ void DilekceView::initCevapView()
 {
     this->Footer ()->clear ();
     this->Footer ()->setMargin (20,Side::Top);
-    this->Footer ()->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
-    this->Footer ()->setWidth (WLength("100%"));
-    this->Footer ()->addWidget (cpp14::make_unique<WText>("<strong>Cevap Ekle</strong>"));
-    this->Footer ()->addWidget (cpp14::make_unique<WBreak>());
-    this->Footer ()->addWidget (cpp14::make_unique<FileUploaderWidget>(this->db ()));
-    this->Footer ()->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::LavenderBlush));
+
+
+    mCevapContainer = this->Footer ()->addWidget (cpp14::make_unique<ContainerWidget>());
+    mCevapContainer->setMargin (20,Side::Top);
+    mCevapContainer->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+    mCevapContainer->setWidth (WLength("100%"));
+    mCevapContainer->addWidget (cpp14::make_unique<WText>("<strong>Cevap Ekle</strong>"));
+    mCevapContainer->addWidget (cpp14::make_unique<WBreak>());
+
+    mCevapFileContainer = mCevapContainer->addWidget (cpp14::make_unique<ContainerWidget>());
+//    mCevapFileContainer->setWidth (WLength("100%"));
+
+    mCevapContainer->addWidget (cpp14::make_unique<WBreak>());
+
+    mCevapUploader = mCevapContainer->addWidget (cpp14::make_unique<FileUploaderWidget>(this->db ()));
+    mCevapContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::LavenderBlush));
+    mCevapUploader->Uploaded ().connect ([=](){
+
+
+        mCevapFileContainer->clear ();
+        auto container = mCevapFileContainer->addWidget (cpp14::make_unique<ContainerWidget>());
+        container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+        container->setMargin (5,AllSides);
+        container->addStyleClass (Bootstrap::ContextualBackGround::bg_info);
+        container->decorationStyle ().setCursor (Cursor::PointingHand);
+
+
+        Wt::WLink link = Wt::WLink(LinkType::Url,mCevapUploader->doocRootLocation ().toStdString ());
+        link.setTarget(Wt::LinkTarget::NewWindow);
+
+        std::unique_ptr<Wt::WAnchor> anchor =
+                Wt::cpp14::make_unique<Wt::WAnchor>(link,
+                                "Cevap Dosyası");
+        auto text = container->addWidget (std::move(anchor));
+        text->addStyleClass (Bootstrap::ContextualBackGround::bg_info);
+
+
+
+        std::cout << "docRootLocation: " << mCevapUploader->doocRootLocation ().toStdString () << std::endl;
+        std::cout << "fileLocation: " << mCevapUploader->fileLocation ().toStdString () << std::endl;
+
+
+
+    });
+
+    mCevapEklerContainer = this->Footer ()->addWidget (cpp14::make_unique<ContainerWidget>());
+    mCevapEklerContainer->setMargin (20,Side::Top);
+    mCevapEklerContainer->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+    mCevapEklerContainer->setWidth (WLength("100%"));
+    mCevapEklerContainer->addWidget (cpp14::make_unique<WText>("<strong>Ekler</strong>"));
+    mCevapEklerContainer->addWidget (cpp14::make_unique<WBreak>());
+    mCevapEkUploader = mCevapEklerContainer->addWidget (cpp14::make_unique<FileUploaderWidget>(this->db (),"Ek Dosya Yükle"));
+    mCevapEklerContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::HoneyDew));
+    mCevapEkUploader->Uploaded ().connect ([=](){
+
+
+        auto container = mCevapEklerContainer->addWidget (cpp14::make_unique<ContainerWidget>());
+        container->setWidth (175);
+        container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+        container->setMargin (5,AllSides);
+        container->addStyleClass (Bootstrap::ContextualBackGround::bg_info);
+        container->setPadding (20,Side::Right);
+        container->setPositionScheme (PositionScheme::Relative);
+
+
+
+        mUploadedFilePathList.append(mCevapEkUploader->fileLocation ());
+        Wt::WLink link = Wt::WLink(LinkType::Url,mCevapEkUploader->doocRootLocation ().toStdString ());
+        link.setTarget(Wt::LinkTarget::NewWindow);
+
+        std::unique_ptr<Wt::WAnchor> anchor =
+                Wt::cpp14::make_unique<Wt::WAnchor>(link,
+                                "EK Dosyası "+ QString::number (mUploadedFilePathList.count ()).toStdString () );
+        auto textLink = container->addWidget (std::move(anchor));
+        textLink->addStyleClass (Bootstrap::ContextualBackGround::bg_info);
+
+        auto delBtn = container->addWidget (cpp14::make_unique<ContainerWidget>());
+        delBtn->setPositionScheme (PositionScheme::Absolute);
+        delBtn->addStyleClass (Bootstrap::ContextualBackGround::bg_danger);
+        delBtn->setOffsets (0,Side::Right|Side::Top);
+        auto text = delBtn->addWidget (cpp14::make_unique<WText>("<b>X</b>"));
+        text->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
+        delBtn->clicked ().connect ([=](){
+            mCevapEklerContainer->removeWidget(container);
+
+        });
+
+    });
 }
 
 void DilekceView::addAciklama(const DilekceAciklama &aciklama)
@@ -349,4 +450,164 @@ void DilekceView::addAciklama(const DilekceAciklama &aciklama)
     container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
     container->addWidget (cpp14::make_unique<WText>(aciklama.Aciklama ().toStdString ()));
     mAciklamaContainer->addWidget (cpp14::make_unique<WBreak>());
+}
+
+void DilekceView::gorevliEkle()
+{
+
+    auto dialog = WApplication::instance ()->root ()->addChild (cpp14::make_unique<WDialog>());
+    dialog->setHeight (450);
+
+    dialog->titleBar ()->addWidget (cpp14::make_unique<WText>("Personel Görevlendir | <b>" + this->mUser->Birimi () + " Listesi</b>"));
+
+
+    dialog->contents ()->setOverflow (Overflow::Scroll);
+    auto container = dialog->contents ()->addWidget (cpp14::make_unique<ContainerWidget>());
+
+
+
+    auto list = mPersonelManager->PersonelList (this->mUser->Birimi ().c_str ());
+
+
+    for( auto personel : list )
+    {
+
+
+        auto _container = container->addWidget (cpp14::make_unique<WContainerWidget>());
+        _container->setMargin (5,Side::Bottom);
+        _container->setWidth (WLength("100%"));
+        _container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+
+        auto personelOid = personel.oid ();
+        if( personelOid )
+        {
+            _container->setAttributeValue (Style::dataoid,personelOid.value ().to_string ());
+        }else{
+            _container->setAttributeValue (Style::dataoid,"null");
+        }
+
+        if( personel.AdSoyad ().toStdString () != this->mUser->AdSoyad () )
+        {
+            _container->addStyleClass (Bootstrap::ContextualBackGround::bg_info);
+        }else{
+            _container->addStyleClass (Bootstrap::ContextualBackGround::bg_warning);
+        }
+
+
+        auto gBtn = _container->addWidget (cpp14::make_unique<WText>("Görevlendir"));
+        gBtn->setMargin (10,Side::Left|Side::Right);
+        gBtn->addStyleClass (Bootstrap::ContextualBackGround::bg_primary);
+        gBtn->decorationStyle ().setCursor (Cursor::PointingHand);
+        gBtn->setPadding (10,Side::Left|Side::Right);
+        _container->addWidget (cpp14::make_unique<WText>(personel.AdSoyad ().toStdString ()));
+        container->addWidget (cpp14::make_unique<WBreak>());
+
+        gBtn->clicked ().connect ([=](){
+
+
+            if( _container->attributeValue (Style::dataoid).toUTF8 () != "null" )
+            {
+                Personel per;
+                per.setOid (personel.oid ().value ().to_string ());
+                per.setAdSoyad (personel.AdSoyad ());
+                per.setFotoOid (personel.FotoOid ());
+                this->AddGorevliPersonel (per);
+                if( this->updateDilekce (this) ){
+                    WApplication::instance ()->root ()->removeChild (dialog);
+                    this->updateGorevliPersonelWidget ();
+                }
+            }
+        });
+    }
+
+
+
+
+    auto closeBtn = dialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kapat"));
+    closeBtn->clicked ().connect ([=](){
+        WApplication::instance ()->root ()->removeChild (dialog);
+    });
+
+    dialog->show ();
+
+}
+
+void DilekceView::updateGorevliPersonelWidget()
+{
+
+    mGorevliPersonelContainer->clear ();
+
+    mGorevliPersonelContainer->addWidget (cpp14::make_unique<WText>("<b>Görevli Personeller</b>"))->setMargin (10,Side::Right);
+    auto ekleBtn = mGorevliPersonelContainer->addWidget (cpp14::make_unique<WPushButton>("Ekle"));
+    ekleBtn->addStyleClass (Bootstrap::Button::Primary);
+    mGorevliPersonelContainer->addWidget (cpp14::make_unique<WBreak>());
+    ekleBtn->clicked ().connect (this,&DilekceView::gorevliEkle );
+
+    auto prContainer = mGorevliPersonelContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+    prContainer->addStyleClass (Bootstrap::Grid::row);
+
+    for( auto per : this->GorevliList () )
+    {
+        auto container = prContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->setHeight (152);
+        container->setOverflow (Overflow::Hidden);
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_1
+                                  +Bootstrap::Grid::Medium::col_md_1
+                                  +Bootstrap::Grid::Small::col_sm_2
+                                  +Bootstrap::Grid::ExtraSmall::col_xs_3);
+        container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+        container->setPadding (0,AllSides);
+        container->setContentAlignment (AlignmentFlag::Center);
+        auto photoFilePath = this->downloadFileWeb (per.FotoOid ());
+
+
+        auto photoContainer = container->addWidget (cpp14::make_unique<ContainerWidget>());
+        photoContainer->setWidth (WLength("100%"));
+        photoContainer->setHeight (90);
+        photoContainer->setAttributeValue (Style::style,Style::background::url (photoFilePath)
+                                      +Style::background::size::cover
+                                      +Style::background::repeat::norepeat);
+
+        container->addWidget (cpp14::make_unique<WBreak>());
+        auto adSoyadText = container->addWidget (cpp14::make_unique<WText>(per.AdSoyad ().toStdString ()));
+        adSoyadText->setAttributeValue (Style::style,Style::font::size::s10px);
+
+        auto deleteContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
+        deleteContainer->setPositionScheme (PositionScheme::Absolute);
+        deleteContainer->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+        deleteContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::Red::DarkRed));
+        deleteContainer->setPadding (2,Side::Right|Side::Left);
+        auto delText = deleteContainer->addWidget (cpp14::make_unique<WText>("<b>X</b>"));
+        delText->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow)+Style::font::size::s9px);
+        deleteContainer->setOffsets (0,Side::Top|Side::Right);
+        deleteContainer->decorationStyle ().setCursor (Cursor::PointingHand);
+        deleteContainer->setAttributeValue (Style::dataoid,per.oid ().value ().to_string ());
+
+        deleteContainer->clicked ().connect ([=](){
+            auto messageBox =
+                  deleteContainer->addChild(Wt::cpp14::make_unique<Wt::WMessageBox>(
+                              "Uyarı",
+                          "<p>Bu Personeli Kaldırmak İstediğinize Emin misiniz<b>?</b></p>",
+                              Wt::Icon::Information,
+                              Wt::StandardButton::Yes | Wt::StandardButton::No));
+                messageBox->setModal(false);
+                messageBox->buttonClicked().connect([=] {
+                    if( messageBox->buttonResult () == Wt::StandardButton::Yes )
+                    {
+                        Personel per;
+                        per.setOid (deleteContainer->attributeValue (Style::dataoid).toUTF8 ());
+                        this->DeleteGorevliPersonel (per);
+                        if( this->updateDilekce (this) ){
+                            this->updateGorevliPersonelWidget ();
+                        }
+
+
+
+                    }else{
+                        deleteContainer->removeChild (messageBox);
+                    }
+                });
+                messageBox->show();
+        });
+    }
 }
