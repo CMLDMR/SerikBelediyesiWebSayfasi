@@ -3672,9 +3672,11 @@ void Giris::Personel::PersonelWidget::initHeader(WContainerWidget* _row)
     auto tempContainer = _row->addWidget(cpp14::make_unique<WContainerWidget>());
     tempContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
     tempContainer->setAttributeValue(Style::style,Style::background::color::rgba(120,155,175));
+    tempContainer->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
 
 
     auto photoWidget = tempContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+    photoWidget->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
 
     auto bucket = db()->gridfs_bucket();
     std::string imgPath = SBLDKeys::downloadifNotExist(&bucket,User().view()[SBLDKeys::Personel::fotoOid].get_oid().value.to_string());
