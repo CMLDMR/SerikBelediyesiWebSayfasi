@@ -39,6 +39,8 @@ void DilekceYonetim::initMudurPanel()
         btn->clicked ().connect ([&](){
             Dilekce filter;
             filter.SetBirim (this->mUser->Birimi ().c_str ());
+            //TODO: Bu Kod Açılacak
+//            filter.SetDurum (DilekceDurum::Acik);
             this->listDilekce (filter);
         });
         this->Header ()->addWidget (std::move(btn));
