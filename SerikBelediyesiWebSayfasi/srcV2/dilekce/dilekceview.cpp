@@ -236,7 +236,6 @@ void DilekceView::initDilekceView()
         saveBtn->addStyleClass (Bootstrap::Button::Primary);
         saveBtn->clicked ().connect ([=](){
 
-            std::cout << "Açıklama Kaydet" << std::endl;
             if( text->text ().toUTF8 ().size () < 50 )
             {
                 this->showMessage ("UYARI","Açıklamanız Yeterli Uzunlukta Değil. Min: 50 Karakter Yazmalısınız");
@@ -282,14 +281,49 @@ void DilekceView::addAciklama(const DilekceAciklama &aciklama)
     auto container = mAciklamaContainer->addWidget (cpp14::make_unique<WContainerWidget>());
     container->setPositionScheme (PositionScheme::Relative);
 
+
     if( !mPublicLink ){
-        auto closeAciklama = container->addWidget (cpp14::make_unique<WContainerWidget>());
-        closeAciklama->setPositionScheme (PositionScheme::Absolute);
-        closeAciklama->setOffsets (0,Side::Right|Side::Top);
-        auto text = closeAciklama->addWidget (cpp14::make_unique<WText>("<b>X</b>"));
-        text->setAttributeValue (Style::style,Style::font::size::s14px);
-        closeAciklama->addStyleClass (Bootstrap::Label::Danger);
-        closeAciklama->decorationStyle ().setCursor (Cursor::PointingHand);
+
+        auto oid_ = aciklama.oid ();
+
+        if( oid_ )
+        {
+            auto closeAciklama = container->addWidget (cpp14::make_unique<WContainerWidget>());
+            closeAciklama->setPositionScheme (PositionScheme::Absolute);
+            closeAciklama->setOffsets (0,Side::Right|Side::Top);
+            auto text = closeAciklama->addWidget (cpp14::make_unique<WText>("<b>X</b>"));
+            text->setAttributeValue (Style::style,Style::font::size::s14px);
+            closeAciklama->addStyleClass (Bootstrap::Label::Danger);
+            closeAciklama->decorationStyle ().setCursor (Cursor::PointingHand);
+
+            closeAciklama->setAttributeValue (Style::dataoid,aciklama.oid ().value ().to_string ());
+            closeAciklama->clicked ().connect ([=](){
+                auto messageBox =
+                      closeAciklama->addChild(Wt::cpp14::make_unique<Wt::WMessageBox>(
+                                  "Uyarı",
+                              "<p>Bu Açıklamayı Silmek İstediğinize Eminmisiniz<b>?</b></p>",
+                                  Wt::Icon::Information,
+                                  Wt::StandardButton::Yes | Wt::StandardButton::No));
+
+                    messageBox->setModal(false);
+
+                    messageBox->buttonClicked().connect([=] {
+                        if( messageBox->buttonResult () == Wt::StandardButton::Yes )
+                        {
+                            if( this->deleteAciklama (closeAciklama->attributeValue (Style::dataoid).toUTF8 ()) ){
+
+                                closeAciklama->removeChild(messageBox);
+
+                                mAciklamaContainer->removeWidget(container);
+
+                            }
+                        }
+                    });
+
+                    messageBox->show();
+            });
+        }
+
     }
 
     {
