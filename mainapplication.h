@@ -38,6 +38,8 @@ public:
 
     void ShowForeGround();
 
+    bool loadDilekce( const std::string &oid );
+
 
 
 private:

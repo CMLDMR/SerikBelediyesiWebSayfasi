@@ -7,6 +7,7 @@
 #include "SerikBelediyesiWebSayfasi/srcV2/mainpage.h"
 
 #include <Wt/WOverlayLoadingIndicator.h>
+#include "SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekceview.h"
 
 
 #include "../url.h"
@@ -25,17 +26,10 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
 
 
 
-//    std::cout << "SESSION: " << wApp->sessionId() << std::endl;
-//    std::cout << "DEPLOYMENT PATH: " << env.deploymentPath() << std::endl;
+    //    std::cout << "SESSION: " << wApp->sessionId() << std::endl;
+    //    std::cout << "DEPLOYMENT PATH: " << env.deploymentPath() << std::endl;
 
-    for (auto str : env.getParameterMap() ) {
-//        std::cout << "First: " << str.first << " " << str.second.size() << " " << str.second.back() << std::endl;
 
-        for( auto sec : str.second )
-        {
-            std::cout << "Parameter: " << str.first << " Value: " << sec << std::endl;
-        }
-    }
 
 
 
@@ -89,11 +83,11 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
     WApplication::useStyleSheet(WLink("css/eventWidget.css"));
     WApplication::useStyleSheet(WLink("css/header.css"));
 
-//    WApplication::useStyleSheet(WLink("css/test.css"));
+    //    WApplication::useStyleSheet(WLink("css/test.css"));
 
     Wt::WApplication::instance()->useStyleSheet("resources/themes/bootstrap/3/bootstrap-theme.min.css");
     Wt::WApplication::require("script/Script.js");
-//    Wt::WApplication::require("script/testscript.js");
+    //    Wt::WApplication::require("script/testscript.js");
 
 
     Wt::WApplication::require("script/jszip/jszip.min.js");
@@ -117,38 +111,83 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
                                            "gtag('config', 'UA-56529726-1');");
 
 
-//    <!-- Global site tag (gtag.js) - Google Analytics -->
-//    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-56529726-1"></script>
-//    <script>
-//      window.dataLayer = window.dataLayer || [];
-//      function gtag(){dataLayer.push(arguments);}
-//      gtag('js', new Date());
+    //    <!-- Global site tag (gtag.js) - Google Analytics -->
+    //    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-56529726-1"></script>
+    //    <script>
+    //      window.dataLayer = window.dataLayer || [];
+    //      function gtag(){dataLayer.push(arguments);}
+    //      gtag('js', new Date());
 
-//      gtag('config', 'UA-56529726-1');
-//    </script>
-
-
-
-
-//    Wt::WApplication::require("ViewerJS/compatibility.js");
-//    Wt::WApplication::require("ViewerJS/pdf.js");
-//    Wt::WApplication::require("ViewerJS/pdf.worker.js");
-//    Wt::WApplication::require("ViewerJS/pdfjsversion.js");
-//    Wt::WApplication::require("ViewerJS/text_layer_builder.js");
-//    Wt::WApplication::require("ViewerJS/ui_utils.js");
-//    Wt::WApplication::require("ViewerJS/webodf.js");
+    //      gtag('config', 'UA-56529726-1');
+    //    </script>
 
 
 
-//    Wt::WApplication::instance()->setBodyClass("introMain");
+
+    //    Wt::WApplication::require("ViewerJS/compatibility.js");
+    //    Wt::WApplication::require("ViewerJS/pdf.js");
+    //    Wt::WApplication::require("ViewerJS/pdf.worker.js");
+    //    Wt::WApplication::require("ViewerJS/pdfjsversion.js");
+    //    Wt::WApplication::require("ViewerJS/text_layer_builder.js");
+    //    Wt::WApplication::require("ViewerJS/ui_utils.js");
+    //    Wt::WApplication::require("ViewerJS/webodf.js");
+
+
+
+    //    Wt::WApplication::instance()->setBodyClass("introMain");
 
     WApplication::instance()->addMetaHeader("viewport","width=device-width, initial-scale=1.0");
     wApp->require("http://www.openlayers.org/api/OpenLayers.js");
 
-    this->init();
 
 
 
+    QMap<QString,QString> mapList;
+    //    test Link : http://192.168.0.31:8080/?type=dilekce&_id=5daee97a6435000043002489 cevaplanmis
+    // http://192.168.0.31:8080/?type=dilekce&_id=5daeebd8222400005d0005dc Cevaplanmamis
+    for (auto str : env.getParameterMap() ) {
+        //        std::cout << "First: " << str.first << " " << str.second.size() << " " << str.second.back() << std::endl;
+        for( auto sec : str.second )
+        {
+            mapList[str.first.c_str ()] = QString::fromStdString (sec);
+            std::cout << "Parameter: " << str.first << " Value: " << sec << std::endl;
+        }
+    }
+
+
+    bool showSpecLink = false;
+
+    if( mapList.contains ("type") )
+    {
+        if( mapList["type"] == "dilekce" )
+        {
+            auto oid = mapList["_id"];
+            showSpecLink = this->loadDilekce (oid.toStdString ());
+        }
+    }
+
+
+
+    if( !showSpecLink )
+    {
+        this->init();
+    }
+
+
+
+
+
+    auto device0 = root()->addWidget(cpp14::make_unique<WText>("Serik Belediyesi © 2019"));
+    auto device1 = root()->addWidget(cpp14::make_unique<WText>("Serik Belediyesi © 2019"));
+    auto device2 = root()->addWidget(cpp14::make_unique<WText>("Serik Belediyesi © 2019"));
+    auto device3 = root()->addWidget(cpp14::make_unique<WText>("Serik Belediyesi © 2019"));
+    auto device4 = root()->addWidget(cpp14::make_unique<WText>("Serik Belediyesi © 2019"));
+
+    device0->addStyleClass("device0");
+    device1->addStyleClass("device1");
+    device2->addStyleClass("device2");
+    device3->addStyleClass("device3");
+    device4->addStyleClass("device4");
 
 
 
@@ -170,33 +209,33 @@ void MainApplication::init()
 
     root()->addStyleClass("rootBody");
 
-//    std::cout << "Julian Day: " << QDate::currentDate().toJulianDay() << std::endl;
+    //    std::cout << "Julian Day: " << QDate::currentDate().toJulianDay() << std::endl;
 
     // Afis Ön Görsel
-//    if( true ){
+    //    if( true ){
 
-//        auto container = root()->addWidget(cpp14::make_unique<WContainerWidget>());
+    //        auto container = root()->addWidget(cpp14::make_unique<WContainerWidget>());
 
-//        container->setWidth(WLength("100%"));
-//        container->setHeight(WLength("100%"));
-//        container->setPositionScheme(PositionScheme::Fixed);
-//        container->setAttributeValue(Style::style,Style::background::color::rgba(25,25,25));
-//        container->setZIndex(1000);
+    //        container->setWidth(WLength("100%"));
+    //        container->setHeight(WLength("100%"));
+    //        container->setPositionScheme(PositionScheme::Fixed);
+    //        container->setAttributeValue(Style::style,Style::background::color::rgba(25,25,25));
+    //        container->setZIndex(1000);
 
-//        auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
-//        _container->setWidth(WLength("100%"));
-//        _container->setHeight(WLength("100%"));
-//        _container->setPositionScheme(PositionScheme::Fixed);
-//        _container->setAttributeValue(Style::style,Style::background::url("v2/img/serik-spor.jpg")
-//                                     +Style::background::size::contain
-//                                      +Style::background::position::center_center
-//                                      +Style::background::repeat::norepeat);
-//        _container->setZIndex(1000);
+    //        auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
+    //        _container->setWidth(WLength("100%"));
+    //        _container->setHeight(WLength("100%"));
+    //        _container->setPositionScheme(PositionScheme::Fixed);
+    //        _container->setAttributeValue(Style::style,Style::background::url("v2/img/serik-spor.jpg")
+    //                                     +Style::background::size::contain
+    //                                      +Style::background::position::center_center
+    //                                      +Style::background::repeat::norepeat);
+    //        _container->setZIndex(1000);
 
-//        _container->clicked().connect([=](){
-//           root()->removeWidget(container);
-//        });
-//    }
+    //        _container->clicked().connect([=](){
+    //           root()->removeWidget(container);
+    //        });
+    //    }
 
 
     {
@@ -214,7 +253,7 @@ void MainApplication::init()
         _container->setHeight(WLength("100%"));
         _container->setPositionScheme(PositionScheme::Absolute);
         _container->setAttributeValue(Style::style,Style::background::url("v2/slide/Slidefilter.png")
-                                     +Style::background::repeat::repeat);
+                                      +Style::background::repeat::repeat);
         _container->setZIndex(-99);
     }
 
@@ -228,45 +267,35 @@ void MainApplication::init()
 
 
 
-//    Header::Header* header = root()->addWidget(cpp14::make_unique<Header::Header>());
-//    Body::Body* body = root()->addWidget(cpp14::make_unique<Body::Body>(&db,&Bucket));
-//    Footer::Footer* footer = root()->addWidget(cpp14::make_unique<Footer::Footer>());
-//    _signal.connect([=](int _width,int _height){
+    //    Header::Header* header = root()->addWidget(cpp14::make_unique<Header::Header>());
+    //    Body::Body* body = root()->addWidget(cpp14::make_unique<Body::Body>(&db,&Bucket));
+    //    Footer::Footer* footer = root()->addWidget(cpp14::make_unique<Footer::Footer>());
+    //    _signal.connect([=](int _width,int _height){
 
-//       double _w = static_cast<double>(_width);
-//       double _h = static_cast<double>(_height);
+    //       double _w = static_cast<double>(_width);
+    //       double _h = static_cast<double>(_height);
 
-//       std::cout << " - VALUE: " << _width << " - " << _height <<  "R: " << _w / _h << std::endl;
+    //       std::cout << " - VALUE: " << _width << " - " << _height <<  "R: " << _w / _h << std::endl;
 
-//       if( _w / _h > 1.433 ){
-//           footer->setPositionScheme(PositionScheme::Fixed);
-//           footer->setOffsets(0,Side::Bottom);
-//           footer->setWidth(WLength("100%"));
-//       }
-
-
-//    });
-
-//    root()->doJavaScript("var w = window.innerWidth;"
-//                         "var h = window.innerHeight;"
-//                         "console.log(w);console.log(h);" + _signal.createCall({"w,h"}) + ";");
+    //       if( _w / _h > 1.433 ){
+    //           footer->setPositionScheme(PositionScheme::Fixed);
+    //           footer->setOffsets(0,Side::Bottom);
+    //           footer->setWidth(WLength("100%"));
+    //       }
 
 
+    //    });
+
+    //    root()->doJavaScript("var w = window.innerWidth;"
+    //                         "var h = window.innerHeight;"
+    //                         "console.log(w);console.log(h);" + _signal.createCall({"w,h"}) + ";");
 
 
 
 
-    auto device0 = root()->addWidget(cpp14::make_unique<WText>("Serik Belediyesi © 2019"));
-    auto device1 = root()->addWidget(cpp14::make_unique<WText>("Serik Belediyesi © 2019"));
-    auto device2 = root()->addWidget(cpp14::make_unique<WText>("Serik Belediyesi © 2019"));
-    auto device3 = root()->addWidget(cpp14::make_unique<WText>("Serik Belediyesi © 2019"));
-    auto device4 = root()->addWidget(cpp14::make_unique<WText>("Serik Belediyesi © 2019"));
 
-    device0->addStyleClass("device0");
-    device1->addStyleClass("device1");
-    device2->addStyleClass("device2");
-    device3->addStyleClass("device3");
-    device4->addStyleClass("device4");
+
+
 
 }
 
@@ -299,6 +328,32 @@ void MainApplication::ShowForeGround()
     BackGroundWidget->clicked().connect([=](){
         root()->removeWidget(BackGroundWidget);
     });
+
+}
+
+bool MainApplication::loadDilekce(const std::string &oid)
+{
+
+
+
+    DilekceManager* dManager = new DilekceManager(&this->db);
+
+    auto dilekce = dManager->LoadDilekce (oid);
+
+    if( dilekce )
+    {
+        root()->clear();
+        root()->addStyleClass("rootBody");
+        root ()->setContentAlignment (AlignmentFlag::Center);
+        auto rContainer = root ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        rContainer->addStyleClass (Bootstrap::Grid::row);
+        rContainer->setMaximumSize (WLength(1024),WLength::Auto);
+
+        rContainer->addWidget (cpp14::make_unique<DilekceView>(dilekce.get (),&this->db,nullptr,true));
+        return true;
+    }
+
+    return false;
 
 }
 
