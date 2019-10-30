@@ -24,11 +24,16 @@ void DilekceYonetim::initControlPanel()
         this->initMudurPanel ();
     }else{
         this->Header ()->addWidget (cpp14::make_unique<WText>("Personel/Şef Menüsü Menüsü"));
+        this->initPersonelPanel ();
     }
 
     this->Content ()->setMargin (15,Side::Top|Side::Bottom);
 
 }
+
+
+// Personel : 05065644692
+// Müdür    : 05063022484
 
 void DilekceYonetim::initMudurPanel()
 {
@@ -63,6 +68,45 @@ void DilekceYonetim::initMudurPanel()
     }
 
 
+}
+
+void DilekceYonetim::initPersonelPanel()
+{
+    this->Header ()->clear ();
+
+    {
+        auto btn = createButton ("Gelen Dilekçeler",Style::color::Green::DarkCyan,Style::color::White::Snow);
+        btn->clicked ().connect ([&](){
+            Dilekce filter;
+            filter.append(Dilekce::KeyGorevliPersonel,make_document(kvp("$elemMatch",make_document(kvp("_id",this->mUser->oid ().value ()),
+                                                                                                   kvp("ad soyad",this->mUser->AdSoyad ()),
+                                                                                                   kvp("fotooid",this->mUser->element ("fotooid").value ())))));
+            filter.SetBirim (this->mUser->Birimi ().c_str ());
+            //TODO: Bu Kod Açılacak
+//            filter.SetDurum (DilekceDurum::Acik);
+
+
+
+            this->listDilekce (filter);
+        });
+        this->Header ()->addWidget (std::move(btn));
+    }
+
+    {
+        auto btn = createButton ("Bilgilendirmeler",Style::color::Green::SeaGreen,Style::color::White::Snow);
+        this->Header ()->addWidget (std::move(btn));
+    }
+
+
+    {
+        auto btn = createButton ("Cevaplananlar",Style::color::Green::Lime,Style::color::Grey::Black);
+        this->Header ()->addWidget (std::move(btn));
+    }
+
+    {
+        auto btn = createButton ("İstatistik",Style::color::Green::LawnGreen,Style::color::Grey::DarkSlateGray);
+        this->Header ()->addWidget (std::move(btn));
+    }
 }
 
 std::unique_ptr<ContainerWidget> DilekceYonetim::createButton(const std::string &buttonName , const std::string &backGroundColor , const std::string &textColor )

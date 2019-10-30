@@ -20,6 +20,7 @@ public:
 
     void initControlPanel();
     void initMudurPanel();
+    void initPersonelPanel();
 
     std::unique_ptr<ContainerWidget> createButton(const std::string &buttonName , const std::string &backGroundColor, const std::string &textColor);
 
