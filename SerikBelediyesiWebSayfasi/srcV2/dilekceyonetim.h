@@ -28,11 +28,16 @@ public:
 
     void listDilekce( Dilekce &filterDilekce );
 
+    void listBilgiDilekce( const Dilekce &filterDilekce );
+
     void initDilekce( const std::string &dilekceOid );
+
+    void initBilgiDilekce( const std::string &dilekceOid );
 
 private:
 
     Signal<std::string> _clickDilekceItem;
+    Signal<std::string> _clickDilekceBilgiItem;
 
     User* mUser;
 
