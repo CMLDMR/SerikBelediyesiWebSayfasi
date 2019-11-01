@@ -15,7 +15,7 @@
 class DilekceView : public ContainerWidget , public Dilekce , public DilekceManager
 {
 public:
-    DilekceView(Dilekce* _dilekce , mongocxx::database *_db, User* _user , bool _mPublicLink = false );
+    DilekceView(Dilekce* _dilekce , mongocxx::database *_db, User* _user , bool _mPublicLink = false , bool _mBilgi = false );
 
 private:
     TCManager* mTCManager;
@@ -47,6 +47,7 @@ private:
     void updateGorevliPersonelWidget();
 
     bool mPublicLink;
+    bool mBilgi;
 };
 
 #endif // DILEKCEVIEW_H

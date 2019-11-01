@@ -4,9 +4,16 @@
 #include "personel.h"
 
 
-DilekceView::DilekceView(Dilekce *_dilekce, mongocxx::database* _db ,  User *_user, bool _mPublicLink)
-    : ContainerWidget (_mPublicLink ? "Serik Belediyesi Dilekçe Yönetim Sistemi ©2019" : ""),Dilekce(_dilekce),DilekceManager(_db),mPublicLink(_mPublicLink)
+DilekceView::DilekceView(Dilekce *_dilekce, mongocxx::database* _db ,  User *_user, bool _mPublicLink, bool _mBilgi)
+    : ContainerWidget (_mPublicLink ? "Serik Belediyesi Dilekçe Yönetim Sistemi ©2019" : ""),
+      Dilekce(_dilekce),
+      DilekceManager(_db),
+      mPublicLink(_mPublicLink),
+      mBilgi(_mBilgi)
 {
+
+//    std::cout << "mPublic: " << mPublicLink << std::endl;
+//    std::cout << "mBilgi: " << mBilgi << std::endl;
 
     if( !mPublicLink )
     {
@@ -439,142 +446,143 @@ void DilekceView::initCevapView()
     }
 
 
+
     if( !mPublicLink )
     {
 
-        mCevapContainer = this->Footer ()->addWidget (cpp14::make_unique<ContainerWidget>());
-        mCevapContainer->setMargin (20,Side::Top);
-        mCevapContainer->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
-        mCevapContainer->setWidth (WLength("100%"));
-        mCevapContainer->addWidget (cpp14::make_unique<WText>("<strong>Cevap Ekle</strong>"));
-        mCevapContainer->addWidget (cpp14::make_unique<WBreak>());
-
-        mCevapFileContainer = mCevapContainer->addWidget (cpp14::make_unique<ContainerWidget>());
-
-        mCevapContainer->addWidget (cpp14::make_unique<WBreak>());
-
-        mCevapUploader = mCevapContainer->addWidget (cpp14::make_unique<FileUploaderWidget>(this->db ()));
-        mCevapContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::LavenderBlush));
-        mCevapUploader->Uploaded ().connect ([=](){
-
-
-    //        auto fileOid = this->uploadfile (mCevapUploader->fileLocation ());
-    //        this->SetCevapOid (fileOid.get_oid ().value.to_string ().c_str ());
-
-
-            mCevapFileContainer->clear ();
-            auto container = mCevapFileContainer->addWidget (cpp14::make_unique<ContainerWidget>());
-            container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
-            container->setMargin (5,AllSides);
-            container->addStyleClass (Bootstrap::ContextualBackGround::bg_info);
-            container->decorationStyle ().setCursor (Cursor::PointingHand);
-
-
-            Wt::WLink link = Wt::WLink(LinkType::Url,mCevapUploader->doocRootLocation ().toStdString ());
-            link.setTarget(Wt::LinkTarget::NewWindow);
-
-            std::unique_ptr<Wt::WAnchor> anchor =
-                    Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "Cevap Dosyası");
-            auto text = container->addWidget (std::move(anchor));
-            text->addStyleClass (Bootstrap::ContextualBackGround::bg_info);
-
-
-
-            std::cout << "docRootLocation: " << mCevapUploader->doocRootLocation ().toStdString () << std::endl;
-            std::cout << "fileLocation: " << mCevapUploader->fileLocation ().toStdString () << std::endl;
-
-
-
-        });
-
-        mCevapEklerContainer = this->Footer ()->addWidget (cpp14::make_unique<ContainerWidget>());
-        mCevapEklerContainer->setMargin (20,Side::Top);
-        mCevapEklerContainer->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
-        mCevapEklerContainer->setWidth (WLength("100%"));
-        mCevapEklerContainer->addWidget (cpp14::make_unique<WText>("<strong>Ekler</strong>"));
-        mCevapEklerContainer->addWidget (cpp14::make_unique<WBreak>());
-        mCevapEkUploader = mCevapEklerContainer->addWidget (cpp14::make_unique<FileUploaderWidget>(this->db (),"Ek Dosya Yükle"));
-        mCevapEklerContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::HoneyDew));
-        mCevapEkUploader->Uploaded ().connect ([=](){
-
-
-            auto container = mCevapEklerContainer->addWidget (cpp14::make_unique<ContainerWidget>());
-            container->setWidth (175);
-            container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
-            container->setMargin (5,AllSides);
-            container->addStyleClass (Bootstrap::ContextualBackGround::bg_info);
-            container->setPadding (20,Side::Right);
-            container->setPositionScheme (PositionScheme::Relative);
-
-
-
-            mUploadedFilePathList.append(mCevapEkUploader->fileLocation ());
-            Wt::WLink link = Wt::WLink(LinkType::Url,mCevapEkUploader->doocRootLocation ().toStdString ());
-            link.setTarget(Wt::LinkTarget::NewWindow);
-
-            std::unique_ptr<Wt::WAnchor> anchor =
-                    Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "EK Dosyası "+ QString::number (mUploadedFilePathList.count ()).toStdString () );
-            auto textLink = container->addWidget (std::move(anchor));
-            textLink->addStyleClass (Bootstrap::ContextualBackGround::bg_info);
-
-            auto delBtn = container->addWidget (cpp14::make_unique<ContainerWidget>());
-            delBtn->setPositionScheme (PositionScheme::Absolute);
-            delBtn->addStyleClass (Bootstrap::ContextualBackGround::bg_danger);
-            delBtn->setOffsets (0,Side::Right|Side::Top);
-            auto text = delBtn->addWidget (cpp14::make_unique<WText>("<b>X</b>"));
-            text->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
-            delBtn->clicked ().connect ([=](){
-                mCevapEklerContainer->removeWidget(container);
-            });
-
-        });
-
-
+        if( !mBilgi )
         {
-            auto container = this->Footer ()->addWidget (cpp14::make_unique<WContainerWidget>());
-            container->setWidth (WLength("100%"));
-            container->setContentAlignment (AlignmentFlag::Center);
+            mCevapContainer = this->Footer ()->addWidget (cpp14::make_unique<ContainerWidget>());
+            mCevapContainer->setMargin (20,Side::Top);
+            mCevapContainer->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+            mCevapContainer->setWidth (WLength("100%"));
+            mCevapContainer->addWidget (cpp14::make_unique<WText>("<strong>Cevap Ekle</strong>"));
+            mCevapContainer->addWidget (cpp14::make_unique<WBreak>());
 
-            auto btn = container->addWidget (cpp14::make_unique<WPushButton>("Dilekçeyi Kapat"));
-            btn->addStyleClass (Bootstrap::Button::Primary);
-            btn->clicked ().connect ([=](){
+            mCevapFileContainer = mCevapContainer->addWidget (cpp14::make_unique<ContainerWidget>());
+
+            mCevapContainer->addWidget (cpp14::make_unique<WBreak>());
+
+            mCevapUploader = mCevapContainer->addWidget (cpp14::make_unique<FileUploaderWidget>(this->db ()));
+            mCevapContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::LavenderBlush));
+            mCevapUploader->Uploaded ().connect ([=](){
+
+                mCevapFileContainer->clear ();
+                auto container = mCevapFileContainer->addWidget (cpp14::make_unique<ContainerWidget>());
+                container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+                container->setMargin (5,AllSides);
+                container->addStyleClass (Bootstrap::ContextualBackGround::bg_info);
+                container->decorationStyle ().setCursor (Cursor::PointingHand);
+
+
+                Wt::WLink link = Wt::WLink(LinkType::Url,mCevapUploader->doocRootLocation ().toStdString ());
+                link.setTarget(Wt::LinkTarget::NewWindow);
+
+                std::unique_ptr<Wt::WAnchor> anchor =
+                        Wt::cpp14::make_unique<Wt::WAnchor>(link,
+                                        "Cevap Dosyası");
+                auto text = container->addWidget (std::move(anchor));
+                text->addStyleClass (Bootstrap::ContextualBackGround::bg_info);
 
 
 
-                DilekceCevap mCevap;
-
-                mCevap.setSaat (QTime::currentTime ().toString ("hh:mm"));
-                mCevap.setJulianDay (QDate::currentDate ().toJulianDay ());
-                mCevap.setPersonelOid (this->mUser->oid ().value ().to_string ().c_str ());
-                mCevap.setPersonelName (this->mUser->AdSoyad ().c_str ());
-                mCevap.setDilekceOid (this->oid ().value ().to_string ().c_str ());
-                auto cevapOid_ = this->uploadfile (mCevapUploader->fileLocation ());
+                std::cout << "docRootLocation: " << mCevapUploader->doocRootLocation ().toStdString () << std::endl;
+                std::cout << "fileLocation: " << mCevapUploader->fileLocation ().toStdString () << std::endl;
 
 
-                mCevap.setCevapOid (cevapOid_.get_oid ().value.to_string ().c_str ());
 
-
-                for( auto item : mUploadedFilePathList )
-                {
-                    auto cevapOidEk_ = this->uploadfile (item);
-                    mCevap.addEkOid (cevapOidEk_.get_oid ().value.to_string ().c_str ());
-                }
-
-                auto insCevap = this->insertCevap (&mCevap);
-                if( insCevap ){
-                    this->SetDurum (DilekceDurum::Cevaplandi);
-                    this->SetCevapOid (insCevap.value ().to_string ().c_str ());
-                    if( this->updateDilekce (this) ){
-                        this->showMessage ("Bilgi","Dilekçe Başarılı Bir Şekilde Kapatıldı.");
-                    }else{
-                        this->showMessage ("Uyarı","Dilekçe Kapatılamadı");
-                    }
-                }
             });
 
+            mCevapEklerContainer = this->Footer ()->addWidget (cpp14::make_unique<ContainerWidget>());
+            mCevapEklerContainer->setMargin (20,Side::Top);
+            mCevapEklerContainer->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+            mCevapEklerContainer->setWidth (WLength("100%"));
+            mCevapEklerContainer->addWidget (cpp14::make_unique<WText>("<strong>Ekler</strong>"));
+            mCevapEklerContainer->addWidget (cpp14::make_unique<WBreak>());
+            mCevapEkUploader = mCevapEklerContainer->addWidget (cpp14::make_unique<FileUploaderWidget>(this->db (),"Ek Dosya Yükle"));
+            mCevapEklerContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::HoneyDew));
+            mCevapEkUploader->Uploaded ().connect ([=](){
+
+
+                auto container = mCevapEklerContainer->addWidget (cpp14::make_unique<ContainerWidget>());
+                container->setWidth (175);
+                container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+                container->setMargin (5,AllSides);
+                container->addStyleClass (Bootstrap::ContextualBackGround::bg_info);
+                container->setPadding (20,Side::Right);
+                container->setPositionScheme (PositionScheme::Relative);
+
+
+
+                mUploadedFilePathList.append(mCevapEkUploader->fileLocation ());
+                Wt::WLink link = Wt::WLink(LinkType::Url,mCevapEkUploader->doocRootLocation ().toStdString ());
+                link.setTarget(Wt::LinkTarget::NewWindow);
+
+                std::unique_ptr<Wt::WAnchor> anchor =
+                        Wt::cpp14::make_unique<Wt::WAnchor>(link,
+                                        "EK Dosyası "+ QString::number (mUploadedFilePathList.count ()).toStdString () );
+                auto textLink = container->addWidget (std::move(anchor));
+                textLink->addStyleClass (Bootstrap::ContextualBackGround::bg_info);
+
+                auto delBtn = container->addWidget (cpp14::make_unique<ContainerWidget>());
+                delBtn->setPositionScheme (PositionScheme::Absolute);
+                delBtn->addStyleClass (Bootstrap::ContextualBackGround::bg_danger);
+                delBtn->setOffsets (0,Side::Right|Side::Top);
+                auto text = delBtn->addWidget (cpp14::make_unique<WText>("<b>X</b>"));
+                text->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
+                delBtn->clicked ().connect ([=](){
+                    mCevapEklerContainer->removeWidget(container);
+                });
+
+            });
+
+
+            {
+                auto container = this->Footer ()->addWidget (cpp14::make_unique<WContainerWidget>());
+                container->setWidth (WLength("100%"));
+                container->setContentAlignment (AlignmentFlag::Center);
+
+                auto btn = container->addWidget (cpp14::make_unique<WPushButton>("Dilekçeyi Kapat"));
+                btn->addStyleClass (Bootstrap::Button::Primary);
+                btn->clicked ().connect ([=](){
+
+
+
+                    DilekceCevap mCevap;
+
+                    mCevap.setSaat (QTime::currentTime ().toString ("hh:mm"));
+                    mCevap.setJulianDay (QDate::currentDate ().toJulianDay ());
+                    mCevap.setPersonelOid (this->mUser->oid ().value ().to_string ().c_str ());
+                    mCevap.setPersonelName (this->mUser->AdSoyad ().c_str ());
+                    mCevap.setDilekceOid (this->oid ().value ().to_string ().c_str ());
+                    auto cevapOid_ = this->uploadfile (mCevapUploader->fileLocation ());
+
+
+                    mCevap.setCevapOid (cevapOid_.get_oid ().value.to_string ().c_str ());
+
+
+                    for( auto item : mUploadedFilePathList )
+                    {
+                        auto cevapOidEk_ = this->uploadfile (item);
+                        mCevap.addEkOid (cevapOidEk_.get_oid ().value.to_string ().c_str ());
+                    }
+
+                    auto insCevap = this->insertCevap (&mCevap);
+                    if( insCevap ){
+                        this->SetDurum (DilekceDurum::Cevaplandi);
+                        this->SetCevapOid (insCevap.value ().to_string ().c_str ());
+                        if( this->updateDilekce (this) ){
+                            this->showMessage ("Bilgi","Dilekçe Başarılı Bir Şekilde Kapatıldı.");
+                        }else{
+                            this->showMessage ("Uyarı","Dilekçe Kapatılamadı");
+                        }
+                    }
+                });
+
+            }
         }
+
+
 
     }
 
