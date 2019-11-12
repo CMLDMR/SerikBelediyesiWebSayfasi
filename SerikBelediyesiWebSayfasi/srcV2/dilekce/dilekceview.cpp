@@ -12,9 +12,6 @@ DilekceView::DilekceView(Dilekce *_dilekce, mongocxx::database* _db ,  User *_us
       mBilgi(_mBilgi)
 {
 
-//    std::cout << "mPublic: " << mPublicLink << std::endl;
-//    std::cout << "mBilgi: " << mBilgi << std::endl;
-
     if( !mPublicLink )
     {
         mUser = _user;
