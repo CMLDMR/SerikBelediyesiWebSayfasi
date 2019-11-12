@@ -10,6 +10,7 @@
 #include "SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetimyonetim.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/bilgiedinmeclient.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/dilekceyonetim.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/talepler/talepyonetim.h"
 
 
 Giris::GirisWidget::GirisWidget(mongocxx::database *_db)
@@ -3587,11 +3588,13 @@ void Giris::Personel::PersonelWidget::initMenu()
     menu->addItem("Bilgilerim", Wt::cpp14::make_unique<Bilgilerim>(db(),User()));
 
     menu->addItem(WString::fromUTF8("Dilekçeler"), Wt::cpp14::make_unique<DilekceYonetim>(db(),User()));
+    menu->addItem(WString::fromUTF8("TaleplerimV2"), Wt::cpp14::make_unique<TalepYonetim>(db(),User()));
+
 
     if(this->User().view()[SBLDKeys::Personel::statu].get_utf8().value.to_string() == SBLDKeys::Personel::statuType::baskan ||
             this->User().view()[SBLDKeys::Personel::birimi].get_utf8().value.to_string() == "Bilgi İşlem Müdürlüğü" )
     {
-
+        menu->addItem("Anons Sistemi", Wt::cpp14::make_unique<AnonsWidget>(db(),User()));
     }
 
     if(this->User().view()[SBLDKeys::Personel::statu].get_utf8().value.to_string() == SBLDKeys::Personel::statuType::baskan ||
@@ -3609,7 +3612,6 @@ void Giris::Personel::PersonelWidget::initMenu()
     }
 
 
-    menu->addItem("Anons Sistemi", Wt::cpp14::make_unique<AnonsWidget>(db(),User()));
 
 
     if(this->User().view()[SBLDKeys::Personel::statu].get_utf8().value.to_string() == SBLDKeys::Personel::statuType::baskan ||
@@ -3631,13 +3633,13 @@ void Giris::Personel::PersonelWidget::initMenu()
         menu->addItem(" ", Wt::cpp14::make_unique<WText>("Bu Sayfa Bilerek Boş Bırakılmıştır"));
     }else{
         // Add menu items using the default lazy loading policy.
-        menu->addItem("Gelen Mesajlar", Wt::cpp14::make_unique<PersonelV2::GelenMesajlarWidget>(db(),User()));
+//        menu->addItem("Gelen Mesajlar", Wt::cpp14::make_unique<PersonelV2::GelenMesajlarWidget>(db(),User()));
         menu->addItem("Taleplerim", Wt::cpp14::make_unique<Taleplerim>(db(),User()));
         menu->addItem(WString::fromUTF8("Evrak Arşivi"), Wt::cpp14::make_unique<EvrakArsiv>(db(),User()));
 
         menu->addItem(WString::fromUTF8("Başvurularım"), Wt::cpp14::make_unique<BilgiEdinmeClient>(db(),User()));
 
-        menu->addItem(WString::fromUTF8("Çalışmalar"), Wt::cpp14::make_unique<CalismaGirWidget>(db(),User()));
+//        menu->addItem(WString::fromUTF8("Çalışmalar"), Wt::cpp14::make_unique<CalismaGirWidget>(db(),User()));
         menu->addItem(WString::fromUTF8("Giriş Çıkışlarım"), Wt::cpp14::make_unique<GirisCikisWidget>(db(),User()));
     }
 
