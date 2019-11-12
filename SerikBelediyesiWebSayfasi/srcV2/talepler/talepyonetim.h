@@ -20,6 +20,8 @@ private:
 
     void initControlPanel();
 
+    void listTalepler( const Talep& filter = Talep() );
+
     std::unique_ptr<WPushButton> createButton( const char* classname , const WString& name );
 
 };
