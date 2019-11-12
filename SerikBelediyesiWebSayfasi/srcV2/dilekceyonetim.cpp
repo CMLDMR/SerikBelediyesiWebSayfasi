@@ -44,7 +44,6 @@ void DilekceYonetim::initMudurPanel()
         btn->clicked ().connect ([&](){
             Dilekce filter;
             filter.SetBirim (this->mUser->Birimi ().c_str ());
-            //TODO: Bu Kod Açılacak
             filter.SetDurum (DilekceDurum::Acik);
             this->listDilekce (filter);
         });
@@ -78,7 +77,7 @@ void DilekceYonetim::initMudurPanel()
     {
         auto btn = createButton ("İstatistik",Style::color::Green::LawnGreen,Style::color::Grey::DarkSlateGray);
         btn->clicked ().connect ([&](){
-            this->showMessage ("Bilgi","Dilekçe ile İlgili İstatistik Bilgileri Gösterilecek");
+            this->showMessage ("Yapım Aşamasında","Dilekçe ile İlgili İstatistik Bilgileri Gösterilecek");
         });
         this->Header ()->addWidget (std::move(btn));
     }
