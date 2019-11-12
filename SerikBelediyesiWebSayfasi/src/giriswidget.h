@@ -431,12 +431,6 @@ private:
 
 };
 
-//class Yenilikler : public WContainerWidget
-//{
-//public:
-//    Yenilikler();
-//};
-
 
 class Bilgilerim : public BaseWidget
 {
@@ -561,38 +555,6 @@ private:
 
 
 };
-
-//class Basvurularim : public BaseWidget
-//{
-//public:
-//    Basvurularim(mongocxx::database* _db , bsoncxx::document::value _user );
-
-//    WContainerWidget* mMainContainer;
-//    WContainerWidget* mContentContainer;
-
-//    WContainerWidget* toolBarContainer;
-//    void toolbarReFresh();
-//    std::int64_t countTalepler(std::string filterKey = "Hepsi");
-
-
-//    void initList(std::string filterKey = "Hepsi");
-
-//    void setBasvuruDetail(std::string oid);
-
-
-//    struct basvuruStruct
-//    {
-//        std::string oid;
-//        std::string basvuruSahibi;
-//        std::string konu;
-//        std::string tarih;
-//        std::string cevap;
-//    };
-
-//    std::vector<basvuruStruct> list;
-
-
-//};
 
 class ProjeWidget : public ContainerWidget
 {
@@ -820,7 +782,6 @@ public:
 
 };
 
-
 class ArizaKaydi : public ContainerWidget
 {
 
@@ -832,37 +793,6 @@ private:
     WContainerWidget* mMainContainer;
     WContainerWidget* mContentContainer;
 };
-
-//class GirisCikisWidget : public ContainerWidget
-//{
-//public:
-//    GirisCikisWidget(mongocxx::database* _db , bsoncxx::document::value _user );
-//    WComboBox* mYearSelect;
-//    WComboBox* mMounthSelect;
-//    WPushButton* mGosterBtn;
-//    WContainerWidget* mContentContainer;
-
-//    void initGirisCikis();
-
-//    void initPersonelMenu();
-
-
-//    void addRow(QDate date);
-
-
-
-//private:
-//    void addRow(QString personeloid , qint64 julianDay);
-//    void addNinRow(QString personeloid , QString BirimName);
-//    void initBaskanMenu();
-//    WPushButton* mBugunBtn;
-//    void initBugun();
-//    WComboBox* mCurrentBirim;
-
-//    Wt::WCalendar *mCalender;
-//    void initSelectedDay(qint64 julianDay);
-//};
-
 
 }
 
