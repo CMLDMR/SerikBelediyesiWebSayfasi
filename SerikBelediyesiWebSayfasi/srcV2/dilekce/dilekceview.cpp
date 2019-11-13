@@ -54,7 +54,6 @@ DilekceView::DilekceView(Dilekce *_dilekce, mongocxx::database* _db ,  User *_us
         this->initDilekceView ();
 
         this->initCevapView ();
-
     }
 }
 
