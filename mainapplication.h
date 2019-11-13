@@ -40,6 +40,8 @@ public:
 
     bool loadDilekce( const std::string &oid );
 
+    bool loadTalep( const std::string &oid );
+
 
 
 private:
