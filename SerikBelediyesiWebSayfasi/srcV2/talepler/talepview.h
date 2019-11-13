@@ -30,6 +30,16 @@ private:
 
     void initTalepView();
 
+    void initTalepCevap();
+
+
+    ContainerWidget* mGorevliPersonelContainer;
+    void updateGorevliPersonelWidget();
+    void gorevliEkle();
+
+    void addEventItem(TalepSubItem::ItemType type_);
+
+
 };
 
 #endif // TALEPVIEW_H

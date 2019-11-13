@@ -37,15 +37,46 @@ TalepView::TalepView(Talep &talepItem, mongocxx::database *_db, User *_mUser, bo
 
     if( talepItem )
     {
+        this->initTalepView ();
+
         if( !mPublicLink )
         {
             mTCManager = new TCManager(this->db ());
             mPersonelManager = new PersonelManager(this->db ());
             this->initTCView ();
-        }
-        this->initTalepView ();
+            this->initTalepCevap ();
+        }else{
+            this->Footer ()->clear ();
+            this->Footer ()->setMargin (20,Side::Top|Side::Bottom);
+            this->Footer ()->setWidth (WLength("100%"));
 
-//        this->initCevapView ();
+
+            auto container = this->Footer ()->addWidget (cpp14::make_unique<ContainerWidget>());
+            container->addStyleClass (Bootstrap::Grid::col_full_12);
+            container->setWidth (WLength("100%"));
+            container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+
+            auto rContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
+            rContainer->addStyleClass (Bootstrap::Grid::row);
+
+            if( this->durum ().toStdString () == TalepKey::DurumKey::Tamamlandi )
+            {
+                {
+                    auto _container = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+                    _container->addStyleClass (Bootstrap::Grid::col_full_12);
+                    auto vLayout = _container->setLayout (cpp14::make_unique<WVBoxLayout>());
+                    auto text = vLayout->addWidget (cpp14::make_unique<WText>("Bu Talep/Şikayet Tamamlandı"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+                    text->addStyleClass ("textShadow");
+                    text->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow)+
+                                             Style::font::weight::bold);
+                    _container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Purple::DodgerBlue));
+                    _container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+
+                }
+                return;
+            }
+        }
+
     }
 
 }
@@ -90,8 +121,8 @@ void TalepView::initTCView()
                 tContainer->setContentAlignment (AlignmentFlag::Center);
                 auto text = tContainer->addWidget (cpp14::make_unique<WText>(tcItem.value ()->CepTelefonu ().toStdString ()));
                 tContainer->setAttributeValue (Style::style,Style::font::size::s12px
-                                         +Style::color::color (Style::color::White::Snow)
-                                         +Style::background::color::color (Style::color::Green::DarkGreen));
+                                               +Style::color::color (Style::color::White::Snow)
+                                               +Style::background::color::color (Style::color::Green::DarkGreen));
             }
             {
                 auto tContainer = rContainer->addWidget (cpp14::make_unique<ContainerWidget>());
@@ -99,8 +130,8 @@ void TalepView::initTCView()
                 tContainer->setContentAlignment (AlignmentFlag::Center);
                 auto text = tContainer->addWidget (cpp14::make_unique<WText>(tcItem.value ()->Mahalle ().toStdString ()));
                 tContainer->setAttributeValue (Style::style,Style::font::size::s12px
-                                         +Style::color::color (Style::color::White::Snow)
-                                         +Style::background::color::color (Style::color::Purple::Indigo));
+                                               +Style::color::color (Style::color::White::Snow)
+                                               +Style::background::color::color (Style::color::Purple::Indigo));
             }
 
 
@@ -148,17 +179,51 @@ void TalepView::initTalepView()
         title->addStyleClass ("textShadow");
     }
 
+    if( !mPublicLink )
     {
-        auto _container = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
-        _container->addStyleClass (Bootstrap::Grid::Large::col_lg_8+
-                                   Bootstrap::Grid::Medium::col_md_8+
-                                   Bootstrap::Grid::Small::col_sm_6+
-                                   Bootstrap::Grid::ExtraSmall::col_xs_6);
-        _container->setContentAlignment (AlignmentFlag::Center);
-        _container->setMargin (5,Side::Bottom|Side::Top);
-        _container->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::Linen));
-        _container->addWidget (cpp14::make_unique<WText>(this->birim ().toStdString ()));
+        if( this->mUser->Statu () == User::Mudur )
+        {
+            {
+                auto _container = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+                _container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
+                                           Bootstrap::Grid::Medium::col_md_4+
+                                           Bootstrap::Grid::Small::col_sm_6+
+                                           Bootstrap::Grid::ExtraSmall::col_xs_6);
+                _container->setContentAlignment (AlignmentFlag::Center);
+                _container->setMargin (5,Side::Bottom|Side::Top);
+                _container->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::Linen));
+                _container->addWidget (cpp14::make_unique<WText>(this->birim ().toStdString ()));
+            }
+
+            {
+                auto _container = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+                _container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
+                                           Bootstrap::Grid::Medium::col_md_4+
+                                           Bootstrap::Grid::Small::col_sm_12+
+                                           Bootstrap::Grid::ExtraSmall::col_xs_12);
+                _container->setContentAlignment (AlignmentFlag::Center);
+                _container->setMargin (5,Side::Bottom|Side::Top);
+                _container->addStyleClass (Bootstrap::ContextualBackGround::bg_primary);
+                auto gorevlendirBtn = _container->addWidget (cpp14::make_unique<WText>("<b>Personel Görevlendir</b>"));
+                _container->decorationStyle ().setCursor (Cursor::PointingHand);
+                _container->clicked ().connect (this,&TalepView::gorevliEkle);
+            }
+        }
+    }else{
+        {
+            auto _container = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+            _container->addStyleClass (Bootstrap::Grid::Large::col_lg_8+
+                                       Bootstrap::Grid::Medium::col_md_8+
+                                       Bootstrap::Grid::Small::col_sm_6+
+                                       Bootstrap::Grid::ExtraSmall::col_xs_6);
+            _container->setContentAlignment (AlignmentFlag::Center);
+            _container->setMargin (5,Side::Bottom|Side::Top);
+            _container->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::Linen));
+            _container->addWidget (cpp14::make_unique<WText>(this->birim ().toStdString ()));
+        }
     }
+
+
 
     {
         auto _container = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
@@ -239,6 +304,20 @@ void TalepView::initTalepView()
         text->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
     }
 
+    if( !mPublicLink ){
+        mGorevliPersonelContainer = this->Content ()->addWidget (cpp14::make_unique<ContainerWidget>());
+        mGorevliPersonelContainer->addStyleClass (Bootstrap::Grid::col_full_12);
+        mGorevliPersonelContainer->setWidth (WLength("100%"));
+        mGorevliPersonelContainer->setAttributeValue (Style::style,Style::background::color::color ("#6f6f6f"));
+        mGorevliPersonelContainer->setMargin (20,Side::Top|Side::Bottom);
+        mGorevliPersonelContainer->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+        mGorevliPersonelContainer->setContentAlignment (AlignmentFlag::Left);
+        auto text = mGorevliPersonelContainer->addWidget (cpp14::make_unique<WText>("Görevli Personeller"));
+        text->addStyleClass ("textShadow");
+        text->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
+        this->updateGorevliPersonelWidget ();
+    }
+
 
     {
 
@@ -266,23 +345,23 @@ void TalepView::initTalepView()
                 titleContainer->setOffsets (WLength(0),Side::Left|Side::Top);
 
                 std::string typeName;
-//                switch (item.type () ) {
-//                case TalepSubItem::ItemType::Aciklama:
-//                    typeName = "Açıklama";
-//                    break;
-//                case TalepSubItem::ItemType::Pdf:
-//                    typeName = "Pdf";
-//                    break;
-//                case TalepSubItem::ItemType::Sms:
-//                    typeName = "Sms";
-//                    break;
-//                case TalepSubItem::ItemType::Fotograf:
-//                    typeName = "Fotograf";
-//                    break;
+                //                switch (item.type () ) {
+                //                case TalepSubItem::ItemType::Aciklama:
+                //                    typeName = "Açıklama";
+                //                    break;
+                //                case TalepSubItem::ItemType::Pdf:
+                //                    typeName = "Pdf";
+                //                    break;
+                //                case TalepSubItem::ItemType::Sms:
+                //                    typeName = "Sms";
+                //                    break;
+                //                case TalepSubItem::ItemType::Fotograf:
+                //                    typeName = "Fotograf";
+                //                    break;
 
-//                default:
-//                    break;
-//                }
+                //                default:
+                //                    break;
+                //                }
 
 #define MAKE_STRINGS(VAR) #VAR
 
@@ -329,9 +408,9 @@ void TalepView::initTalepView()
                 sContainer_->setWidth (WLength("100%"));
                 sContainer_->setHeight (WLength("100%"));
                 sContainer_->setAttributeValue (Style::style,Style::background::url (fotoPath)+
-                                               Style::background::repeat::norepeat+
-                                               Style::background::size::contain+
-                                               Style::background::position::center_center);
+                                                Style::background::repeat::norepeat+
+                                                Style::background::size::contain+
+                                                Style::background::position::center_center);
                 sContainer->addWidget (std::move(anchor));
             }
 
@@ -353,9 +432,9 @@ void TalepView::initTalepView()
                 sContainer_->setWidth (WLength("100%"));
                 sContainer_->setHeight (WLength("100%"));
                 sContainer_->setAttributeValue (Style::style,Style::background::url ("icon/pdf.png")+
-                                               Style::background::repeat::norepeat+
-                                               Style::background::size::contain+
-                                               Style::background::position::center_center);
+                                                Style::background::repeat::norepeat+
+                                                Style::background::size::contain+
+                                                Style::background::position::center_center);
                 sContainer->addWidget (std::move(anchor));
 
             }
@@ -382,5 +461,431 @@ void TalepView::initTalepView()
 
 
     }
+
+}
+
+void TalepView::initTalepCevap()
+{
+
+    this->Footer ()->clear ();
+    this->Footer ()->setMargin (20,Side::Top);
+    this->Footer ()->setMargin (150,Side::Bottom);
+    this->Footer ()->setWidth (WLength("100%"));
+
+
+    auto container = this->Footer ()->addWidget (cpp14::make_unique<ContainerWidget>());
+    container->addStyleClass (Bootstrap::Grid::col_full_12);
+    container->setWidth (WLength("100%"));
+
+    auto rContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
+    rContainer->addStyleClass (Bootstrap::Grid::row);
+
+    if( this->durum ().toStdString () == TalepKey::DurumKey::Tamamlandi )
+    {
+        {
+            auto _container = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+            _container->addStyleClass (Bootstrap::Grid::col_full_12);
+            auto vLayout = _container->setLayout (cpp14::make_unique<WVBoxLayout>());
+            auto text = vLayout->addWidget (cpp14::make_unique<WText>("Bu Talep/Şikayet Tamamlandı"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+            text->addStyleClass ("textShadow");
+            text->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow)+
+                                     Style::font::weight::bold);
+            _container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Purple::DodgerBlue));
+            _container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+
+        }
+        return;
+    }
+
+    {
+        auto _container = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+        _container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+
+        _container->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                                   Bootstrap::Grid::Medium::col_md_2+
+                                   Bootstrap::Grid::Small::col_sm_4+
+                                   Bootstrap::Grid::ExtraSmall::col_xs_6);
+        auto vLayout = _container->setLayout (cpp14::make_unique<WHBoxLayout>());
+        auto text = vLayout->addWidget (cpp14::make_unique<WText>("Diğer Ekle"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+        text->addStyleClass ("textShadow");
+        text->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow)+
+                                 Style::font::weight::bold);
+        _container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Grey::SlateGray));
+        _container->decorationStyle ().setCursor (Cursor::PointingHand);
+
+
+
+
+        auto popupPtr = Wt::cpp14::make_unique<Wt::WPopupMenu>();
+        auto popup = popupPtr.get();
+
+        vLayout->addChild (std::move(popupPtr));
+
+
+        popup->addItem("Sms Gönder")->triggered().connect([=] {
+            this->addEventItem (TalepSubItem::ItemType::Sms);
+        });
+
+        popup->addItem("Fotoğraf Ekle")->triggered().connect([=] {
+            this->addEventItem (TalepSubItem::ItemType::Fotograf);
+        });
+
+
+        popup->addItem("Pdf Ekle")->triggered().connect([=] {
+            this->addEventItem (TalepSubItem::ItemType::Pdf);
+        });
+
+        popup->itemSelected().connect([=] (Wt::WMenuItem *selectedItem) {
+
+        });
+
+        _container->clicked ().connect ([=](){
+            popup->popup (_container,Orientation::Vertical);
+        });
+
+    }
+
+
+    {
+        auto _container = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+        _container->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                                   Bootstrap::Grid::Medium::col_md_2+
+                                   Bootstrap::Grid::Small::col_sm_4+
+                                   Bootstrap::Grid::ExtraSmall::col_xs_6);
+        auto vLayout = _container->setLayout (cpp14::make_unique<WVBoxLayout>());
+        auto text = vLayout->addWidget (cpp14::make_unique<WText>("Tamamla"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+        text->addStyleClass ("textShadow");
+        text->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow)+
+                                 Style::font::weight::bold);
+        _container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Purple::DodgerBlue));
+        _container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+        _container->decorationStyle ().setCursor (Cursor::PointingHand);
+    }
+
+    {
+        auto _container = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+        _container->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                                   Bootstrap::Grid::Medium::col_md_2+
+                                   Bootstrap::Grid::Small::col_sm_4+
+                                   Bootstrap::Grid::ExtraSmall::col_xs_6);
+        auto vLayout = _container->setLayout (cpp14::make_unique<WVBoxLayout>());
+        auto text = vLayout->addWidget (cpp14::make_unique<WText>("Red Et"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+        text->addStyleClass ("textShadow");
+        text->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow)+
+                                 Style::font::weight::bold);
+        _container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Red::Crimson));
+        _container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+        _container->decorationStyle ().setCursor (Cursor::PointingHand);
+    }
+
+    {
+        auto _container = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+        _container->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                                   Bootstrap::Grid::Medium::col_md_2+
+                                   Bootstrap::Grid::Small::col_sm_4+
+                                   Bootstrap::Grid::ExtraSmall::col_xs_6);
+        auto vLayout = _container->setLayout (cpp14::make_unique<WVBoxLayout>());
+        auto text = vLayout->addWidget (cpp14::make_unique<WText>("Tekrar Aç"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+        text->addStyleClass ("textShadow");
+        text->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow)+
+                                 Style::font::weight::bold);
+        _container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Green::LightSeaGreen));
+        _container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+        _container->decorationStyle ().setCursor (Cursor::PointingHand);
+    }
+
+    {
+        auto _container = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+        _container->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                                   Bootstrap::Grid::Medium::col_md_2+
+                                   Bootstrap::Grid::Small::col_sm_4+
+                                   Bootstrap::Grid::ExtraSmall::col_xs_6);
+        auto vLayout = _container->setLayout (cpp14::make_unique<WVBoxLayout>());
+        auto text = vLayout->addWidget (cpp14::make_unique<WText>("Beklemeye Al"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+        text->addStyleClass ("textShadow");
+        text->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow)+
+                                 Style::font::weight::bold);
+        _container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Orange::GoldenRod));
+        _container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+        _container->decorationStyle ().setCursor (Cursor::PointingHand);
+    }
+
+    {
+        auto _container = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+        _container->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                                   Bootstrap::Grid::Medium::col_md_2+
+                                   Bootstrap::Grid::Small::col_sm_4+
+                                   Bootstrap::Grid::ExtraSmall::col_xs_6);
+        auto vLayout = _container->setLayout (cpp14::make_unique<WVBoxLayout>());
+        auto text = vLayout->addWidget (cpp14::make_unique<WText>("Açıklama Ekle"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+        text->addStyleClass ("textShadow");
+        text->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow)+
+                                 Style::font::weight::bold);
+        _container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Grey::DimGray));
+        _container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+        _container->decorationStyle ().setCursor (Cursor::PointingHand);
+        _container->clicked ().connect ([=](){
+            this->addEventItem (TalepSubItem::ItemType::Aciklama);
+        });
+    }
+
+
+
+
+}
+
+void TalepView::updateGorevliPersonelWidget()
+{
+    mGorevliPersonelContainer->clear ();
+
+    auto text = mGorevliPersonelContainer->addWidget (cpp14::make_unique<WText>("<b>Görevli Personeller</b>"));
+    text->setMargin (10,Side::Right);
+    text->addStyleClass ("textShadow");
+    text->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
+    mGorevliPersonelContainer->addWidget (cpp14::make_unique<WBreak>());
+
+    auto prContainer = mGorevliPersonelContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+    prContainer->addStyleClass (Bootstrap::Grid::row);
+
+    for( auto per : this->GorevliList () )
+    {
+        auto container = prContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->setHeight (152);
+        container->setOverflow (Overflow::Hidden);
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_1
+                                  +Bootstrap::Grid::Medium::col_md_1
+                                  +Bootstrap::Grid::Small::col_sm_2
+                                  +Bootstrap::Grid::ExtraSmall::col_xs_3);
+        container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+        container->setPadding (0,AllSides);
+        container->setContentAlignment (AlignmentFlag::Center);
+        auto photoFilePath = this->downloadFileWeb (per.FotoOid ());
+
+
+        auto photoContainer = container->addWidget (cpp14::make_unique<ContainerWidget>());
+        photoContainer->setWidth (WLength("100%"));
+        photoContainer->setHeight (90);
+        photoContainer->setAttributeValue (Style::style,Style::background::url (photoFilePath)
+                                           +Style::background::size::cover
+                                           +Style::background::repeat::norepeat);
+
+        container->addWidget (cpp14::make_unique<WBreak>());
+        auto adSoyadText = container->addWidget (cpp14::make_unique<WText>(per.AdSoyad ().toStdString ()));
+        adSoyadText->setAttributeValue (Style::style,Style::font::size::s10px);
+
+        auto deleteContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
+        deleteContainer->setPositionScheme (PositionScheme::Absolute);
+        deleteContainer->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+        deleteContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::Red::DarkRed));
+        deleteContainer->setPadding (2,Side::Right|Side::Left);
+        auto delText = deleteContainer->addWidget (cpp14::make_unique<WText>("<b>X</b>"));
+        delText->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow)+Style::font::size::s9px);
+        deleteContainer->setOffsets (0,Side::Top|Side::Right);
+        deleteContainer->decorationStyle ().setCursor (Cursor::PointingHand);
+        deleteContainer->setAttributeValue (Style::dataoid,per.oid ().value ().to_string ());
+
+        deleteContainer->clicked ().connect ([=](){
+            auto messageBox =
+                    deleteContainer->addChild(Wt::cpp14::make_unique<Wt::WMessageBox>(
+                                                  "Uyarı",
+                                                  "<p>Bu Personeli Kaldırmak İstediğinize Emin misiniz<b>?</b></p>",
+                                                  Wt::Icon::Information,
+                                                  Wt::StandardButton::Yes | Wt::StandardButton::No));
+            messageBox->setModal(false);
+            messageBox->buttonClicked().connect([=] {
+                if( messageBox->buttonResult () == Wt::StandardButton::Yes )
+                {
+                    Personel per;
+                    per.setOid (deleteContainer->attributeValue (Style::dataoid).toUTF8 ());
+                    this->DeleteGorevliPersonel (per);
+                    if( this->updateTalep (this) ){
+                        this->updateGorevliPersonelWidget ();
+                    }else{
+                        std::cout << "can not remove personel Widget" << std::endl;
+                    }
+                    per.printView ();
+
+                }else{
+                    deleteContainer->removeChild (messageBox);
+                }
+            });
+            messageBox->show();
+        });
+    }
+}
+
+void TalepView::gorevliEkle()
+{
+
+    if( this->durum ().toStdString ()== TalepKey::DurumKey::Tamamlandi )
+    {
+        this->showMessage ("Uyarı","Bu Talep/Şikayet Tamamlanmış. Üzerinde İşlem Yapamazsınız");
+        return;
+    }
+
+
+    auto dialog = WApplication::instance ()->root ()->addChild (cpp14::make_unique<WDialog>());
+    dialog->setHeight (450);
+
+    dialog->titleBar ()->addWidget (cpp14::make_unique<WText>("Personel Görevlendir | <b>" + this->mUser->Birimi () + " Listesi</b>"));
+
+
+    dialog->contents ()->setOverflow (Overflow::Scroll);
+    auto container = dialog->contents ()->addWidget (cpp14::make_unique<ContainerWidget>());
+
+
+
+    auto list = mPersonelManager->PersonelList (this->mUser->Birimi ().c_str ());
+
+
+    for( auto personel : list )
+    {
+
+
+        auto _container = container->addWidget (cpp14::make_unique<WContainerWidget>());
+        _container->setMargin (5,Side::Bottom);
+        _container->setWidth (WLength("100%"));
+        _container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+
+        auto personelOid = personel.oid ();
+        if( personelOid )
+        {
+            _container->setAttributeValue (Style::dataoid,personelOid.value ().to_string ());
+        }else{
+            _container->setAttributeValue (Style::dataoid,"null");
+        }
+
+        if( personel.AdSoyad ().toStdString () != this->mUser->AdSoyad () )
+        {
+            _container->addStyleClass (Bootstrap::ContextualBackGround::bg_info);
+        }else{
+            _container->addStyleClass (Bootstrap::ContextualBackGround::bg_danger);
+            _container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Red::FireBrick)+Style::color::color (Style::color::White::Snow));
+        }
+
+
+        auto gBtn = _container->addWidget (cpp14::make_unique<WText>("Görevlendir"));
+        gBtn->setMargin (10,Side::Left|Side::Right);
+        gBtn->addStyleClass (Bootstrap::ContextualBackGround::bg_primary);
+        gBtn->decorationStyle ().setCursor (Cursor::PointingHand);
+        gBtn->setPadding (10,Side::Left|Side::Right);
+        _container->addWidget (cpp14::make_unique<WText>(personel.AdSoyad ().toStdString ()));
+        container->addWidget (cpp14::make_unique<WBreak>());
+
+        gBtn->clicked ().connect ([=](){
+
+            if( this->mUser->AdSoyad () == personel.AdSoyad ().toStdString ())
+            {
+                WApplication::instance ()->root ()->removeChild (dialog);
+                this->showMessage ("Hata","Kendini Görevlendiremezsin");
+                return;
+            }
+
+            if( _container->attributeValue (Style::dataoid).toUTF8 () != "null" )
+            {
+                Personel per;
+                per.setOid (personel.oid ().value ().to_string ());
+                per.setAdSoyad (personel.AdSoyad ());
+                per.setFotoOid (personel.FotoOid ());
+                this->AddGorevliPersonel (per);
+                if( this->updateTalep (this) ){
+                    WApplication::instance ()->root ()->removeChild (dialog);
+                    this->updateGorevliPersonelWidget ();
+                }
+            }
+        });
+    }
+
+
+
+
+    auto closeBtn = dialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kapat"));
+    closeBtn->clicked ().connect ([=](){
+        WApplication::instance ()->root ()->removeChild (dialog);
+    });
+
+    dialog->show ();
+
+}
+
+void TalepView::addEventItem(TalepSubItem::ItemType type_ )
+{
+
+    auto dialog = WApplication::instance ()->root ()->addChild (cpp14::make_unique<WDialog>());
+    dialog->setHeight (450);
+
+    switch (type_) {
+    case TalepSubItem::ItemType::Pdf:
+        dialog->titleBar ()->addWidget (cpp14::make_unique<WText>("<b>Pdf Ekle</b>"));
+        break;
+    case TalepSubItem::ItemType::Aciklama:
+        dialog->titleBar ()->addWidget (cpp14::make_unique<WText>("<b>Açıklama Ekle</b>"));
+        break;
+    case TalepSubItem::ItemType::Sms:
+        dialog->titleBar ()->addWidget (cpp14::make_unique<WText>("<b>Sms Gönder</b>"));
+        break;
+    case TalepSubItem::ItemType::Fotograf:
+        dialog->titleBar ()->addWidget (cpp14::make_unique<WText>("<b>Fotoğraf Ekle</b>"));
+        break;
+    default:
+        break;
+    }
+
+    dialog->titleBar ()->addStyleClass (Bootstrap::ContextualBackGround::bg_primary);
+
+
+//    dialog->contents ()->setOverflow (Overflow::Auto);
+    auto container = dialog->contents ()->addWidget (cpp14::make_unique<ContainerWidget>());
+    container->setContentAlignment (AlignmentFlag::Center);
+//    container->setHeight (350);
+    auto vlayout = container->setLayout (cpp14::make_unique<WVBoxLayout>());
+
+
+    switch (type_) {
+    case TalepSubItem::ItemType::Pdf:
+    {
+        vlayout->addWidget (cpp14::make_unique<FileUploaderWidget>(this->db (),"PDF Yükle"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+        auto ekleBtn = vlayout->addWidget (cpp14::make_unique<WPushButton>("Ekle"));
+        ekleBtn->addStyleClass (Bootstrap::Button::Success);
+    }
+        break;
+    case TalepSubItem::ItemType::Aciklama:
+    {
+        auto textEdit = vlayout->addWidget (cpp14::make_unique<WTextEdit>());
+        textEdit->setHeight (250);
+        textEdit->setMinimumSize (WLength::Auto,250);
+    }
+        break;
+    case TalepSubItem::ItemType::Sms:
+    {
+        auto textEdit = vlayout->addWidget (cpp14::make_unique<WTextEdit>());
+        textEdit->setHeight (250);
+    }
+        break;
+    case TalepSubItem::ItemType::Fotograf:
+    {
+        vlayout->addWidget (cpp14::make_unique<FileUploaderWidget>(this->db (),"Resim Yükle"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+        auto ekleBtn = vlayout->addWidget (cpp14::make_unique<WPushButton>("Ekle"));
+        ekleBtn->addStyleClass (Bootstrap::Button::Success);
+    }
+        break;
+    default:
+        break;
+    }
+
+
+
+
+
+    auto closeBtn = dialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kapat"));
+    closeBtn->addStyleClass (Bootstrap::Button::Primary);
+    closeBtn->clicked ().connect ([=](){
+        WApplication::instance ()->root ()->removeChild (dialog);
+    });
+
+    dialog->show ();
+
+
+
 
 }
