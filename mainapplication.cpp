@@ -9,6 +9,8 @@
 #include <Wt/WOverlayLoadingIndicator.h>
 #include "SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekceview.h"
 
+#include "SerikBelediyesiWebSayfasi/srcV2/talepler/talepview.h"
+
 
 #include "../url.h"
 
@@ -20,24 +22,6 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
     wApp->addMetaHeader(MetaHeaderType::Meta,"Content-Type","text/html; charset=windows-1254");
 
     wApp->addMetaHeader("description","Serik Belediyesi Resmi Web Sayfası","text/html; charset=utf-8");
-
-
-
-
-
-
-    //    std::cout << "SESSION: " << wApp->sessionId() << std::endl;
-    //    std::cout << "DEPLOYMENT PATH: " << env.deploymentPath() << std::endl;
-
-
-
-
-
-
-
-
-
-
 
 
     try {
@@ -53,18 +37,8 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
     app->loadingIndicator()->setMessage("Yükleniyor...");
 
 
-
-
-
-
-
-
     db = mClient->database(SBLDKeys::DB);
     Bucket = db.gridfs_bucket();
-
-
-
-
 
 
     p_wtTheme = std::make_shared<Wt::WBootstrapTheme>();
@@ -163,6 +137,12 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
         {
             auto oid = mapList["_id"];
             showSpecLink = this->loadDilekce (oid.toStdString ());
+        }
+
+        if( mapList["type"] == "talep" )
+        {
+            auto oid = mapList["_id"];
+            showSpecLink = this->loadTalep (oid.toStdString ());
         }
     }
 
@@ -355,6 +335,30 @@ bool MainApplication::loadDilekce(const std::string &oid)
 
     return false;
 
+}
+
+bool MainApplication::loadTalep(const std::string &oid)
+{
+    TalepManager* dManager = new TalepManager(&this->db);
+
+    Talep filter;
+    filter.setOid (oid);
+    auto talep = dManager->findOneTalep (filter);
+
+    if( talep )
+    {
+        root()->clear();
+        root()->addStyleClass("rootBody");
+        root ()->setContentAlignment (AlignmentFlag::Center);
+        auto rContainer = root ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        rContainer->addStyleClass (Bootstrap::Grid::row);
+        rContainer->setMaximumSize (WLength(1024),WLength::Auto);
+
+        rContainer->addWidget (cpp14::make_unique<TalepView>(std::move(talep),&this->db,nullptr,true));
+        return true;
+    }
+
+    return false;
 }
 
 
