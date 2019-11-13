@@ -15,6 +15,8 @@ public:
     TalepYonetim(mongocxx::database* _db , bsoncxx::document::value _user);
 
 
+    Signal<std::string> &clickOid();
+
 private:
     User* mUser;
 
@@ -22,7 +24,11 @@ private:
 
     void listTalepler( const Talep& filter = Talep() );
 
+    void initTalep( const std::string &oid );
+
     std::unique_ptr<WPushButton> createButton( const char* classname , const WString& name );
+
+    Signal<std::string> _clickOid;
 
 };
 

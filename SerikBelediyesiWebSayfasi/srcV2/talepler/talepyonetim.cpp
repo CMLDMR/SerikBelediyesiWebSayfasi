@@ -1,4 +1,5 @@
 #include "talepyonetim.h"
+#include "talepview.h"
 
 TalepYonetim::TalepYonetim(mongocxx::database *_db, bsoncxx::document::value _user)
     :ContainerWidget ("Talep/Şikayet Yönetimi V2"),
@@ -16,6 +17,7 @@ TalepYonetim::TalepYonetim(mongocxx::database *_db, bsoncxx::document::value _us
     this->Content ()->setWidth (WLength("100%"));
     this->Content ()->decorationStyle ().setBorder (WBorder(BorderStyle::Solid,BorderWidth::Thin),Side::Top);
 
+    this->clickOid ().connect (this,&TalepYonetim::initTalep);
 
 }
 
@@ -196,6 +198,11 @@ void TalepYonetim::listTalepler(const Talep &filter)
                                   +Bootstrap::Grid::Medium::col_md_4
                                   +Bootstrap::Grid::Small::col_sm_6
                                   +Bootstrap::Grid::ExtraSmall::col_xs_12);
+        container->setAttributeValue (Style::dataoid,item.oid ().toStdString ());
+
+        container->clicked ().connect ([=](){
+            _clickOid.emit (container->attributeValue (Style::dataoid).toUTF8 ());
+        });
 
         {
             auto _container = container->addWidget (cpp14::make_unique<WContainerWidget>());
@@ -229,6 +236,32 @@ void TalepYonetim::listTalepler(const Talep &filter)
     }
 }
 
+void TalepYonetim::initTalep(const std::string &oid)
+{
+
+
+    Talep filter;
+    filter.setOid (oid);
+
+    auto mTalep = this->findOneTalep (filter);
+
+    if( !mTalep )
+    {
+        this->showMessage ("Uyarı","Bu Talep Yüklenemedi. Lütfen Daha Sonra Tekrar Deneyiniz");
+    }else{
+        this->Content ()->clear ();
+
+        auto talepView = this->Content ()->addWidget (cpp14::make_unique<TalepView>(std::move(mTalep),
+                                                                                    this->db (),
+                                                                                    this->mUser,
+                                                                                    false));
+
+
+
+    }
+
+}
+
 std::unique_ptr<WPushButton> TalepYonetim::createButton(const char *classname, const WString &name)
 {
     auto button = Wt::cpp14::make_unique<Wt::WPushButton>();
@@ -236,4 +269,9 @@ std::unique_ptr<WPushButton> TalepYonetim::createButton(const char *classname, c
     button->setText(name);
     button->addStyleClass(classname);
     return button;
+}
+
+Signal<std::string> &TalepYonetim::clickOid()
+{
+    return _clickOid;
 }
