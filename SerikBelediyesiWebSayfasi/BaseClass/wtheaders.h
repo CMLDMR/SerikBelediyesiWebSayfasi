@@ -44,7 +44,9 @@
 #include <Wt/WTime.h>
 #include <Wt/WJavaScript.h>
 #include <Wt/WCalendar.h>
+#include <Wt/WPopupMenu.h>
 
+#include <Wt/WSplitButton.h>
 
 #include "bootstrap.h"
 #include "inlinestyle.h"
