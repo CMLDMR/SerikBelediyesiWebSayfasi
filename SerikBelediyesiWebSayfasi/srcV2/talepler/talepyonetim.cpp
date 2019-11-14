@@ -257,6 +257,8 @@ void TalepYonetim::initTalep(const std::string &oid)
                                                                                     false));
 
 
+        talepView->DurumChanged ().connect (this,&TalepYonetim::initControlPanel );
+
 
     }
 
