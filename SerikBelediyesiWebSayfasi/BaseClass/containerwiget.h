@@ -59,6 +59,13 @@ public:
 
     bool isUploaded() const;
 
+    enum FilterType{
+        Pdf,
+        Image
+    };
+
+    void setType( FilterType type );
+
 
 
     QString fileLocation() const;
@@ -76,6 +83,8 @@ private:
     bool mIsUploaded;
 
     Signal<NoClass> _Uploaded;
+
+    FilterType mType;
 };
 
 

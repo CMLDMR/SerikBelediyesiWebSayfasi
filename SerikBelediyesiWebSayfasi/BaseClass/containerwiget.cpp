@@ -125,7 +125,6 @@ FileUploaderWidget::FileUploaderWidget(mongocxx::database *_db, const std::strin
     mFileUploader->setProgressBar(progresBar);
 
     mFileUploader->fileTooLarge().connect([=] {
-        std::cout << mFileUploader->fileTextSize() << std::endl;
         this->showMessage("Hata","Dosya Boyutu Fazla Büyük. Max: 6MB Olmalı");
     });
 
@@ -133,9 +132,7 @@ FileUploaderWidget::FileUploaderWidget(mongocxx::database *_db, const std::strin
     uploadButton->setMargin(10, Wt::Side::Left | Wt::Side::Right);
 
     uploadButton->clicked().connect([=] {
-
         mFileUploader->progressBar()->setValue(0);
-
         mFileUploader->upload();
         mFileUploader->enable();
         mFileUploader->setHidden(false);
@@ -165,12 +162,32 @@ FileUploaderWidget::FileUploaderWidget(mongocxx::database *_db, const std::strin
 
     });
 
+    setType (Image);
+
+
+
 
 }
 
 bool FileUploaderWidget::isUploaded() const
 {
     return mIsUploaded;
+}
+
+void FileUploaderWidget::setType(FileUploaderWidget::FilterType type)
+{
+    mType = type;
+
+    switch (mType) {
+    case Pdf:
+        mFileUploader->setFilters ("application/pdf");
+        break;
+    case Image:
+        mFileUploader->setFilters ("image/*");
+        break;
+    default:
+        break;
+    }
 }
 
 QString FileUploaderWidget::fileLocation() const
