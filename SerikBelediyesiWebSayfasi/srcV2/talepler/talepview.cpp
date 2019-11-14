@@ -81,18 +81,30 @@ TalepView::TalepView(Talep &talepItem, mongocxx::database *_db, User *_mUser, bo
 
 }
 
+Signal<NoClass> &TalepView::DurumChanged()
+{
+    return _durumChanged;
+}
+
 void TalepView::initTCView()
 {
     auto _tcOid = this->tcOid ();
+    printView ();
     if( !_tcOid.isEmpty () )
     {
         auto tcItem = mTCManager->Load_byOID ( _tcOid.toStdString () );
+
+        std::cout << "TCNUMARASI: "<<_tcOid.toStdString () << std::endl;
+
         if( tcItem )
         {
+            tcItem.value ()->printView ();
+
             this->Header ()->clear ();
             auto tcContainer = this->Header ()->addWidget (cpp14::make_unique<ContainerWidget>());
             tcContainer->addStyleClass (Bootstrap::Grid::col_full_12+Bootstrap::ImageShape::img_thumbnail);
             tcContainer->addStyleClass (Bootstrap::ContextualBackGround::bg_info);
+            tcContainer->setMargin (10,Side::Top);
 
             auto rContainer = tcContainer->addWidget (cpp14::make_unique<ContainerWidget>());
             rContainer->addStyleClass (Bootstrap::Grid::row);
@@ -330,7 +342,16 @@ void TalepView::initTalepView()
         {
 
             auto itemContainer = eventContainer->addWidget (cpp14::make_unique<WContainerWidget>());
-            itemContainer->setHeight (100);
+
+            if( item.type() == TalepSubItem::ItemType::Log )
+            {
+            }else if ( item.type() == TalepSubItem::ItemType::Aciklama ) {
+            }else if ( item.type() == TalepSubItem::ItemType::Sms ) {
+            }else{
+                itemContainer->setHeight (100);
+            }
+
+
             itemContainer->setWidth (WLength("100%"));
             itemContainer->setMargin (10,Side::Top|Side::Bottom);
             itemContainer->setAttributeValue (Style::style,Style::background::color::color (item.typeColor ().toStdString ()));
@@ -381,11 +402,23 @@ void TalepView::initTalepView()
             if( item.type () == TalepSubItem::ItemType::Aciklama )
             {
                 auto sContainer = itemContainer->addWidget (cpp14::make_unique<WContainerWidget>());
-                sContainer->setPositionScheme (PositionScheme::Absolute);
+                sContainer->setPositionScheme (PositionScheme::Relative);
+                sContainer->setMargin (10,Side::Top);
                 sContainer->setWidth (WLength("100%"));
-                sContainer->setHeight (WLength("100%"));
                 auto vLayout = sContainer->setLayout (cpp14::make_unique<WVBoxLayout>());
                 auto text = vLayout->addWidget (cpp14::make_unique<WText>(item.aciklama ().toStdString ()),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+                text->addStyleClass ("textShadow");
+                text->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
+            }
+
+            if( item.type () == TalepSubItem::ItemType::Log )
+            {
+                auto sContainer = itemContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+                sContainer->setPositionScheme (PositionScheme::Relative);
+                sContainer->setMargin (10,Side::Top);
+                sContainer->setWidth (WLength("100%"));
+                auto vLayout = sContainer->setLayout (cpp14::make_unique<WVBoxLayout>());
+                auto text = vLayout->addWidget (cpp14::make_unique<WText>(item.log ().toStdString ()),0,AlignmentFlag::Center|AlignmentFlag::Middle);
                 text->addStyleClass ("textShadow");
                 text->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
             }
@@ -442,9 +475,9 @@ void TalepView::initTalepView()
             if( item.type () == TalepSubItem::ItemType::Sms )
             {
                 auto sContainer = itemContainer->addWidget (cpp14::make_unique<WContainerWidget>());
-                sContainer->setPositionScheme (PositionScheme::Absolute);
+                sContainer->setPositionScheme (PositionScheme::Relative);
+                sContainer->setMargin (10,Side::Top);
                 sContainer->setWidth (WLength("100%"));
-                sContainer->setHeight (WLength("100%"));
                 auto vLayout = sContainer->setLayout (cpp14::make_unique<WVBoxLayout>());
                 auto text = vLayout->addWidget (cpp14::make_unique<WText>(item.sms ().toStdString ()),0,AlignmentFlag::Center|AlignmentFlag::Middle);
                 text->addStyleClass ("textShadow");
@@ -497,6 +530,7 @@ void TalepView::initTalepCevap()
         return;
     }
 
+
     {
         auto _container = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
         _container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
@@ -522,22 +556,24 @@ void TalepView::initTalepCevap()
         vLayout->addChild (std::move(popupPtr));
 
 
-        popup->addItem("Sms Gönder")->triggered().connect([=] {
+        auto smsGonderMenu = popup->addItem("Sms Gönder");
+        smsGonderMenu->triggered().connect([=] {
             this->addEventItem (TalepSubItem::ItemType::Sms);
         });
+        smsGonderMenu->decorationStyle ().setCursor (Cursor::PointingHand);
 
-        popup->addItem("Fotoğraf Ekle")->triggered().connect([=] {
+        auto fotoEkleMenu = popup->addItem("Fotoğraf Ekle");
+        fotoEkleMenu->triggered().connect([=] {
             this->addEventItem (TalepSubItem::ItemType::Fotograf);
         });
+        fotoEkleMenu->decorationStyle ().setCursor(Cursor::PointingHand);
 
 
-        popup->addItem("Pdf Ekle")->triggered().connect([=] {
+        auto pdfEkleMenu = popup->addItem("Pdf Ekle");
+        pdfEkleMenu->triggered().connect([=] {
             this->addEventItem (TalepSubItem::ItemType::Pdf);
         });
-
-        popup->itemSelected().connect([=] (Wt::WMenuItem *selectedItem) {
-
-        });
+        pdfEkleMenu->decorationStyle ().setCursor (Cursor::PointingHand);
 
         _container->clicked ().connect ([=](){
             popup->popup (_container,Orientation::Vertical);
@@ -560,6 +596,24 @@ void TalepView::initTalepCevap()
         _container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Purple::DodgerBlue));
         _container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
         _container->decorationStyle ().setCursor (Cursor::PointingHand);
+
+        _container->clicked ().connect ([=](){
+            this->setDurum (TalepKey::DurumKey::TeyitEdilmemis.c_str ());
+            if( this->updateTalep (this) )
+            {
+                TalepSubItem *item = new TalepSubItem;
+                item->setType (TalepSubItem::ItemType::Log);
+                item->setLog ("Talep/Şikayet Tamamlandı, Doğrulanmadı!");
+                item->setTalepOid (this->oid ());
+                item->setPersonelOid (this->mUser->UserOid ());
+                item->setPersonelName (this->mUser->AdSoyad ().c_str ());
+                if( this->insertTalepSubItem (item) ){
+                    this->initTalepView ();
+                    _durumChanged.emit (NoClass());
+                }
+            }
+        });
+
     }
 
     {
@@ -576,6 +630,19 @@ void TalepView::initTalepCevap()
         _container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Red::Crimson));
         _container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
         _container->decorationStyle ().setCursor (Cursor::PointingHand);
+
+        _container->clicked ().connect ([=](){
+
+            if( this->durum ().toStdString ()== TalepKey::DurumKey::RedEdildi )
+            {
+                this->showMessage ("Hata","Bu Talep/Şikayeti Zaten Red Ettin!");
+            }else{
+                this->addLogEventItem (TalepKey::DurumKey::RedEdildi,"Talep/Şikayet Red Edildi. Gerekçe: ");
+            }
+
+
+        });
+
     }
 
     {
@@ -592,6 +659,15 @@ void TalepView::initTalepCevap()
         _container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Green::LightSeaGreen));
         _container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
         _container->decorationStyle ().setCursor (Cursor::PointingHand);
+
+        _container->clicked ().connect ([=](){
+            if( this->durum ().toStdString ()== TalepKey::DurumKey::DevamEdiyor )
+            {
+                this->showMessage ("Hata","Bu Talep/Şikayet Zaten Devam Ediyor!");
+            }else{
+                this->addLogEventItem (TalepKey::DurumKey::DevamEdiyor,"Talep/Şikayet Tekrar Açıldı. Gerekçe: ");
+            }
+        });
     }
 
     {
@@ -608,6 +684,15 @@ void TalepView::initTalepCevap()
         _container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Orange::GoldenRod));
         _container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
         _container->decorationStyle ().setCursor (Cursor::PointingHand);
+
+        _container->clicked ().connect ([=](){
+            if( this->durum ().toStdString ()== TalepKey::DurumKey::Beklemede )
+            {
+                this->showMessage ("Hata","Bu Talep/Şikayet Zaten Beklemede!");
+            }else{
+                this->addLogEventItem (TalepKey::DurumKey::Beklemede,"Talep/Şikayet Beklemeye Alındı. Gerekçe: ");
+            }
+        });
     }
 
     {
@@ -808,8 +893,9 @@ void TalepView::gorevliEkle()
 
 }
 
-void TalepView::addEventItem(TalepSubItem::ItemType type_ )
+void TalepView::addEventItem(TalepSubItem::ItemType type_ , const std::string &islemGerekce )
 {
+
 
     auto dialog = WApplication::instance ()->root ()->addChild (cpp14::make_unique<WDialog>());
     dialog->setHeight (450);
@@ -827,6 +913,9 @@ void TalepView::addEventItem(TalepSubItem::ItemType type_ )
     case TalepSubItem::ItemType::Fotograf:
         dialog->titleBar ()->addWidget (cpp14::make_unique<WText>("<b>Fotoğraf Ekle</b>"));
         break;
+    case TalepSubItem::ItemType::Log:
+        dialog->titleBar ()->addWidget (cpp14::make_unique<WText>("<b>İşlem Yapma Gerekçesini Yazınız</b>"));
+        break;
     default:
         break;
     }
@@ -834,19 +923,36 @@ void TalepView::addEventItem(TalepSubItem::ItemType type_ )
     dialog->titleBar ()->addStyleClass (Bootstrap::ContextualBackGround::bg_primary);
 
 
-//    dialog->contents ()->setOverflow (Overflow::Auto);
     auto container = dialog->contents ()->addWidget (cpp14::make_unique<ContainerWidget>());
     container->setContentAlignment (AlignmentFlag::Center);
-//    container->setHeight (350);
     auto vlayout = container->setLayout (cpp14::make_unique<WVBoxLayout>());
 
 
     switch (type_) {
     case TalepSubItem::ItemType::Pdf:
     {
-        vlayout->addWidget (cpp14::make_unique<FileUploaderWidget>(this->db (),"PDF Yükle"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+        auto fileUploader = vlayout->addWidget (cpp14::make_unique<FileUploaderWidget>(this->db (),"PDF Yükle"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+        fileUploader->setType (FileUploaderWidget::Pdf);
         auto ekleBtn = vlayout->addWidget (cpp14::make_unique<WPushButton>("Ekle"));
         ekleBtn->addStyleClass (Bootstrap::Button::Success);
+        ekleBtn->setEnabled (false);
+        fileUploader->Uploaded ().connect ([=](){
+            ekleBtn->setEnabled (true);
+        });
+
+        ekleBtn->clicked().connect([=](){
+            auto pdfOid = this->uploadfile (fileUploader->fileLocation ());
+            TalepSubItem* item = new TalepSubItem;
+            item->setType (TalepSubItem::ItemType::Pdf);
+            item->setTalepOid (this->oid ());
+            item->setPdf (pdfOid.get_oid ().value.to_string ().c_str ());
+            item->setPersonelOid (this->mUser->UserOid ());
+            item->setPersonelName (this->mUser->AdSoyad ().c_str ());
+
+            this->insertTalepSubItem (item);
+            this->initTalepView ();
+            WApplication::instance ()->root ()->removeChild (dialog);
+        });
     }
         break;
     case TalepSubItem::ItemType::Aciklama:
@@ -854,19 +960,96 @@ void TalepView::addEventItem(TalepSubItem::ItemType type_ )
         auto textEdit = vlayout->addWidget (cpp14::make_unique<WTextEdit>());
         textEdit->setHeight (250);
         textEdit->setMinimumSize (WLength::Auto,250);
+
+        auto ekleBtn = vlayout->addWidget (cpp14::make_unique<WPushButton>("Ekle"));
+        ekleBtn->clicked().connect([=](){
+            TalepSubItem* item = new TalepSubItem;
+            item->setType (TalepSubItem::ItemType::Aciklama);
+            item->setTalepOid (this->oid ());
+            item->setAciklama (textEdit->text ().toUTF8 ().c_str ());
+            item->setPersonelOid (this->mUser->UserOid ());
+            item->setPersonelName (this->mUser->AdSoyad ().c_str ());
+
+            this->insertTalepSubItem (item);
+            this->initTalepView ();
+            WApplication::instance ()->root ()->removeChild (dialog);
+        });
+
+
     }
         break;
+
+    case TalepSubItem::ItemType::Log:
+    {
+        auto textEdit = vlayout->addWidget (cpp14::make_unique<WTextEdit>());
+        textEdit->setText (islemGerekce);
+        textEdit->setHeight (250);
+        textEdit->setMinimumSize (WLength::Auto,250);
+
+        auto ekleBtn = vlayout->addWidget (cpp14::make_unique<WPushButton>("Ekle"));
+        ekleBtn->clicked().connect([=](){
+            TalepSubItem* item = new TalepSubItem;
+            item->setType (TalepSubItem::ItemType::Log);
+            item->setTalepOid (this->oid ());
+            item->setLog (textEdit->text ().toUTF8 ().c_str ());
+            item->setPersonelOid (this->mUser->UserOid ());
+            item->setPersonelName (this->mUser->AdSoyad ().c_str ());
+            if( this->insertTalepSubItem (item) ){
+
+                this->initTalepView ();
+
+            }
+            WApplication::instance ()->root ()->removeChild (dialog);
+        });
+
+
+    }
+        break;
+
     case TalepSubItem::ItemType::Sms:
     {
         auto textEdit = vlayout->addWidget (cpp14::make_unique<WTextEdit>());
         textEdit->setHeight (250);
+
+        auto ekleBtn = vlayout->addWidget (cpp14::make_unique<WPushButton>("Gönder"));
+        ekleBtn->clicked().connect([=](){
+            TalepSubItem* item = new TalepSubItem;
+            item->setType (TalepSubItem::ItemType::Sms);
+            item->setTalepOid (this->oid ());
+            item->setSms (textEdit->text ().toUTF8 ().c_str ());
+            item->setPersonelOid (this->mUser->UserOid ());
+            item->setPersonelName (this->mUser->AdSoyad ().c_str ());
+
+            this->insertTalepSubItem (item);
+            this->initTalepView ();
+            WApplication::instance ()->root ()->removeChild (dialog);
+        });
     }
         break;
     case TalepSubItem::ItemType::Fotograf:
     {
-        vlayout->addWidget (cpp14::make_unique<FileUploaderWidget>(this->db (),"Resim Yükle"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+        auto fileUploader = vlayout->addWidget (cpp14::make_unique<FileUploaderWidget>(this->db (),"Resim Yükle"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+        fileUploader->setType (FileUploaderWidget::Image);
         auto ekleBtn = vlayout->addWidget (cpp14::make_unique<WPushButton>("Ekle"));
         ekleBtn->addStyleClass (Bootstrap::Button::Success);
+        ekleBtn->setEnabled (false);
+        fileUploader->Uploaded ().connect ([=](){
+            ekleBtn->setEnabled (true);
+        });
+
+        ekleBtn->clicked().connect([=](){
+            auto fotoOid = this->uploadfile (fileUploader->fileLocation ());
+            TalepSubItem* item = new TalepSubItem;
+            item->setType (TalepSubItem::ItemType::Fotograf);
+            item->setTalepOid (this->oid ());
+            item->setFotograf (fotoOid.get_oid ().value.to_string ().c_str ());
+            item->setPersonelOid (this->mUser->UserOid ());
+            item->setPersonelName (this->mUser->AdSoyad ().c_str ());
+
+            this->insertTalepSubItem (item);
+            this->initTalepView ();
+            WApplication::instance ()->root ()->removeChild (dialog);
+        });
     }
         break;
     default:
@@ -888,4 +1071,57 @@ void TalepView::addEventItem(TalepSubItem::ItemType type_ )
 
 
 
+}
+
+void TalepView::addLogEventItem(const std::string &yeniDurum, const std::string &islemGerekcesi)
+{
+    auto dialog = WApplication::instance ()->root ()->addChild (cpp14::make_unique<WDialog>());
+    dialog->setHeight (450);
+
+
+    dialog->titleBar ()->addWidget (cpp14::make_unique<WText>("<b>İşlem Yapma Gerekçesini Yazınız</b>"));
+
+    dialog->titleBar ()->addStyleClass (Bootstrap::ContextualBackGround::bg_primary);
+
+
+    auto container = dialog->contents ()->addWidget (cpp14::make_unique<ContainerWidget>());
+    container->setContentAlignment (AlignmentFlag::Center);
+    auto vlayout = container->setLayout (cpp14::make_unique<WVBoxLayout>());
+
+    {
+        auto textEdit = vlayout->addWidget (cpp14::make_unique<WTextEdit>());
+        textEdit->setText (islemGerekcesi);
+        textEdit->setHeight (250);
+        textEdit->setMinimumSize (WLength::Auto,250);
+
+        auto ekleBtn = vlayout->addWidget (cpp14::make_unique<WPushButton>("Ekle"));
+        ekleBtn->clicked().connect([=](){
+            TalepSubItem* item = new TalepSubItem;
+            item->setType (TalepSubItem::ItemType::Log);
+            item->setTalepOid (this->oid ());
+            item->setLog (textEdit->text ().toUTF8 ().c_str ());
+            item->setPersonelOid (this->mUser->UserOid ());
+            item->setPersonelName (this->mUser->AdSoyad ().c_str ());
+            if( this->insertTalepSubItem (item) ){
+                this->setDurum (yeniDurum.c_str ());
+                if( this->updateTalep (this) )
+                {
+                    this->initTalepView ();
+                    _durumChanged.emit (NoClass());
+                }
+            }
+            WApplication::instance ()->root ()->removeChild (dialog);
+        });
+
+
+    }
+
+
+    auto closeBtn = dialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kapat"));
+    closeBtn->addStyleClass (Bootstrap::Button::Primary);
+    closeBtn->clicked ().connect ([=](){
+        WApplication::instance ()->root ()->removeChild (dialog);
+    });
+
+    dialog->show ();
 }
