@@ -19,7 +19,12 @@ public:
               bool _mPublicLink = true );
 
 
+    Signal<NoClass> &DurumChanged();
+
 private:
+
+    Signal<NoClass> _durumChanged;
+
     User* mUser;
     bool mPublicLink;
 
@@ -37,8 +42,8 @@ private:
     void updateGorevliPersonelWidget();
     void gorevliEkle();
 
-    void addEventItem(TalepSubItem::ItemType type_);
-
+    void addEventItem(TalepSubItem::ItemType type_  , const std::string &islemGerekce = "");
+    void addLogEventItem( const std::string& yeniDurum , const std::string &islemGerekcesi );
 
 };
 
