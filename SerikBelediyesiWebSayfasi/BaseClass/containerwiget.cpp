@@ -92,12 +92,13 @@ void ContainerWidget::showMessage(std::string title, std::string msg, std::strin
     }
 
 
-        messageBox->buttonClicked().connect([=] {
-            this->removeChild(messageBox);
-        });
 
-        messageBox->webWidget()->setZIndex(1000);
-        messageBox->show();
+    messageBox->buttonClicked().connect([=] {
+        this->removeChild(messageBox);
+    });
+
+    messageBox->webWidget()->setZIndex(1000);
+    messageBox->show();
 }
 
 
@@ -114,7 +115,7 @@ FileUploaderWidget::FileUploaderWidget(mongocxx::database *_db, const std::strin
     fileUploaderContainer->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(150,170),this->getRandom(170,190),this->getRandom(200,220)));
     fileUploaderContainer->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
     fileUploaderContainer->setMargin(10,Side::Top|Side::Bottom);
-//    fileUploaderContainer->setWidth (WLength("100%"));
+    //    fileUploaderContainer->setWidth (WLength("100%"));
 
     mFileUploader = fileUploaderContainer->addWidget(cpp14::make_unique<WFileUpload>());
     auto progresBar = fileUploaderContainer->addWidget(cpp14::make_unique<WProgressBar>());
