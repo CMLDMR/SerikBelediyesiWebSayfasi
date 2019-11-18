@@ -636,6 +636,19 @@ void TalepView::initTalepCevap()
         _container->decorationStyle ().setCursor (Cursor::PointingHand);
 
         _container->clicked ().connect ([=](){
+
+
+            if( this->durum ().toStdString () == SerikBLDCore::TalepKey::DurumKey::TeyitEdilmemis ||
+                    this->durum ().toStdString () == SerikBLDCore::TalepKey::DurumKey::Tamamlandi ||
+                    this->durum ().toStdString () == SerikBLDCore::TalepKey::DurumKey::RedEdildi )
+            {
+                this->showMessage ("Uyarı","Bu Talep Üzerinde İşlem Yapmak İçin Lütfen Beyaz Masadan yada Çağrı Merkezinden Tekrar Açtırınız");
+                return;
+            }
+
+
+
+
             this->setDurum (TalepKey::DurumKey::TeyitEdilmemis.c_str ());
             if( this->updateTalep (this) )
             {
@@ -808,6 +821,16 @@ void TalepView::updateGorevliPersonelWidget()
         deleteContainer->setAttributeValue (Style::dataoid,per.oid ().value ().to_string ());
 
         deleteContainer->clicked ().connect ([=](){
+
+            if( this->durum ().toStdString () == SerikBLDCore::TalepKey::DurumKey::TeyitEdilmemis ||
+                    this->durum ().toStdString () == SerikBLDCore::TalepKey::DurumKey::Tamamlandi ||
+                    this->durum ().toStdString () == SerikBLDCore::TalepKey::DurumKey::RedEdildi )
+            {
+                this->showMessage ("Uyarı","Bu Talep Üzerinde İşlem Yapmak İçin Lütfen Beyaz Masadan yada Çağrı Merkezinden Tekrar Açtırınız");
+                return;
+            }
+
+
             auto messageBox =
                     deleteContainer->addChild(Wt::cpp14::make_unique<Wt::WMessageBox>(
                                                   "Uyarı",
@@ -838,9 +861,11 @@ void TalepView::updateGorevliPersonelWidget()
 void TalepView::gorevliEkle()
 {
 
-    if( this->durum ().toStdString ()== TalepKey::DurumKey::Tamamlandi )
+    if( this->durum ().toStdString ()== TalepKey::DurumKey::Tamamlandi ||
+            this->durum ().toStdString () == SerikBLDCore::TalepKey::DurumKey::TeyitEdilmemis ||
+            this->durum ().toStdString () == SerikBLDCore::TalepKey::DurumKey::RedEdildi )
     {
-        this->showMessage ("Uyarı","Bu Talep/Şikayet Tamamlanmış. Üzerinde İşlem Yapamazsınız");
+        this->showMessage ("Uyarı","Bu Talep/Şikayet Görevli Eklemek için Beyaz Masandan yada Çağrı Merkezinden Tekrar Açtırınız");
         return;
     }
 
@@ -932,6 +957,13 @@ void TalepView::gorevliEkle()
 void TalepView::addEventItem(TalepSubItem::ItemType type_ , const std::string &islemGerekce )
 {
 
+    if( this->durum ().toStdString () == SerikBLDCore::TalepKey::DurumKey::TeyitEdilmemis ||
+            this->durum ().toStdString () == SerikBLDCore::TalepKey::DurumKey::Tamamlandi ||
+            this->durum ().toStdString () == SerikBLDCore::TalepKey::DurumKey::RedEdildi )
+    {
+        this->showMessage ("Uyarı","Bu Talep Üzerinde İşlem Yapmak İçin Lütfen Beyaz Masadan yada Çağrı Merkezinden Tekrar Açtırınız");
+        return;
+    }
 
     auto dialog = WApplication::instance ()->root ()->addChild (cpp14::make_unique<WDialog>());
     dialog->setHeight (450);
@@ -1111,6 +1143,16 @@ void TalepView::addEventItem(TalepSubItem::ItemType type_ , const std::string &i
 
 void TalepView::addLogEventItem(const std::string &yeniDurum, const std::string &islemGerekcesi)
 {
+
+    if( this->durum ().toStdString () == SerikBLDCore::TalepKey::DurumKey::TeyitEdilmemis ||
+            this->durum ().toStdString () == SerikBLDCore::TalepKey::DurumKey::Tamamlandi ||
+            this->durum ().toStdString () == SerikBLDCore::TalepKey::DurumKey::RedEdildi )
+    {
+        this->showMessage ("Uyarı","Bu Talep Üzerinde İşlem Yapmak İçin Lütfen Beyaz Masadan yada Çağrı Merkezinden Tekrar Açtırınız");
+        return;
+    }
+
+
     auto dialog = WApplication::instance ()->root ()->addChild (cpp14::make_unique<WDialog>());
     dialog->setHeight (450);
 
