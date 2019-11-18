@@ -161,14 +161,14 @@ DEPENDPATH += C:/boost/boost
 
 
 
-win32: LIBS += -LC:/Wt-4.1.0-msvs2015-x64/lib/ -lwt
+win32: LIBS += -LC:/Wt-4.1.2-msvs2015-x64/lib/ -lwt
 
-INCLUDEPATH += C:/Wt-4.1.0-msvs2015-x64/include
-DEPENDPATH += C:/Wt-4.1.0-msvs2015-x64/include
+INCLUDEPATH += C:/Wt-4.1.2-msvs2015-x64/include
+DEPENDPATH += C:/Wt-4.1.2-msvs2015-x64/include
 
-win32: LIBS += -LC:/Wt-4.1.0-msvs2015-x64/lib/ -lwthttp
+win32: LIBS += -LC:/Wt-4.1.2-msvs2015-x64/lib/ -lwthttp
 
-win32: LIBS += -LC:/Wt-4.1.0-msvs2015-x64/lib/ -llibhpdf
+win32: LIBS += -LC:/Wt-4.1.2-msvs2015-x64/lib/ -llibhpdf
 
 
 
