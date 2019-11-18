@@ -788,8 +788,6 @@ void TalepView::updateGorevliPersonelWidget()
                     }else{
                         std::cout << "can not remove personel Widget" << std::endl;
                     }
-                    per.printView ();
-
                 }else{
                     deleteContainer->removeChild (messageBox);
                 }
