@@ -23,6 +23,8 @@ TalepYonetim::TalepYonetim(mongocxx::database *_db, bsoncxx::document::value _us
 
 }
 
+
+
 void TalepYonetim::initControlPanel()
 {
     this->Header ()->clear ();
