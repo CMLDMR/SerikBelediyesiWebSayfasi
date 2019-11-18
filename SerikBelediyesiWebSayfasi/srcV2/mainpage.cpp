@@ -5,6 +5,7 @@
 #include "SerikBelediyesiWebSayfasi/src/giriswidget.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/baskanwidget.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/externalWidget/nobetcieczanewidget.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/talepler/talepwidget.h"
 
 MainPage::MainPage(mongocxx::database *_db)
     :DataBaseWidget (_db),_signal(this,"_signal")
@@ -189,19 +190,8 @@ void MainPage::initHakkinda()
 
 void MainPage::initIletisim()
 {
+
     mContentWidget->clear();
-
-
-//    mMainContainer->clear();
-    wApp->setInternalPath("/initiletisim",false);
-
-    //    auto detailContainer = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-    //    detailContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-    //    detailContainer->setPadding(0,AllSides);
-
-    //    auto layout = detailContainer->setLayout(cpp14::make_unique<WHBoxLayout>());
-    //    layout->setContentsMargins(0,0,0,0);
-    //    auto container = layout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Center);
 
     mContentWidget->setContentAlignment(AlignmentFlag::Center);
     auto container = mContentWidget->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -232,10 +222,6 @@ void MainPage::initIletisim()
     {
         auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
         _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-        auto _layout = _container->setLayout(cpp14::make_unique<WHBoxLayout>());
-        //        _layout->addWidget(cpp14::make_unique<WPushButton>("Geri"),0,AlignmentFlag::Left)->clicked().connect([=](){
-        //            this->_clickBack.emit(NoClass());
-        //        });
         _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
                                       Style::background::color::color(Style::color::Grey::Gainsboro));
 
@@ -274,12 +260,12 @@ void MainPage::initIletisim()
         layout->addWidget(std::move(anchor),0,AlignmentFlag::Top);
 
 
-        auto text1 = layout->addWidget(cpp14::make_unique<WText>("<h2>Adres: Orta Mahalle, Kızderesi Cad No:25, 07500 Serik/Antalya</h2>",TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
-        auto text2 = layout->addWidget(cpp14::make_unique<WText>("İletişim: 444 9 722",TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
+        layout->addWidget(cpp14::make_unique<WText>("<h2>Adres: Orta Mahalle, Kızderesi Cad No:25, 07500 Serik/Antalya</h2>",TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
+        layout->addWidget(cpp14::make_unique<WText>("İletişim: 444 9 722",TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
 
-        auto text3 = layout->addWidget(cpp14::make_unique<WText>("Fax: +90 242 722 19 68",TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
+        layout->addWidget(cpp14::make_unique<WText>("Fax: +90 242 722 19 68",TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
 
-        auto text4 = layout->addWidget(cpp14::make_unique<WText>("mail: serik@serik.bel.tr",TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
+        layout->addWidget(cpp14::make_unique<WText>("mail: serik@serik.bel.tr",TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
 
     }
 
@@ -287,10 +273,6 @@ void MainPage::initIletisim()
     {
         auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
         _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-        auto _layout = _container->setLayout(cpp14::make_unique<WHBoxLayout>());
-        //        _layout->addWidget(cpp14::make_unique<WPushButton>("Geri"),0,AlignmentFlag::Left)->clicked().connect([=](){
-        //            this->_clickBack.emit(NoClass());
-        //        });
         _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
                                       Style::background::color::color(Style::color::Grey::Gainsboro));
     }
@@ -298,10 +280,18 @@ void MainPage::initIletisim()
 
 
 
-    // Talep Sayfası
+//    // Talep Sayfası
+//    {
+//        auto talep = container->addWidget(cpp14::make_unique<Body::Talep>(this->getDB()));
+//        talep->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+//    }
+
+    // Yeni Talep Sayfası
     {
-        auto talep = container->addWidget(cpp14::make_unique<Body::Talep>(this->getDB()));
-        talep->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+        auto talep = container->addWidget (cpp14::make_unique<TalepWidget::TalepWidget>(this->getDB ()));
+        talep->addStyleClass (Bootstrap::Grid::col_full_12);
+        talep->setMargin (20,Side::Top|Side::Bottom);
+        talep->addStyleClass ("boxShadow");
     }
 
     footer->removeStyleClass("footerStickAbsolute");
