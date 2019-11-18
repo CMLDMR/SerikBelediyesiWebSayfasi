@@ -11,6 +11,7 @@
 #include "SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/bilgiedinmeclient.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/dilekceyonetim.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/talepler/talepyonetim.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/talepler/talepvatandasarayuz.h"
 
 
 Giris::GirisWidget::GirisWidget(mongocxx::database *_db)
@@ -1522,10 +1523,13 @@ void Giris::SivilWidget::initMenu()
     // Add menu items using the default lazy loading policy.
     menu->addItem("Bilgilerim", Wt::cpp14::make_unique<Bilgilerim>(db,UserValue));
     menu->addItem("Taleplerim", Wt::cpp14::make_unique<Taleplerim>(db,UserValue));
+    menu->addItem("TaleplerimV2", Wt::cpp14::make_unique<TalepVatandasArayuz>(db,UserValue));
+
     menu->addItem("Başvurularım", Wt::cpp14::make_unique<Basvurularim>(db,UserValue));
 
     auto TalepWidgetItem = cpp14::make_unique<TalepWidget::TalepWidget>(db);
-    TalepWidgetItem->tcWidget->setTCItem (SerikBLDCore::TC(UserValue));
+    SerikBLDCore::TC tcItem(UserValue);
+    TalepWidgetItem->tcWidget->setTCItem (tcItem);
 
     menu->addItem("Yeni Talep", std::move(TalepWidgetItem));
     menu->addItem("Yeni Başvuru", Wt::cpp14::make_unique<Basvuru>(db,UserValue));
