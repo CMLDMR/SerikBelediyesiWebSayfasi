@@ -1,6 +1,9 @@
 #include "dilekceyonetim.h"
 #include "dilekce/dilekceview.h"
 
+using namespace SerikBLDCore;
+
+
 DilekceYonetim::DilekceYonetim(mongocxx::database *_db, bsoncxx::document::value _user)
     : ContainerWidget ("Dilekçe Yönetim") , DilekceManager (_db) , mUser(new User(_db,_user))
 {

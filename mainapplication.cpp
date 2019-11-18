@@ -321,7 +321,7 @@ bool MainApplication::loadDilekce(const std::string &oid)
 
 
 
-    DilekceManager* dManager = new DilekceManager(&this->db);
+    SerikBLDCore::DilekceManager* dManager = new SerikBLDCore::DilekceManager(&this->db);
 
     auto dilekce = dManager->LoadDilekce (oid);
 
@@ -344,9 +344,9 @@ bool MainApplication::loadDilekce(const std::string &oid)
 
 bool MainApplication::loadTalep(const std::string &oid)
 {
-    TalepManager* dManager = new TalepManager(&this->db);
+    SerikBLDCore::TalepManager* dManager = new SerikBLDCore::TalepManager(&this->db);
 
-    Talep filter;
+    SerikBLDCore::Talep filter;
     filter.setOid (oid);
     auto talep = dManager->findOneTalep (filter);
 

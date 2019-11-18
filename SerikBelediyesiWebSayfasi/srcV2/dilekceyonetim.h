@@ -12,7 +12,7 @@
 #include "dilekce.h"
 
 
-class DilekceYonetim : public ContainerWidget , public DilekceManager
+class DilekceYonetim : public ContainerWidget , public SerikBLDCore::DilekceManager
 {
 public:
     DilekceYonetim(mongocxx::database* _db , bsoncxx::document::value _user);
@@ -26,9 +26,9 @@ public:
 
 
 
-    void listDilekce( Dilekce &filterDilekce );
+    void listDilekce( SerikBLDCore::Dilekce &filterDilekce );
 
-    void listBilgiDilekce( const Dilekce &filterDilekce );
+    void listBilgiDilekce( const SerikBLDCore::Dilekce &filterDilekce );
 
     void initDilekce( const std::string &dilekceOid );
 
@@ -39,7 +39,7 @@ private:
     Signal<std::string> _clickDilekceItem;
     Signal<std::string> _clickDilekceBilgiItem;
 
-    User* mUser;
+    SerikBLDCore::User* mUser;
 
 
 };

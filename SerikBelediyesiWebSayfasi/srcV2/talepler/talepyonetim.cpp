@@ -1,13 +1,15 @@
 #include "talepyonetim.h"
 #include "talepview.h"
 
+using namespace SerikBLDCore;
+
 TalepYonetim::TalepYonetim(mongocxx::database *_db, bsoncxx::document::value _user)
     :ContainerWidget ("Talep/Şikayet Yönetimi V2"),
       TalepManager (_db),
-      mUser(new User (_db,_user))
+      mUser(new SerikBLDCore::User (_db,_user))
 {
 
-    if( this->mUser->Statu () == User::Mudur ){
+    if( this->mUser->Statu () == SerikBLDCore::User::Mudur ){
         this->initControlPanel ();
     }
 

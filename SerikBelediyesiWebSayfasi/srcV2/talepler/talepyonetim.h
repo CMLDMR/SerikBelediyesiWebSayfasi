@@ -9,7 +9,7 @@
 #include "user.h"
 #include "Talep/talepmanager.h"
 
-class TalepYonetim : public ContainerWidget , public TalepManager
+class TalepYonetim : public ContainerWidget , public SerikBLDCore::TalepManager
 {
 public:
     TalepYonetim(mongocxx::database* _db , bsoncxx::document::value _user);
@@ -18,11 +18,11 @@ public:
     Signal<std::string> &clickOid();
 
 private:
-    User* mUser;
+    SerikBLDCore::User* mUser;
 
     void initControlPanel();
 
-    void listTalepler( const Talep& filter = Talep() );
+    void listTalepler( const SerikBLDCore::Talep& filter = SerikBLDCore::Talep() );
 
     void initTalep( const std::string &oid );
 

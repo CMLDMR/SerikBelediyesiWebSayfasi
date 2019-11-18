@@ -3,6 +3,7 @@
 #include "dilekceaciklama.h"
 #include "personel.h"
 
+using namespace SerikBLDCore;
 
 DilekceView::DilekceView(Dilekce *_dilekce, mongocxx::database* _db ,  User *_user, bool _mPublicLink, bool _mBilgi)
     : ContainerWidget (_mPublicLink ? "Serik Belediyesi Dilekçe Yönetim Sistemi ©2019" : ""),

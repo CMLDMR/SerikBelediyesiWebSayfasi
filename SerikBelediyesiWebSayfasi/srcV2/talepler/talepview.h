@@ -10,12 +10,12 @@
 #include "tcmanager.h"
 #include "personelmanager.h"
 
-class TalepView : public ContainerWidget , public Talep , public TalepManager
+class TalepView : public ContainerWidget , public SerikBLDCore::Talep , public SerikBLDCore::TalepManager
 {
 public:
     TalepView(Talep &talepItem ,
               mongocxx::database* _db ,
-              User* _mUser,
+              SerikBLDCore::User* _mUser,
               bool _mPublicLink = true );
 
 
@@ -25,11 +25,11 @@ private:
 
     Signal<NoClass> _durumChanged;
 
-    User* mUser;
+    SerikBLDCore::User* mUser;
     bool mPublicLink;
 
-    TCManager* mTCManager;
-    PersonelManager* mPersonelManager;
+    SerikBLDCore::TCManager* mTCManager;
+    SerikBLDCore::PersonelManager* mPersonelManager;
 
     void initTCView();
 
@@ -42,7 +42,7 @@ private:
     void updateGorevliPersonelWidget();
     void gorevliEkle();
 
-    void addEventItem(TalepSubItem::ItemType type_  , const std::string &islemGerekce = "");
+    void addEventItem(SerikBLDCore::TalepSubItem::ItemType type_  , const std::string &islemGerekce = "");
     void addLogEventItem( const std::string& yeniDurum , const std::string &islemGerekcesi );
 
 };

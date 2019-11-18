@@ -10,29 +10,32 @@ namespace TalepWidget {
 class TCWidget;
 class TalepItemWidget;
 
-class TalepWidget : public ContainerWidget , public TalepManager
+class TalepWidget : public ContainerWidget , public SerikBLDCore::TalepManager
 {
 public:
-    TalepWidget(DB* db);
+    TalepWidget(SerikBLDCore::DB* db);
     TalepWidget( mongocxx::database* _db );
 
     void init();
 
     TCWidget* tcWidget;
     TalepItemWidget* talepWidget;
+
 };
 
 
 
 
-class TCWidget : public ContainerWidget , public TCManager
+class TCWidget : public ContainerWidget , public SerikBLDCore::TCManager
 {
 public:
     TCWidget(mongocxx::database* db);
 
     void TCChanged();
     void setDefault();
-    boost::optional<TC> TCItem();
+    boost::optional<SerikBLDCore::TC> TCItem();
+
+    void setTCItem( SerikBLDCore::TC &tcItem );
 
 private:
 
@@ -43,10 +46,12 @@ private:
 
     std::string mTCOid;
 
+    bool mTCLoadFromExternal;
+
 };
 
 
-class TalepItemWidget : public ContainerWidget , public Talep
+class TalepItemWidget : public ContainerWidget , public SerikBLDCore::Talep
 {
 public:
     TalepItemWidget(QVector<QString> mahalleList);

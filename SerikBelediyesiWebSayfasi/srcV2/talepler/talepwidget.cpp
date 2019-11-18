@@ -2,6 +2,8 @@
 #include <QDate>
 #include <QDateTime>
 
+using namespace SerikBLDCore;
+
 TalepWidget::TalepWidget::TalepWidget(DB *db)
     :ContainerWidget() , TalepManager(db)
 {
@@ -14,122 +16,123 @@ TalepWidget::TalepWidget::TalepWidget(mongocxx::database *_db)
     this->init ();
 }
 
+
 void TalepWidget::TalepWidget::init()
 {
     this->Header ()->addWidget (cpp14::make_unique<WText>("<h4>Talepte/Şikayette Bulun</h4>"));
     this->Header ()->addStyleClass (Bootstrap::ContextualBackGround::bg_primary);
 
 
-        this->Content ()->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::Snow));
+    this->Content ()->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::Snow));
 
-        tcWidget = this->Content ()->addWidget (cpp14::make_unique<TCWidget>(this->db ()));
+    tcWidget = this->Content ()->addWidget (cpp14::make_unique<TCWidget>(this->db ()));
 
-        tcWidget->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
-                                 Bootstrap::Grid::Medium::col_md_6+
-                                 Bootstrap::Grid::Small::col_sm_12+
-                                 Bootstrap::Grid::ExtraSmall::col_xs_12);
-
-
-        talepWidget = this->Content ()->addWidget (cpp14::make_unique<TalepItemWidget>(this->getMahalleler ()));
-        talepWidget->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
-                                    Bootstrap::Grid::Medium::col_md_6+
-                                    Bootstrap::Grid::Small::col_sm_12+
-                                    Bootstrap::Grid::ExtraSmall::col_xs_12);
-
-        auto warningTextTitle = this->Content ()->addWidget(cpp14::make_unique<WText>("<h4>Talebinizin Tam Olarak Yerine Getirilebilmesi için "
-                                                                                      "Lütfen Bilgilerinizi Eksiksiz Doldurunuz</h4>"));
-
-        warningTextTitle->addStyleClass (Bootstrap::Grid::col_full_12);
-
-        auto mSaveBtn = this->Content ()->addWidget(cpp14::make_unique<WPushButton>("Kaydet"));
-        mSaveBtn->addStyleClass(Bootstrap::Button::Primary);
-        warningTextTitle->addStyleClass (Bootstrap::Grid::col_full_12);
-
-        mSaveBtn->clicked ().connect ([=](){
-
-            auto tcVal = tcWidget->TCItem ();
-
-            if( !tcVal )
-            {
-                this->showMessage ("Uyarı","TC Bilgileriniz Hatalı");
-                return;
-            }
-
-            if( talepWidget->adresString ().size () < 10 )
-            {
-                this->showMessage ("Uyarı","Talep/Şikayet Adresi Yetersiz");
-                return;
-            }
-            if( talepWidget->mahalleString ().size () == 0 )
-            {
-                this->showMessage ("Uyarı","Talep/Şikayet Mahallesi Seçmediniz");
-                return;
-            }
-            if( talepWidget->talepString ().size () < 50 )
-            {
-                this->showMessage ("Uyarı","Talep/Şikayet Konusu Yetersiz");
-                return;
-            }
-
-            Talep talepItem;
-
-            talepItem.setTCOID (tcVal->oid ().get ().to_string ().c_str ());
-            talepItem.setAy (QDate::currentDate ().toString ("MMMM"));
-            talepItem.setYil (QDate::currentDate ().year ());
-            talepItem.setSec (QDateTime::currentDateTime ().time ().msecsSinceStartOfDay ());
-            talepItem.setJulianDay (QDate::currentDate ().toJulianDay ());
-            talepItem.setDurum (TalepKey::DurumKey::DevamEdiyor.c_str ());
-            talepItem.setKaynak (TalepKey::KaynakKey::Web.c_str ());
-            talepItem.setAddress (talepWidget->adresString ().c_str ());
-            talepItem.setMahalle (talepWidget->mahalleString ().c_str ());
-            talepItem.setKonu (talepWidget->talepString ().c_str ());
-            talepItem.setBirim ("Başkanlık");
+    tcWidget->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
+                             Bootstrap::Grid::Medium::col_md_6+
+                             Bootstrap::Grid::Small::col_sm_12+
+                             Bootstrap::Grid::ExtraSmall::col_xs_12);
 
 
-            auto insertedID = this->insertTalep (talepItem);
-            if( insertedID.size () == 24 )
-            {
+    talepWidget = this->Content ()->addWidget (cpp14::make_unique<TalepItemWidget>(this->getMahalleler ()));
+    talepWidget->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
+                                Bootstrap::Grid::Medium::col_md_6+
+                                Bootstrap::Grid::Small::col_sm_12+
+                                Bootstrap::Grid::ExtraSmall::col_xs_12);
 
+    auto warningTextTitle = this->Content ()->addWidget(cpp14::make_unique<WText>("<h4>Talebinizin Tam Olarak Yerine Getirilebilmesi için "
+                                                                                  "Lütfen Bilgilerinizi Eksiksiz Doldurunuz</h4>"));
 
-                auto dialog = WApplication::instance ()->root ()->addChild (cpp14::make_unique<WDialog>());
-                dialog->setHeight (250);
+    warningTextTitle->addStyleClass (Bootstrap::Grid::col_full_12);
 
-                dialog->titleBar ()->addWidget (cpp14::make_unique<WText>("Talebiniz Başarılı Bir Şekilde Alındı"));
-                dialog->titleBar ()->addStyleClass (Bootstrap::ContextualBackGround::bg_success);
+    auto mSaveBtn = this->Content ()->addWidget(cpp14::make_unique<WPushButton>("Kaydet"));
+    mSaveBtn->addStyleClass(Bootstrap::Button::Primary);
+    warningTextTitle->addStyleClass (Bootstrap::Grid::col_full_12);
 
-                auto container = dialog->contents ()->addWidget (cpp14::make_unique<ContainerWidget>());
+    mSaveBtn->clicked ().connect ([=](){
 
+        auto tcVal = tcWidget->TCItem ();
 
-                container->addWidget (cpp14::make_unique<WText>(WString("<p>Talebiniz Başarılı Bir Şekilde Alındı.</p>"
-                                                                        "<p><a href=\"http://www.serik.bel.tr/?type=talep&_id={1}\" target=\"_blank\"><b>http://www.serik.bel.tr/?type=talep&_id={2}</b></a></p>"
-                                                                        "<p>Bu Linkten yada</p>"
-                                                                        "<p>Telefon Numarası ve Şifreniz İle Giriş Yaparak Takip Edebilirsiniz</p>").arg (insertedID).arg (insertedID).toUTF8 ().c_str (),TextFormat::UnsafeXHTML));
-
-                auto closeBtn = dialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kapat"));
-                closeBtn->clicked ().connect ([=](){
-                    tcWidget->setDefault ();
-                    talepWidget->setDefault ();
-                    WApplication::instance ()->root ()->removeChild (dialog);
-                });
-                dialog->show ();
-            }
-
-
-        });
-
-        this->Footer ()->addStyleClass (Bootstrap::ContextualBackGround::bg_info);
-
+        if( !tcVal )
         {
-            auto container = this->Footer ()->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-            container->setAttributeValue(Style::style,Style::background::color::rgba(125,175,225));
-            auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-            auto text = layout->addWidget(cpp14::make_unique<WText>("<h5><p><b>Sinek ve İlaçlama İçin Lütfen</b></p>"
-                                                                    "<p>Antalya Büyükşehir Belediyesi</p>"
-                                                                    "<p>Çevre Koruma ve Kontrol Daire Başkanlığı Çevre Sağlığı Şube Müdürlüğünü (Vektörel Mücadele) Arayınız</p>"
-                                                                    "<p>İletişim: 0 242 712 66 67</p>"
-                                                                    "<p>Arama Saatleri 09:00 - 16:00</p></h5>"));
+            this->showMessage ("Uyarı","TC Bilgileriniz Hatalı");
+            return;
         }
+
+        if( talepWidget->adresString ().size () < 10 )
+        {
+            this->showMessage ("Uyarı","Talep/Şikayet Adresi Yetersiz");
+            return;
+        }
+        if( talepWidget->mahalleString ().size () == 0 )
+        {
+            this->showMessage ("Uyarı","Talep/Şikayet Mahallesi Seçmediniz");
+            return;
+        }
+        if( talepWidget->talepString ().size () < 50 )
+        {
+            this->showMessage ("Uyarı","Talep/Şikayet Konusu Yetersiz");
+            return;
+        }
+
+        Talep talepItem;
+
+        talepItem.setTCOID (tcVal->oid ().get ().to_string ().c_str ());
+        talepItem.setAy (QDate::currentDate ().toString ("MMMM"));
+        talepItem.setYil (QDate::currentDate ().year ());
+        talepItem.setSec (QDateTime::currentDateTime ().time ().msecsSinceStartOfDay ());
+        talepItem.setJulianDay (QDate::currentDate ().toJulianDay ());
+        talepItem.setDurum (TalepKey::DurumKey::DevamEdiyor.c_str ());
+        talepItem.setKaynak (TalepKey::KaynakKey::Web.c_str ());
+        talepItem.setAddress (talepWidget->adresString ().c_str ());
+        talepItem.setMahalle (talepWidget->mahalleString ().c_str ());
+        talepItem.setKonu (talepWidget->talepString ().c_str ());
+        talepItem.setBirim ("Başkanlık");
+
+
+        auto insertedID = this->insertTalep (talepItem);
+        if( insertedID.size () == 24 )
+        {
+
+
+            auto dialog = WApplication::instance ()->root ()->addChild (cpp14::make_unique<WDialog>());
+            dialog->setHeight (250);
+
+            dialog->titleBar ()->addWidget (cpp14::make_unique<WText>("Talebiniz Başarılı Bir Şekilde Alındı"));
+            dialog->titleBar ()->addStyleClass (Bootstrap::ContextualBackGround::bg_success);
+
+            auto container = dialog->contents ()->addWidget (cpp14::make_unique<ContainerWidget>());
+
+
+            container->addWidget (cpp14::make_unique<WText>(WString("<p>Talebiniz Başarılı Bir Şekilde Alındı.</p>"
+                                                                    "<p><a href=\"http://www.serik.bel.tr/?type=talep&_id={1}\" target=\"_blank\"><b>http://www.serik.bel.tr/?type=talep&_id={2}</b></a></p>"
+                                                                    "<p>Bu Linkten yada</p>"
+                                                                    "<p>Telefon Numarası ve Şifreniz İle Giriş Yaparak Takip Edebilirsiniz</p>").arg (insertedID).arg (insertedID).toUTF8 ().c_str (),TextFormat::UnsafeXHTML));
+
+            auto closeBtn = dialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kapat"));
+            closeBtn->clicked ().connect ([=](){
+                tcWidget->setDefault ();
+                talepWidget->setDefault ();
+                WApplication::instance ()->root ()->removeChild (dialog);
+            });
+            dialog->show ();
+        }
+
+
+    });
+
+    this->Footer ()->addStyleClass (Bootstrap::ContextualBackGround::bg_info);
+
+    {
+        auto container = this->Footer ()->addWidget(cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+        container->setAttributeValue(Style::style,Style::background::color::rgba(125,175,225));
+        auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
+        auto text = layout->addWidget(cpp14::make_unique<WText>("<h5><p><b>Sinek ve İlaçlama İçin Lütfen</b></p>"
+                                                                "<p>Antalya Büyükşehir Belediyesi</p>"
+                                                                "<p>Çevre Koruma ve Kontrol Daire Başkanlığı Çevre Sağlığı Şube Müdürlüğünü (Vektörel Mücadele) Arayınız</p>"
+                                                                "<p>İletişim: 0 242 712 66 67</p>"
+                                                                "<p>Arama Saatleri 09:00 - 16:00</p></h5>"));
+    }
 
 
 }
@@ -137,46 +140,47 @@ void TalepWidget::TalepWidget::init()
 
 
 TalepWidget::TCWidget::TCWidget(mongocxx::database *db)
-    :ContainerWidget (),TCManager (db)
+    :ContainerWidget (),TCManager (db),mTCLoadFromExternal(false)
 {
-        this->Header ()->addStyleClass (Bootstrap::ContextualBackGround::bg_info);
-        this->Header ()->addWidget (cpp14::make_unique<WText>("<h5>Kişisel Bilgileriniz</h5>"));
+    this->Header ()->addStyleClass (Bootstrap::ContextualBackGround::bg_info);
+    this->Header ()->addWidget (cpp14::make_unique<WText>("<h5>Kişisel Bilgileriniz</h5>"));
 
-        this->Content ()->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::Azure));
+    this->Content ()->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::Azure));
 
 
-        auto layout = this->Content ()->setLayout(cpp14::make_unique<WGridLayout>());
+    auto layout = this->Content ()->setLayout(cpp14::make_unique<WGridLayout>());
 
+    {
+        auto text = layout->addWidget(cpp14::make_unique<WText>("TC NO"),0,0,AlignmentFlag::Middle);
+        mTcNO = layout->addWidget(cpp14::make_unique<WLineEdit>(),0,1);
+        mTcNO->setPlaceholderText("TCNO Kayıtlı ise Bilgileriniz Otomatik Dolacaktır");
+        mTcNO->textInput().connect(this,&TCWidget::TCChanged);
+        mTcNO->setInputMask("99999999999");
+    }
+
+    {
+        auto text = layout->addWidget(cpp14::make_unique<WText>("Ad Soyad"),1,0);
+        mAdSoyad = layout->addWidget(cpp14::make_unique<WLineEdit>(),1,1);
+        mAdSoyad->setPlaceholderText("Adınızı ve Soyadınızı Giriniz");
+    }
+
+    {
+        auto text = layout->addWidget(cpp14::make_unique<WText>("Mahalle"),2,0,AlignmentFlag::Middle);
+        mMahalle = layout->addWidget(cpp14::make_unique<WComboBox>(),2,1);
+        auto cursor = this->getMahalleler ();
+        for( auto item : cursor )
         {
-            auto text = layout->addWidget(cpp14::make_unique<WText>("TC NO"),0,0,AlignmentFlag::Middle);
-            mTcNO = layout->addWidget(cpp14::make_unique<WLineEdit>(),0,1);
-            mTcNO->setPlaceholderText("TCNO Kayıtlı ise Bilgileriniz Otomatik Dolacaktır");
-            mTcNO->textInput().connect(this,&TCWidget::TCChanged);
-            mTcNO->setInputMask("99999999999");
+            mMahalle->addItem (item.toStdString ());
         }
-
-        {
-            auto text = layout->addWidget(cpp14::make_unique<WText>("Ad Soyad"),1,0);
-            mAdSoyad = layout->addWidget(cpp14::make_unique<WLineEdit>(),1,1);
-            mAdSoyad->setPlaceholderText("Adınızı ve Soyadınızı Giriniz");
-        }
-
-        {
-            auto text = layout->addWidget(cpp14::make_unique<WText>("Mahalle"),2,0,AlignmentFlag::Middle);
-            mMahalle = layout->addWidget(cpp14::make_unique<WComboBox>(),2,1);
-            auto cursor = this->getMahalleler ();
-            for( auto item : cursor )
-            {
-                mMahalle->addItem (item.toStdString ());
-            }
-        }
-        {
-            auto text = layout->addWidget(cpp14::make_unique<WText>("Telefon"),3,0,AlignmentFlag::Middle);
-            mTelefon = layout->addWidget(cpp14::make_unique<WLineEdit>(),3,1);
-            mTelefon->setPlaceholderText("Cep Telefonu Numaranızı Giriniz(05321234567)");
-            //                mTelefon->setInputMask("99999999999");
-        }
+    }
+    {
+        auto text = layout->addWidget(cpp14::make_unique<WText>("Telefon"),3,0,AlignmentFlag::Middle);
+        mTelefon = layout->addWidget(cpp14::make_unique<WLineEdit>(),3,1);
+        mTelefon->setPlaceholderText("Cep Telefonu Numaranızı Giriniz(05321234567)");
+        //                mTelefon->setInputMask("99999999999");
+    }
 }
+
 
 void TalepWidget::TCWidget::TCChanged()
 {
@@ -247,13 +251,18 @@ void TalepWidget::TCWidget::TCChanged()
 
 void TalepWidget::TCWidget::setDefault()
 {
-    this->mTcNO->setText ("");
-    this->mAdSoyad->setText ("");
-    this->mTelefon->setText ("");
-    this->mAdSoyad->setEnabled (true);
-    this->mTelefon->setEnabled (true);
-    mMahalle->setEnabled (true);
-    mMahalle->setCurrentIndex (0);
+    if( !mTCLoadFromExternal )
+    {
+        this->mTcNO->setText ("");
+        this->mAdSoyad->setText ("");
+        this->mTelefon->setText ("");
+        this->mAdSoyad->setEnabled (true);
+        this->mTelefon->setEnabled (true);
+        mMahalle->setEnabled (true);
+        mMahalle->setCurrentIndex (0);
+    }
+
+
 
 }
 
@@ -288,6 +297,34 @@ boost::optional<TC> TalepWidget::TCWidget::TCItem()
     item.setOid (mTCOid);
 
     return std::move(item);
+}
+
+void TalepWidget::TCWidget::setTCItem(TC &tcItem)
+{
+    mTCOid = tcItem.oid ().value ().to_string ();
+    mTcNO->setText (tcItem.TCNO ().toStdString ());
+    mAdSoyad->setText (tcItem.AdSoyad ().toStdString ());
+    mTelefon->setText (tcItem.CepTelefonu ().toStdString ());
+
+    auto cursor = this->getMahalleler ();
+    int currentIndex = -1;
+    mMahalle->clear ();
+    for( auto item : cursor )
+    {
+        currentIndex++;
+        mMahalle->addItem (item.toStdString ());
+        if( item == tcItem.Mahalle () )
+        {
+            mMahalle->setCurrentIndex (currentIndex);
+        }
+    }
+    mTcNO->setEnabled (false);
+    mAdSoyad->setEnabled (false);
+    mTelefon->setEnabled (false);
+    mMahalle->setEnabled (false);
+
+    mTCLoadFromExternal = true;
+
 }
 
 

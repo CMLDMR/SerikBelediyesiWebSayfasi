@@ -1523,7 +1523,11 @@ void Giris::SivilWidget::initMenu()
     menu->addItem("Bilgilerim", Wt::cpp14::make_unique<Bilgilerim>(db,UserValue));
     menu->addItem("Taleplerim", Wt::cpp14::make_unique<Taleplerim>(db,UserValue));
     menu->addItem("Başvurularım", Wt::cpp14::make_unique<Basvurularim>(db,UserValue));
-    menu->addItem("Yeni Talep", Wt::cpp14::make_unique<Talep>(db,UserValue));
+
+    auto TalepWidgetItem = cpp14::make_unique<TalepWidget::TalepWidget>(db);
+    TalepWidgetItem->tcWidget->setTCItem (SerikBLDCore::TC(UserValue));
+
+    menu->addItem("Yeni Talep", std::move(TalepWidgetItem));
     menu->addItem("Yeni Başvuru", Wt::cpp14::make_unique<Basvuru>(db,UserValue));
 
 
@@ -3284,246 +3288,251 @@ void Giris::Basvuru::resetForm()
     mesajEdit->setText("Mesajınızı Buraya Yazınız");
 }
 
-Giris::Talep::Talep(mongocxx::database *_db, bsoncxx::document::value *_user)
-    :WContainerWidget(),
-      db(_db),
-      user(_user)
-{
-    mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
 
-    mMainContainer->setMargin(25,Side::Top);
 
-    mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
+//Giris::Talep::Talep(mongocxx::database *_db, bsoncxx::document::value *_user)
+//    :WContainerWidget(),
+//      db(_db),
+//      user(_user)
+//{
+//    mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
 
-    {
-        auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-        row->addStyleClass(Bootstrap::Grid::row);
+//    mMainContainer->setMargin(25,Side::Top);
 
-        {
-            auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-            auto layout = container->setLayout(cpp14::make_unique<WHBoxLayout>());
-            auto text = layout->addWidget(cpp14::make_unique<WText>("Talepte/Şikayette Bulun"));
-            text->setAttributeValue(Style::style,Style::font::size::s20px);
-        }
+//    mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
 
-    }
+//    {
+//        auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//        row->addStyleClass(Bootstrap::Grid::row);
 
+//        {
+//            auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
+//            container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+//            auto layout = container->setLayout(cpp14::make_unique<WHBoxLayout>());
+//            auto text = layout->addWidget(cpp14::make_unique<WText>("Talepte/Şikayette Bulun"));
+//            text->setAttributeValue(Style::style,Style::font::size::s20px);
+//        }
 
-    {
-        auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-        row->addStyleClass(Bootstrap::Grid::row);
+//    }
 
-        {
-            auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-            auto layout = container->setLayout(cpp14::make_unique<WHBoxLayout>());
-            auto text = layout->addWidget(cpp14::make_unique<WText>("Kişisel Bilgileriniz"));
-        }
 
-        {
-            auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(Bootstrap::Grid::Large::col_lg_6);
-            auto layoutContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
+//    {
+//        auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//        row->addStyleClass(Bootstrap::Grid::row);
 
-            auto layout = layoutContainer->setLayout(cpp14::make_unique<WGridLayout>());
+//        {
+//            auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
+//            container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+//            auto layout = container->setLayout(cpp14::make_unique<WHBoxLayout>());
+//            auto text = layout->addWidget(cpp14::make_unique<WText>("Kişisel Bilgileriniz"));
+//        }
 
-            {
-                auto text = layout->addWidget(cpp14::make_unique<WText>("TC NO"),0,0,AlignmentFlag::Middle);
-                mTcNO = layout->addWidget(cpp14::make_unique<WLineEdit>(),0,1);
-                mTcNO->setPlaceholderText("TCNO Kayıtlı ise Bilgileriniz Otomatik Dolacaktır");
-                mTcNO->setText(user->view()[SBLDKeys::TC::tcno].get_utf8().value.to_string().c_str());
-                mTcNO->setEnabled(false);
-                //                mTcNO->textInput().connect(this,&Talep::TCChanged);
-            }
+//        {
+//            auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
+//            container->addStyleClass(Bootstrap::Grid::Large::col_lg_6);
+//            auto layoutContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
 
-            {
-                auto text = layout->addWidget(cpp14::make_unique<WText>("Ad Soyad"),1,0);
-                mAdSoyad = layout->addWidget(cpp14::make_unique<WLineEdit>(),1,1);
-                mAdSoyad->setPlaceholderText("Adınızı ve Soyadınızı Giriniz");
-                mAdSoyad->setText(user->view()[SBLDKeys::TC::isimsoyisim].get_utf8().value.to_string().c_str());
-                mAdSoyad->setEnabled(false);
+//            auto layout = layoutContainer->setLayout(cpp14::make_unique<WGridLayout>());
 
-            }
+//            {
+//                auto text = layout->addWidget(cpp14::make_unique<WText>("TC NO"),0,0,AlignmentFlag::Middle);
+//                mTcNO = layout->addWidget(cpp14::make_unique<WLineEdit>(),0,1);
+//                mTcNO->setPlaceholderText("TCNO Kayıtlı ise Bilgileriniz Otomatik Dolacaktır");
+//                mTcNO->setText(user->view()[SBLDKeys::TC::tcno].get_utf8().value.to_string().c_str());
+//                mTcNO->setEnabled(false);
+//                //                mTcNO->textInput().connect(this,&Talep::TCChanged);
+//            }
 
-            {
-                auto text = layout->addWidget(cpp14::make_unique<WText>("Mahalle"),2,0,AlignmentFlag::Middle);
-                mMahalle = layout->addWidget(cpp14::make_unique<WComboBox>(),2,1);
+//            {
+//                auto text = layout->addWidget(cpp14::make_unique<WText>("Ad Soyad"),1,0);
+//                mAdSoyad = layout->addWidget(cpp14::make_unique<WLineEdit>(),1,1);
+//                mAdSoyad->setPlaceholderText("Adınızı ve Soyadınızı Giriniz");
+//                mAdSoyad->setText(user->view()[SBLDKeys::TC::isimsoyisim].get_utf8().value.to_string().c_str());
+//                mAdSoyad->setEnabled(false);
 
+//            }
 
-                mMahalle->addItem(user->view()[SBLDKeys::TC::mahalle].get_utf8().value.to_string().c_str());
-                mMahalle->setEnabled(false);
+//            {
+//                auto text = layout->addWidget(cpp14::make_unique<WText>("Mahalle"),2,0,AlignmentFlag::Middle);
+//                mMahalle = layout->addWidget(cpp14::make_unique<WComboBox>(),2,1);
 
 
-            }
-            {
-                auto text = layout->addWidget(cpp14::make_unique<WText>("Telefon"),3,0,AlignmentFlag::Middle);
-                mTelefon = layout->addWidget(cpp14::make_unique<WLineEdit>(),3,1);
-                mTelefon->setPlaceholderText("Cep Telefonu Numaranızı Giriniz(05321234567)");
-                mTelefon->setText(user->view()[SBLDKeys::TC::cepTel].get_utf8().value.to_string().c_str());
-                mTelefon->setEnabled(false);
-            }
+//                mMahalle->addItem(user->view()[SBLDKeys::TC::mahalle].get_utf8().value.to_string().c_str());
+//                mMahalle->setEnabled(false);
 
-        }
 
+//            }
+//            {
+//                auto text = layout->addWidget(cpp14::make_unique<WText>("Telefon"),3,0,AlignmentFlag::Middle);
+//                mTelefon = layout->addWidget(cpp14::make_unique<WLineEdit>(),3,1);
+//                mTelefon->setPlaceholderText("Cep Telefonu Numaranızı Giriniz(05321234567)");
+//                mTelefon->setText(user->view()[SBLDKeys::TC::cepTel].get_utf8().value.to_string().c_str());
+//                mTelefon->setEnabled(false);
+//            }
 
+//        }
 
 
 
 
-        {
-            auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(Bootstrap::Grid::Large::col_lg_6);
-            auto layoutContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
 
-            auto layout = layoutContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
 
-            {
-                auto text = layout->addWidget(cpp14::make_unique<WText>("Mahalle"),0,AlignmentFlag::Middle);
-                mTalepMahalle = layout->addWidget(cpp14::make_unique<WComboBox>(),0);
+//        {
+//            auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
+//            container->addStyleClass(Bootstrap::Grid::Large::col_lg_6);
+//            auto layoutContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
 
+//            auto layout = layoutContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
 
-                auto collection = db->collection(SBLDKeys::Mahalle::collection);
+//            {
+//                auto text = layout->addWidget(cpp14::make_unique<WText>("Mahalle"),0,AlignmentFlag::Middle);
+//                mTalepMahalle = layout->addWidget(cpp14::make_unique<WComboBox>(),0);
 
-                try {
-                    auto cursor = collection.find(document{}.view());
 
-                    for( auto doc : cursor )
-                    {
-                        mTalepMahalle->addItem(doc[SBLDKeys::Mahalle::mahalle].get_utf8().value.to_string().c_str());
-                    }
+//                auto collection = db->collection(SBLDKeys::Mahalle::collection);
 
-                } catch (mongocxx::exception &e) {
-                    mTalepMahalle->addItem(WString("Error: {1}").arg(e.what()));
-                }
+//                try {
+//                    auto cursor = collection.find(document{}.view());
 
-            }
+//                    for( auto doc : cursor )
+//                    {
+//                        mTalepMahalle->addItem(doc[SBLDKeys::Mahalle::mahalle].get_utf8().value.to_string().c_str());
+//                    }
 
+//                } catch (mongocxx::exception &e) {
+//                    mTalepMahalle->addItem(WString("Error: {1}").arg(e.what()));
+//                }
 
-            {
-                auto labelAdSoyad = layout->addWidget(cpp14::make_unique<WText>("Talebiniz"));
-                mEdit = layout->addWidget(cpp14::make_unique<WTextEdit>());
+//            }
 
 
-                mEdit->setHeight(250);
-                auto labelCount = layout->addWidget(cpp14::make_unique<WText>(WString("{1} - Min(61) Karakter").arg(mEdit->text().toUTF8().size())));
-                mEdit->changed().connect([=](){
-                    labelCount->setText(WString("{1} - Min(61) Karakter").arg(mEdit->text().toUTF8().size()));
-                });
-                mEdit->setText("Şikayetinizi/Talebinizi Detaylı Olarak Buraya Yazın");
-            }
+//            {
+//                auto labelAdSoyad = layout->addWidget(cpp14::make_unique<WText>("Talebiniz"));
+//                mEdit = layout->addWidget(cpp14::make_unique<WTextEdit>());
 
-            {
-                auto text = layout->addWidget(cpp14::make_unique<WText>("Adres"),1,AlignmentFlag::Left);
-                mAdres = layout->addWidget(cpp14::make_unique<WLineEdit>(),1);
-                mAdres->setPlaceholderText("Şikayet/Talep Adresi Giriniz");
-            }
 
+//                mEdit->setHeight(250);
+//                auto labelCount = layout->addWidget(cpp14::make_unique<WText>(WString("{1} - Min(61) Karakter").arg(mEdit->text().toUTF8().size())));
+//                mEdit->changed().connect([=](){
+//                    labelCount->setText(WString("{1} - Min(61) Karakter").arg(mEdit->text().toUTF8().size()));
+//                });
+//                mEdit->setText("Şikayetinizi/Talebinizi Detaylı Olarak Buraya Yazın");
+//            }
 
+//            {
+//                auto text = layout->addWidget(cpp14::make_unique<WText>("Adres"),1,AlignmentFlag::Left);
+//                mAdres = layout->addWidget(cpp14::make_unique<WLineEdit>(),1);
+//                mAdres->setPlaceholderText("Şikayet/Talep Adresi Giriniz");
+//            }
 
-        }
 
-    }
 
+//        }
 
-    {
-        auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-        row->addStyleClass(Bootstrap::Grid::row);
-        {
-            auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-            auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-            auto text = layout->addWidget(cpp14::make_unique<WText>("<h3>Talebinizin Tam Olarak Yerine Getirilebilmesi için "
-                                                                    "Lütfen Bilgilerinizi Eksiksiz Doldurunuz</h3>"));
-            mSave = layout->addWidget(cpp14::make_unique<WPushButton>("Kaydet"));
-            mSave->addStyleClass(Bootstrap::Button::Primary);
-            mSave->clicked().connect(this,&Talep::Save);
-        }
+//    }
 
 
+//    {
+//        auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//        row->addStyleClass(Bootstrap::Grid::row);
+//        {
+//            auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
+//            container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+//            auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
+//            auto text = layout->addWidget(cpp14::make_unique<WText>("<h3>Talebinizin Tam Olarak Yerine Getirilebilmesi için "
+//                                                                    "Lütfen Bilgilerinizi Eksiksiz Doldurunuz</h3>"));
+//            mSave = layout->addWidget(cpp14::make_unique<WPushButton>("Kaydet"));
+//            mSave->addStyleClass(Bootstrap::Button::Primary);
+//            mSave->clicked().connect(this,&Talep::Save);
+//        }
 
-    }
-}
 
-void Giris::Talep::showMessage(std::string title, std::string msg)
-{
-    auto messageBox = this->addChild(
-                Wt::cpp14::make_unique<Wt::WMessageBox>
-                (title,
-                 msg,
-                 Wt::Icon::Information, Wt::StandardButton::Ok));
 
-    messageBox->buttonClicked().connect([=] {
-        this->removeChild(messageBox);
-    });
+//    }
+//}
 
-    messageBox->show();
-}
+//void Giris::Talep::showMessage(std::string title, std::string msg)
+//{
+//    auto messageBox = this->addChild(
+//                Wt::cpp14::make_unique<Wt::WMessageBox>
+//                (title,
+//                 msg,
+//                 Wt::Icon::Information, Wt::StandardButton::Ok));
 
-void Giris::Talep::Save()
-{
+//    messageBox->buttonClicked().connect([=] {
+//        this->removeChild(messageBox);
+//    });
 
-    if( mAdres->text().empty() )
-    {
-        this->showMessage("UYARI","Adres Bilgisi Girmediniz");
-        return;
-    }
+//    messageBox->show();
+//}
 
-    if( mEdit->text().toUTF8().size() <= 61 )
-    {
-        this->showMessage("UYARI","Talep Kısmına Yeterli Bilgi Girmediniz");
-        return;
-    }
+//void Giris::Talep::Save()
+//{
 
+//    if( mAdres->text().empty() )
+//    {
+//        this->showMessage("UYARI","Adres Bilgisi Girmediniz");
+//        return;
+//    }
 
+//    if( mEdit->text().toUTF8().size() <= 61 )
+//    {
+//        this->showMessage("UYARI","Talep Kısmına Yeterli Bilgi Girmediniz");
+//        return;
+//    }
 
-    auto collection = db->collection(SBLDKeys::SikayetKey::collection);
 
-    auto doc = document{};
 
-    try {
+//    auto collection = db->collection(SBLDKeys::SikayetKey::collection);
 
-        doc.append(kvp(SBLDKeys::SikayetKey::mainKey::vatandasadSoyad,mAdSoyad->text().toUTF8().c_str()));
-        doc.append(kvp(SBLDKeys::SikayetKey::mainKey::vatandas,mTcNO->text().toUTF8().c_str()));
-        doc.append(kvp(SBLDKeys::SikayetKey::mainKey::konu,mEdit->text().toUTF8().c_str()));
-        doc.append(kvp(SBLDKeys::SikayetKey::mainKey::mahalle,mTalepMahalle->currentText().toUTF8().c_str()));
-        doc.append(kvp(SBLDKeys::SikayetKey::mainKey::tamadres,mAdres->text().toUTF8().c_str()));
-        doc.append(kvp(SBLDKeys::SikayetKey::mainKey::durum,SBLDKeys::SikayetKey::durumType::devamediyor));
-        doc.append(kvp(SBLDKeys::SikayetKey::mainKey::saat,QTime::currentTime().toString("hh:mm").toStdString().c_str()));
-        doc.append(kvp(SBLDKeys::SikayetKey::mainKey::tarih,QDate::currentDate().toString("dddd - dd/MM/yyyy").toStdString().c_str()));
-        doc.append(kvp(SBLDKeys::SikayetKey::mainKey::julianDay,QDate::currentDate().toJulianDay()));
+//    auto doc = document{};
 
-    } catch (bsoncxx::exception &e) {
-        showMessage("UYARI",WString("Talebiniz Alınamadı: %1").arg(e.what()).toUTF8().c_str());
-        return;
-    }
+//    try {
 
+//        doc.append(kvp(SBLDKeys::SikayetKey::mainKey::vatandasadSoyad,mAdSoyad->text().toUTF8().c_str()));
+//        doc.append(kvp(SBLDKeys::SikayetKey::mainKey::vatandas,mTcNO->text().toUTF8().c_str()));
+//        doc.append(kvp(SBLDKeys::SikayetKey::mainKey::konu,mEdit->text().toUTF8().c_str()));
+//        doc.append(kvp(SBLDKeys::SikayetKey::mainKey::mahalle,mTalepMahalle->currentText().toUTF8().c_str()));
+//        doc.append(kvp(SBLDKeys::SikayetKey::mainKey::tamadres,mAdres->text().toUTF8().c_str()));
+//        doc.append(kvp(SBLDKeys::SikayetKey::mainKey::durum,SBLDKeys::SikayetKey::durumType::devamediyor));
+//        doc.append(kvp(SBLDKeys::SikayetKey::mainKey::saat,QTime::currentTime().toString("hh:mm").toStdString().c_str()));
+//        doc.append(kvp(SBLDKeys::SikayetKey::mainKey::tarih,QDate::currentDate().toString("dddd - dd/MM/yyyy").toStdString().c_str()));
+//        doc.append(kvp(SBLDKeys::SikayetKey::mainKey::julianDay,QDate::currentDate().toJulianDay()));
 
-    try {
-        auto ins = collection.insert_one(doc.view());
+//    } catch (bsoncxx::exception &e) {
+//        showMessage("UYARI",WString("Talebiniz Alınamadı: %1").arg(e.what()).toUTF8().c_str());
+//        return;
+//    }
 
-        if( !ins )
-        {
-            showMessage("UYARI",WString("Talebiniz Alınamadı. Daha Sonra Tekrar Deneyiniz").toUTF8().c_str());
-            return;
-        }
 
-        if( ins.value().result().inserted_count() )
-        {
-            showMessage("Bilgi",WString("Talep Kaydınız Başarılı Bir Şekilde Alındı. En Kısa Zaman Tarafınıza Geri Dönüş Yapılacaktır.").toUTF8().c_str());
-            mEdit->setText("Şikayetinizi/Talebinizi Detaylı Olarak Buraya Yazın");
-            mTalepMahalle->setCurrentIndex(0);
-            mAdres->setText("");
+//    try {
+//        auto ins = collection.insert_one(doc.view());
 
-        }else{
-            showMessage("UYARI",WString("Talebiniz Alınamadı. Daha Sonra Tekrar Deneyiniz").toUTF8().c_str());
-        }
+//        if( !ins )
+//        {
+//            showMessage("UYARI",WString("Talebiniz Alınamadı. Daha Sonra Tekrar Deneyiniz").toUTF8().c_str());
+//            return;
+//        }
 
-    } catch (mongocxx::exception &e) {
-        showMessage("UYARI",WString("Talebiniz Alınamadı: %1").arg(e.what()).toUTF8().c_str());
-        return;
-    }
-}
+//        if( ins.value().result().inserted_count() )
+//        {
+//            showMessage("Bilgi",WString("Talep Kaydınız Başarılı Bir Şekilde Alındı. En Kısa Zaman Tarafınıza Geri Dönüş Yapılacaktır.").toUTF8().c_str());
+//            mEdit->setText("Şikayetinizi/Talebinizi Detaylı Olarak Buraya Yazın");
+//            mTalepMahalle->setCurrentIndex(0);
+//            mAdres->setText("");
+
+//        }else{
+//            showMessage("UYARI",WString("Talebiniz Alınamadı. Daha Sonra Tekrar Deneyiniz").toUTF8().c_str());
+//        }
+
+//    } catch (mongocxx::exception &e) {
+//        showMessage("UYARI",WString("Talebiniz Alınamadı: %1").arg(e.what()).toUTF8().c_str());
+//        return;
+//    }
+//}
+
+
+
 
 Giris::Personel::PersonelWidget::PersonelWidget(mongocxx::database *_db, std::string tel)
     :Giris::Personel::BaseWidget (_db,tel)

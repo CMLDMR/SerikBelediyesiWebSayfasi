@@ -12,14 +12,14 @@
 #include "personelmanager.h"
 #include <QStringList>
 
-class DilekceView : public ContainerWidget , public Dilekce , public DilekceManager
+class DilekceView : public ContainerWidget , public SerikBLDCore::Dilekce , public SerikBLDCore::DilekceManager
 {
 public:
-    DilekceView(Dilekce* _dilekce , mongocxx::database *_db, User* _user , bool _mPublicLink = false , bool _mBilgi = false );
+    DilekceView(SerikBLDCore::Dilekce* _dilekce , mongocxx::database *_db, SerikBLDCore::User* _user , bool _mPublicLink = false , bool _mBilgi = false );
 
 private:
-    TCManager* mTCManager;
-    PersonelManager* mPersonelManager;
+    SerikBLDCore::TCManager* mTCManager;
+    SerikBLDCore::PersonelManager* mPersonelManager;
 
     void initTCView();
 
@@ -28,7 +28,7 @@ private:
     void initCevapView();
 
 private:
-    User* mUser;
+    SerikBLDCore::User* mUser;
 
     ContainerWidget* mAciklamaContainer;
     ContainerWidget* mGorevliPersonelContainer;
@@ -41,7 +41,7 @@ private:
     FileUploaderWidget* mCevapEkUploader;
     QStringList mUploadedFilePathList;
 
-    void addAciklama(const DilekceAciklama &aciklama);
+    void addAciklama(const SerikBLDCore::DilekceAciklama &aciklama);
 
     void gorevliEkle();
     void updateGorevliPersonelWidget();

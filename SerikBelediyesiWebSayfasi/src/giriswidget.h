@@ -4,6 +4,7 @@
 
 #include "SerikBelediyesiWebSayfasi/Giris/gelenmesajlarwidget.h"
 #include "SerikBelediyesiWebSayfasi/reporter/reportresource.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/talepler/talepwidget.h"
 
 
 
@@ -145,33 +146,33 @@ private:
 
 };
 
-class Talep : public WContainerWidget
-{
-public:
-    Talep(mongocxx::database* _db , bsoncxx::document::value *_user);
+//class Talep : public WContainerWidget
+//{
+//public:
+//    Talep(mongocxx::database* _db , bsoncxx::document::value *_user);
 
-private:
-    mongocxx::database* db;
-    bsoncxx::document::value *user;
+//private:
+//    mongocxx::database* db;
+//    bsoncxx::document::value *user;
 
-    WContainerWidget* mMainContainer;
+//    WContainerWidget* mMainContainer;
 
-    WLineEdit* mTcNO;
-    WLineEdit* mAdSoyad;
-    WComboBox* mMahalle;
-    WLineEdit* mTelefon;
-    WLineEdit* mAdres;
-    WPushButton* mSave;
+//    WLineEdit* mTcNO;
+//    WLineEdit* mAdSoyad;
+//    WComboBox* mMahalle;
+//    WLineEdit* mTelefon;
+//    WLineEdit* mAdres;
+//    WPushButton* mSave;
 
-    WComboBox* mTalepMahalle;
-    WTextEdit* mEdit;
+//    WComboBox* mTalepMahalle;
+//    WTextEdit* mEdit;
 
 
-    void showMessage( std::string title , std::string msg );
+//    void showMessage( std::string title , std::string msg );
 
-    void Save();
+//    void Save();
 
-};
+//};
 
 class Taleplerim : public WContainerWidget
 {
