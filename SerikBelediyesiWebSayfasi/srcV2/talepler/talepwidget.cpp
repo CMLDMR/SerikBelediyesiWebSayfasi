@@ -33,7 +33,7 @@ void TalepWidget::TalepWidget::init()
                              Bootstrap::Grid::ExtraSmall::col_xs_12);
 
 
-    talepWidget = this->Content ()->addWidget (cpp14::make_unique<TalepItemWidget>(this->getMahalleler ()));
+    talepWidget = this->Content ()->addWidget (cpp14::make_unique<TalepItemWidget>(DB(this->db ())));
     talepWidget->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
                                 Bootstrap::Grid::Medium::col_md_6+
                                 Bootstrap::Grid::Small::col_sm_12+
@@ -74,6 +74,10 @@ void TalepWidget::TalepWidget::init()
             return;
         }
 
+        auto fotoFileOid = talepWidget->fotoOid ();
+
+
+
         Talep talepItem;
 
         talepItem.setTCOID (tcVal->oid ().get ().to_string ().c_str ());
@@ -87,6 +91,11 @@ void TalepWidget::TalepWidget::init()
         talepItem.setMahalle (talepWidget->mahalleString ().c_str ());
         talepItem.setKonu (talepWidget->talepString ().c_str ());
         talepItem.setBirim ("Başkanlık");
+
+        if( !fotoFileOid.empty () )
+        {
+            talepItem.setFoto (fotoFileOid.c_str ());
+        }
 
 
         auto insertedID = this->insertTalep (talepItem);
@@ -344,8 +353,8 @@ void TalepWidget::TCWidget::setTCItem(TC &tcItem)
 
 
 
-TalepWidget::TalepItemWidget::TalepItemWidget( QVector<QString> mahalleList )
-    :ContainerWidget()
+TalepWidget::TalepItemWidget::TalepItemWidget(DB &db )
+    :ContainerWidget(),mDB(db)
 {
     this->Header ()->addStyleClass (Bootstrap::ContextualBackGround::bg_info);
     this->Header ()->addWidget (cpp14::make_unique<WText>("<h5>Talep/Şikayet Bilgileri</h5>"));
@@ -358,7 +367,7 @@ TalepWidget::TalepItemWidget::TalepItemWidget( QVector<QString> mahalleList )
 
     mTalepMahalle = vLayout->addWidget (cpp14::make_unique<WComboBox>(),0,AlignmentFlag::Justify|AlignmentFlag::Middle);
 
-    for( auto mahItem : mahalleList )
+    for( auto mahItem : mDB.getMahalleler () )
     {
         mTalepMahalle->addItem (mahItem.toStdString());
     }
@@ -392,7 +401,11 @@ TalepWidget::TalepItemWidget::TalepItemWidget( QVector<QString> mahalleList )
     mAdres = vLayout->addWidget(cpp14::make_unique<WLineEdit>(),0,AlignmentFlag::Justify);
     mAdres->setPlaceholderText("Şikayet/Talep Adresi Giriniz");
 
+    mFileUploadManager = vLayout->addWidget (cpp14::make_unique<FileUploaderWidget>(mDB.db (),"Fotoğraf Yükle"),0,AlignmentFlag::Justify);
+    mFileUploadManager->setType (FileUploaderWidget::Image);
+
 }
+
 
 std::string TalepWidget::TalepItemWidget::mahalleString() const
 {
@@ -407,6 +420,17 @@ std::string TalepWidget::TalepItemWidget::talepString() const
 std::string TalepWidget::TalepItemWidget::adresString() const
 {
     return mAdres->text ().toUTF8 ();
+}
+
+std::string TalepWidget::TalepItemWidget::fotoOid() const
+{
+    if( mFileUploadManager->isUploaded () )
+    {
+        auto fileValue = this->mDB.uploadfile (mFileUploadManager->fileLocation ());
+        return fileValue.get_oid ().value.to_string ();
+    }else{
+        return "";
+    }
 }
 
 void TalepWidget::TalepItemWidget::setDefault()

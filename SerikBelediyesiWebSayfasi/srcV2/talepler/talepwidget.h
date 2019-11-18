@@ -54,11 +54,12 @@ private:
 class TalepItemWidget : public ContainerWidget , public SerikBLDCore::Talep
 {
 public:
-    TalepItemWidget(QVector<QString> mahalleList);
+    TalepItemWidget(SerikBLDCore::DB& db);
 
     std::string mahalleString() const;
     std::string talepString() const;
     std::string adresString() const;
+    std::string fotoOid() const;
 
     void setDefault();
 
@@ -66,6 +67,10 @@ private:
     WComboBox* mTalepMahalle;
     WTextEdit* mEdit;
     WLineEdit* mAdres;
+
+    SerikBLDCore::DB mDB;
+
+    FileUploaderWidget* mFileUploadManager;
 };
 }
 
