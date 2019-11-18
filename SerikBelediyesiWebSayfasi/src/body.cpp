@@ -1,5 +1,7 @@
 #include "body.h"
 #include "giriswidget.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/talepler/talepwidget.h"
+
 
 Body::Body::Body(mongocxx::database *_db, mongocxx::gridfs::bucket *_bucket)
     :WContainerWidget(),
@@ -83,7 +85,7 @@ void Body::Body::initBody()
 
     auto iletisim = mMainContainer->addWidget(cpp14::make_unique<Iletisim>());
     iletisim->addStyleClass(Bootstrap::Grid::col_full_12);
-    iletisim->mClickTalep().connect(this,&Body::initTalep);
+//    iletisim->mClickTalep().connect(this,&Body::initTalep);
 
 }
 
@@ -262,11 +264,17 @@ void Body::Body::initiletisim()
 
 
 
-    // Talep Sayfası
-    {
-        auto talep = container->addWidget(cpp14::make_unique<Talep>(db));
-        talep->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-    }
+//    // Talep Sayfası
+//    {
+//        auto talep = container->addWidget(cpp14::make_unique<Talep>(db));
+//        talep->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+//    }
+
+//    // Yeni Talep Sayfası
+//    {
+//        auto talep = container->addWidget (cpp14::make_unique<TalepWidget>(new DB(this->db)));
+//        talep->addStyleClass (Bootstrap::Grid::col_full_12);
+//    }
 
 
 }
@@ -282,12 +290,19 @@ void Body::Body::initTalep()
     container->setPadding(0,AllSides);
     container->addStyleClass(Bootstrap::Grid::row);
 
-    // Talep Sayfası
+//    // Talep Sayfası
+//    {
+//        auto talep = container->addWidget(cpp14::make_unique<Talep>(db));
+//        talep->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+//    }
+
+//    // Yeni Talep Sayfası
     {
-        auto talep = container->addWidget(cpp14::make_unique<Talep>(db));
-        talep->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+        auto talep = container->addWidget (cpp14::make_unique<TalepWidget::TalepWidget>(this->db));
+        talep->addStyleClass (Bootstrap::Grid::col_full_12);
     }
-    wApp->setInternalPath("/initTalep",false);
+
+//    wApp->setInternalPath("/initTalep",false);
 }
 
 void Body::Body::initGiris()
@@ -9403,91 +9418,6 @@ Body::Job::Block::Block(mongocxx::database *_db)
     mTaskBlock->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
 
 }
-
-//void Body::DataBaseWidget::showMessage(std::string title, std::string msg, std::string btnText)
-//{
-//    auto messageBox = this->addChild(
-//                Wt::cpp14::make_unique<Wt::WMessageBox>
-//                (title,
-//                 msg,
-//                 Wt::Icon::Information, StandardButton::Ok));
-//    if( btnText != "OK" )
-//    {
-//        auto btn = messageBox->button(StandardButton::Ok);
-//        btn->setText(btnText);
-//    }
-
-
-//        messageBox->buttonClicked().connect([=] {
-//            this->removeChild(messageBox);
-//        });
-
-//        messageBox->show();
-//}
-
-//void Body::DataBaseWidget::showMessage(std::string title, std::string msg, bsoncxx::exception &e, Icon icon)
-//{
-//    auto messageBox = this->addChild(
-//                Wt::cpp14::make_unique<Wt::WMessageBox>
-//                (title,
-//                 WString("{1} : {2}").arg(msg.c_str()).arg(e.what()).toUTF8(),
-//                 icon, Wt::StandardButton::Ok));
-
-//        messageBox->buttonClicked().connect([=] {
-//            this->removeChild(messageBox);
-//        });
-
-//        messageBox->show();
-//}
-
-//void Body::DataBaseWidget::showMessage(std::string title, std::string msg, mongocxx::exception &e, Icon icon)
-//{
-//    auto messageBox = this->addChild(
-//                Wt::cpp14::make_unique<Wt::WMessageBox>
-//                (title,
-//                 WString("{1} : {2}").arg(msg.c_str()).arg(e.what()).toUTF8(),
-//                 icon, Wt::StandardButton::Ok));
-
-//        messageBox->buttonClicked().connect([=] {
-//            this->removeChild(messageBox);
-//        });
-
-//        messageBox->show();
-//}
-
-//int64_t Body::DataBaseWidget::count(std::string collection, bsoncxx::document::view &filter)
-//{
-//    std::int64_t count = 0;
-//    try {
-//        count = this->db->collection(collection).count(filter);
-//    } catch (mongocxx::exception &e) {
-
-//    }
-//    return count;
-
-//}
-
-//int64_t Body::DataBaseWidget::count(std::string collection, const bsoncxx::builder::basic::document &filter)
-//{
-//    std::int64_t count = 0;
-//    try {
-//        count = this->db->collection(collection).count(filter.view());
-//    } catch (mongocxx::exception &e) {
-
-//    }
-//    return count;
-//}
-
-//int64_t Body::DataBaseWidget::count(std::string collection, bsoncxx::document::value val)
-//{
-//    std::int64_t count = 0;
-//    try {
-//        count = this->db->collection(collection).count(val.view());
-//    } catch (mongocxx::exception &e) {
-
-//    }
-//    return count;
-//}
 
 
 
