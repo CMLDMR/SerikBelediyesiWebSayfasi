@@ -238,7 +238,12 @@ void MainApplication::init()
     }
 
 
-    MainPage* mPage = root()->addWidget(cpp14::make_unique<MainPage>(&db));
+    if( db )
+    {
+        MainPage* mPage = root()->addWidget(cpp14::make_unique<MainPage>(&db));
+    }else{
+        std::cout << "DATABASE is Not Valid" << std::endl;
+    }
 
 
 
