@@ -43,6 +43,7 @@ SOURCES += main.cpp \
     SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetlistitemwidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetyonetimwidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/talepler/talepview.cpp \
+    SerikBelediyesiWebSayfasi/srcV2/talepler/talepwidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/talepler/talepyonetim.cpp \
     main.cpp \
     mainapplication.cpp \
@@ -96,6 +97,7 @@ HEADERS += \
     SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetlistitemwidget.h \
     SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetyonetimwidget.h \
     SerikBelediyesiWebSayfasi/srcV2/talepler/talepview.h \
+    SerikBelediyesiWebSayfasi/srcV2/talepler/talepwidget.h \
     SerikBelediyesiWebSayfasi/srcV2/talepler/talepyonetim.h \
     mainapplication.h \
     Necessary \
