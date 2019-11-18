@@ -350,6 +350,7 @@ bool MainApplication::loadTalep(const std::string &oid)
     filter.setOid (oid);
     auto talep = dManager->findOneTalep (filter);
 
+    wApp->setTitle ("Serik Belediyesi Talep/Şikayet Yönetim Sistemi");
     if( talep )
     {
         root()->clear();
