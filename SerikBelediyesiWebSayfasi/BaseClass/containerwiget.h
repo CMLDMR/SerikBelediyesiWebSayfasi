@@ -68,8 +68,16 @@ public:
 
 
 
+    ///
+    /// \brief fileLocation Location is fullPath
+    /// \return
+    ///
     QString fileLocation() const;
 
+    ///
+    /// \brief doocRootLocation Location is without docroot
+    /// \return
+    ///
     QString doocRootLocation() const;
 
     Signal<NoClass> &Uploaded();
