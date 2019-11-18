@@ -295,6 +295,39 @@ void TalepView::initTalepView()
         title->addStyleClass ("textShadow");
     }
 
+    if( !this->fotoOid ().isEmpty () )
+    {
+        auto _container = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+        _container->addStyleClass (Bootstrap::Grid::col_full_12);
+        _container->setContentAlignment (AlignmentFlag::Center);
+        _container->setMargin (5,Side::Bottom|Side::Top);
+        _container->setHeight (250);
+
+//        auto title = _container->addWidget (cpp14::make_unique<WText>(this->fotoOid ().toStdString ()));
+//        title->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
+//        title->addStyleClass ("textShadow");
+
+        auto filePath = this->downloadFileWeb (this->fotoOid ());
+//        _container->setAttributeValue (Style::style,Style::background::url (filePath)+
+//                                       Style::background::size::contain+
+//                                       Style::background::repeat::norepeat+
+//                                       Style::background::position::center_center);
+
+
+
+        Wt::WLink link = Wt::WLink(LinkType::Url,filePath);
+        link.setTarget(Wt::LinkTarget::NewWindow);
+        std::unique_ptr<Wt::WAnchor> anchor = Wt::cpp14::make_unique<Wt::WAnchor>(link);
+        auto sContainer_ = anchor->addNew<Wt::WContainerWidget>();
+        sContainer_->setWidth (WLength("100%"));
+        sContainer_->setHeight (WLength("100%"));
+        sContainer_->setAttributeValue (Style::style,Style::background::url (filePath)+
+                                        Style::background::repeat::norepeat+
+                                        Style::background::size::contain+
+                                        Style::background::position::center_center);
+        _container->addWidget (std::move(anchor));
+    }
+
     {
         auto _container = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
         _container->addStyleClass (Bootstrap::Grid::col_full_12);
@@ -431,6 +464,7 @@ void TalepView::initTalepView()
             {
                 auto fotoPath = this->downloadFileWeb (item.fotografOid ());
                 itemContainer->setOverflow (Overflow::Hidden);
+                itemContainer->setHeight (250);
 
                 auto sContainer = itemContainer->addWidget (cpp14::make_unique<WContainerWidget>());
                 sContainer->setPositionScheme (PositionScheme::Absolute);
