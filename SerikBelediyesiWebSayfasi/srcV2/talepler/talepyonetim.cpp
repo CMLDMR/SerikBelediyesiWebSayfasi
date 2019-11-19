@@ -1,5 +1,6 @@
 #include "talepyonetim.h"
 #include "talepview.h"
+#include "taleplistwidget.h"
 
 using namespace SerikBLDCore;
 
@@ -13,12 +14,9 @@ TalepYonetim::TalepYonetim(mongocxx::database *_db, bsoncxx::document::value _us
         this->initControlPanel ();
     }
 
-
-//    this->Content ()->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
     this->Content ()->setMargin (15,Side::Top|Side::Bottom);
     this->Content ()->setWidth (WLength("100%"));
     this->Content ()->decorationStyle ().setBorder (WBorder(BorderStyle::Solid,BorderWidth::Thin),Side::Top);
-
     this->clickOid ().connect (this,&TalepYonetim::initTalep);
 
 }
@@ -197,46 +195,57 @@ void TalepYonetim::listTalepler(const Talep &filter)
     this->Content ()->clear ();
     for( auto item : cursor )
     {
-        auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass (Bootstrap::Grid::Large::col_lg_3
-                                  +Bootstrap::Grid::Medium::col_md_4
-                                  +Bootstrap::Grid::Small::col_sm_6
-                                  +Bootstrap::Grid::ExtraSmall::col_xs_12);
-        container->setAttributeValue (Style::dataoid,item.oid ().toStdString ());
-
-        container->clicked ().connect ([=](){
-            _clickOid.emit (container->attributeValue (Style::dataoid).toUTF8 ());
+        this->Content ()->addWidget (cpp14::make_unique<TalepListWidget>(item.oid ().toStdString (),
+                                                                          item.mahalle ().toStdString (),
+                                                                          item.tarih ().toStdString (),
+                                                                          item.durum ().toStdString (),
+                                                                         item.durumColor ().toStdString ()))->ClickItem ().connect ([=](std::string oid){
+            _clickOid.emit (oid);
         });
 
-        {
-            auto _container = container->addWidget (cpp14::make_unique<WContainerWidget>());
-            _container->addWidget (cpp14::make_unique<WText>(item.tarih ().toStdString ()));
-            _container->setWidth (WLength(std::to_string (100.0)+"%"));
+        //        container->clicked ().connect ([=](){
+        //            _clickOid.emit (container->attributeValue (Style::dataoid).toUTF8 ());
+        //        });
 
-        }
+//        auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+//        container->addStyleClass (Bootstrap::Grid::Large::col_lg_3
+//                                  +Bootstrap::Grid::Medium::col_md_4
+//                                  +Bootstrap::Grid::Small::col_sm_6
+//                                  +Bootstrap::Grid::ExtraSmall::col_xs_12);
+//        container->setAttributeValue (Style::dataoid,item.oid ().toStdString ());
 
-        {
-            auto _container = container->addWidget (cpp14::make_unique<WContainerWidget>());
-            _container->addWidget (cpp14::make_unique<WText>(item.mahalle ().toStdString ()));
-            _container->setWidth (WLength(std::to_string (100.0)+"%"));
+//        container->clicked ().connect ([=](){
+//            _clickOid.emit (container->attributeValue (Style::dataoid).toUTF8 ());
+//        });
 
-        }
+//        {
+//            auto _container = container->addWidget (cpp14::make_unique<WContainerWidget>());
+//            _container->addWidget (cpp14::make_unique<WText>(item.tarih ().toStdString ()));
+//            _container->setWidth (WLength(std::to_string (100.0)+"%"));
+//        }
 
-        {
-            auto _container = container->addWidget (cpp14::make_unique<WContainerWidget>());
-            _container->addWidget (cpp14::make_unique<WText>(item.durum ().toStdString ()));
-            _container->setWidth (WLength(std::to_string (100.0)+"%"));
-            _container->setAttributeValue (Style::style,Style::background::color::color (item.durumColor ().toStdString ()+";")+
-                                           Style::color::color (Style::color::White::Snow)+
-                                           Style::font::weight::bold);
-            _container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
-        }
+//        {
+//            auto _container = container->addWidget (cpp14::make_unique<WContainerWidget>());
+//            _container->addWidget (cpp14::make_unique<WText>(item.mahalle ().toStdString ()));
+//            _container->setWidth (WLength(std::to_string (100.0)+"%"));
 
-        container->decorationStyle ().setCursor (Cursor::PointingHand);
+//        }
+
+//        {
+//            auto _container = container->addWidget (cpp14::make_unique<WContainerWidget>());
+//            _container->addWidget (cpp14::make_unique<WText>(item.durum ().toStdString ()));
+//            _container->setWidth (WLength(std::to_string (100.0)+"%"));
+//            _container->setAttributeValue (Style::style,Style::background::color::color (item.durumColor ().toStdString ()+";")+
+//                                           Style::color::color (Style::color::White::Snow)+
+//                                           Style::font::weight::bold);
+//            _container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+//        }
+
+//        container->decorationStyle ().setCursor (Cursor::PointingHand);
 
 
-        container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
-        container->setMargin (5,Side::Top|Side::Bottom);
+//        container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+//        container->setMargin (5,Side::Top|Side::Bottom);
     }
 }
 
