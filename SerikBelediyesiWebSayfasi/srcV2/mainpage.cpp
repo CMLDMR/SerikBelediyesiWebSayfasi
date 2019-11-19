@@ -6,6 +6,8 @@
 #include "SerikBelediyesiWebSayfasi/srcV2/baskanwidget.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/externalWidget/nobetcieczanewidget.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/talepler/talepwidget.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/externalWidget/haritawidget.h"
+
 
 MainPage::MainPage(mongocxx::database *_db)
     :DataBaseWidget (_db),_signal(this,"_signal")
@@ -199,6 +201,8 @@ void MainPage::initIletisim()
     container->setMaximumSize(1024,WLength::Auto);
     container->setPadding(0,AllSides);
     container->addStyleClass(Bootstrap::Grid::row);
+//    container->addStyleClass ("boxShadow");
+//    container->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::White));
 
     {
         auto img = container->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -224,18 +228,22 @@ void MainPage::initIletisim()
         _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
         _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
                                       Style::background::color::color(Style::color::Grey::Gainsboro));
-
-
     }
 
 
     {
-        std::string path = "img/map.jpg";
-        auto img = container->addWidget(cpp14::make_unique<WContainerWidget>());
-        img->addStyleClass(Bootstrap::Grid::container_fluid);
-        img->setAttributeValue(Style::style,Style::background::url(path)+Style::background::size::cover+Style::background::repeat::norepeat+Style::background::position::center_center);
-        img->setHeight(600);
-        img->setPadding(0,AllSides);
+
+
+        // Serik Belediye Binası Coor: 36.91623, 31.104
+        {
+            auto haritaWidget = container->addWidget (cpp14::make_unique<HaritaWidget>());
+            haritaWidget->addStyleClass (Bootstrap::Grid::col_full_12);
+            haritaWidget->setHeight (450);
+            haritaWidget->addSerikLogoMarker ();
+            haritaWidget->setZoomLevel (16);
+        }
+
+
 
 
         auto textContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -255,7 +263,7 @@ void MainPage::initIletisim()
 
         std::unique_ptr<Wt::WAnchor> anchor =
                 Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                                    "<h4>Map Link</h4>");
+                                                    "<h4>GoogleMap Link</h4>");
 
         layout->addWidget(std::move(anchor),0,AlignmentFlag::Top);
 
@@ -278,13 +286,6 @@ void MainPage::initIletisim()
     }
 
 
-
-
-//    // Talep Sayfası
-//    {
-//        auto talep = container->addWidget(cpp14::make_unique<Body::Talep>(this->getDB()));
-//        talep->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-//    }
 
     // Yeni Talep Sayfası
     {
