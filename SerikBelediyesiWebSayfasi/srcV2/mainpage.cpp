@@ -201,8 +201,6 @@ void MainPage::initIletisim()
     container->setMaximumSize(1024,WLength::Auto);
     container->setPadding(0,AllSides);
     container->addStyleClass(Bootstrap::Grid::row);
-//    container->addStyleClass ("boxShadow");
-//    container->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::White));
 
     {
         auto img = container->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -333,7 +331,7 @@ void MainPage::initAnounceDetail( std::string mOid )
     row->addStyleClass(Bootstrap::Grid::row);
     row->setMaximumSize(1024,WLength::Auto);
 
-    WText* announceTitle = nullptr;;
+    WText* announceTitle = nullptr;
     WText* AnnounceContent = nullptr;
     WText* LastDate = nullptr;
     WText* Department = nullptr;
