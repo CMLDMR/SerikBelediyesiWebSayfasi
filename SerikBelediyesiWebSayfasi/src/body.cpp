@@ -8247,13 +8247,13 @@ void Body::Serik::Hakkinda::initPage()
     mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
     mMainContainer->setContentAlignment(AlignmentFlag::Center);
     mMainContainer->setMargin(90,Side::Top);
+    mMainContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::Snow));
 
 
 
     auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     row->addStyleClass(Bootstrap::Grid::row);
     row->setMaximumSize(1270,WLength::Auto);
-    row->setAttributeValue(Style::style,Style::background::url("v2/slide/SlidefilterWhite.png")+Style::background::repeat::repeat);
 
 
     {
