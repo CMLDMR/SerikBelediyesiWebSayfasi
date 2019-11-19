@@ -202,50 +202,6 @@ void TalepYonetim::listTalepler(const Talep &filter)
                                                                          item.durumColor ().toStdString ()))->ClickItem ().connect ([=](std::string oid){
             _clickOid.emit (oid);
         });
-
-        //        container->clicked ().connect ([=](){
-        //            _clickOid.emit (container->attributeValue (Style::dataoid).toUTF8 ());
-        //        });
-
-//        auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-//        container->addStyleClass (Bootstrap::Grid::Large::col_lg_3
-//                                  +Bootstrap::Grid::Medium::col_md_4
-//                                  +Bootstrap::Grid::Small::col_sm_6
-//                                  +Bootstrap::Grid::ExtraSmall::col_xs_12);
-//        container->setAttributeValue (Style::dataoid,item.oid ().toStdString ());
-
-//        container->clicked ().connect ([=](){
-//            _clickOid.emit (container->attributeValue (Style::dataoid).toUTF8 ());
-//        });
-
-//        {
-//            auto _container = container->addWidget (cpp14::make_unique<WContainerWidget>());
-//            _container->addWidget (cpp14::make_unique<WText>(item.tarih ().toStdString ()));
-//            _container->setWidth (WLength(std::to_string (100.0)+"%"));
-//        }
-
-//        {
-//            auto _container = container->addWidget (cpp14::make_unique<WContainerWidget>());
-//            _container->addWidget (cpp14::make_unique<WText>(item.mahalle ().toStdString ()));
-//            _container->setWidth (WLength(std::to_string (100.0)+"%"));
-
-//        }
-
-//        {
-//            auto _container = container->addWidget (cpp14::make_unique<WContainerWidget>());
-//            _container->addWidget (cpp14::make_unique<WText>(item.durum ().toStdString ()));
-//            _container->setWidth (WLength(std::to_string (100.0)+"%"));
-//            _container->setAttributeValue (Style::style,Style::background::color::color (item.durumColor ().toStdString ()+";")+
-//                                           Style::color::color (Style::color::White::Snow)+
-//                                           Style::font::weight::bold);
-//            _container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
-//        }
-
-//        container->decorationStyle ().setCursor (Cursor::PointingHand);
-
-
-//        container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
-//        container->setMargin (5,Side::Top|Side::Bottom);
     }
 }
 
