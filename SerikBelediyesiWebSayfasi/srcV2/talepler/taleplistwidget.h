@@ -3,6 +3,17 @@
 
 #include "SerikBelediyesiWebSayfasi/BaseClass/containerwiget.h"
 
+
+
+
+///
+/// \brief The TalepListWidget class : TalepListWidget, Talep ler Bu Widget ile Listelenir.
+/// <b>TalepOid</b><BR>
+/// <b>Mahalle</b><BR>
+/// <b>Tarih</b><BR>
+/// <b>Durum</b><BR>
+/// <b>DurumColor</b><BR> Bilgilerini Yapıcı Fonksiyon Parametresinde İster.
+///
 class TalepListWidget : public ContainerWidget
 {
 public:
@@ -13,6 +24,10 @@ public:
                     const std::string& durumColor);
 
 
+    ///
+    /// \brief ClickItem: Bu Signal Widget Tıklandığı Zaman Tetiklenir.
+    /// \return
+    ///
     Signal<std::string> &ClickItem();
 
 private:
@@ -22,7 +37,6 @@ private:
     std::string mTarih;
     std::string mDurum;
     std::string mDurumColor;
-
 
     Signal<std::string> _clickItem;
 };
