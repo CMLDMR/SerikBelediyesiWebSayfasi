@@ -48,6 +48,11 @@
 
 #include <Wt/WSplitButton.h>
 
+#include <Wt/Json/Object.h>
+#include <Wt/Json/Value.h>
+#include <Wt/WLeafletMap.h>
+
+
 #include "bootstrap.h"
 #include "inlinestyle.h"
 
