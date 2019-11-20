@@ -16,6 +16,7 @@ class DilekceView : public ContainerWidget , public SerikBLDCore::Dilekce , publ
 {
 public:
     DilekceView(SerikBLDCore::Dilekce* _dilekce , mongocxx::database *_db, SerikBLDCore::User* _user , bool _mPublicLink = false , bool _mBilgi = false );
+    Signal<NoClass> &ClickKapatildi();
 
 private:
     SerikBLDCore::TCManager* mTCManager;
@@ -26,6 +27,7 @@ private:
     void initDilekceView();
 
     void initCevapView();
+
 
 private:
     SerikBLDCore::User* mUser;
@@ -48,6 +50,8 @@ private:
 
     bool mPublicLink;
     bool mBilgi;
+
+    Signal<NoClass> _ClickKapatildi;
 };
 
 #endif // DILEKCEVIEW_H

@@ -125,11 +125,9 @@ void DilekceView::initDilekceView()
     this->Content ()->setWidth (WLength("100%"));
 
     auto cevaplandi_ = this->Durum ();
-    bool cevaplandi = false;
-    if( cevaplandi_ == DilekceDurum::Cevaplandi )
-    {
-        cevaplandi = true;
-    }
+
+    bool cevaplandi = cevaplandi_ == DilekceDurum::Cevaplandi ? true : false;
+
 
     {
         auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
@@ -137,6 +135,7 @@ void DilekceView::initDilekceView()
         auto text = container->addWidget (cpp14::make_unique<WText>(this->oid ().value ().to_string ()));
         text->addStyleClass (Bootstrap::Label::Default);
     }
+
 
     // Dilekçe Konu
     {
@@ -149,6 +148,7 @@ void DilekceView::initDilekceView()
         container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
     }
 
+
     {
         auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
         container->addStyleClass (Bootstrap::Grid::Large::col_lg_1
@@ -158,6 +158,7 @@ void DilekceView::initDilekceView()
         auto text = container->addWidget (cpp14::make_unique<WText>(std::to_string (this->sayi ())));
         container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
     }
+
 
     {
         auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
@@ -172,6 +173,7 @@ void DilekceView::initDilekceView()
         container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
     }
 
+
     {
         auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
         container->addStyleClass (Bootstrap::Grid::Large::col_lg_3
@@ -181,6 +183,7 @@ void DilekceView::initDilekceView()
         auto text = container->addWidget (cpp14::make_unique<WText>(this->icerikTipi ().toStdString ()));
         container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
     }
+
 
     {
         auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
@@ -194,7 +197,10 @@ void DilekceView::initDilekceView()
     {
         auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
 
+
         auto fileName = this->downloadFileWeb (this->dilekceOid ());
+
+
         if( fileName.empty () )
         {
             this->showMessage ("Hata","Taranmış Dosya Yok");
@@ -215,9 +221,10 @@ void DilekceView::initDilekceView()
             container->decorationStyle ().setCursor (Cursor::PointingHand);
 
         }
-
     }
-        this->Content ()->addWidget (cpp14::make_unique<WBreak>());
+
+
+    this->Content ()->addWidget (cpp14::make_unique<WBreak>());
 
     {
         auto eklerList = this->EkOidList ();
@@ -249,14 +256,53 @@ void DilekceView::initDilekceView()
     }
 
 
-    if( !cevaplandi && !mPublicLink ){
+
+    if( !cevaplandi && !mPublicLink && !mBilgi ){
         mGorevliPersonelContainer = this->Content ()->addWidget (cpp14::make_unique<ContainerWidget>());
         mGorevliPersonelContainer->setMargin (20,Side::Top|Side::Bottom);
         mGorevliPersonelContainer->setWidth (WLength("100%"));
         mGorevliPersonelContainer->setAttributeValue (Style::style,Style::Border::top::border ("1px solid gray"));
         this->updateGorevliPersonelWidget ();
         this->Content ()->addWidget (cpp14::make_unique<WBreak>());
+    }
 
+    if( !mPublicLink ){
+        auto havaleListContainer = this->Content ()->addWidget (cpp14::make_unique<ContainerWidget>());
+        havaleListContainer->setMargin (20,Side::Top|Side::Bottom);
+        havaleListContainer->setWidth (WLength("100%"));
+        havaleListContainer->setAttributeValue (Style::style,Style::Border::top::border ("1px solid gray"));
+        havaleListContainer->addStyleClass (Bootstrap::Grid::row);
+
+        {
+            auto havaleContainer = havaleListContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+            havaleContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
+                                            Bootstrap::Grid::Medium::col_md_6+
+                                            Bootstrap::Grid::Small::col_sm_6+
+                                            Bootstrap::Grid::ExtraSmall::col_xs_6);
+            havaleContainer->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+            havaleContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::HoneyDew));
+            auto layout = havaleContainer->setLayout (cpp14::make_unique<WVBoxLayout>());
+            layout->addWidget (cpp14::make_unique<WText>("<b>Havale</b>"),0,AlignmentFlag::Left);
+            layout->addWidget (cpp14::make_unique<WText>("✍ "+this->birim ().toStdString ()),0,AlignmentFlag::Left);
+        }
+
+        {
+            auto bilgiContainer = havaleListContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+            bilgiContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
+                                            Bootstrap::Grid::Medium::col_md_6+
+                                            Bootstrap::Grid::Small::col_sm_6+
+                                            Bootstrap::Grid::ExtraSmall::col_xs_6);
+            bilgiContainer->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+            bilgiContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::OldLace));
+            auto layout = bilgiContainer->setLayout (cpp14::make_unique<WVBoxLayout>());
+            layout->addWidget (cpp14::make_unique<WText>("<b>Bilgi</b>"),0,AlignmentFlag::Right);
+            for( auto item : this->BilgiBirimList () )
+            {
+                layout->addWidget (cpp14::make_unique<WText>(item.toStdString ()+" 🔍"),0,AlignmentFlag::Right);
+            }
+        }
+
+        this->Content ()->addWidget (cpp14::make_unique<WBreak>());
     }
 
 
@@ -273,6 +319,7 @@ void DilekceView::initDilekceView()
             this->addAciklama (item);
         }
     }
+
 
 
 
@@ -308,6 +355,10 @@ void DilekceView::initDilekceView()
                 delete aciklama;
             }
         });
+    }else{
+
+
+
     }
 
 
@@ -533,7 +584,6 @@ void DilekceView::initCevapView()
 
             });
 
-
             {
                 auto container = this->Footer ()->addWidget (cpp14::make_unique<WContainerWidget>());
                 container->setWidth (WLength("100%"));
@@ -542,8 +592,6 @@ void DilekceView::initCevapView()
                 auto btn = container->addWidget (cpp14::make_unique<WPushButton>("Dilekçeyi Kapat"));
                 btn->addStyleClass (Bootstrap::Button::Primary);
                 btn->clicked ().connect ([=](){
-
-
 
                     DilekceCevap mCevap;
 
@@ -554,35 +602,33 @@ void DilekceView::initCevapView()
                     mCevap.setDilekceOid (this->oid ().value ().to_string ().c_str ());
                     auto cevapOid_ = this->uploadfile (mCevapUploader->fileLocation ());
 
-
                     mCevap.setCevapOid (cevapOid_.get_oid ().value.to_string ().c_str ());
-
 
                     for( auto item : mUploadedFilePathList )
                     {
                         auto cevapOidEk_ = this->uploadfile (item);
                         mCevap.addEkOid (cevapOidEk_.get_oid ().value.to_string ().c_str ());
                     }
-
                     auto insCevap = this->insertCevap (&mCevap);
                     if( insCevap ){
                         this->SetDurum (DilekceDurum::Cevaplandi);
                         this->SetCevapOid (insCevap.value ().to_string ().c_str ());
                         if( this->updateDilekce (this) ){
                             this->showMessage ("Bilgi","Dilekçe Başarılı Bir Şekilde Kapatıldı.");
+                            _ClickKapatildi.emit (NoClass());
                         }else{
                             this->showMessage ("Uyarı","Dilekçe Kapatılamadı");
                         }
                     }
                 });
-
             }
         }
-
-
-
     }
+}
 
+Signal<NoClass> &DilekceView::ClickKapatildi()
+{
+    return _ClickKapatildi;
 }
 
 void DilekceView::addAciklama(const DilekceAciklama &aciklama)
