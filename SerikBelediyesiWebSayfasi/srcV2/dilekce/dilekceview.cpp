@@ -134,7 +134,19 @@ void DilekceView::initDilekceView()
         container->addStyleClass (Bootstrap::Grid::col_full_12);
         auto text = container->addWidget (cpp14::make_unique<WText>(this->oid ().value ().to_string ()));
         text->addStyleClass (Bootstrap::Label::Default);
+        container->addWidget (cpp14::make_unique<WBreak>());
+
+        Wt::WLink link = Wt::WLink(LinkType::Url,WString("?type=dilekce&_id={1}").arg (this->oid ().value ().to_string ()).toUTF8 ());
+        link.setTarget(Wt::LinkTarget::NewWindow);
+        std::unique_ptr<Wt::WAnchor> anchor = Wt::cpp14::make_unique<Wt::WAnchor>(link,WString("http://www.serik.bel.tr/?type=dilekce&_id={1}").arg (this->oid ().value ().to_string ()));
+//        anchor->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
+        container->addWidget (std::move(anchor));
+        container->setAttributeValue (Style::style,Style::color::color (Style::color::Grey::DimGray));
+//        container->addStyleClass ("textShadow");
+        container->setMargin (10,Side::Top|Side::Bottom);
     }
+
+
 
 
     // Dilekçe Konu
