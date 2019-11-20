@@ -101,7 +101,7 @@ void DilekceYonetim::initPersonelPanel()
                                                                                                    kvp("fotooid",this->mUser->element ("fotooid").value ())))));
             filter.SetBirim (this->mUser->Birimi ().c_str ());
             //TODO: Bu Kod Açılacak
-//            filter.SetDurum (DilekceDurum::Acik);
+            filter.SetDurum (DilekceDurum::Acik);
 
 
 
@@ -118,6 +118,17 @@ void DilekceYonetim::initPersonelPanel()
 
     {
         auto btn = createButton ("Cevaplananlar",Style::color::Green::Lime,Style::color::Grey::Black);
+        btn->clicked ().connect ([&](){
+            Dilekce filter;
+            filter.append(Dilekce::KeyGorevliPersonel,make_document(kvp("$elemMatch",make_document(kvp("_id",this->mUser->oid ().value ()),
+                                                                                                   kvp("ad soyad",this->mUser->AdSoyad ()),
+                                                                                                   kvp("fotooid",this->mUser->element ("fotooid").value ())))));
+            filter.SetBirim (this->mUser->Birimi ().c_str ());
+            //TODO: Bu Kod Açılacak
+            filter.SetDurum (DilekceDurum::Cevaplandi);
+            this->listDilekce (filter);
+        });
+
         this->Header ()->addWidget (std::move(btn));
     }
 
@@ -271,6 +282,8 @@ void DilekceYonetim::listBilgiDilekce(const Dilekce &filterDilekce)
 
     this->Content ()->clear ();
 
+
+    /// Header SATIR
     {
         auto container = this->Content ()->addWidget (cpp14::make_unique<ContainerWidget>());
         container->addStyleClass (Bootstrap::Grid::col_full_12);
@@ -322,6 +335,7 @@ void DilekceYonetim::listBilgiDilekce(const Dilekce &filterDilekce)
     {
 
         auto POid = item.oid ();
+
         if( POid )
         {
 
@@ -395,6 +409,10 @@ void DilekceYonetim::initDilekce(const std::string &dilekceOid)
                                                                                         ,this->mUser
                                                                                         ,false
                                                                                         ,false));
+
+        dilekceView->ClickKapatildi ().connect (this,&DilekceYonetim::initControlPanel );
+
+
     }else{
         this->showMessage ("Hata","Bu Dilekçe Yüklenemedi");
     }
