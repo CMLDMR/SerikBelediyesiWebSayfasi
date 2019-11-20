@@ -3,6 +3,7 @@
 #include <QLatin1String>
 
 #include "anonswidget.h"
+#include "../url.h"
 
 #include "SerikBelediyesiWebSayfasi/srcV2/kadinailestock.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/ik.h"
@@ -403,16 +404,16 @@ void Giris::LoginWidget::sendtempPasswordSMS()
 
     stream.writeStartElement("MainmsgBody");
 
-    stream.writeTextElement("Command", "0");
-    stream.writeTextElement("PlatformID", "1");
-    stream.writeTextElement("ChannelCode", "474");
-    stream.writeTextElement("UserName", "serikbel");
-    stream.writeTextElement("PassWord", "haziran2018");
+    stream.writeTextElement("Command", SMSCONFIG::Command.c_str());
+    stream.writeTextElement("PlatformID", SMSCONFIG::PlatformID.c_str());
+    stream.writeTextElement("ChannelCode", SMSCONFIG::ChannelCode.c_str ());
+    stream.writeTextElement("UserName", SMSCONFIG::UserName.c_str ());
+    stream.writeTextElement("PassWord", SMSCONFIG::Password.c_str ());
     stream.writeTextElement("Mesgbody", sms );
     stream.writeTextElement("Numbers", mTelefonNumarasi->text().toUTF8().c_str());
-    stream.writeTextElement("Type", "1");
-    stream.writeTextElement("Concat", "1");
-    stream.writeTextElement("Originator", "SERiK BLD");
+    stream.writeTextElement("Type", SMSCONFIG::Type.c_str ());
+    stream.writeTextElement("Concat", SMSCONFIG::Concat.c_str());
+    stream.writeTextElement("Originator", SMSCONFIG::Originator.c_str ());
 
     stream.writeEndElement();
 
@@ -565,16 +566,16 @@ void Giris::LoginWidget::sendSMS(std::string numara, std::string sms)
 
     stream.writeStartElement("MainmsgBody");
 
-    stream.writeTextElement("Command", "0");
-    stream.writeTextElement("PlatformID", "1");
-    stream.writeTextElement("ChannelCode", "474");
-    stream.writeTextElement("UserName", "serikbel");
-    stream.writeTextElement("PassWord", "haziran2018");
-    stream.writeTextElement("Mesgbody", sms.c_str() );
-    stream.writeTextElement("Numbers", numara.c_str());
-    stream.writeTextElement("Type", "1");
-    stream.writeTextElement("Concat", "1");
-    stream.writeTextElement("Originator", "SERiK BLD");
+    stream.writeTextElement("Command" , SMSCONFIG::Command.c_str());
+    stream.writeTextElement("PlatformID" , SMSCONFIG::PlatformID.c_str());
+    stream.writeTextElement("ChannelCode" , SMSCONFIG::ChannelCode.c_str ());
+    stream.writeTextElement("UserName" , SMSCONFIG::UserName.c_str ());
+    stream.writeTextElement("PassWord" , SMSCONFIG::Password.c_str ());
+    stream.writeTextElement("Mesgbody" , sms.c_str() );
+    stream.writeTextElement("Numbers" , numara.c_str() );
+    stream.writeTextElement("Type" , SMSCONFIG::Type.c_str () );
+    stream.writeTextElement("Concat" , SMSCONFIG::Concat.c_str() );
+    stream.writeTextElement("Originator" , SMSCONFIG::Originator.c_str () );
 
     stream.writeEndElement();
 
