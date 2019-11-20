@@ -262,6 +262,21 @@ void TalepView::initTalepView()
 
     {
         auto _container = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+        _container->addStyleClass (Bootstrap::Grid::col_full_12);
+        _container->setContentAlignment (AlignmentFlag::Center);
+        _container->setMargin (5,Side::Bottom|Side::Top);
+
+        Wt::WLink link = Wt::WLink(LinkType::Url,WString("?type=talep&_id={1}").arg (this->oid ().toStdString ()).toUTF8 ());
+        link.setTarget(Wt::LinkTarget::NewWindow);
+        std::unique_ptr<Wt::WAnchor> anchor = Wt::cpp14::make_unique<Wt::WAnchor>(link,WString("http://www.serik.bel.tr/?type=talep&_id={1}").arg (this->oid ().toStdString ()));
+        anchor->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
+        _container->addWidget (std::move(anchor));
+        _container->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
+        _container->addStyleClass ("textShadow");
+    }
+
+    {
+        auto _container = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
         _container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
                                    Bootstrap::Grid::Medium::col_md_4+
                                    Bootstrap::Grid::Small::col_sm_6+
