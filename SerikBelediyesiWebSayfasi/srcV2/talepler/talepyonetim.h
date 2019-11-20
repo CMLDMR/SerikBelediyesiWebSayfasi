@@ -21,6 +21,8 @@ private:
 
     void initControlPanel();
 
+    void initPersonelPanel();
+
     void listTalepler( const SerikBLDCore::Talep& filter = SerikBLDCore::Talep() );
 
     void initTalep( const std::string &oid );

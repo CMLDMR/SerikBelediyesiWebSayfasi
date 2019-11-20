@@ -10,8 +10,13 @@ TalepYonetim::TalepYonetim(mongocxx::database *_db, bsoncxx::document::value _us
       mUser(new SerikBLDCore::User (_db,_user))
 {
 
+
     if( this->mUser->Statu () == SerikBLDCore::User::Mudur ){
         this->initControlPanel ();
+    }else if (this->mUser->Statu () == SerikBLDCore::User::Personel ) {
+        this->initPersonelPanel ();
+    }else if ( this->mUser->Statu () == SerikBLDCore::User::Baskan || this->mUser->Statu () == SerikBLDCore::User::BaskanYardimcisi ){
+
     }
 
     this->Content ()->setMargin (15,Side::Top|Side::Bottom);
@@ -85,12 +90,8 @@ void TalepYonetim::initControlPanel()
         toolbarWidget->addButton(std::move(SosyalMedyaBtn));
     }
 
-
     auto result = this->durumPipeLine (this->mUser->Birimi ().c_str ());
-
-
     {
-
         auto container = this->Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
         container->addStyleClass (Bootstrap::Grid::col_full_12);
         container->setMargin (15,Side::Top|Side::Bottom);
@@ -184,6 +185,197 @@ void TalepYonetim::initControlPanel()
         toolbarWidget->addWidget (std::move(beklemedeWidget));
 
     }
+
+
+}
+
+void TalepYonetim::initPersonelPanel()
+{
+    this->Header ()->clear ();
+
+    Talep filterPipeResult;
+    filterPipeResult.append(TalepKey::GorevliPersonel,make_document(kvp("$elemMatch",make_document(kvp("_id",this->mUser->oid ().value ())))));
+    filterPipeResult.setBirim (this->mUser->Birimi ().c_str ());
+
+    auto kResult = this->kaynakPipeLine (filterPipeResult);
+
+
+    {
+
+        auto container = this->Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::col_full_12);
+        container->setMargin (15,Side::Top|Side::Bottom);
+        auto toolbarWidget = container->addWidget (cpp14::make_unique<WToolBar>());
+
+        auto SmsBtn = createButton("btn-primary", TalepKey::KaynakKey::Sms+" "+Bootstrap::Badges::badget(std::to_string(kResult.Sms)));
+        SmsBtn->clicked().connect([=](){
+            Talep filter;
+            filter.append(TalepKey::GorevliPersonel,make_document(kvp("$elemMatch",make_document(kvp("_id",this->mUser->oid ().value ())))));
+            filter.setBirim (this->mUser->Birimi ().c_str ());
+            filter.setKaynak (TalepKey::KaynakKey::Sms.c_str ());
+            this->listTalepler (filter);
+        });
+        toolbarWidget->addButton(std::move(SmsBtn));
+
+        auto WebBtn = createButton("btn-success", TalepKey::KaynakKey::Web+" "+Bootstrap::Badges::badget(std::to_string(kResult.Web)));
+        WebBtn->clicked().connect([=](){
+            Talep filter;
+            filter.append(TalepKey::GorevliPersonel,make_document(kvp("$elemMatch",make_document(kvp("_id",this->mUser->oid ().value ())))));
+            filter.setBirim (this->mUser->Birimi ().c_str ());
+            filter.setKaynak (TalepKey::KaynakKey::Web.c_str ());
+            this->listTalepler (filter);
+        });
+        toolbarWidget->addButton(std::move(WebBtn));
+
+        auto MobilBtn = createButton("btn-danger", TalepKey::KaynakKey::Mobil+" "+Bootstrap::Badges::badget(std::to_string(kResult.Mobil)));
+        MobilBtn->clicked().connect([=](){
+            Talep filter;
+            filter.append(TalepKey::GorevliPersonel,make_document(kvp("$elemMatch",make_document(kvp("_id",this->mUser->oid ().value ())))));
+            filter.setBirim (this->mUser->Birimi ().c_str ());
+            filter.setKaynak (TalepKey::KaynakKey::Mobil.c_str ());
+            this->listTalepler (filter);
+        });
+        toolbarWidget->addButton(std::move(MobilBtn));
+
+        auto TelefonBtn = createButton("btn-info", TalepKey::KaynakKey::Telefon+" "+Bootstrap::Badges::badget(std::to_string(kResult.Telefon)));
+        TelefonBtn->clicked().connect([=](){
+            Talep filter;
+            filter.append(TalepKey::GorevliPersonel,make_document(kvp("$elemMatch",make_document(kvp("_id",this->mUser->oid ().value ())))));
+            filter.setBirim (this->mUser->Birimi ().c_str ());
+            filter.setKaynak (TalepKey::KaynakKey::Telefon.c_str ());
+            this->listTalepler (filter);
+        });
+        toolbarWidget->addButton(std::move(TelefonBtn));
+
+        auto BeyazmasaBtn = createButton("btn-default", TalepKey::KaynakKey::Beyazmasa+" "+Bootstrap::Badges::badget(std::to_string(kResult.Beyazmasa)));
+        BeyazmasaBtn->clicked().connect([=](){
+            Talep filter;
+            filter.append(TalepKey::GorevliPersonel,make_document(kvp("$elemMatch",make_document(kvp("_id",this->mUser->oid ().value ())))));
+            filter.setBirim (this->mUser->Birimi ().c_str ());
+            filter.setKaynak (TalepKey::KaynakKey::Beyazmasa.c_str ());
+            this->listTalepler (filter);
+        });
+        toolbarWidget->addButton(std::move(BeyazmasaBtn));
+
+
+        auto SosyalMedyaBtn = createButton("btn-warning", TalepKey::KaynakKey::SosyalMedya+" "+Bootstrap::Badges::badget(std::to_string(kResult.SosyalMedya)));
+        SosyalMedyaBtn->clicked().connect([=](){
+            Talep filter;
+            filter.append(TalepKey::GorevliPersonel,make_document(kvp("$elemMatch",make_document(kvp("_id",this->mUser->oid ().value ())))));
+            filter.setBirim (this->mUser->Birimi ().c_str ());
+            filter.setKaynak (TalepKey::KaynakKey::SosyalMedya.c_str ());
+            this->listTalepler (filter);
+        });
+        toolbarWidget->addButton(std::move(SosyalMedyaBtn));
+    }
+
+    auto result = this->durumPipeLine (filterPipeResult);
+
+    {
+        auto container = this->Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::col_full_12);
+        container->setMargin (15,Side::Top|Side::Bottom);
+        auto toolbarWidget = container->addWidget (cpp14::make_unique<WToolBar>());
+
+
+
+        auto devamEdiyorWidget = cpp14::make_unique<WContainerWidget>();
+        devamEdiyorWidget->addWidget (cpp14::make_unique<WText>(TalepKey::DurumKey::DevamEdiyor +" "+Bootstrap::Badges::badget(std::to_string(result.DevamEdiyor))));
+        devamEdiyorWidget->setAttributeValue (Style::style,Style::background::color::color (Style::color::Green::LightSeaGreen)+
+                                              Style::color::color (Style::color::White::Snow)+
+                                              Style::font::weight::bold);
+        devamEdiyorWidget->setWidth (WLength(std::to_string (100.0/6.0)+"%"));
+        devamEdiyorWidget->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+        devamEdiyorWidget->decorationStyle ().setCursor (Cursor::PointingHand);
+        devamEdiyorWidget->clicked ().connect ([=](){
+            Talep filter;
+            filter.append(TalepKey::GorevliPersonel,make_document(kvp("$elemMatch",make_document(kvp("_id",this->mUser->oid ().value ())))));
+            filter.setBirim (this->mUser->Birimi ().c_str ());
+            filter.setDurum (TalepKey::DurumKey::DevamEdiyor.c_str ());
+            this->listTalepler (filter);
+        });
+        toolbarWidget->addWidget (std::move(devamEdiyorWidget));
+
+
+
+
+        auto tamamlandiWidget = cpp14::make_unique<WContainerWidget>();
+        tamamlandiWidget->addWidget (cpp14::make_unique<WText>(TalepKey::DurumKey::Tamamlandi +" "+Bootstrap::Badges::badget(std::to_string(result.Tamamlandi))));
+        tamamlandiWidget->setAttributeValue (Style::style,Style::background::color::color (Style::color::Purple::DodgerBlue)+
+                                              Style::color::color (Style::color::White::Snow)+
+                                              Style::font::weight::bold);
+        tamamlandiWidget->setWidth (WLength(std::to_string (100.0/6.0)+"%"));
+        tamamlandiWidget->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+        tamamlandiWidget->decorationStyle ().setCursor (Cursor::PointingHand);
+        tamamlandiWidget->clicked ().connect ([=](){
+            Talep filter;
+            filter.append(TalepKey::GorevliPersonel,make_document(kvp("$elemMatch",make_document(kvp("_id",this->mUser->oid ().value ())))));
+            filter.setBirim (this->mUser->Birimi ().c_str ());
+            filter.setDurum (TalepKey::DurumKey::Tamamlandi.c_str ());
+            this->listTalepler (filter);
+        });
+        toolbarWidget->addWidget (std::move(tamamlandiWidget));
+
+
+
+
+        auto redEdildiWidget = cpp14::make_unique<WContainerWidget>();
+        redEdildiWidget->addWidget (cpp14::make_unique<WText>(TalepKey::DurumKey::RedEdildi +" "+Bootstrap::Badges::badget(std::to_string(result.RedEdildi))));
+        redEdildiWidget->setAttributeValue (Style::style,Style::background::color::color (Style::color::Red::Crimson)+
+                                              Style::color::color (Style::color::White::Snow)+
+                                              Style::font::weight::bold);
+        redEdildiWidget->setWidth (WLength(std::to_string (100.0/6.0)+"%"));
+        redEdildiWidget->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+        redEdildiWidget->decorationStyle ().setCursor (Cursor::PointingHand);
+        redEdildiWidget->clicked ().connect ([=](){
+            Talep filter;
+            filter.append(TalepKey::GorevliPersonel,make_document(kvp("$elemMatch",make_document(kvp("_id",this->mUser->oid ().value ())))));
+            filter.setBirim (this->mUser->Birimi ().c_str ());
+            filter.setDurum (TalepKey::DurumKey::RedEdildi.c_str ());
+            this->listTalepler (filter);
+        });
+        toolbarWidget->addWidget (std::move(redEdildiWidget));
+
+
+
+        auto teyitEdilmemisWidget = cpp14::make_unique<WContainerWidget>();
+        teyitEdilmemisWidget->addWidget (cpp14::make_unique<WText>(TalepKey::DurumKey::TeyitEdilmemis +" "+Bootstrap::Badges::badget(std::to_string(result.TeyitEdilmemis))));
+        teyitEdilmemisWidget->setAttributeValue (Style::style,Style::background::color::color (Style::color::Pink::PaleVioletRed)+
+                                              Style::color::color (Style::color::White::Snow)+
+                                              Style::font::weight::bold);
+        teyitEdilmemisWidget->setWidth (WLength(std::to_string (100.0/6.0)+"%"));
+        teyitEdilmemisWidget->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+        teyitEdilmemisWidget->decorationStyle ().setCursor (Cursor::PointingHand);
+        teyitEdilmemisWidget->clicked ().connect ([=](){
+            Talep filter;
+            filter.append(TalepKey::GorevliPersonel,make_document(kvp("$elemMatch",make_document(kvp("_id",this->mUser->oid ().value ())))));
+            filter.setBirim (this->mUser->Birimi ().c_str ());
+            filter.setDurum (TalepKey::DurumKey::TeyitEdilmemis.c_str ());
+            this->listTalepler (filter);
+        });
+        toolbarWidget->addWidget (std::move(teyitEdilmemisWidget));
+
+
+
+        auto beklemedeWidget = cpp14::make_unique<WContainerWidget>();
+        beklemedeWidget->addWidget (cpp14::make_unique<WText>(TalepKey::DurumKey::Beklemede +" "+Bootstrap::Badges::badget(std::to_string(result.Beklemede))));
+        beklemedeWidget->setAttributeValue (Style::style,Style::background::color::color (Style::color::Orange::GoldenRod)+
+                                              Style::color::color (Style::color::White::Snow)+
+                                              Style::font::weight::bold);
+        beklemedeWidget->setWidth (WLength(std::to_string (100.0/6.0)+"%"));
+        beklemedeWidget->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+        beklemedeWidget->decorationStyle ().setCursor (Cursor::PointingHand);
+        beklemedeWidget->clicked ().connect ([=](){
+            Talep filter;
+            filter.append(TalepKey::GorevliPersonel,make_document(kvp("$elemMatch",make_document(kvp("_id",this->mUser->oid ().value ())))));
+            filter.setBirim (this->mUser->Birimi ().c_str ());
+            filter.setDurum (TalepKey::DurumKey::Beklemede.c_str ());
+            this->listTalepler (filter);
+        });
+        toolbarWidget->addWidget (std::move(beklemedeWidget));
+
+    }
+
 }
 
 void TalepYonetim::listTalepler(const Talep &filter)
@@ -225,8 +417,16 @@ void TalepYonetim::initTalep(const std::string &oid)
                                                                                     this->mUser,
                                                                                     false));
 
+        if( this->mUser->Statu () == SerikBLDCore::User::Mudur )
+        {
+            talepView->DurumChanged ().connect (this,&TalepYonetim::initControlPanel );
+        }else if( this->mUser->Statu () == SerikBLDCore::User::Personel )
+        {
+            talepView->DurumChanged ().connect (this,&TalepYonetim::initPersonelPanel );
+        }else if( this->mUser->Statu () == SerikBLDCore::User::Baskan || this->mUser->Statu () == SerikBLDCore::User::BaskanYardimcisi )
+        {
 
-        talepView->DurumChanged ().connect (this,&TalepYonetim::initControlPanel );
+        }
     }
 
 }
