@@ -10,7 +10,16 @@
 class ContainerWidget : public WContainerWidget
 {
 public:
-    ContainerWidget(std::string title = "" );
+
+
+    enum ContentType{
+        Horizontal,
+        Vertical
+    };
+
+
+
+    ContainerWidget(std::string title = "" , ContentType _contentType = Vertical );
 
 
     WContainerWidget* Header();
@@ -22,6 +31,8 @@ public:
         ROW = 0,
         CONTAINERFLUID
     };
+
+
 
     void setContainerStyle(ContainerStyleType type);
 

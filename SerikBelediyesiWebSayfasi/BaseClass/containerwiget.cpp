@@ -4,48 +4,68 @@
 #include <QFileInfo>
 #include <QUuid>
 
-ContainerWidget::ContainerWidget(std::string title)
+
+
+ContainerWidget::ContainerWidget(std::string title, ContainerWidget::ContentType _contentType)
 {
-
-
     addStyleClass(Bootstrap::Grid::container_fluid);
-
+//    setWidth (WLength("100%"));
 
     if( title.size() )
     {
         auto container = addWidget(cpp14::make_unique<WContainerWidget>());
-        container->setWidth(WLength("100%"));
+        container->addWidget(cpp14::make_unique<WText>("<h4>"+title+"</h4>"));
+        container->setContentAlignment(AlignmentFlag::Center);
+        container->setMargin (15,Side::Bottom);
+        container->setMargin (-15,Side::Left|Side::Right);
         container->addStyleClass(Bootstrap::Grid::row);
-        container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
-        container->setOverflow(Overflow::Hidden);
-
-        auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
-        _container->addWidget(cpp14::make_unique<WText>("<h4>"+title+"</h4>"));
-        _container->setContentAlignment(AlignmentFlag::Center);
-        _container->setAttributeValue(Style::style,Style::background::color::color(Style::color::Grey::Gainsboro));
-        _container->setPadding(5,Side::Top|Side::Bottom);
-        _container->addStyleClass(Bootstrap::Grid::col_full_12);
+        container->addStyleClass (Bootstrap::ContextualBackGround::bg_primary+"boxShadow" );
     }
 
+    if( _contentType == Horizontal )
+    {
+        auto __container = addWidget (cpp14::make_unique<WContainerWidget>());
+        __container->addStyleClass (Bootstrap::Grid::row);
 
-    mHeaderContainer = addWidget(cpp14::make_unique<WContainerWidget>());
-    mHeaderContainer->addStyleClass(Bootstrap::Grid::row);
+        auto _headerContainer = __container->addWidget (cpp14::make_unique<WContainerWidget>());
+        _headerContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                                    Bootstrap::Grid::Medium::col_md_2+
+                                    Bootstrap::Grid::Small::col_sm_3+
+                                    Bootstrap::Grid::ExtraSmall::col_xs_12);
+
+        mHeaderContainer = _headerContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+        mHeaderContainer->addStyleClass(Bootstrap::Grid::row);
+
+        auto _contentContainer = __container->addWidget (cpp14::make_unique<WContainerWidget>());
+        _contentContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_10+
+                                    Bootstrap::Grid::Medium::col_md_10+
+                                    Bootstrap::Grid::Small::col_sm_9+
+                                    Bootstrap::Grid::ExtraSmall::col_xs_12);
 
 
-    mContentContainer = addWidget(cpp14::make_unique<WContainerWidget>());
-    mContentContainer->addStyleClass(Bootstrap::Grid::row);
+        mContentContainer = _contentContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+        mContentContainer->addStyleClass(Bootstrap::Grid::row);
 
+
+
+
+
+    }else{
+
+        mHeaderContainer = addWidget(cpp14::make_unique<WContainerWidget>());
+        mHeaderContainer->addStyleClass(Bootstrap::Grid::row);
+
+        mContentContainer = addWidget(cpp14::make_unique<WContainerWidget>());
+        mContentContainer->addStyleClass(Bootstrap::Grid::row);
+    }
 
     mFootContainer = addWidget(cpp14::make_unique<WContainerWidget>());
     mFootContainer->addStyleClass(Bootstrap::Grid::row);
-
 }
 
 WContainerWidget *ContainerWidget::Header()
 {
-
     return mHeaderContainer;
-
 }
 
 WContainerWidget *ContainerWidget::Content()
