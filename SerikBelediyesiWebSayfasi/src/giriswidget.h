@@ -44,7 +44,7 @@ private:
 
 
 
-class SivilWidget : public WContainerWidget
+class SivilWidget : public ContainerWidget
 {
 public:
     SivilWidget(mongocxx::database* _db, bsoncxx::document::value* _user);
@@ -52,6 +52,8 @@ public:
 private:
     mongocxx::database* db;
     bsoncxx::document::value* UserValue;
+
+    SerikBLDCore::TC mTCUser;
 
     WContainerWidget* mMainContainer;
     WContainerWidget* mMenuContainer;

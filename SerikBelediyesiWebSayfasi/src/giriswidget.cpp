@@ -13,7 +13,8 @@
 #include "SerikBelediyesiWebSayfasi/srcV2/dilekceyonetim.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/talepler/talepyonetim.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/talepler/talepvatandasarayuz.h"
-
+#include "SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekcetcyonetim.h"
+#include "tc.h"
 
 Giris::GirisWidget::GirisWidget(mongocxx::database *_db)
     :WContainerWidget(),
@@ -232,8 +233,6 @@ void Giris::GirisWidget::initOption()
 
 void Giris::GirisWidget::initSivil()
 {
-
-    std::cout << "initSivil " << std::endl;
     mContentContainer->clear();
     auto sivil = mContentContainer->addWidget(cpp14::make_unique<SivilWidget>(db,&User));
 }
@@ -1472,39 +1471,20 @@ void Giris::LoginWidget::setUserisPersonel(bool value)
     UserisPersonel = value;
 }
 
+
+
+
+
+
+
 Giris::SivilWidget::SivilWidget(mongocxx::database *_db, bsoncxx::document::value *_user)
-    :WContainerWidget(),
+    :ContainerWidget("",ContainerWidget::Horizontal),
       db(_db),
-      UserValue(_user)
+      UserValue(_user),
+      mTCUser(_user)
 {
 
-    //    std::cout << "init SivilWidget Constructor" << std::endl;
-    WApplication::instance()->setInternalPath("/Sivil",true);
-
-    mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
-    mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
-    mMainContainer->setId("initSivilWidgetId");
-
-    auto mRow = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-    mRow->addStyleClass(Bootstrap::Grid::row);
-
-    mHeaderContainer = mRow->addWidget(cpp14::make_unique<WContainerWidget>());
-    mHeaderContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
     this->initHeader();
-
-    mMenuContainer = mRow->addWidget(cpp14::make_unique<WContainerWidget>());
-    mMenuContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_2);
-
-    mContentContainer = mRow->addWidget(cpp14::make_unique<WContainerWidget>());
-    mContentContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_10);
-
-    auto tempContainer = mContentContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-
-    //    tempContainer->setHeight(1200);
-    //    tempContainer->setOverflow(Overflow::Scroll);
-    mContentWidget = tempContainer->addWidget(cpp14::make_unique<WStackedWidget>());
-
-    mContentWidget->setTransitionAnimation(WAnimation(AnimationEffect::SlideInFromRight,TimingFunction::CubicBezier,350),true);
 
     this->initMenu();
 
@@ -1513,86 +1493,90 @@ Giris::SivilWidget::SivilWidget(mongocxx::database *_db, bsoncxx::document::valu
 void Giris::SivilWidget::initMenu()
 {
 
-    std::cout << "initSivil Menu" << std::endl;
-    auto _mContainer = mMenuContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-    _mContainer->setMargin(35,Side::Bottom|Side::Top);
-
-    Wt::WMenu *menu = _mContainer->addWidget(Wt::cpp14::make_unique<Wt::WMenu>(mContentWidget));
+    Wt::WMenu *menu = this->Header ()->addWidget(Wt::cpp14::make_unique<WMenu>());
     menu->setStyleClass("nav nav-pills nav-stacked");
 
-
     // Add menu items using the default lazy loading policy.
-    menu->addItem("Bilgilerim", Wt::cpp14::make_unique<Bilgilerim>(db,UserValue));
-    menu->addItem("Taleplerim", Wt::cpp14::make_unique<Taleplerim>(db,UserValue));
-    menu->addItem("TaleplerimV2", Wt::cpp14::make_unique<TalepVatandasArayuz>(db,UserValue));
+    menu->addItem("Bilgilerim")->clicked ().connect ([=](){
+        this->Content ()->clear();
+        this->Content ()->addWidget (Wt::cpp14::make_unique<Bilgilerim>(db,UserValue));
+    });
 
-    menu->addItem("Başvurularım", Wt::cpp14::make_unique<Basvurularim>(db,UserValue));
+    menu->addItem("Yeni Talep")->clicked ().connect ([=](){
+        this->Content ()->clear();
+        auto TalepWidgetItem = cpp14::make_unique<TalepWidget::TalepWidget>(db);
+        SerikBLDCore::TC tcItem(UserValue);
+        TalepWidgetItem->tcWidget->setTCItem (tcItem);
+        this->Content ()->addWidget (std::move(TalepWidgetItem));
+    });
 
-    auto TalepWidgetItem = cpp14::make_unique<TalepWidget::TalepWidget>(db);
-    SerikBLDCore::TC tcItem(UserValue);
-    TalepWidgetItem->tcWidget->setTCItem (tcItem);
+    menu->addItem("Dilekçelerim")->clicked ().connect ([=](){
+        this->Content ()->clear();
+        this->Content ()->addWidget (Wt::cpp14::make_unique<DilekceTCYonetim>(db,UserValue));
+    });
 
-    menu->addItem("Yeni Talep", std::move(TalepWidgetItem));
-    menu->addItem("Yeni Başvuru", Wt::cpp14::make_unique<Basvuru>(db,UserValue));
+    menu->addItem("Taleplerim")->clicked ().connect ([=](){
+        this->Content ()->clear();
+        this->Content ()->addWidget (Wt::cpp14::make_unique<Taleplerim>(db,UserValue));
+    });
 
 
+    menu->addItem("TaleplerimV2")->clicked ().connect ([=](){
+        this->Content ()->clear();
+        this->Content ()->addWidget (Wt::cpp14::make_unique<TalepVatandasArayuz>(db,UserValue));
+    });
 
+    menu->addItem("Başvurularım")->clicked ().connect ([=](){
+        this->Content ()->clear();
+        this->Content ()->addWidget (Wt::cpp14::make_unique<Basvurularim>(db,UserValue));
+    });
 
+    menu->addItem("Yeni Başvuru")->clicked ().connect ([=](){
+        this->Content ()->clear();
+        this->Content ()->addWidget (Wt::cpp14::make_unique<Basvuru>(db,UserValue));
+    });
 
 }
 
 void Giris::SivilWidget::initHeader()
 {
-
-
-    auto _mContainer = mHeaderContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+    auto _mContainer = this->Header ()->addWidget(cpp14::make_unique<WContainerWidget>());
     _mContainer->setMargin(10,AllSides);
     _mContainer->addStyleClass(Bootstrap::Grid::container_fluid);
     _mContainer->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::AliceBlue));
+    _mContainer->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
     auto row = _mContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     row->addStyleClass(Bootstrap::Grid::row);
 
     auto photoWidget = row->addWidget(cpp14::make_unique<WContainerWidget>());
-    photoWidget->addStyleClass(Bootstrap::Grid::Large::col_lg_2);
-    photoWidget->setAttributeValue(Style::style,Style::Border::border("1px solid gray"));
-    auto img = photoWidget->addWidget(cpp14::make_unique<WImage>(WLink("img/person.jpg")));
+    photoWidget->addStyleClass(Bootstrap::Grid::col_full_12);
+    photoWidget->setContentAlignment (AlignmentFlag::Center);
 
+    photoWidget->setAttributeValue (Style::style,Style::background::url ("img/person.jpg")+
+                                    Style::background::size::contain+
+                                    Style::background::repeat::norepeat+
+                                    Style::background::position::center_center);
+    photoWidget->setHeight (100);
 
     {
         auto infoContainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
-        infoContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_10);
-
+        infoContainer->addStyleClass(Bootstrap::Grid::col_full_12);
         auto container = infoContainer->addWidget(cpp14::make_unique<WContainerWidget>());
         auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-
         layout->addStretch(1);
-
-        try {
-            layout->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(this->UserValue->view()[SBLDKeys::TC::isimsoyisim].get_utf8().value.to_string().c_str())),0,AlignmentFlag::Left);
-        } catch (bsoncxx::exception &e) {
-            layout->addWidget(cpp14::make_unique<WText>(WString("Error: {1}").arg(e.what())));
-        }
-
-        try {
-            layout->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(this->UserValue->view()[SBLDKeys::TC::mahalle].get_utf8().value.to_string().c_str())),0,AlignmentFlag::Left);
-        } catch (bsoncxx::exception &e) {
-            layout->addWidget(cpp14::make_unique<WText>(WString("Error: {1}").arg(e.what())));
-        }
-
-        try {
-            layout->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(this->UserValue->view()[SBLDKeys::TC::cepTel].get_utf8().value.to_string().c_str())),0,AlignmentFlag::Left);
-        } catch (bsoncxx::exception &e) {
-            layout->addWidget(cpp14::make_unique<WText>(WString("Error: {1}").arg(e.what())));
-        }
+        layout->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(mTCUser.AdSoyad ().toStdString ())),0,AlignmentFlag::Center);
+        layout->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(mTCUser.Mahalle ().toStdString ())),0,AlignmentFlag::Center);
+        layout->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(mTCUser.CepTelefonu ().toStdString ())),0,AlignmentFlag::Center);
         layout->addStretch(1);
     }
-
-
-
-
-
 }
+
+
+
+
+
+
 
 Giris::Taleplerim::Taleplerim(mongocxx::database *_db, bsoncxx::document::value *_user)
     :WContainerWidget(),
