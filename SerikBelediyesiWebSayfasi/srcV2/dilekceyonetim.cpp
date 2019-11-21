@@ -1,5 +1,6 @@
 #include "dilekceyonetim.h"
 #include "dilekce/dilekceview.h"
+#include "dilekce/dilekcelistwidgetitem.h"
 
 using namespace SerikBLDCore;
 
@@ -47,7 +48,7 @@ void DilekceYonetim::initMudurPanel()
         btn->clicked ().connect ([&](){
             Dilekce filter;
             filter.SetBirim (this->mUser->Birimi ().c_str ());
-            filter.SetDurum (DilekceDurum::Acik);
+            filter.SetDurum (DilekceDurum::Acik.c_str ());
             this->listDilekce (filter);
         });
         this->Header ()->addWidget (std::move(btn));
@@ -71,7 +72,7 @@ void DilekceYonetim::initMudurPanel()
             Dilekce filter;
             filter.SetBirim (this->mUser->Birimi ().c_str ());
             //TODO: Bu Kod Açılacak
-            filter.SetDurum (DilekceDurum::Cevaplandi);
+            filter.SetDurum (DilekceDurum::Cevaplandi.c_str ());
             this->listDilekce (filter);
         });
         this->Header ()->addWidget (std::move(btn));
@@ -101,7 +102,7 @@ void DilekceYonetim::initPersonelPanel()
                                                                                                    kvp("fotooid",this->mUser->element ("fotooid").value ())))));
             filter.SetBirim (this->mUser->Birimi ().c_str ());
             //TODO: Bu Kod Açılacak
-            filter.SetDurum (DilekceDurum::Acik);
+            filter.SetDurum (DilekceDurum::Acik.c_str ());
 
 
 
@@ -125,7 +126,7 @@ void DilekceYonetim::initPersonelPanel()
                                                                                                    kvp("fotooid",this->mUser->element ("fotooid").value ())))));
             filter.SetBirim (this->mUser->Birimi ().c_str ());
             //TODO: Bu Kod Açılacak
-            filter.SetDurum (DilekceDurum::Cevaplandi);
+            filter.SetDurum (DilekceDurum::Cevaplandi.c_str ());
             this->listDilekce (filter);
         });
 
@@ -170,20 +171,11 @@ void DilekceYonetim::listDilekce(Dilekce &filterDilekce)
         rContainer->setWidth (WLength("100%"));
         {
             auto _container = rContainer->addWidget (cpp14::make_unique<ContainerWidget>());
-            _container->addWidget (cpp14::make_unique<WText>("<b>#</b>"));
-            _container->addStyleClass (Bootstrap::Grid::Large::col_lg_1
-                                       +Bootstrap::Grid::Medium::col_md_1
-                                       +Bootstrap::Grid::Small::col_sm_1
-                                       +Bootstrap::Grid::ExtraSmall::col_xs_1);
-        }
-
-        {
-            auto _container = rContainer->addWidget (cpp14::make_unique<ContainerWidget>());
             _container->addWidget (cpp14::make_unique<WText>("<b>Konu</b>"));
-            _container->addStyleClass (Bootstrap::Grid::Large::col_lg_5
-                                       +Bootstrap::Grid::Medium::col_md_5
-                                       +Bootstrap::Grid::Small::col_sm_5
-                                       +Bootstrap::Grid::ExtraSmall::col_xs_5);
+            _container->addStyleClass (Bootstrap::Grid::Large::col_lg_3
+                                       +Bootstrap::Grid::Medium::col_md_3
+                                       +Bootstrap::Grid::Small::col_sm_6
+                                       +Bootstrap::Grid::ExtraSmall::col_xs_6);
         }
 
         {
@@ -191,8 +183,8 @@ void DilekceYonetim::listDilekce(Dilekce &filterDilekce)
             _container->addWidget (cpp14::make_unique<WText>("<b>Tarih</b>"));
             _container->addStyleClass (Bootstrap::Grid::Large::col_lg_3
                                        +Bootstrap::Grid::Medium::col_md_3
-                                       +Bootstrap::Grid::Small::col_sm_3
-                                       +Bootstrap::Grid::ExtraSmall::col_xs_3);
+                                       +Bootstrap::Grid::Small::col_sm_6
+                                       +Bootstrap::Grid::ExtraSmall::col_xs_6);
         }
 
         {
@@ -200,78 +192,31 @@ void DilekceYonetim::listDilekce(Dilekce &filterDilekce)
             _container->addWidget (cpp14::make_unique<WText>("<b>Sayı</b>"));
             _container->addStyleClass (Bootstrap::Grid::Large::col_lg_3
                                        +Bootstrap::Grid::Medium::col_md_3
-                                       +Bootstrap::Grid::Small::col_sm_3
-                                       +Bootstrap::Grid::ExtraSmall::col_xs_3);
+                                       +Bootstrap::Grid::Small::col_sm_6
+                                       +Bootstrap::Grid::ExtraSmall::col_xs_6);
+        }
+
+        {
+            auto _container = rContainer->addWidget (cpp14::make_unique<ContainerWidget>());
+            _container->addWidget (cpp14::make_unique<WText>("<b>Durum</b>"));
+            _container->addStyleClass (Bootstrap::Grid::Large::col_lg_3
+                                       +Bootstrap::Grid::Medium::col_md_3
+                                       +Bootstrap::Grid::Small::col_sm_6
+                                       +Bootstrap::Grid::ExtraSmall::col_xs_6);
         }
     }
 
 
     auto cursor = this->findDilekce (filterDilekce);
 
-    int count = 1;
     for( auto item : cursor )
     {
 
-        auto POid = item.oid ();
-        if( POid )
-        {
-
-            auto container = this->Content ()->addWidget (cpp14::make_unique<ContainerWidget>());
-            container->addStyleClass (Bootstrap::Grid::col_full_12);
-
-            auto rContainer = container->addWidget (cpp14::make_unique<ContainerWidget>());
-            rContainer->addStyleClass (Bootstrap::Grid::row);
-            rContainer->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
-            rContainer->setWidth (WLength("100%"));
-            rContainer->decorationStyle ().setCursor (Cursor::PointingHand);
-            rContainer->setAttributeValue (Style::dataoid,POid->to_string ());
-
-            rContainer->clicked ().connect ([=](){
-                _clickDilekceItem.emit (rContainer->attributeValue (Style::dataoid).toUTF8 ());
-            });
-
-            {
-                auto _container = rContainer->addWidget (cpp14::make_unique<ContainerWidget>());
-                _container->addWidget (cpp14::make_unique<WText>("<b>#"+std::to_string (count++)+"</b>"));
-                _container->addStyleClass (Bootstrap::Grid::Large::col_lg_1
-                                           +Bootstrap::Grid::Medium::col_md_1
-                                           +Bootstrap::Grid::Small::col_sm_1
-                                           +Bootstrap::Grid::ExtraSmall::col_xs_1);
-            }
-
-            {
-                auto _container = rContainer->addWidget (cpp14::make_unique<ContainerWidget>());
-                _container->addWidget (cpp14::make_unique<WText>(item.konu ().toStdString ()));
-                _container->addStyleClass (Bootstrap::Grid::Large::col_lg_5
-                                           +Bootstrap::Grid::Medium::col_md_5
-                                           +Bootstrap::Grid::Small::col_sm_5
-                                           +Bootstrap::Grid::ExtraSmall::col_xs_5);
-            }
-
-            {
-                auto _container = rContainer->addWidget (cpp14::make_unique<ContainerWidget>());
-                _container->addWidget (cpp14::make_unique<WText>(item.tarihText ().toStdString ()));
-                _container->addStyleClass (Bootstrap::Grid::Large::col_lg_3
-                                           +Bootstrap::Grid::Medium::col_md_3
-                                           +Bootstrap::Grid::Small::col_sm_3
-                                           +Bootstrap::Grid::ExtraSmall::col_xs_3);
-            }
-
-            {
-                auto _container = rContainer->addWidget (cpp14::make_unique<ContainerWidget>());
-                _container->addWidget (cpp14::make_unique<WText>(std::to_string (item.sayi ())));
-                _container->addStyleClass (Bootstrap::Grid::Large::col_lg_3
-                                           +Bootstrap::Grid::Medium::col_md_3
-                                           +Bootstrap::Grid::Small::col_sm_3
-                                           +Bootstrap::Grid::ExtraSmall::col_xs_3);
-            }
-
-
-        }
-
-
-
-
+        auto dItem = this->Content ()->addWidget (cpp14::make_unique<DilekceListWidgetItem>(item));
+        dItem->addStyleClass (Bootstrap::Grid::col_full_12);
+        dItem->ClickDilekceWidget ().connect ([=](const std::string& oid){
+            _clickDilekceItem.emit (oid);
+        });
     }
 
 
@@ -330,70 +275,14 @@ void DilekceYonetim::listBilgiDilekce(const Dilekce &filterDilekce)
 
     auto cursor = this->findDilekce (filterDilekce);
 
-    int count = 1;
     for( auto item : cursor )
     {
 
-        auto POid = item.oid ();
-
-        if( POid )
-        {
-
-            auto container = this->Content ()->addWidget (cpp14::make_unique<ContainerWidget>());
-            container->addStyleClass (Bootstrap::Grid::col_full_12);
-
-            auto rContainer = container->addWidget (cpp14::make_unique<ContainerWidget>());
-            rContainer->addStyleClass (Bootstrap::Grid::row);
-            rContainer->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
-            rContainer->setWidth (WLength("100%"));
-            rContainer->decorationStyle ().setCursor (Cursor::PointingHand);
-            rContainer->setAttributeValue (Style::dataoid,POid->to_string ());
-
-            rContainer->clicked ().connect ([=](){
-                _clickDilekceBilgiItem.emit (rContainer->attributeValue (Style::dataoid).toUTF8 ());
-            });
-
-            {
-                auto _container = rContainer->addWidget (cpp14::make_unique<ContainerWidget>());
-                _container->addWidget (cpp14::make_unique<WText>("<b>#"+std::to_string (count++)+"</b>"));
-                _container->addStyleClass (Bootstrap::Grid::Large::col_lg_1
-                                           +Bootstrap::Grid::Medium::col_md_1
-                                           +Bootstrap::Grid::Small::col_sm_1
-                                           +Bootstrap::Grid::ExtraSmall::col_xs_1);
-            }
-
-            {
-                auto _container = rContainer->addWidget (cpp14::make_unique<ContainerWidget>());
-                _container->addWidget (cpp14::make_unique<WText>(item.konu ().toStdString ()));
-                _container->addStyleClass (Bootstrap::Grid::Large::col_lg_5
-                                           +Bootstrap::Grid::Medium::col_md_5
-                                           +Bootstrap::Grid::Small::col_sm_5
-                                           +Bootstrap::Grid::ExtraSmall::col_xs_5);
-            }
-
-            {
-                auto _container = rContainer->addWidget (cpp14::make_unique<ContainerWidget>());
-                _container->addWidget (cpp14::make_unique<WText>(item.tarihText ().toStdString ()));
-                _container->addStyleClass (Bootstrap::Grid::Large::col_lg_3
-                                           +Bootstrap::Grid::Medium::col_md_3
-                                           +Bootstrap::Grid::Small::col_sm_3
-                                           +Bootstrap::Grid::ExtraSmall::col_xs_3);
-            }
-
-            {
-                auto _container = rContainer->addWidget (cpp14::make_unique<ContainerWidget>());
-                _container->addWidget (cpp14::make_unique<WText>(std::to_string (item.sayi ())));
-                _container->addStyleClass (Bootstrap::Grid::Large::col_lg_3
-                                           +Bootstrap::Grid::Medium::col_md_3
-                                           +Bootstrap::Grid::Small::col_sm_3
-                                           +Bootstrap::Grid::ExtraSmall::col_xs_3);
-            }
-
-
-        }
-
-
-
+        auto dItem = this->Content ()->addWidget (cpp14::make_unique<DilekceListWidgetItem>(item));
+        dItem->addStyleClass (Bootstrap::Grid::col_full_12);
+        dItem->ClickDilekceWidget ().connect ([=](const std::string& oid){
+            _clickDilekceBilgiItem.emit (oid);
+        });
 
     }
 }
