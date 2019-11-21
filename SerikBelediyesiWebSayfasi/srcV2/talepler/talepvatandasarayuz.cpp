@@ -5,7 +5,7 @@
 
 
 TalepVatandasArayuz::TalepVatandasArayuz(mongocxx::database *_db, bsoncxx::document::value *_userValue)
-    :SerikBLDCore::TalepManager (_db),mTCUser(_userValue)
+    :ContainerWidget("Taleplerim"),SerikBLDCore::TalepManager (_db),mTCUser(_userValue)
 {
     this->initList ();
 }
