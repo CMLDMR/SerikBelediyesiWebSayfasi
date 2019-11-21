@@ -126,7 +126,7 @@ void DilekceView::initDilekceView()
 
     auto cevaplandi_ = this->Durum ();
 
-    bool cevaplandi = cevaplandi_ == DilekceDurum::Cevaplandi ? true : false;
+    bool cevaplandi = cevaplandi_.toStdString ()== DilekceDurum::Cevaplandi ? true : false;
 
 
     {
@@ -385,7 +385,7 @@ void DilekceView::initCevapView()
 
 
     auto cevaplandi = this->Durum ();
-    if( cevaplandi == DilekceDurum::Cevaplandi )
+    if( cevaplandi.toStdString () == DilekceDurum::Cevaplandi )
     {
         this->Footer ()->setWidth (WLength("100%"));
         this->Footer ()->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
@@ -623,7 +623,7 @@ void DilekceView::initCevapView()
                     }
                     auto insCevap = this->insertCevap (&mCevap);
                     if( insCevap ){
-                        this->SetDurum (DilekceDurum::Cevaplandi);
+                        this->SetDurum (DilekceDurum::Cevaplandi.c_str ());
                         this->SetCevapOid (insCevap.value ().to_string ().c_str ());
                         if( this->updateDilekce (this) ){
                             this->showMessage ("Bilgi","Dilekçe Başarılı Bir Şekilde Kapatıldı.");
@@ -653,7 +653,7 @@ void DilekceView::addAciklama(const DilekceAciklama &aciklama)
 
         auto oid_ = aciklama.oid ();
 
-        if( oid_ && ( this->Durum () != DilekceDurum::Cevaplandi ) )
+        if( oid_ && ( this->Durum ().toStdString () != DilekceDurum::Cevaplandi ) )
         {
             auto closeAciklama = container->addWidget (cpp14::make_unique<WContainerWidget>());
             closeAciklama->setPositionScheme (PositionScheme::Absolute);
