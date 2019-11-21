@@ -28,6 +28,7 @@ SOURCES += main.cpp \
     SerikBelediyesiWebSayfasi/BaseClass/itembase.cpp \
     SerikBelediyesiWebSayfasi/baseItem/tcitem.cpp \
     SerikBelediyesiWebSayfasi/baseWidget/tcitemwidget.cpp \
+    SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekcelistwidgetitem.cpp \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekcetcyonetim.cpp \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekceview.cpp \
     SerikBelediyesiWebSayfasi/srcV2/dilekceyonetim.cpp \
@@ -86,6 +87,7 @@ HEADERS += \
     SerikBelediyesiWebSayfasi/BaseClass/wtheaders.h \
     SerikBelediyesiWebSayfasi/baseItem/tcitem.h \
     SerikBelediyesiWebSayfasi/baseWidget/tcitemwidget.h \
+    SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekcelistwidgetitem.h \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekcetcyonetim.h \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekceview.h \
     SerikBelediyesiWebSayfasi/srcV2/dilekceyonetim.h \
