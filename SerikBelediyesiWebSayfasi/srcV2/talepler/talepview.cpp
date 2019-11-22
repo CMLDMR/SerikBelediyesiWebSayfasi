@@ -175,64 +175,87 @@ Signal<NoClass> &TalepView::DurumChanged()
 
 void TalepView::initTCView()
 {
-    auto _tcOid = this->tcOid ();
-    if( !_tcOid.isEmpty () )
+    if( this->kisiGizli () )
     {
-        auto tcItem = mTCManager->Load_byOID ( _tcOid.toStdString () );
-        if( tcItem )
+
+        this->Header ()->clear ();
+        auto tcContainer = this->Header ()->addWidget (cpp14::make_unique<ContainerWidget>());
+        tcContainer->addStyleClass (Bootstrap::Grid::col_full_12+Bootstrap::ImageShape::img_thumbnail);
+        tcContainer->addStyleClass (Bootstrap::ContextualBackGround::bg_info);
+        tcContainer->setMargin (10,Side::Top);
+
+        auto rContainer = tcContainer->addWidget (cpp14::make_unique<ContainerWidget>());
+        rContainer->addStyleClass (Bootstrap::Grid::row);
+
         {
-            tcItem.value ()->printView ();
+            auto tContainer = rContainer->addWidget (cpp14::make_unique<ContainerWidget>());
+            tContainer->addStyleClass (Bootstrap::Grid::col_full_12);
+            tContainer->setContentAlignment (AlignmentFlag::Center);
+            auto text = tContainer->addWidget (cpp14::make_unique<WText>("<b>Kişi Bilgilerini Gizlemiş</b>"));
+            text->addStyleClass (Bootstrap::Label::Primary);
+            text->setAttributeValue (Style::style,Style::font::size::s12px);
+        }
 
-            this->Header ()->clear ();
-            auto tcContainer = this->Header ()->addWidget (cpp14::make_unique<ContainerWidget>());
-            tcContainer->addStyleClass (Bootstrap::Grid::col_full_12+Bootstrap::ImageShape::img_thumbnail);
-            tcContainer->addStyleClass (Bootstrap::ContextualBackGround::bg_info);
-            tcContainer->setMargin (10,Side::Top);
-
-            auto rContainer = tcContainer->addWidget (cpp14::make_unique<ContainerWidget>());
-            rContainer->addStyleClass (Bootstrap::Grid::row);
-
+    }else{
+        auto _tcOid = this->tcOid ();
+        if( !_tcOid.isEmpty () )
+        {
+            auto tcItem = mTCManager->Load_byOID ( _tcOid.toStdString () );
+            if( tcItem )
             {
-                auto tContainer = rContainer->addWidget (cpp14::make_unique<ContainerWidget>());
-                tContainer->addStyleClass (Bootstrap::Grid::col_full_12);
-                tContainer->setContentAlignment (AlignmentFlag::Center);
-                auto text = tContainer->addWidget (cpp14::make_unique<WText>(tcItem.value ()->TCNO ().toStdString ()));
-                text->addStyleClass (Bootstrap::Label::Primary);
-                text->setAttributeValue (Style::style,Style::font::size::s12px);
+
+                this->Header ()->clear ();
+                auto tcContainer = this->Header ()->addWidget (cpp14::make_unique<ContainerWidget>());
+                tcContainer->addStyleClass (Bootstrap::Grid::col_full_12+Bootstrap::ImageShape::img_thumbnail);
+                tcContainer->addStyleClass (Bootstrap::ContextualBackGround::bg_info);
+                tcContainer->setMargin (10,Side::Top);
+
+                auto rContainer = tcContainer->addWidget (cpp14::make_unique<ContainerWidget>());
+                rContainer->addStyleClass (Bootstrap::Grid::row);
+
+                {
+                    auto tContainer = rContainer->addWidget (cpp14::make_unique<ContainerWidget>());
+                    tContainer->addStyleClass (Bootstrap::Grid::col_full_12);
+                    tContainer->setContentAlignment (AlignmentFlag::Center);
+                    auto text = tContainer->addWidget (cpp14::make_unique<WText>(tcItem.value ()->TCNO ().toStdString ()));
+                    text->addStyleClass (Bootstrap::Label::Primary);
+                    text->setAttributeValue (Style::style,Style::font::size::s12px);
+                }
+
+                {
+                    auto tContainer = rContainer->addWidget (cpp14::make_unique<ContainerWidget>());
+                    tContainer->addStyleClass (Bootstrap::Grid::col_full_12);
+                    tContainer->setContentAlignment (AlignmentFlag::Center);
+                    auto text = tContainer->addWidget (cpp14::make_unique<WText>(tcItem.value ()->AdSoyad ().toStdString ()));
+                    text->addStyleClass (Bootstrap::Label::Default);
+                    text->setAttributeValue (Style::style,Style::font::size::s12px);
+                }
+
+                {
+                    auto tContainer = rContainer->addWidget (cpp14::make_unique<ContainerWidget>());
+                    tContainer->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+                    tContainer->setContentAlignment (AlignmentFlag::Center);
+                    auto text = tContainer->addWidget (cpp14::make_unique<WText>(tcItem.value ()->CepTelefonu ().toStdString ()));
+                    tContainer->setAttributeValue (Style::style,Style::font::size::s12px
+                                                   +Style::color::color (Style::color::White::Snow)
+                                                   +Style::background::color::color (Style::color::Green::DarkGreen));
+                }
+                {
+                    auto tContainer = rContainer->addWidget (cpp14::make_unique<ContainerWidget>());
+                    tContainer->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+                    tContainer->setContentAlignment (AlignmentFlag::Center);
+                    auto text = tContainer->addWidget (cpp14::make_unique<WText>(tcItem.value ()->Mahalle ().toStdString ()));
+                    tContainer->setAttributeValue (Style::style,Style::font::size::s12px
+                                                   +Style::color::color (Style::color::White::Snow)
+                                                   +Style::background::color::color (Style::color::Purple::Indigo));
+                }
+
+
+
             }
-
-            {
-                auto tContainer = rContainer->addWidget (cpp14::make_unique<ContainerWidget>());
-                tContainer->addStyleClass (Bootstrap::Grid::col_full_12);
-                tContainer->setContentAlignment (AlignmentFlag::Center);
-                auto text = tContainer->addWidget (cpp14::make_unique<WText>(tcItem.value ()->AdSoyad ().toStdString ()));
-                text->addStyleClass (Bootstrap::Label::Default);
-                text->setAttributeValue (Style::style,Style::font::size::s12px);
-            }
-
-            {
-                auto tContainer = rContainer->addWidget (cpp14::make_unique<ContainerWidget>());
-                tContainer->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
-                tContainer->setContentAlignment (AlignmentFlag::Center);
-                auto text = tContainer->addWidget (cpp14::make_unique<WText>(tcItem.value ()->CepTelefonu ().toStdString ()));
-                tContainer->setAttributeValue (Style::style,Style::font::size::s12px
-                                               +Style::color::color (Style::color::White::Snow)
-                                               +Style::background::color::color (Style::color::Green::DarkGreen));
-            }
-            {
-                auto tContainer = rContainer->addWidget (cpp14::make_unique<ContainerWidget>());
-                tContainer->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
-                tContainer->setContentAlignment (AlignmentFlag::Center);
-                auto text = tContainer->addWidget (cpp14::make_unique<WText>(tcItem.value ()->Mahalle ().toStdString ()));
-                tContainer->setAttributeValue (Style::style,Style::font::size::s12px
-                                               +Style::color::color (Style::color::White::Snow)
-                                               +Style::background::color::color (Style::color::Purple::Indigo));
-            }
-
-
-
         }
     }
+
 }
 
 void TalepView::initTalepView()
