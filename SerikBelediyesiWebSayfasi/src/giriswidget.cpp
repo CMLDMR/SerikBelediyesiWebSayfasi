@@ -1532,12 +1532,12 @@ void Giris::SivilWidget::initMenu()
         this->Content ()->addWidget (Wt::cpp14::make_unique<Basvurularim>(db,UserValue));
     });
 
-    menu->addItem("Yeni Başvuru")->clicked ().connect ([=](){
-        this->Content ()->clear();
-        this->Content ()->addWidget (Wt::cpp14::make_unique<Basvuru>(db,UserValue));
-    });
+//    menu->addItem("Yeni Başvuru")->clicked ().connect ([=](){
+//        this->Content ()->clear();
+//        this->Content ()->addWidget (Wt::cpp14::make_unique<Basvuru>(db,UserValue));
+//    });
 
-    menu->addItem("Yeni BaşvuruV2")->clicked ().connect ([=](){
+    menu->addItem("Yeni Başvuru")->clicked ().connect ([=](){
         this->Content ()->clear();
         this->Content ()->addWidget (Wt::cpp14::make_unique<BilgiEdinmeBasvuruWidget>(new SerikBLDCore::DB(db),&mTCUser));
     });
