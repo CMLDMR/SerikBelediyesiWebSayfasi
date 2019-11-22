@@ -116,6 +116,8 @@ void DilekceTCYonetim::initBilgiDilekce(const std::string &dilekceOid)
                                                                                         ,nullptr
                                                                                         ,true
                                                                                         ,false));
+
+        dilekceView->removeTitleBar ();
     }else{
         this->showMessage ("Hata","Bu Dilekçe Yüklenemedi");
     }
