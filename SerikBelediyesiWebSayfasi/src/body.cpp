@@ -7643,355 +7643,366 @@ void Body::BilgiEdin::Controller::showMessage(std::string title, std::string msg
     messageBox->show();
 }
 
-Body::BilgiEdin::Basvuru::Basvuru(mongocxx::database *_db)
-    :WContainerWidget(),
-      db(_db)
-{
-
-
-    auto mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
-    mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
-
-
-    {
-        auto _container = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-        _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-        auto _layout = _container->setLayout(cpp14::make_unique<WHBoxLayout>());
-        //        _layout->addWidget(cpp14::make_unique<WPushButton>("Geri"),0,AlignmentFlag::Left)->clicked().connect([=](){
-        //                this->_ClickBack.emit(NoClass());
-        //        });
-
-        auto container = _layout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Center);
-        container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-        auto text = container->addWidget(cpp14::make_unique<WText>("Bilgi Edinme Başvurusu"));
-        text->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold);
-
-        _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                      Style::background::color::color(Style::color::Grey::Gainsboro));
-    }
-
-    auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-    row->addStyleClass(Bootstrap::Grid::row);
-    row->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::Snow));
-
-
-    //Açıklamalar
-    {
-        auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-        auto text = container->addWidget(cpp14::make_unique<WText>("Bilgi Edinme kanunun tanıdığı hakkı belediyemiz ile ilgili konularda kullanmak için İnternet üzerinden Bilgi Edinme Formlarını doldurmanız yeterli olacaktır."));
-    }
-
-    // Bilgi Edinme Hakkı Kanunu
-    {
-        auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-
-        auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
-        _container->addStyleClass(Bootstrap::Grid::row);
-
-        auto textlink = _container->addWidget(cpp14::make_unique<WContainerWidget>());
-        textlink->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-        auto pdfanchor2 = std::make_unique<WAnchor>(WLink("http://www.serik.bel.tr/file/4982-sayili-Bilgi-Edinme-Hakki-Kanunu.pdf"));
-        pdfanchor2->setText("4982 Sayılı Bilgi Edinme Hakkı Kanunu");
-        pdfanchor2->setAttributeValue(Style::style,Style::font::size::s18px);
-        textlink->addWidget(std::move(pdfanchor2));
-    }
-
-    // Bilgi Edinme Hakkı Kanunu
-    {
-        auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-
-        auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
-        _container->addStyleClass(Bootstrap::Grid::row);
-
-        auto textlink = _container->addWidget(cpp14::make_unique<WContainerWidget>());
-        textlink->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-        auto link2 = WLink("http://www.serik.bel.tr/file/Bilgi-Edinme-Uygulamasina-Iliskin-Yonetmelik.pdf");
-        link2.setTarget(LinkTarget::NewWindow);
-        auto pdfanchor2 = std::make_unique<WAnchor>(link2);
-        pdfanchor2->setText("Bilgi Edinme Uygulamasına İlişkin Yönetmenlik");
-        pdfanchor2->setAttributeValue(Style::style,Style::font::size::s18px);
-        textlink->addWidget(std::move(pdfanchor2));
-    }
-
-    {
-        auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-
-        auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-
-        int _row = 0;
-
-        {
-            layout->addWidget(cpp14::make_unique<WText>("Aşağıdaki Bilgileri Doldurarak Kaydet Tuşuna Basınız"),0,AlignmentFlag::Center);
-            lineEdittc = layout->addWidget(cpp14::make_unique<WLineEdit>(),1,AlignmentFlag::Justify);
-            lineEdittc->setPlaceholderText("TCNO Zorunlu");
-            lineEdittc->setInputMask("99999999999");
-            _row++;
-        }
-
-
-        {
-            lineEditad = layout->addWidget(cpp14::make_unique<WLineEdit>(),1,AlignmentFlag::Justify);
-            lineEditad->setPlaceholderText("Ad Soyad Zorunlu");
-            _row++;
-        }
-
-        {
-            //            layout->addWidget(cpp14::make_unique<WText>("E-Posta"),0,AlignmentFlag::Center);
-            lineEditmail = layout->addWidget(cpp14::make_unique<WLineEdit>(),1,AlignmentFlag::Justify);
-            lineEditmail->setPlaceholderText("E-Posta isteğe bağlı");
-            _row++;
-        }
-
-        {
-            lineEditTel = layout->addWidget(cpp14::make_unique<WLineEdit>(),1,AlignmentFlag::Justify);
-            lineEditTel->setPlaceholderText("Telefon Numarası Zorunlu");
-            lineEditTel->setInputMask("(599)-999-99-99");
-
-            _row++;
-        }
-
-        {
-            lineEditAdres = layout->addWidget(cpp14::make_unique<WLineEdit>(),1,AlignmentFlag::Justify);
-            lineEditAdres->setPlaceholderText("Adres isteğe bağlı");
-            _row++;
-        }
-
-        //        {
-        ////            layout->addWidget(cpp14::make_unique<WText>("Adres"),0,AlignmentFlag::Center);
-        //            comboBoxGeriDonus = layout->addWidget(cpp14::make_unique<WComboBox>(),1,AlignmentFlag::Justify);
-        //            comboBoxGeriDonus->addItem("Geri Dönüş Yolu Seçilmedi");
-        ////            comboBoxGeriDonus->addItem(SBLDKeys::BilgiEdinme::Basvuru::geriDonusTipiVar::hesaptan);
-        //            comboBoxGeriDonus->addItem(SBLDKeys::BilgiEdinme::Basvuru::geriDonusTipiVar::mail);
-        //            comboBoxGeriDonus->addItem(SBLDKeys::BilgiEdinme::Basvuru::geriDonusTipiVar::posta);
-        //            comboBoxGeriDonus->addItem(SBLDKeys::BilgiEdinme::Basvuru::geriDonusTipiVar::sms);
-        //            comboBoxGeriDonus->addItem(SBLDKeys::BilgiEdinme::Basvuru::geriDonusTipiVar::telefon);
-
-        //            comboBoxGeriDonus->sactivated().connect(this,&Basvuru::ShowGeriDonusUyari);
-        //            _row++;
-        //        }
-
-        {
-            lineEditKonu = layout->addWidget(cpp14::make_unique<WLineEdit>(),1,AlignmentFlag::Justify);
-            lineEditKonu->setPlaceholderText("Konu Zorunlu");
-            _row++;
-        }
-
-        {
-            mesajEdit = layout->addWidget(cpp14::make_unique<WTextEdit>(),1,AlignmentFlag::Justify);
-            mesajEdit->setText("Mesajınızı Buraya Yazınız");
-            _row++;
-        }
-
-    }
-
-    {
-        auto _container = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-        _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-        auto _layout = _container->setLayout(cpp14::make_unique<WVBoxLayout>());
-
-        auto save = _layout->addWidget(cpp14::make_unique<WPushButton>("Kaydet"),0,AlignmentFlag::Center);
-
-        auto text = _layout->addWidget(cpp14::make_unique<WLabel>("Şikayet ve Talepleriniz İçin Lütfen İletişim Bölümünden Başvuruda Bulununuz"),0,AlignmentFlag::Center);
-
-        auto text1 = _layout->addWidget(cpp14::make_unique<WLabel>("Başvurularınızın Cevaplarını Üst Menüden Telefon Numarası ve Şifreniz İle Giriş Yaparak Takip Edebilirsiniz"),0,AlignmentFlag::Center);
-
-
-        save->addStyleClass(Bootstrap::Button::Primary);
-        save->clicked().connect(this,&Basvuru::save);
-        _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                      Style::background::color::color(Style::color::Grey::Gainsboro));
-    }
-
-
-}
-
-Signal<NoClass> &Body::BilgiEdin::Basvuru::clickBasvuru()
-{
-    return this->_mClickBasvuru_;
-}
-
-void Body::BilgiEdin::Basvuru::save()
-{
-
-    if( lineEdittc->text().toUTF8().size() != 11 )
-    {
-        this->showMessage("UYARI","TCNO Girmek Zorunlu");
-        return;
-    }
-
-    if( lineEditad->text().toUTF8().size() < 5 )
-    {
-        this->showMessage("UYARI","Ad Soyad Kısmını Tam Doldurunuz");
-        return;
-    }
-
-    if( lineEditTel->text().toUTF8().size() != 15 )
-    {
-        std::cout << "Telefon NUmarası Size: "<<lineEditTel->text().toUTF8().size() <<" " << lineEditTel->text().toUTF8() << std::endl;
-        this->showMessage("UYARI","Telefon Numaranızı İstenilen Formatta Giriniz");
-        return;
-    }
-
-    if( lineEditKonu->text().toUTF8().size() < 5 )
-    {
-        this->showMessage("UYARI","Konu Başlığını Yeterli Değil. Lütfen Konu Başlığını Kontrol Ediniz");
-        return;
-    }
-
-    if( mesajEdit->text().toUTF8().size() < 50 )
-    {
-        this->showMessage("UYARI",WString("Mesajınız 50 Karakterden Az Olamaz. Girdiğiniz Karakter Sayısı {1}").arg(mesajEdit->text().toUTF8().size()).toUTF8());
-        return;
-    }
-
-
-    auto doc = document{};
-
-    try {
-        doc.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::saat,QTime::currentTime().toString("hh:mm").toStdString().c_str()));
-    } catch (bsoncxx::exception &e) {
-        this->showMessage("UYARI",WString("Error Document saat: {1}").arg(e.what()).toUTF8());
-        return;
-    }
-
-    try {
-        doc.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::tarih,QDate::currentDate().toString("dddd - dd/MM/yyyy").toStdString().c_str()));
-    } catch (bsoncxx::exception &e) {
-        this->showMessage("UYARI",WString("Error Document tarih: {1}").arg(e.what()).toUTF8());
-        return;
-    }
-
-    try {
-        doc.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::geridonus,SBLDKeys::BilgiEdinme::Basvuru::geriDonusVar::yapilmadi));
-    } catch (bsoncxx::exception &e) {
-        this->showMessage("UYARI",WString("Error Document tarih: {1}").arg(e.what()).toUTF8());
-        return;
-    }
-
-    try {
-        doc.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::julianDate,QDate::currentDate().toJulianDay()));
-    } catch (bsoncxx::exception &e) {
-        this->showMessage("UYARI",WString("Error Document julianDate: {1}").arg(e.what()).toUTF8());
-        return;
-    }
-
-    try {
-        doc.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::tcno,lineEdittc->text().toUTF8().c_str()));
-    } catch (bsoncxx::exception &e) {
-        this->showMessage("UYARI",WString("Error Document tcno: {1}").arg(e.what()).toUTF8());
-        return;
-    }
-
-    try {
-        doc.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::adsoyad,lineEditad->text().toUTF8().c_str()));
-    } catch (bsoncxx::exception &e) {
-        this->showMessage("UYARI",WString("Error Document adsoyad: {1}").arg(e.what()).toUTF8());
-        return;
-    }
-
-    try {
-        doc.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::eposta,lineEditmail->text().toUTF8().c_str()));
-    } catch (bsoncxx::exception &e) {
-        this->showMessage("UYARI",WString("Error Document mail: {1}").arg(e.what()).toUTF8());
-    }
-
-    try {
-        doc.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::telefon,lineEditTel->text().toUTF8().c_str()));
-    } catch (bsoncxx::exception &e) {
-        this->showMessage("UYARI",WString("Error Document telefon: {1}").arg(e.what()).toUTF8());
-        return;
-    }
-
-    try {
-        doc.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::adres,lineEditAdres->text().toUTF8().c_str()));
-    } catch (bsoncxx::exception &e) {
-        this->showMessage("UYARI",WString("Error Document adres: {1}").arg(e.what()).toUTF8());
-    }
-
-    try {
-        doc.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::konu,lineEditKonu->text().toUTF8().c_str()));
-    } catch (bsoncxx::exception &e) {
-        this->showMessage("UYARI",WString("Error Document konu: {1}").arg(e.what()).toUTF8());
-        return;
-    }
-
-    try {
-        doc.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::mesaj,mesajEdit->text().toUTF8().c_str()));
-    } catch (bsoncxx::exception &e) {
-        this->showMessage("UYARI",WString("Error Document mesaj: {1}").arg(e.what()).toUTF8());
-        return;
-    }
-
-    try {
-        doc.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::mesaj,mesajEdit->text().toUTF8().c_str()));
-    } catch (bsoncxx::exception &e) {
-        this->showMessage("UYARI",WString("Error Document mesaj: {1}").arg(e.what()).toUTF8());
-        return;
-    }
-
-
-    try {
-        auto ins = db->collection(SBLDKeys::BilgiEdinme::Basvuru::collection).insert_one(doc.view());
-        if( ins )
-        {
-            if( !ins.value().result().inserted_count() )
-            {
-                this->showMessage("UYARI","Başvurunuz Kayıt Edilemedi. Lütfen Daha Sonra Tekrar Deneyiniz");
-            }else{
-                this->showMessage("Bilgi","Başvurunuz Alındı. En Kısa Zaman tarafınıza Dönüş Yapılacaktır. Bu Telefona Bağlı Diğer İstek/Talep/Şikayetler ve Başvurular için Giriş Yapınız");
-                this->resetForm();
-            }
-        }else{
-            this->showMessage("UYARI","Başvurunuz Alınamadı. Lütfen Daha Sonra Tekrar Deneyiniz");
-        }
-    } catch (mongocxx::exception &e) {
-        this->showMessage("UYARI",WString("DB insert Document Error: {1}").arg(e.what()).toUTF8());
-    }
-
-}
-
-void Body::BilgiEdin::Basvuru::showMessage(std::string title, std::string msg)
-{
-    auto messageBox = this->addChild(
-                Wt::cpp14::make_unique<Wt::WMessageBox>
-                (title,
-                 msg,
-                 Wt::Icon::Information, Wt::StandardButton::Ok));
-
-    messageBox->buttonClicked().connect([=] {
-        this->removeChild(messageBox);
-    });
-
-    messageBox->show();
-}
-
-void Body::BilgiEdin::Basvuru::ShowGeriDonusUyari(WString mesaj)
-{
-
-    if( mesaj.toUTF8() == SBLDKeys::BilgiEdinme::Basvuru::geriDonusTipiVar::hesaptan )
-    {
-
-    }
-
-
-}
-
-void Body::BilgiEdin::Basvuru::resetForm()
-{
-
-    lineEditAdres->setText("");
-    lineEditKonu->setText("");
-    lineEditTel->setText("");
-    lineEditad->setText("");
-    lineEditmail->setText("");
-    lineEdittc->setText("");
-    mesajEdit->setText("Mesajınızı Buraya Yazınız");
-
-}
+
+
+
+
+
+
+//Body::BilgiEdin::Basvuru::Basvuru(mongocxx::database *_db)
+//    :WContainerWidget(),
+//      db(_db)
+//{
+
+
+//    auto mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
+//    mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
+
+
+//    {
+//        auto _container = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//        _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+//        auto _layout = _container->setLayout(cpp14::make_unique<WHBoxLayout>());
+//        //        _layout->addWidget(cpp14::make_unique<WPushButton>("Geri"),0,AlignmentFlag::Left)->clicked().connect([=](){
+//        //                this->_ClickBack.emit(NoClass());
+//        //        });
+
+//        auto container = _layout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Center);
+//        container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+//        auto text = container->addWidget(cpp14::make_unique<WText>("Bilgi Edinme Başvurusu"));
+//        text->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold);
+
+//        _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
+//                                      Style::background::color::color(Style::color::Grey::Gainsboro));
+//    }
+
+//    auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//    row->addStyleClass(Bootstrap::Grid::row);
+//    row->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::Snow));
+
+
+//    //Açıklamalar
+//    {
+//        auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
+//        container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+//        auto text = container->addWidget(cpp14::make_unique<WText>("Bilgi Edinme kanunun tanıdığı hakkı belediyemiz ile ilgili konularda kullanmak için İnternet üzerinden Bilgi Edinme Formlarını doldurmanız yeterli olacaktır."));
+//    }
+
+//    // Bilgi Edinme Hakkı Kanunu
+//    {
+//        auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
+//        container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+
+//        auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
+//        _container->addStyleClass(Bootstrap::Grid::row);
+
+//        auto textlink = _container->addWidget(cpp14::make_unique<WContainerWidget>());
+//        textlink->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+//        auto pdfanchor2 = std::make_unique<WAnchor>(WLink("http://www.serik.bel.tr/file/4982-sayili-Bilgi-Edinme-Hakki-Kanunu.pdf"));
+//        pdfanchor2->setText("4982 Sayılı Bilgi Edinme Hakkı Kanunu");
+//        pdfanchor2->setAttributeValue(Style::style,Style::font::size::s18px);
+//        textlink->addWidget(std::move(pdfanchor2));
+//    }
+
+//    // Bilgi Edinme Hakkı Kanunu
+//    {
+//        auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
+//        container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+
+//        auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
+//        _container->addStyleClass(Bootstrap::Grid::row);
+
+//        auto textlink = _container->addWidget(cpp14::make_unique<WContainerWidget>());
+//        textlink->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+//        auto link2 = WLink("http://www.serik.bel.tr/file/Bilgi-Edinme-Uygulamasina-Iliskin-Yonetmelik.pdf");
+//        link2.setTarget(LinkTarget::NewWindow);
+//        auto pdfanchor2 = std::make_unique<WAnchor>(link2);
+//        pdfanchor2->setText("Bilgi Edinme Uygulamasına İlişkin Yönetmenlik");
+//        pdfanchor2->setAttributeValue(Style::style,Style::font::size::s18px);
+//        textlink->addWidget(std::move(pdfanchor2));
+//    }
+
+//    {
+//        auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
+//        container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+
+//        auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
+
+//        int _row = 0;
+
+//        {
+//            layout->addWidget(cpp14::make_unique<WText>("Aşağıdaki Bilgileri Doldurarak Kaydet Tuşuna Basınız"),0,AlignmentFlag::Center);
+//            lineEdittc = layout->addWidget(cpp14::make_unique<WLineEdit>(),1,AlignmentFlag::Justify);
+//            lineEdittc->setPlaceholderText("TCNO Zorunlu");
+//            lineEdittc->setInputMask("99999999999");
+//            _row++;
+//        }
+
+
+//        {
+//            lineEditad = layout->addWidget(cpp14::make_unique<WLineEdit>(),1,AlignmentFlag::Justify);
+//            lineEditad->setPlaceholderText("Ad Soyad Zorunlu");
+//            _row++;
+//        }
+
+//        {
+//            //            layout->addWidget(cpp14::make_unique<WText>("E-Posta"),0,AlignmentFlag::Center);
+//            lineEditmail = layout->addWidget(cpp14::make_unique<WLineEdit>(),1,AlignmentFlag::Justify);
+//            lineEditmail->setPlaceholderText("E-Posta isteğe bağlı");
+//            _row++;
+//        }
+
+//        {
+//            lineEditTel = layout->addWidget(cpp14::make_unique<WLineEdit>(),1,AlignmentFlag::Justify);
+//            lineEditTel->setPlaceholderText("Telefon Numarası Zorunlu");
+//            lineEditTel->setInputMask("(599)-999-99-99");
+
+//            _row++;
+//        }
+
+//        {
+//            lineEditAdres = layout->addWidget(cpp14::make_unique<WLineEdit>(),1,AlignmentFlag::Justify);
+//            lineEditAdres->setPlaceholderText("Adres isteğe bağlı");
+//            _row++;
+//        }
+
+//        //        {
+//        ////            layout->addWidget(cpp14::make_unique<WText>("Adres"),0,AlignmentFlag::Center);
+//        //            comboBoxGeriDonus = layout->addWidget(cpp14::make_unique<WComboBox>(),1,AlignmentFlag::Justify);
+//        //            comboBoxGeriDonus->addItem("Geri Dönüş Yolu Seçilmedi");
+//        ////            comboBoxGeriDonus->addItem(SBLDKeys::BilgiEdinme::Basvuru::geriDonusTipiVar::hesaptan);
+//        //            comboBoxGeriDonus->addItem(SBLDKeys::BilgiEdinme::Basvuru::geriDonusTipiVar::mail);
+//        //            comboBoxGeriDonus->addItem(SBLDKeys::BilgiEdinme::Basvuru::geriDonusTipiVar::posta);
+//        //            comboBoxGeriDonus->addItem(SBLDKeys::BilgiEdinme::Basvuru::geriDonusTipiVar::sms);
+//        //            comboBoxGeriDonus->addItem(SBLDKeys::BilgiEdinme::Basvuru::geriDonusTipiVar::telefon);
+
+//        //            comboBoxGeriDonus->sactivated().connect(this,&Basvuru::ShowGeriDonusUyari);
+//        //            _row++;
+//        //        }
+
+//        {
+//            lineEditKonu = layout->addWidget(cpp14::make_unique<WLineEdit>(),1,AlignmentFlag::Justify);
+//            lineEditKonu->setPlaceholderText("Konu Zorunlu");
+//            _row++;
+//        }
+
+//        {
+//            mesajEdit = layout->addWidget(cpp14::make_unique<WTextEdit>(),1,AlignmentFlag::Justify);
+//            mesajEdit->setText("Mesajınızı Buraya Yazınız");
+//            _row++;
+//        }
+
+//    }
+
+//    {
+//        auto _container = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//        _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+//        auto _layout = _container->setLayout(cpp14::make_unique<WVBoxLayout>());
+
+//        auto save = _layout->addWidget(cpp14::make_unique<WPushButton>("Kaydet"),0,AlignmentFlag::Center);
+
+//        auto text = _layout->addWidget(cpp14::make_unique<WLabel>("Şikayet ve Talepleriniz İçin Lütfen İletişim Bölümünden Başvuruda Bulununuz"),0,AlignmentFlag::Center);
+
+//        auto text1 = _layout->addWidget(cpp14::make_unique<WLabel>("Başvurularınızın Cevaplarını Üst Menüden Telefon Numarası ve Şifreniz İle Giriş Yaparak Takip Edebilirsiniz"),0,AlignmentFlag::Center);
+
+
+//        save->addStyleClass(Bootstrap::Button::Primary);
+//        save->clicked().connect(this,&Basvuru::save);
+//        _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
+//                                      Style::background::color::color(Style::color::Grey::Gainsboro));
+//    }
+
+
+//}
+
+//Signal<NoClass> &Body::BilgiEdin::Basvuru::clickBasvuru()
+//{
+//    return this->_mClickBasvuru_;
+//}
+
+//void Body::BilgiEdin::Basvuru::save()
+//{
+
+//    if( lineEdittc->text().toUTF8().size() != 11 )
+//    {
+//        this->showMessage("UYARI","TCNO Girmek Zorunlu");
+//        return;
+//    }
+
+//    if( lineEditad->text().toUTF8().size() < 5 )
+//    {
+//        this->showMessage("UYARI","Ad Soyad Kısmını Tam Doldurunuz");
+//        return;
+//    }
+
+//    if( lineEditTel->text().toUTF8().size() != 15 )
+//    {
+//        std::cout << "Telefon NUmarası Size: "<<lineEditTel->text().toUTF8().size() <<" " << lineEditTel->text().toUTF8() << std::endl;
+//        this->showMessage("UYARI","Telefon Numaranızı İstenilen Formatta Giriniz");
+//        return;
+//    }
+
+//    if( lineEditKonu->text().toUTF8().size() < 5 )
+//    {
+//        this->showMessage("UYARI","Konu Başlığını Yeterli Değil. Lütfen Konu Başlığını Kontrol Ediniz");
+//        return;
+//    }
+
+//    if( mesajEdit->text().toUTF8().size() < 50 )
+//    {
+//        this->showMessage("UYARI",WString("Mesajınız 50 Karakterden Az Olamaz. Girdiğiniz Karakter Sayısı {1}").arg(mesajEdit->text().toUTF8().size()).toUTF8());
+//        return;
+//    }
+
+
+//    auto doc = document{};
+
+//    try {
+//        doc.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::saat,QTime::currentTime().toString("hh:mm").toStdString().c_str()));
+//    } catch (bsoncxx::exception &e) {
+//        this->showMessage("UYARI",WString("Error Document saat: {1}").arg(e.what()).toUTF8());
+//        return;
+//    }
+
+//    try {
+//        doc.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::tarih,QDate::currentDate().toString("dddd - dd/MM/yyyy").toStdString().c_str()));
+//    } catch (bsoncxx::exception &e) {
+//        this->showMessage("UYARI",WString("Error Document tarih: {1}").arg(e.what()).toUTF8());
+//        return;
+//    }
+
+//    try {
+//        doc.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::geridonus,SBLDKeys::BilgiEdinme::Basvuru::geriDonusVar::yapilmadi));
+//    } catch (bsoncxx::exception &e) {
+//        this->showMessage("UYARI",WString("Error Document tarih: {1}").arg(e.what()).toUTF8());
+//        return;
+//    }
+
+//    try {
+//        doc.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::julianDate,QDate::currentDate().toJulianDay()));
+//    } catch (bsoncxx::exception &e) {
+//        this->showMessage("UYARI",WString("Error Document julianDate: {1}").arg(e.what()).toUTF8());
+//        return;
+//    }
+
+//    try {
+//        doc.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::tcno,lineEdittc->text().toUTF8().c_str()));
+//    } catch (bsoncxx::exception &e) {
+//        this->showMessage("UYARI",WString("Error Document tcno: {1}").arg(e.what()).toUTF8());
+//        return;
+//    }
+
+//    try {
+//        doc.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::adsoyad,lineEditad->text().toUTF8().c_str()));
+//    } catch (bsoncxx::exception &e) {
+//        this->showMessage("UYARI",WString("Error Document adsoyad: {1}").arg(e.what()).toUTF8());
+//        return;
+//    }
+
+//    try {
+//        doc.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::eposta,lineEditmail->text().toUTF8().c_str()));
+//    } catch (bsoncxx::exception &e) {
+//        this->showMessage("UYARI",WString("Error Document mail: {1}").arg(e.what()).toUTF8());
+//    }
+
+//    try {
+//        doc.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::telefon,lineEditTel->text().toUTF8().c_str()));
+//    } catch (bsoncxx::exception &e) {
+//        this->showMessage("UYARI",WString("Error Document telefon: {1}").arg(e.what()).toUTF8());
+//        return;
+//    }
+
+//    try {
+//        doc.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::adres,lineEditAdres->text().toUTF8().c_str()));
+//    } catch (bsoncxx::exception &e) {
+//        this->showMessage("UYARI",WString("Error Document adres: {1}").arg(e.what()).toUTF8());
+//    }
+
+//    try {
+//        doc.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::konu,lineEditKonu->text().toUTF8().c_str()));
+//    } catch (bsoncxx::exception &e) {
+//        this->showMessage("UYARI",WString("Error Document konu: {1}").arg(e.what()).toUTF8());
+//        return;
+//    }
+
+//    try {
+//        doc.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::mesaj,mesajEdit->text().toUTF8().c_str()));
+//    } catch (bsoncxx::exception &e) {
+//        this->showMessage("UYARI",WString("Error Document mesaj: {1}").arg(e.what()).toUTF8());
+//        return;
+//    }
+
+//    try {
+//        doc.append(kvp(SBLDKeys::BilgiEdinme::Basvuru::mesaj,mesajEdit->text().toUTF8().c_str()));
+//    } catch (bsoncxx::exception &e) {
+//        this->showMessage("UYARI",WString("Error Document mesaj: {1}").arg(e.what()).toUTF8());
+//        return;
+//    }
+
+
+//    try {
+//        auto ins = db->collection(SBLDKeys::BilgiEdinme::Basvuru::collection).insert_one(doc.view());
+//        if( ins )
+//        {
+//            if( !ins.value().result().inserted_count() )
+//            {
+//                this->showMessage("UYARI","Başvurunuz Kayıt Edilemedi. Lütfen Daha Sonra Tekrar Deneyiniz");
+//            }else{
+//                this->showMessage("Bilgi","Başvurunuz Alındı. En Kısa Zaman tarafınıza Dönüş Yapılacaktır. Bu Telefona Bağlı Diğer İstek/Talep/Şikayetler ve Başvurular için Giriş Yapınız");
+//                this->resetForm();
+//            }
+//        }else{
+//            this->showMessage("UYARI","Başvurunuz Alınamadı. Lütfen Daha Sonra Tekrar Deneyiniz");
+//        }
+//    } catch (mongocxx::exception &e) {
+//        this->showMessage("UYARI",WString("DB insert Document Error: {1}").arg(e.what()).toUTF8());
+//    }
+
+//}
+
+//void Body::BilgiEdin::Basvuru::showMessage(std::string title, std::string msg)
+//{
+//    auto messageBox = this->addChild(
+//                Wt::cpp14::make_unique<Wt::WMessageBox>
+//                (title,
+//                 msg,
+//                 Wt::Icon::Information, Wt::StandardButton::Ok));
+
+//    messageBox->buttonClicked().connect([=] {
+//        this->removeChild(messageBox);
+//    });
+
+//    messageBox->show();
+//}
+
+//void Body::BilgiEdin::Basvuru::ShowGeriDonusUyari(WString mesaj)
+//{
+
+//    if( mesaj.toUTF8() == SBLDKeys::BilgiEdinme::Basvuru::geriDonusTipiVar::hesaptan )
+//    {
+
+//    }
+
+
+//}
+
+//void Body::BilgiEdin::Basvuru::resetForm()
+//{
+
+//    lineEditAdres->setText("");
+//    lineEditKonu->setText("");
+//    lineEditTel->setText("");
+//    lineEditad->setText("");
+//    lineEditmail->setText("");
+//    lineEdittc->setText("");
+//    mesajEdit->setText("Mesajınızı Buraya Yazınız");
+
+//}
+
+
+
+
+
 
 Body::BilgiEdin::StratejikPlan::StratejikPlan(mongocxx::database *_db)
     :WContainerWidget()
