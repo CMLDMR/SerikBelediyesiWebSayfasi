@@ -91,6 +91,7 @@ void TalepWidget::TalepWidget::init()
         talepItem.setMahalle (talepWidget->mahalleString ().c_str ());
         talepItem.setKonu (talepWidget->talepString ().c_str ());
         talepItem.setBirim ("Başkanlık");
+        talepItem.setKisiGizle (talepWidget->bilgilerimGizli ());
 
         if( !fotoFileOid.empty () )
         {
@@ -363,6 +364,9 @@ TalepWidget::TalepItemWidget::TalepItemWidget(DB &db )
 
     auto vLayout = this->Content ()->setLayout (cpp14::make_unique<WVBoxLayout>());
 
+    mBilgilerimiGizle = vLayout->addWidget (cpp14::make_unique<WCheckBox>("Kişisel Bilgilerimi Gizle"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+    mBilgilerimiGizle->setChecked (false);
+
     auto mahalleTitleText = vLayout->addWidget (cpp14::make_unique<WText>("Mahalle"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
 
     mTalepMahalle = vLayout->addWidget (cpp14::make_unique<WComboBox>(),0,AlignmentFlag::Justify|AlignmentFlag::Middle);
@@ -371,7 +375,6 @@ TalepWidget::TalepItemWidget::TalepItemWidget(DB &db )
     {
         mTalepMahalle->addItem (mahItem.toStdString());
     }
-
 
     auto talepTitleText = vLayout->addWidget (cpp14::make_unique<WText>("Talebiniz/Şikayetiniz"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
 
@@ -394,7 +397,6 @@ TalepWidget::TalepItemWidget::TalepItemWidget(DB &db )
                                                    Style::font::weight::bold);
             characterCountText->setText (WString("Geçerli"));
         }
-
     });
 
 
@@ -431,6 +433,11 @@ std::string TalepWidget::TalepItemWidget::fotoOid() const
     }else{
         return "";
     }
+}
+
+bool TalepWidget::TalepItemWidget::bilgilerimGizli() const
+{
+    return mBilgilerimiGizle->isChecked ();
 }
 
 void TalepWidget::TalepItemWidget::setDefault()

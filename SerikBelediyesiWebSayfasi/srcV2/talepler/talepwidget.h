@@ -60,6 +60,7 @@ public:
     std::string talepString() const;
     std::string adresString() const;
     std::string fotoOid() const;
+    bool bilgilerimGizli() const;
 
     void setDefault();
 
@@ -67,6 +68,7 @@ private:
     WComboBox* mTalepMahalle;
     WTextEdit* mEdit;
     WLineEdit* mAdres;
+    WCheckBox* mBilgilerimiGizle;
 
     SerikBLDCore::DB mDB;
 
