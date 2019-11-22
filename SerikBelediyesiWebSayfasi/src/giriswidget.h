@@ -52,18 +52,12 @@ public:
 private:
     mongocxx::database* db;
     bsoncxx::document::value* UserValue;
-
     SerikBLDCore::TC mTCUser;
-
-    WContainerWidget* mMainContainer;
-    WContainerWidget* mMenuContainer;
     void initMenu();
-    WContainerWidget* mContentContainer;
-    WContainerWidget* mHeaderContainer;
     void initHeader();
-
-    WStackedWidget* mContentWidget;
 };
+
+
 
 class Bilgilerim : public WContainerWidget
 {
@@ -147,8 +141,6 @@ private:
     void setBasvuruDetail(bsoncxx::oid oid);
 
 };
-
-
 
 class Taleplerim : public WContainerWidget
 {
@@ -247,8 +239,6 @@ private:
 
     Signal<bsoncxx::oid> _clickTalep;
 };
-
-
 
 class LoginWidget : public WContainerWidget
 {

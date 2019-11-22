@@ -14,6 +14,7 @@
 #include "SerikBelediyesiWebSayfasi/srcV2/talepler/talepyonetim.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/talepler/talepvatandasarayuz.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekcetcyonetim.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/bilgiedinmebasvuruwidget.h"
 #include "tc.h"
 
 Giris::GirisWidget::GirisWidget(mongocxx::database *_db)
@@ -1536,6 +1537,11 @@ void Giris::SivilWidget::initMenu()
         this->Content ()->addWidget (Wt::cpp14::make_unique<Basvuru>(db,UserValue));
     });
 
+    menu->addItem("Yeni BaşvuruV2")->clicked ().connect ([=](){
+        this->Content ()->clear();
+        this->Content ()->addWidget (Wt::cpp14::make_unique<BilgiEdinmeBasvuruWidget>(new SerikBLDCore::DB(db),&mTCUser));
+    });
+
 }
 
 void Giris::SivilWidget::initHeader()
@@ -1589,6 +1595,10 @@ Giris::Taleplerim::Taleplerim(mongocxx::database *_db, bsoncxx::document::value 
 
     auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     row->addStyleClass(Bootstrap::Grid::row);
+
+    auto titleRemoved = row->addWidget(cpp14::make_unique<WText>("<h5><b>Dikkat Bu Sistem Yılbaşından(01.01.2020) Sonra Kapatılacaktır.</b></h5>"));
+    titleRemoved->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
+    titleRemoved->setAttributeValue (Style::style,Style::color::color (Style::color::Red::Crimson));
 
     auto title = row->addWidget(cpp14::make_unique<WText>("<h3>Taleplerim/Şikayetlerim</h3>"));
     title->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
@@ -14522,7 +14532,7 @@ void Giris::Personel::CagriMerkezi::setDetail(std::string oid)
         try {
             auto text = vLayout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::SikayetKey::mainKey::birim].get_utf8().value.to_string()),0,AlignmentFlag::Middle);
         } catch (bsoncxx::exception &e) {
-            auto text = vLayout->addWidget(cpp14::make_unique<WText>(e.what()),0,AlignmentFlag::Middle);
+            vLayout->addWidget(cpp14::make_unique<WText>(e.what()),0,AlignmentFlag::Middle);
         }
     }
 
@@ -14535,9 +14545,9 @@ void Giris::Personel::CagriMerkezi::setDetail(std::string oid)
         title->addStyleClass(Bootstrap::Label::Danger);
         title->setAttributeValue(Style::style,Style::font::size::s14px+Style::font::weight::bold);
         try {
-            auto text = vLayout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::SikayetKey::mainKey::konu].get_utf8().value.to_string()),0,AlignmentFlag::Middle);
+            vLayout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::SikayetKey::mainKey::konu].get_utf8().value.to_string()),0,AlignmentFlag::Middle);
         } catch (bsoncxx::exception &e) {
-            auto text = vLayout->addWidget(cpp14::make_unique<WText>(e.what()),0,AlignmentFlag::Middle);
+            vLayout->addWidget(cpp14::make_unique<WText>(e.what()),0,AlignmentFlag::Middle);
         }
     }
 
@@ -14550,9 +14560,9 @@ void Giris::Personel::CagriMerkezi::setDetail(std::string oid)
         title->addStyleClass(Bootstrap::Label::Default);
         title->setAttributeValue(Style::style,Style::font::size::s14px+Style::font::weight::bold);
         try {
-            auto text = vLayout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::SikayetKey::mainKey::tamadres].get_utf8().value.to_string()),0,AlignmentFlag::Middle);
+            vLayout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::SikayetKey::mainKey::tamadres].get_utf8().value.to_string()),0,AlignmentFlag::Middle);
         } catch (bsoncxx::exception &e) {
-            auto text = vLayout->addWidget(cpp14::make_unique<WText>(e.what()),0,AlignmentFlag::Middle);
+            vLayout->addWidget(cpp14::make_unique<WText>(e.what()),0,AlignmentFlag::Middle);
         }
     }
 
