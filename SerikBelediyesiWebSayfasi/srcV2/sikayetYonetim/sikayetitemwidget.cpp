@@ -174,29 +174,7 @@ void SikayetItemWidget::initHeader()
         container->addWidget(cpp14::make_unique<WText>(this->mCurrentSikayet->Element(Sikayet::KEY::konu)->get_utf8().value.to_string()));
     }
 
-    {
 
-        auto container = Header()->addWidget(cpp14::make_unique<WContainerWidget>());
-
-
-
-
-        //        mongocxx::options::find findOptions;
-
-        //        findOptions.limit(20);
-
-
-        //        auto cursor = TC::TCItem::GetList<TC::TCItem>(this->db(),
-        //                                                      TC::collection,
-        //                                                      document{},
-        //                                                      findOptions);
-
-        //        for( auto&& item : cursor )
-        //        {
-        //            std::cout << bsoncxx::to_json(item->view()) << "\n"<<std::endl;
-        //        }
-
-    }
 
 
 }
