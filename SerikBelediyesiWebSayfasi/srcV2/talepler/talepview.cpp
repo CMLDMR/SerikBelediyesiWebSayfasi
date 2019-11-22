@@ -90,7 +90,8 @@ TalepView::TalepView(Talep &talepItem, mongocxx::database *_db, User *_mUser, bo
 TalepView::TalepView(Talep &talepItem, mongocxx::database *_db, TC* _mTC)
     :ContainerWidget (""),
       Talep (talepItem),
-      TalepManager (_db)
+      TalepManager (_db),
+      mPublicLink(false)
 {
 
     if( !mPublicLink )

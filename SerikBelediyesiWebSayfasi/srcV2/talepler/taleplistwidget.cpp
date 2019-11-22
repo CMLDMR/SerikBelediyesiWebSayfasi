@@ -11,10 +11,16 @@ TalepListWidget::TalepListWidget(const std::string &oid,
       mDurum(durum),
       mDurumColor(durumColor)
 {
+
+    decorationStyle ().setCursor (Cursor::PointingHand);
+    addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+    setMargin (5,Side::Top|Side::Bottom);
     addStyleClass (Bootstrap::Grid::Large::col_lg_3
                                       +Bootstrap::Grid::Medium::col_md_4
                                       +Bootstrap::Grid::Small::col_sm_6
                                       +Bootstrap::Grid::ExtraSmall::col_xs_12);
+
+    setAttributeValue (Style::style,Style::background::color::rgba (this->rgbaRandom ()));
 
     clicked ().connect ([=](){
                 _clickItem.emit (mOid);
@@ -41,9 +47,7 @@ TalepListWidget::TalepListWidget(const std::string &oid,
         _container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
 
     }
-    decorationStyle ().setCursor (Cursor::PointingHand);
-    addStyleClass (Bootstrap::ImageShape::img_thumbnail);
-    setMargin (5,Side::Top|Side::Bottom);
+
 }
 
 Signal<std::string> &TalepListWidget::ClickItem()
