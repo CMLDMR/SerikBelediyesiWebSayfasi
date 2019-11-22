@@ -6,7 +6,7 @@ DilekceListWidgetItem::DilekceListWidgetItem(const SerikBLDCore::Dilekce dilekce
     setMargin (5,Side::Top);
     decorationStyle ().setCursor (Cursor::PointingHand);
     addStyleClass ("boxShadow");
-    addStyleClass (Bootstrap::ContextualBackGround::bg_success);
+    setAttributeValue (Style::style,Style::background::color::rgba (this->rgbaRandom ()));
 
 
     auto rContainer = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
