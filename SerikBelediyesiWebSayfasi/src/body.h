@@ -972,31 +972,6 @@ namespace Body {
         void showMessage( std::string title , std::string msg );
     };
 
-//    class Basvuru : public WContainerWidget
-//    {
-//    public:
-//        Basvuru(mongocxx::database *_db);
-
-
-//        Signal<NoClass> &clickBasvuru();
-//    private:
-//        mongocxx::database* db;
-
-//        Signal<NoClass> _mClickBasvuru_;
-
-//        void save();
-
-//         void showMessage( std::string title , std::string msg );
-
-//         WTextEdit* mesajEdit;
-//         WLineEdit* lineEditKonu,*lineEditAdres,*lineEditTel,*lineEditmail,*lineEditad,*lineEdittc;
-//         WComboBox* comboBoxGeriDonus;
-
-//         void ShowGeriDonusUyari(WString mesaj);
-
-//         void resetForm();
-
-//    };
 
     class StratejikPlan : public WContainerWidget
     {
