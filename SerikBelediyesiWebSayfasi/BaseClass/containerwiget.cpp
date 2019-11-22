@@ -7,19 +7,19 @@
 
 
 ContainerWidget::ContainerWidget(std::string title, ContainerWidget::ContentType _contentType)
+    :mTitle(title)
 {
     addStyleClass(Bootstrap::Grid::container_fluid);
-//    setWidth (WLength("100%"));
 
-    if( title.size() )
+    if( mTitle.size() )
     {
-        auto container = addWidget(cpp14::make_unique<WContainerWidget>());
-        container->addWidget(cpp14::make_unique<WText>("<h4>"+title+"</h4>"));
-        container->setContentAlignment(AlignmentFlag::Center);
-        container->setMargin (15,Side::Bottom);
-        container->setMargin (-15,Side::Left|Side::Right);
-        container->addStyleClass(Bootstrap::Grid::row);
-        container->addStyleClass (Bootstrap::ContextualBackGround::bg_primary+"boxShadow" );
+        mTitleBar = addWidget(cpp14::make_unique<WContainerWidget>());
+        mTitleBar->addWidget(cpp14::make_unique<WText>("<h4>"+title+"</h4>"));
+        mTitleBar->setContentAlignment(AlignmentFlag::Center);
+        mTitleBar->setMargin (15,Side::Bottom);
+        mTitleBar->setMargin (-15,Side::Left|Side::Right);
+        mTitleBar->addStyleClass(Bootstrap::Grid::row);
+        mTitleBar->addStyleClass (Bootstrap::ContextualBackGround::bg_primary+"boxShadow" );
     }
 
     if( _contentType == Horizontal )
@@ -119,6 +119,14 @@ void ContainerWidget::showMessage(std::string title, std::string msg, std::strin
 
     messageBox->webWidget()->setZIndex(1000);
     messageBox->show();
+}
+
+void ContainerWidget::removeTitleBar()
+{
+    if( mTitle.size () )
+    {
+        removeWidget(mTitleBar);
+    }
 }
 
 

@@ -10,17 +10,12 @@
 class ContainerWidget : public WContainerWidget
 {
 public:
-
-
     enum ContentType{
         Horizontal,
         Vertical
     };
 
-
-
     ContainerWidget(std::string title = "" , ContentType _contentType = Vertical );
-
 
     WContainerWidget* Header();
     WContainerWidget* Content();
@@ -33,7 +28,6 @@ public:
     };
 
 
-
     void setContainerStyle(ContainerStyleType type);
 
     inline int getRandom(int begin = 0 , int end = 127 ) const
@@ -44,12 +38,20 @@ public:
         return dist(mt);
     }
 
+    inline std::string rgbaRandom(){
 
-
-
+        return WString("{1},{2},{3}").arg (this->getRandom (150,200))
+                .arg (this->getRandom (170,220))
+                .arg (this->getRandom (180,230)).toUTF8 ();
+    }
 
     void showMessage( std::string title , std::string msg , std::string btnText = "Tamam");
 
+
+    ///
+    /// \brief removeTitleBar: Eğer Title Mevcutsa Container da Bulunan Başlığı Siler.
+    ///
+    void removeTitleBar();
 
 
 private:
@@ -57,7 +59,8 @@ private:
     WContainerWidget* mContentContainer;
     WContainerWidget* mFootContainer;
 
-
+    WContainerWidget* mTitleBar;
+    std::string mTitle;
 };
 
 
