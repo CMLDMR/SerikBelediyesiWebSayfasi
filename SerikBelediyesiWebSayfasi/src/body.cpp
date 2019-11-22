@@ -1,7 +1,7 @@
 #include "body.h"
 #include "giriswidget.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/talepler/talepwidget.h"
-
+#include "SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/bilgiedinmebasvuruwidget.h"
 
 Body::Body::Body(mongocxx::database *_db, mongocxx::gridfs::bucket *_bucket)
     :WContainerWidget(),
@@ -7480,9 +7480,14 @@ Body::BilgiEdin::BilgiEdin::BilgiEdin(mongocxx::database *_db)
     controller->clickedbasvuru().connect(this,&BilgiEdin::setsayfa);
     mContentContainer->insertWidget(ControlSayfa,std::move(controller));
 
-    auto bilgiEdin = std::make_unique<Basvuru>(db);
+    auto bilgiEdin = std::make_unique<BilgiEdinmeBasvuruWidget>(new SerikBLDCore::DB(db));
 
     mContentContainer->insertWidget(BilgiEdinSayfa,std::move(bilgiEdin));
+
+//    menu->addItem("Yeni BaşvuruV2")->clicked ().connect ([=](){
+//        this->Content ()->clear();
+//        this->Content ()->addWidget (Wt::cpp14::make_unique<BilgiEdinmeBasvuruWidget>(new SerikBLDCore::DB(db),&mTCUser));
+//    });
 
     auto stratejikPlan = std::make_unique<StratejikPlan>(db);
     mContentContainer->insertWidget(StratejikPlanSayfa,std::move(stratejikPlan));
