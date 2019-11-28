@@ -51,6 +51,7 @@ SOURCES += main.cpp \
     SerikBelediyesiWebSayfasi/srcV2/talepler/talepview.cpp \
     SerikBelediyesiWebSayfasi/srcV2/talepler/talepwidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/talepler/talepyonetim.cpp \
+    SerikBelediyesiWebSayfasi/srcV2/vatandas/vatandaswidget.cpp \
     main.cpp \
     mainapplication.cpp \
     SerikBelediyesiWebSayfasi/src/header.cpp \
@@ -111,6 +112,7 @@ HEADERS += \
     SerikBelediyesiWebSayfasi/srcV2/talepler/talepview.h \
     SerikBelediyesiWebSayfasi/srcV2/talepler/talepwidget.h \
     SerikBelediyesiWebSayfasi/srcV2/talepler/talepyonetim.h \
+    SerikBelediyesiWebSayfasi/srcV2/vatandas/vatandaswidget.h \
     mainapplication.h \
     Necessary \
     SerikBelediyesiWebSayfasi/src/header.h \
