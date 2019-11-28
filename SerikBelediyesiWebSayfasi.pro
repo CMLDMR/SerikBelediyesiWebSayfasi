@@ -28,6 +28,7 @@ SOURCES += main.cpp \
     SerikBelediyesiWebSayfasi/BaseClass/itembase.cpp \
     SerikBelediyesiWebSayfasi/baseItem/tcitem.cpp \
     SerikBelediyesiWebSayfasi/baseWidget/tcitemwidget.cpp \
+    SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/basvrulistitemwidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/basvurularim.cpp \
     SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/bilgiedinmebasvuruwidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekcelistwidgetitem.cpp \
@@ -77,6 +78,7 @@ SOURCES += main.cpp \
 
 
 QMAKE_CXXFLAGS += /wd4251 /wd4275 /wd4267 /wd4189 /wd4100 /wd4101 /wd4715 /wd4189
+QMAKE_CXXFLAGS_WARN_OFF -= -Wunused-parameter
 
 
 INCLUDEPATH += $$PWD/../../Comman
@@ -90,6 +92,7 @@ HEADERS += \
     SerikBelediyesiWebSayfasi/BaseClass/wtheaders.h \
     SerikBelediyesiWebSayfasi/baseItem/tcitem.h \
     SerikBelediyesiWebSayfasi/baseWidget/tcitemwidget.h \
+    SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/basvrulistitemwidget.h \
     SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/basvurularim.h \
     SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/bilgiedinmebasvuruwidget.h \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekcelistwidgetitem.h \
