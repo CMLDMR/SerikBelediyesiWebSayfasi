@@ -1,3 +1,7 @@
+
+
+
+
 #include "giriswidget.h"
 #include "yenilikler.h"
 #include <QLatin1String>
@@ -17,6 +21,7 @@
 #include "SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/bilgiedinmebasvuruwidget.h"
 #include "tc.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/vatandas/vatandaswidget.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/basvurularim.h"
 
 Giris::GirisWidget::GirisWidget(mongocxx::database *_db)
     :WContainerWidget(),
@@ -236,7 +241,7 @@ void Giris::GirisWidget::initOption()
 void Giris::GirisWidget::initSivil()
 {
     mContentContainer->clear();
-    auto sivil = mContentContainer->addWidget(cpp14::make_unique<SivilWidget>(db,&User));
+    mContentContainer->addWidget(cpp14::make_unique<SivilWidget>(db,&User));
 }
 
 void Giris::GirisWidget::initPersonel()
@@ -285,7 +290,7 @@ void Giris::GirisWidget::initPersonel()
         return;
     }
     mContentContainer->clear();
-    auto sivil = mContentContainer->addWidget(cpp14::make_unique<Personel::PersonelWidget>(db,str));
+    mContentContainer->addWidget(cpp14::make_unique<Personel::PersonelWidget>(db,str));
 
 }
 
@@ -432,7 +437,6 @@ void Giris::LoginWidget::sendtempPasswordSMS()
     mtelefonNumarasi = mTelefonNumarasi->text().toUTF8();
 
     httpclient->done().connect([=](AsioWrapper::error_code code, Http::Message message){
-
         auto filter = document{};
 
         if( getUserisVatandas() )
@@ -1411,7 +1415,7 @@ void Giris::LoginWidget::initLoginScreen()
         auto gLayout = sContainer->setLayout(cpp14::make_unique<WGridLayout>());
 
         {
-            auto text = gLayout->addWidget(cpp14::make_unique<WText>("Telefon Numarası"),0,0,AlignmentFlag::Center|AlignmentFlag::Middle);
+            gLayout->addWidget(cpp14::make_unique<WText>("Telefon Numarası"),0,0,AlignmentFlag::Center|AlignmentFlag::Middle);
             mTelefonNumarasi = gLayout->addWidget(cpp14::make_unique<WLineEdit>(),0,1,AlignmentFlag::Center);
             mTelefonNumarasi->setPlaceholderText("Telefon Numarasını Giriniz");
             mTelefonNumarasi->setWidth(150);
@@ -1423,7 +1427,7 @@ void Giris::LoginWidget::initLoginScreen()
             //
         }
         {
-            auto text = gLayout->addWidget(cpp14::make_unique<WText>("Şifreniz"),1,0,AlignmentFlag::Center|AlignmentFlag::Middle);
+            gLayout->addWidget(cpp14::make_unique<WText>("Şifreniz"),1,0,AlignmentFlag::Center|AlignmentFlag::Middle);
             mSifre = gLayout->addWidget(cpp14::make_unique<WLineEdit>(),1,1,AlignmentFlag::Center);
             mSifre->setPlaceholderText("Şifrenizi Girniz");
             mSifre->setEchoMode(EchoMode::Password);
@@ -1521,10 +1525,14 @@ void Giris::SivilWidget::initMenu()
 
 
 
-    menu->addItem("Taleplerim")->clicked ().connect ([=](){
-        this->Content ()->clear();
-        this->Content ()->addWidget (Wt::cpp14::make_unique<Taleplerim>(db,UserValue));
-    });
+    if( QDate::currentDate ().toJulianDay () < QDate(2020,1,1).toJulianDay () )
+    {
+        menu->addItem("Taleplerim")->clicked ().connect ([=](){
+            this->Content ()->clear();
+            this->Content ()->addWidget (Wt::cpp14::make_unique<Taleplerim>(db,UserValue));
+        });
+    }
+
 
 
     menu->addItem("TaleplerimV2")->clicked ().connect ([=](){
@@ -1532,9 +1540,18 @@ void Giris::SivilWidget::initMenu()
         this->Content ()->addWidget (Wt::cpp14::make_unique<TalepVatandasArayuz>(db,UserValue));
     });
 
-    menu->addItem("Başvurularım")->clicked ().connect ([=](){
+    if( QDate::currentDate ().toJulianDay () < QDate(2020,1,1).toJulianDay () )
+    {
+        menu->addItem("Başvurularım")->clicked ().connect ([=](){
+            this->Content ()->clear();
+            this->Content ()->addWidget (Wt::cpp14::make_unique<Basvurularim>(db,UserValue));
+        });
+    }
+
+
+    menu->addItem("BaşvurularımV2")->clicked ().connect ([=](){
         this->Content ()->clear();
-        this->Content ()->addWidget (Wt::cpp14::make_unique<Basvurularim>(db,UserValue));
+        this->Content ()->addWidget (Wt::cpp14::make_unique<V2::Basvurularim>(new SerikBLDCore::DB(db),mTCUser));
     });
 
 
@@ -2071,27 +2088,27 @@ Giris::Taleplerim::TalepHeader::TalepHeader(std::string konu, std::string tarih,
         text->setAttributeValue(Style::style,Style::font::weight::bold);
     }
     {
-        auto text = layout->addWidget(cpp14::make_unique<WText>(tarih));
+        layout->addWidget(cpp14::make_unique<WText>(tarih));
     }
     {
-        auto text = layout->addWidget(cpp14::make_unique<WText>(saat));
+        layout->addWidget(cpp14::make_unique<WText>(saat));
     }
     {
-        auto text = layout->addWidget(cpp14::make_unique<WText>(mahalle));
-    }
-
-    {
-        auto text = layout->addWidget(cpp14::make_unique<WText>(durum));
-    }
-    {
-        auto text = layout->addWidget(cpp14::make_unique<WText>(birim));
+        layout->addWidget(cpp14::make_unique<WText>(mahalle));
     }
 
     {
-        auto text = layout->addWidget(cpp14::make_unique<WText>(adres));
+        layout->addWidget(cpp14::make_unique<WText>(durum));
     }
     {
-        auto text = layout->addWidget(cpp14::make_unique<WText>("<b>Çarğı Merkezi Personeli: "+cagriMerkeziPersoneli+"</b>"));
+        layout->addWidget(cpp14::make_unique<WText>(birim));
+    }
+
+    {
+        layout->addWidget(cpp14::make_unique<WText>(adres));
+    }
+    {
+        layout->addWidget(cpp14::make_unique<WText>("<b>Çarğı Merkezi Personeli: "+cagriMerkeziPersoneli+"</b>"));
     }
 
 
@@ -2432,6 +2449,12 @@ Giris::Basvurularim::Basvurularim(mongocxx::database *_db, bsoncxx::document::va
 
     auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     row->addStyleClass(Bootstrap::Grid::row);
+
+    auto titleRemoved = row->addWidget(cpp14::make_unique<WText>("<h5><b>Dikkat Bu Sistem Yılbaşından(01.01.2020) Sonra Kapatılacaktır.</b></h5>"));
+    titleRemoved->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
+    titleRemoved->setAttributeValue (Style::style,Style::color::color (Style::color::Red::Crimson));
+
+
 
     auto title = row->addWidget(cpp14::make_unique<WText>("<h3>Başvurularım</h3>"));
     title->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
@@ -2844,7 +2867,7 @@ void Giris::Basvurularim::setBasvuruDetail(bsoncxx::oid oid)
                         auto Cevaptext = container->addWidget(cpp14::make_unique<WText>(WString("<h3>{1}</h3>").arg("Cevap"),TextFormat::UnsafeXHTML));
                         Cevaptext->setMargin(25,Side::Top|Side::Bottom);
 
-                        auto text = container->addWidget(cpp14::make_unique<WText>(link,TextFormat::UnsafeXHTML));
+                        container->addWidget(cpp14::make_unique<WText>(link,TextFormat::UnsafeXHTML));
 
 
 
@@ -7246,7 +7269,7 @@ void Giris::Personel::ProjeWidget::initMahalleYilProje()
                     try {
                         filter.append(kvp(SBLDKeys::Projeler::mahalle,mah.mahalle));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     this->setProjeList(filter.view());
 
@@ -7294,12 +7317,12 @@ void Giris::Personel::ProjeWidget::initMahalleYilProje()
                             try {
                                 filter.append(kvp(SBLDKeys::Projeler::mahalle,mah.mahalle));
                             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                             }
                             try {
                                 filter.append(kvp(SBLDKeys::Projeler::year,bsoncxx::types::b_int32{i}));
                             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                             }
                             this->setProjeList(filter.view(),i);
 
@@ -7313,12 +7336,12 @@ void Giris::Personel::ProjeWidget::initMahalleYilProje()
                         try {
                             filter.append(kvp(SBLDKeys::Projeler::mahalle,mah.mahalle));
                         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                         }
                         try {
                             filter.append(kvp(SBLDKeys::Projeler::year,bsoncxx::types::b_int32{i}));
                         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                         }
                         auto tContainer = _rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
                         tContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_2+Bootstrap::Grid::ExtraSmall::col_xs_2);
@@ -7339,17 +7362,17 @@ void Giris::Personel::ProjeWidget::initMahalleYilProje()
                             try {
                                 filter.append(kvp(SBLDKeys::Projeler::mahalle,mah.mahalle));
                             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                             }
                             try {
                                 filter.append(kvp(SBLDKeys::Projeler::durum,SBLDKeys::Projeler::DURUM::tamamlandi));
                             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                             }
                             try {
                                 filter.append(kvp(SBLDKeys::Projeler::year,bsoncxx::types::b_int32{i}));
                             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                             }
                             _ToplamProje = this->count(SBLDKeys::Projeler::collection,filter);
                         }
@@ -7374,17 +7397,17 @@ void Giris::Personel::ProjeWidget::initMahalleYilProje()
                             try {
                                 filter.append(kvp(SBLDKeys::Projeler::mahalle,mah.mahalle));
                             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                             }
                             try {
                                 filter.append(kvp(SBLDKeys::Projeler::durum,SBLDKeys::Projeler::DURUM::devamediyor));
                             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                             }
                             try {
                                 filter.append(kvp(SBLDKeys::Projeler::year,bsoncxx::types::b_int32{i}));
                             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                             }
                             _ToplamProje = this->count(SBLDKeys::Projeler::collection,filter);
                         }
@@ -7407,17 +7430,17 @@ void Giris::Personel::ProjeWidget::initMahalleYilProje()
                             try {
                                 filter.append(kvp(SBLDKeys::Projeler::mahalle,mah.mahalle));
                             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                             }
                             try {
                                 filter.append(kvp(SBLDKeys::Projeler::durum,SBLDKeys::Projeler::DURUM::yapilacak));
                             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                             }
                             try {
                                 filter.append(kvp(SBLDKeys::Projeler::year,bsoncxx::types::b_int32{i}));
                             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                             }
                             _ToplamProje = this->count(SBLDKeys::Projeler::collection,filter);
                         }
@@ -7561,7 +7584,6 @@ void Giris::Personel::ProjeWidget::setProjeDetail(std::string oid)
 
     {
         auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
-        auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
         auto bucket = this->db()->gridfs_bucket();
         std::string iconPaht = SBLDKeys::downloadifNotExist(&bucket,view[SBLDKeys::Projeler::icon].get_oid().value.to_string());
         TitleContainer->setAttributeValue(Style::style,Style::background::url(iconPaht)+Style::background::size::cover+Style::background::repeat::norepeat+Style::background::position::center_center);
@@ -7680,7 +7702,7 @@ void Giris::Personel::ProjeWidget::setProjeDetail(std::string oid)
                 aciklamaText->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::weight::bold+Style::font::size::s16px);
             }
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
 
@@ -7838,7 +7860,7 @@ void Giris::Personel::ProjeWidget::setProjeList(bsoncxx::document::view view, in
             }
         }
     } catch (mongocxx::exception &e) {
-
+std::cout << e.what() << std::endl;
     }
 }
 
@@ -7865,14 +7887,14 @@ void Giris::Personel::ProjeWidget::setList( std::string projectDurum )
             try {
                 filter.append(kvp(SBLDKeys::Projeler::durum,projectDurum));
             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
             }
         }
 
         try {
             filter.append(kvp(SBLDKeys::Projeler::mahalle,mah.mahalle));
-        } catch (bsoncxx::exception) {
-
+        } catch (bsoncxx::exception &e) {
+std::cout << e.what() << std::endl;
         }
 
         this->addList(rContainer,filter.view());
@@ -8007,7 +8029,7 @@ void Giris::Personel::ProjeWidget::addList(WContainerWidget *mrContainer, bsoncx
             });
         }
     } catch (mongocxx::exception &e) {
-
+std::cout << e.what() << std::endl;
     }
 
 
@@ -8085,7 +8107,7 @@ void Giris::Personel::CalismaWidget::TotalState()
             try {
                 filter.append(kvp(SBLDKeys::Calismalar::durum,SBLDKeys::Calismalar::DURUM::tamamlandi));
             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
             }
             auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("{1} Adet").arg(this->db()->collection(SBLDKeys::Calismalar::collection).count(filter.view()))),0,AlignmentFlag::Middle|AlignmentFlag::Center);
             text->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
@@ -8098,7 +8120,7 @@ void Giris::Personel::CalismaWidget::TotalState()
             try {
                 filter.append(kvp(SBLDKeys::Calismalar::durum,SBLDKeys::Calismalar::DURUM::tamamlandi));
             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
             }
 
             this->listCalismalar(filter.view(),"Tamamlanan");
@@ -8599,12 +8621,12 @@ void Giris::Personel::CalismaWidget::birimDongusuAdd(WContainerWidget *_rowConta
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::baslamaTarihi,QDate::currentDate().toJulianDay()));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::birim,birim.birim));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("{1} Adet").arg(this->db()->collection(SBLDKeys::Calismalar::collection).count(filter.view()))),0,AlignmentFlag::Middle|AlignmentFlag::Center);
                     text->setAttributeValue(Style::style,Style::font::size::s12px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
@@ -8615,12 +8637,12 @@ void Giris::Personel::CalismaWidget::birimDongusuAdd(WContainerWidget *_rowConta
                         try {
                             filter.append(kvp(SBLDKeys::Calismalar::baslamaTarihi,QDate::currentDate().toJulianDay()));
                         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                         }
                         try {
                             filter.append(kvp(SBLDKeys::Calismalar::birim,birim.birim));
                         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                         }
                         this->listCalismalar(filter.view(),birim.birim);
                     });
@@ -8648,12 +8670,12 @@ void Giris::Personel::CalismaWidget::birimDongusuAdd(WContainerWidget *_rowConta
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::baslamaTarihi,make_document(kvp("$gte",QDate::currentDate().toJulianDay()-7))));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::birim,birim.birim));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("{1} Adet").arg(this->db()->collection(SBLDKeys::Calismalar::collection).count(filter.view()))),0,AlignmentFlag::Middle|AlignmentFlag::Center);
                     text->setAttributeValue(Style::style,Style::font::size::s12px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
@@ -8665,12 +8687,12 @@ void Giris::Personel::CalismaWidget::birimDongusuAdd(WContainerWidget *_rowConta
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::baslamaTarihi,make_document(kvp("$gte",QDate::currentDate().toJulianDay()-7))));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::birim,birim.birim));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     this->listCalismalar(filter.view(),birim.birim);
                 });
@@ -8698,12 +8720,12 @@ void Giris::Personel::CalismaWidget::birimDongusuAdd(WContainerWidget *_rowConta
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::durum,SBLDKeys::Calismalar::DURUM::devamediyor));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::birim,birim.birim));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("{1} Adet").arg(this->db()->collection(SBLDKeys::Calismalar::collection).count(filter.view()))),0,AlignmentFlag::Middle|AlignmentFlag::Center);
                     text->setAttributeValue(Style::style,Style::font::size::s12px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
@@ -8715,12 +8737,12 @@ void Giris::Personel::CalismaWidget::birimDongusuAdd(WContainerWidget *_rowConta
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::durum,SBLDKeys::Calismalar::DURUM::devamediyor));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::birim,birim.birim));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     this->listCalismalar(filter.view(),birim.birim);
                 });
@@ -8747,12 +8769,12 @@ void Giris::Personel::CalismaWidget::birimDongusuAdd(WContainerWidget *_rowConta
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::baslamaTarihi,make_document(kvp("$gte",QDate::currentDate().toJulianDay()-30))));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::birim,birim.birim));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("{1} Adet").arg(this->db()->collection(SBLDKeys::Calismalar::collection).count(filter.view()))),0,AlignmentFlag::Middle|AlignmentFlag::Center);
                     text->setAttributeValue(Style::style,Style::font::size::s12px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
@@ -8764,12 +8786,12 @@ void Giris::Personel::CalismaWidget::birimDongusuAdd(WContainerWidget *_rowConta
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::baslamaTarihi,make_document(kvp("$gte",QDate::currentDate().toJulianDay()-30))));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::birim,birim.birim));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     this->listCalismalar(filter.view(),birim.birim);
                 });
@@ -8796,12 +8818,12 @@ void Giris::Personel::CalismaWidget::birimDongusuAdd(WContainerWidget *_rowConta
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::baslamaTarihi,make_document(kvp("$gte",QDate::currentDate().toJulianDay()-90))));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::birim,birim.birim));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("{1} Adet").arg(this->db()->collection(SBLDKeys::Calismalar::collection).count(filter.view()))),0,AlignmentFlag::Middle|AlignmentFlag::Center);
                     text->setAttributeValue(Style::style,Style::font::size::s12px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
@@ -8813,12 +8835,12 @@ void Giris::Personel::CalismaWidget::birimDongusuAdd(WContainerWidget *_rowConta
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::baslamaTarihi,make_document(kvp("$gte",QDate::currentDate().toJulianDay()-90))));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::birim,birim.birim));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     this->listCalismalar(filter.view(),birim.birim);
                 });
@@ -8845,12 +8867,12 @@ void Giris::Personel::CalismaWidget::birimDongusuAdd(WContainerWidget *_rowConta
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::durum,SBLDKeys::Calismalar::DURUM::tamamlandi));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::birim,birim.birim));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("{1} Adet").arg(this->db()->collection(SBLDKeys::Calismalar::collection).count(filter.view()))),0,AlignmentFlag::Middle|AlignmentFlag::Center);
                     text->setAttributeValue(Style::style,Style::font::size::s12px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
@@ -8862,12 +8884,12 @@ void Giris::Personel::CalismaWidget::birimDongusuAdd(WContainerWidget *_rowConta
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::durum,SBLDKeys::Calismalar::DURUM::tamamlandi));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::birim,birim.birim));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     this->listCalismalar(filter.view(),birim.birim);
                 });
@@ -8902,7 +8924,7 @@ std::vector<Giris::Personel::CalismaWidget::BirimItem> Giris::Personel::CalismaW
     try {
         _filter.append(kvp(SBLDKeys::Birimler::haberlesmekodu,make_document(kvp("$ne","0"))));
     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
     }
 
     std::vector<BirimItem> BirimList;
@@ -8928,7 +8950,7 @@ std::vector<Giris::Personel::CalismaWidget::BirimItem> Giris::Personel::CalismaW
 
         }
     } catch (mongocxx::exception &e) {
-
+std::cout << e.what() << std::endl;
     }
 
 
@@ -8962,7 +8984,7 @@ std::vector<Giris::Personel::CalismaWidget::MahalleItem> Giris::Personel::Calism
 
         }
     } catch (mongocxx::exception &e) {
-
+std::cout << e.what() << std::endl;
     }
 
     return MahalleList;
@@ -9060,7 +9082,7 @@ void Giris::Personel::CalismaWidget::addZamanTuneli(WContainerWidget *_rowContai
     try {
         sortDoc.append(kvp(SBLDKeys::Calismalar::updateDate,-1));
     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
     }
 
     findOptions.sort(sortDoc.view());
@@ -9085,7 +9107,7 @@ void Giris::Personel::CalismaWidget::addZamanTuneli(WContainerWidget *_rowContai
 
 
     } catch (mongocxx::exception &e) {
-
+std::cout << e.what() << std::endl;
     }
 
 
@@ -9379,7 +9401,6 @@ void Giris::Personel::CalismaWidget::setCalismaDetail(std::string oid)
 
     {
         auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
-        auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
         auto bucket = this->db()->gridfs_bucket();
         std::string iconPaht = SBLDKeys::downloadifNotExist(&bucket,view[SBLDKeys::Calismalar::icon].get_oid().value.to_string());
         TitleContainer->setAttributeValue(Style::style,Style::background::url(iconPaht)+Style::background::size::cover+Style::background::repeat::norepeat+Style::background::position::center_center);
@@ -9488,7 +9509,7 @@ void Giris::Personel::CalismaWidget::setCalismaDetail(std::string oid)
                 TextCOntainer->setPadding(10,Side::Top|Side::Bottom);
             }
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
 
@@ -9585,12 +9606,12 @@ void Giris::Personel::CalismaWidget::mahalleMahalleAdd(WContainerWidget *rowCont
                 try {
                     filter.append(kvp(SBLDKeys::Calismalar::mahalleler,mah.mahalle));
                 } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                 }
                 try {
                     filter.append(kvp(SBLDKeys::Calismalar::durum,SBLDKeys::Calismalar::DURUM::tamamlandi));
                 } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                 }
                 item.value = this->db()->collection(SBLDKeys::Calismalar::collection).count(filter.view());
                 item.label = QString("Tamamlanan: %1").arg(item.value).toStdString();
@@ -9606,12 +9627,12 @@ void Giris::Personel::CalismaWidget::mahalleMahalleAdd(WContainerWidget *rowCont
                 try {
                     filter.append(kvp(SBLDKeys::Calismalar::mahalleler,mah.mahalle));
                 } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                 }
                 try {
                     filter.append(kvp(SBLDKeys::Calismalar::durum,SBLDKeys::Calismalar::DURUM::devamediyor));
                 } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                 }
                 item.value = this->db()->collection(SBLDKeys::Calismalar::collection).count(filter.view());
                 item.label = QString("Devam Eden: %1").arg(item.value).toStdString();
@@ -9629,12 +9650,12 @@ void Giris::Personel::CalismaWidget::mahalleMahalleAdd(WContainerWidget *rowCont
                 try {
                     filter.append(kvp(SBLDKeys::Calismalar::mahalleler,mah.mahalle));
                 } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                 }
                 try {
                     filter.append(kvp(SBLDKeys::Calismalar::durum,SBLDKeys::Calismalar::DURUM::devamediyor));
                 } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                 }
 
 
@@ -9648,12 +9669,12 @@ void Giris::Personel::CalismaWidget::mahalleMahalleAdd(WContainerWidget *rowCont
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::mahalleler,mah.mahalle));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::durum,SBLDKeys::Calismalar::DURUM::devamediyor));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
 
                     this->listCalismalar(filter.view(),mah.mahalle+ " - " + SBLDKeys::Calismalar::DURUM::devamediyor);
@@ -9669,12 +9690,12 @@ void Giris::Personel::CalismaWidget::mahalleMahalleAdd(WContainerWidget *rowCont
                 try {
                     filter.append(kvp(SBLDKeys::Calismalar::mahalleler,mah.mahalle));
                 } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                 }
                 try {
                     filter.append(kvp(SBLDKeys::Calismalar::durum,SBLDKeys::Calismalar::DURUM::tamamlandi));
                 } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                 }
 
 
@@ -9689,12 +9710,12 @@ void Giris::Personel::CalismaWidget::mahalleMahalleAdd(WContainerWidget *rowCont
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::mahalleler,mah.mahalle));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::durum,SBLDKeys::Calismalar::DURUM::tamamlandi));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
 
                     this->listCalismalar(filter.view(),mah.mahalle+ " - " + SBLDKeys::Calismalar::DURUM::tamamlandi);
@@ -9778,24 +9799,24 @@ void Giris::Personel::CalismaWidget::mahalleMahalleAdd(WContainerWidget *rowCont
                     try {
                         yilDoc.append(kvp("$gte",QDate::fromString(QString("0101%1").arg(i),"ddMMyyyy").toJulianDay()));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     try {
                         yilDoc.append(kvp("$lte",QDate::fromString(QString("0101%1").arg(i+1),"ddMMyyyy").toJulianDay()));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
 
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::baslamaTarihi,yilDoc));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
 
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::mahalleler,make_document(kvp("$elemMatch",make_document(kvp("$eq",mah.mahalle))))));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
 
                     auto toplam = this->db()->collection(SBLDKeys::Calismalar::collection).count(filter.view());
@@ -9818,30 +9839,30 @@ void Giris::Personel::CalismaWidget::mahalleMahalleAdd(WContainerWidget *rowCont
                     try {
                         yilDoc.append(kvp("$gte",QDate::fromString(QString("0101%1").arg(i),"ddMMyyyy").toJulianDay()));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     try {
                         yilDoc.append(kvp("$lte",QDate::fromString(QString("0101%1").arg(i+1),"ddMMyyyy").toJulianDay()));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
 
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::baslamaTarihi,yilDoc));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
 
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::mahalleler,make_document(kvp("$elemMatch",make_document(kvp("$eq",mah.mahalle))))));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
 
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::durum,SBLDKeys::Calismalar::DURUM::tamamlandi));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     auto toplam = this->db()->collection(SBLDKeys::Calismalar::collection).count(filter.view());
                     auto yilcontainer = _rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -9862,29 +9883,29 @@ void Giris::Personel::CalismaWidget::mahalleMahalleAdd(WContainerWidget *rowCont
                     try {
                         yilDoc.append(kvp("$gte",QDate::fromString(QString("0101%1").arg(i),"ddMMyyyy").toJulianDay()));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     try {
                         yilDoc.append(kvp("$lte",QDate::fromString(QString("0101%1").arg(i+1),"ddMMyyyy").toJulianDay()));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
 
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::baslamaTarihi,yilDoc));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
 
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::mahalleler,make_document(kvp("$elemMatch",make_document(kvp("$eq",mah.mahalle))))));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::durum,SBLDKeys::Calismalar::DURUM::devamediyor));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     auto toplam = this->db()->collection(SBLDKeys::Calismalar::collection).count(filter.view());
                     auto yilcontainer = _rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -9985,7 +10006,7 @@ void Giris::Personel::CalismaWidget::listCalismalar(bsoncxx::document::view filt
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::birim,text->text().toUTF8()));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
 
                     for( auto it = filterView.begin() ; it != filterView.end() ; it++ )
@@ -9993,7 +10014,7 @@ void Giris::Personel::CalismaWidget::listCalismalar(bsoncxx::document::view filt
                         try {
                             filter.append(kvp(it->key().to_string(),it->get_value()));
                         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                         }
                     }
 
@@ -10002,7 +10023,7 @@ void Giris::Personel::CalismaWidget::listCalismalar(bsoncxx::document::view filt
             }
 
         } catch (mongocxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
 
@@ -10041,7 +10062,7 @@ void Giris::Personel::CalismaWidget::addCalismalartoList(WContainerWidget *rowCo
     try {
         sortDoc.append(kvp(SBLDKeys::Calismalar::updateDate,-1));
     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
     }
 
     findOptions.sort(sortDoc.view());
@@ -10052,33 +10073,33 @@ void Giris::Personel::CalismaWidget::addCalismalartoList(WContainerWidget *rowCo
     try {
         projectView.append(kvp(SBLDKeys::Calismalar::baslik,true));
     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
     }
     try {
         projectView.append(kvp(SBLDKeys::Calismalar::birim,true));
     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
     }
     try {
         projectView.append(kvp(SBLDKeys::Calismalar::icon,true));
     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
     }
 
     try {
         projectView.append(kvp(SBLDKeys::Calismalar::mahalleler,true));
     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
     }
     try {
         projectView.append(kvp(SBLDKeys::Calismalar::baslamaTarihi,true));
     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
     }
     try {
         projectView.append(kvp(SBLDKeys::Calismalar::durum,true));
     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
     }
 
     findOptions.projection(projectView.view());
@@ -10132,6 +10153,7 @@ void Giris::Personel::CalismaWidget::addCalismalartoList(WContainerWidget *rowCo
                     str = doc[SBLDKeys::Calismalar::baslik].get_utf8().value.to_string().c_str();
                 } catch (bsoncxx::exception &e) {
                     str = "Başlık Yok";
+                    std::cout << e.what() << std::endl;
                 }
                 if( str.count() > 40 )
                 {
@@ -10228,7 +10250,7 @@ void Giris::Personel::CalismaWidget::addCalismalartoList(WContainerWidget *rowCo
         }
 
     } catch (mongocxx::exception &e) {
-
+std::cout << e.what() << std::endl;
     }
 
     if( this->db()->collection(SBLDKeys::Calismalar::collection).count(filterValue.view()) > this->skip+20 ){
@@ -10284,7 +10306,7 @@ void Giris::Personel::CalismaWidget::setReportMenu()
             try {
                 filter.append(kvp(SBLDKeys::Calismalar::updateDate,bsoncxx::types::b_int64{WDate::currentDate().toJulianDay()-1}));
             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
             }
 
             this->reportlist(filter.view(),WDate::fromJulianDay(WDate::currentDate().toJulianDay()-1).toString("dd/MM/yyyy").toUTF8() + " Gününe Ait Çalışmalar");
@@ -10310,7 +10332,7 @@ void Giris::Personel::CalismaWidget::setReportMenu()
             try {
                 filter.append(kvp(SBLDKeys::Calismalar::updateDate,bsoncxx::types::b_int64{WDate::currentDate().toJulianDay()}));
             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
             }
 
             this->reportlist(filter.view(),WDate::currentDate().toString("dd/MM/yyyy").toUTF8() + " Gününe Ait Çalışmalar");
@@ -10335,7 +10357,7 @@ void Giris::Personel::CalismaWidget::setReportMenu()
             try {
                 filter.append(kvp(SBLDKeys::Calismalar::updateDate,make_document(kvp("$gte",bsoncxx::types::b_int64{WDate::currentDate().toJulianDay()-7}))));
             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
             }
 
             this->reportlist(filter.view(),"Son 7 Günün Çalışmaları");
@@ -10363,7 +10385,7 @@ void Giris::Personel::CalismaWidget::setReportMenu()
                 try {
                     filter.append(kvp(SBLDKeys::Calismalar::updateDate,bsoncxx::types::b_int64{WDate::currentDate().toJulianDay()-i}));
                 } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                 }
 
                 this->reportlist(filter.view(),tarih + " Gününe Ait Çalışmalar");
@@ -10396,14 +10418,14 @@ void Giris::Personel::CalismaWidget::reportlist(bsoncxx::document::view filterVi
         auto vLayout = LayContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
 
         {
-            auto titleBirim = vLayout->addWidget(cpp14::make_unique<WText>("<h2>Günlük Çalışma Raporu</h2>"),0,AlignmentFlag::Center);
+            vLayout->addWidget(cpp14::make_unique<WText>("<h2>Günlük Çalışma Raporu</h2>"),0,AlignmentFlag::Center);
         }
 
         {
-            auto titleBirim = vLayout->addWidget(cpp14::make_unique<WText>("<h4>"+title+"</h4>"),0,AlignmentFlag::Center);
+            vLayout->addWidget(cpp14::make_unique<WText>("<h4>"+title+"</h4>"),0,AlignmentFlag::Center);
         }
         {
-            auto titleBirim = vLayout->addWidget(cpp14::make_unique<WText>("<h4>Birimlerin Girdiği Çalışma Sayıları</h4>"),0,AlignmentFlag::Center);
+            vLayout->addWidget(cpp14::make_unique<WText>("<h4>Birimlerin Girdiği Çalışma Sayıları</h4>"),0,AlignmentFlag::Center);
         }
     }
 
@@ -10431,7 +10453,7 @@ void Giris::Personel::CalismaWidget::reportlist(bsoncxx::document::view filterVi
             }
 
         } catch (mongocxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
         auto birimList = this->getBirimList();
@@ -10509,22 +10531,22 @@ void Giris::Personel::CalismaWidget::reportlist(bsoncxx::document::view filterVi
 
 
         {
-            auto titleBirim = vLayout->addWidget(cpp14::make_unique<WText>("<h4>"+title+"ın Detayları</h4>"),0,AlignmentFlag::Center);
+            vLayout->addWidget(cpp14::make_unique<WText>("<h4>"+title+"ın Detayları</h4>"),0,AlignmentFlag::Center);
         }
 
         int row = 1;
         for( auto doc : cursor )
         {
             {
-                auto titleBirim = vLayout->addWidget(cpp14::make_unique<WText>("<b>"+WString("{1} - ").arg(row++).toUTF8()+doc[SBLDKeys::Calismalar::birim].get_utf8().value.to_string()+"</b>"),0,AlignmentFlag::Center);
+                vLayout->addWidget(cpp14::make_unique<WText>("<b>"+WString("{1} - ").arg(row++).toUTF8()+doc[SBLDKeys::Calismalar::birim].get_utf8().value.to_string()+"</b>"),0,AlignmentFlag::Center);
             }
 
             {
-                auto titlebaslik = vLayout->addWidget(cpp14::make_unique<WText>(doc[SBLDKeys::Calismalar::baslik].get_utf8().value.to_string()),0,AlignmentFlag::Center);
+                vLayout->addWidget(cpp14::make_unique<WText>(doc[SBLDKeys::Calismalar::baslik].get_utf8().value.to_string()),0,AlignmentFlag::Center);
             }
 
             {
-                auto tanimText = vLayout->addWidget(cpp14::make_unique<WText>(doc[SBLDKeys::Calismalar::tanim].get_utf8().value.to_string()),0,AlignmentFlag::Left|AlignmentFlag::Justify);
+                vLayout->addWidget(cpp14::make_unique<WText>(doc[SBLDKeys::Calismalar::tanim].get_utf8().value.to_string()),0,AlignmentFlag::Left|AlignmentFlag::Justify);
             }
 
             {
@@ -10555,7 +10577,7 @@ void Giris::Personel::CalismaWidget::reportlist(bsoncxx::document::view filterVi
 
 
     } catch (mongocxx::exception &e) {
-
+std::cout << e.what() << std::endl;
     }
 
 
@@ -10669,12 +10691,12 @@ void Giris::Personel::CalismaGirWidget::initTotalState()
         try {
             filter.append(kvp(SBLDKeys::Calismalar::durum,SBLDKeys::Calismalar::DURUM::devamediyor));
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
         try {
             filter.append(kvp(SBLDKeys::Calismalar::birim,CurrentBirim));
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
         auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Devam Eden: {1}").arg(this->db()->collection(SBLDKeys::Calismalar::collection).count(filter.view()))));
@@ -10719,12 +10741,12 @@ void Giris::Personel::CalismaGirWidget::initTotalState()
         try {
             filter.append(kvp(SBLDKeys::Calismalar::durum,SBLDKeys::Calismalar::DURUM::tamamlandi));
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
         try {
             filter.append(kvp(SBLDKeys::Calismalar::birim,CurrentBirim));
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
         auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Tamamlanan: {1}").arg(this->db()->collection(SBLDKeys::Calismalar::collection).count(filter.view()))));
@@ -10769,13 +10791,13 @@ void Giris::Personel::CalismaGirWidget::initTotalState()
         try {
             filter.append(kvp(SBLDKeys::Calismalar::birim,CurrentBirim));
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
         try {
             filter.append(kvp(SBLDKeys::Calismalar::baslamaTarihi,bsoncxx::types::b_int64{WDate::currentDate().toJulianDay()}));
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
         auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Bugün Başlanan: {1}").arg(this->db()->collection(SBLDKeys::Calismalar::collection).count(filter.view()))));
@@ -10819,13 +10841,13 @@ void Giris::Personel::CalismaGirWidget::initTotalState()
         try {
             filter.append(kvp(SBLDKeys::Calismalar::birim,CurrentBirim));
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
         try {
             filter.append(kvp(SBLDKeys::Calismalar::baslamaTarihi,make_document(kvp("$gte",bsoncxx::types::b_int64{WDate::currentDate().toJulianDay()-7}))));
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
         auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Son 7 Gün Başlanan: {1}").arg(this->db()->collection(SBLDKeys::Calismalar::collection).count(filter.view()))));
@@ -10870,13 +10892,13 @@ void Giris::Personel::CalismaGirWidget::initTotalState()
         try {
             filter.append(kvp(SBLDKeys::Calismalar::birim,CurrentBirim));
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
         try {
             filter.append(kvp(SBLDKeys::Calismalar::baslamaTarihi,make_document(kvp("$gte",bsoncxx::types::b_int64{WDate::currentDate().toJulianDay()-30}))));
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
         auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Son 30 Gün Başlanan: {1}").arg(this->db()->collection(SBLDKeys::Calismalar::collection).count(filter.view()))));
@@ -10920,13 +10942,13 @@ void Giris::Personel::CalismaGirWidget::initTotalState()
         try {
             filter.append(kvp(SBLDKeys::Calismalar::birim,CurrentBirim));
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
         try {
             filter.append(kvp(SBLDKeys::Calismalar::baslamaTarihi,make_document(kvp("$gte",bsoncxx::types::b_int64{WDate::currentDate().toJulianDay()-90}))));
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
         auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Son 90 Gün Başlanan: {1}").arg(this->db()->collection(SBLDKeys::Calismalar::collection).count(filter.view()))));
@@ -11037,7 +11059,7 @@ void Giris::Personel::CalismaGirWidget::initTotalState()
         try {
             filter.append(kvp(SBLDKeys::Calismalar::baslamaTarihi,bsoncxx::types::b_int64{WDate::currentDate().toJulianDay()}));
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
 
@@ -11062,6 +11084,7 @@ void Giris::Personel::CalismaGirWidget::initTotalState()
                         text1->setAttributeValue(Style::style,Style::font::weight::lighter+Style::font::size::s12px+Style::color::color(Style::color::White::AliceBlue));
                     }
                 } catch (bsoncxx::exception &e) {
+                    std::cout << e.what() << std::endl;
                     {
                         auto text1 = vlayout->addWidget(cpp14::make_unique<WText>(WString("<b>0</b> - Adet Başlattı")),0,AlignmentFlag::Center);
                         text1->setMargin(WLength::Auto,Side::Left|Side::Right);
@@ -11073,6 +11096,7 @@ void Giris::Personel::CalismaGirWidget::initTotalState()
                 container->setHeight(75);
             }
         } catch (mongocxx::exception &e) {
+            std::cout << e.what() << std::endl;
         }
     }
 
@@ -11091,13 +11115,13 @@ void Giris::Personel::CalismaGirWidget::initTotalState()
         try {
             filter.append(kvp(SBLDKeys::Calismalar::updateDate,bsoncxx::types::b_int64{WDate::currentDate().toJulianDay()}));
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
         try {
             filter.append(kvp(SBLDKeys::Calismalar::baslamaTarihi,make_document(kvp("$ne",bsoncxx::types::b_int64{WDate::currentDate().toJulianDay()}))));
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
 
@@ -11133,6 +11157,7 @@ void Giris::Personel::CalismaGirWidget::initTotalState()
                 container->setHeight(75);
             }
         } catch (mongocxx::exception &e) {
+            std::cout << e.what() << std::endl;
         }
     }
 
@@ -11175,13 +11200,13 @@ void Giris::Personel::CalismaGirWidget::ListCalismalarAdd(WContainerWidget *rowC
     try {
         sortDoc.append(kvp(SBLDKeys::Calismalar::baslamaTarihi,-1));
     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
     }
 
     try {
         sortDoc.append(kvp(SBLDKeys::Calismalar::updateDate,-1));
     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
     }
 
 
@@ -11467,7 +11492,7 @@ void Giris::Personel::CalismaGirWidget::setCalismaDetail(std::string oid)
                 try {
                     filter.append(kvp(SBLDKeys::oid,bsoncxx::oid{oid.c_str()}));
                 } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                 }
 
                 auto doc = document{};
@@ -11475,7 +11500,7 @@ void Giris::Personel::CalismaGirWidget::setCalismaDetail(std::string oid)
                 try {
                     doc.append(kvp(SBLDKeys::Calismalar::yayin,SBLDKeys::Calismalar::Yayinda::yayindaDegil));
                 } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                 }
 
                 try {
@@ -11507,7 +11532,7 @@ void Giris::Personel::CalismaGirWidget::setCalismaDetail(std::string oid)
                 try {
                     filter.append(kvp(SBLDKeys::oid,bsoncxx::oid{oid.c_str()}));
                 } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                 }
 
                 auto doc = document{};
@@ -11515,7 +11540,7 @@ void Giris::Personel::CalismaGirWidget::setCalismaDetail(std::string oid)
                 try {
                     doc.append(kvp(SBLDKeys::Calismalar::yayin,SBLDKeys::Calismalar::Yayinda::yayinda));
                 } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                 }
 
                 try {
@@ -11651,7 +11676,7 @@ void Giris::Personel::CalismaGirWidget::setCalismaDetail(std::string oid)
                 aciklamaText->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::weight::bold);
             }
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
 
@@ -11663,6 +11688,7 @@ void Giris::Personel::CalismaGirWidget::setCalismaDetail(std::string oid)
         ended = view[SBLDKeys::Calismalar::durum].get_utf8().value.to_string() == SBLDKeys::Calismalar::DURUM::devamediyor ;
     } catch (bsoncxx::exception &e) {
         ended = false;
+        std::cout << e.what() << std::endl;
     }
 
 
@@ -11735,12 +11761,12 @@ void Giris::Personel::CalismaGirWidget::setCalismaDetail(std::string oid)
                             mahalleComboBox->addItem(doc[SBLDKeys::Mahalle::mahalle].get_utf8().value.to_string().c_str());
                         }
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                 }
 
             } catch (mongocxx::exception &e) {
-
+std::cout << e.what() << std::endl;
             }
 
 
@@ -11841,10 +11867,12 @@ void Giris::Personel::CalismaGirWidget::setCalismaDetail(std::string oid)
                                     }
                                 }
                             } catch (bsoncxx::exception &e) {
+                                std::cout << e.what() << std::endl;
                             }
                         }
                     }
                 } catch (mongocxx::exception &e) {
+                    std::cout << e.what() << std::endl;
                 }
 
                 if( addMahalle )
@@ -12140,12 +12168,12 @@ void Giris::Personel::CalismaGirWidget::YeniEkle()
             try {
                 kategoriComboBox->addItem(doc[SBLDKeys::Calismalar::Ayarlar::Kategori::kategoriAdi].get_utf8().value.to_string().c_str());
             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
             }
         }
 
     } catch (mongocxx::exception &e) {
-
+std::cout << e.what() << std::endl;
     }
 
 
@@ -12168,12 +12196,12 @@ void Giris::Personel::CalismaGirWidget::YeniEkle()
                     mahalleComboBox->addItem(doc[SBLDKeys::Mahalle::mahalle].get_utf8().value.to_string().c_str());
                 }
             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
             }
         }
 
     } catch (mongocxx::exception &e) {
-
+std::cout << e.what() << std::endl;
     }
 
     auto progresBarContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -12329,62 +12357,62 @@ void Giris::Personel::CalismaGirWidget::YeniEkle()
         try {
             doc.append(kvp(SBLDKeys::Calismalar::updateDate,bsoncxx::types::b_int64{WDate::currentDate().toJulianDay()}));
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
         try {
             doc.append(kvp(SBLDKeys::Calismalar::baslamaTarihi,bsoncxx::types::b_int64{dateEdit->date().toJulianDay()}));
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
         try {
             doc.append(kvp(SBLDKeys::Calismalar::baslik,baslikLineEdit->text().toUTF8().c_str()));
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
         try {
             doc.append(kvp(SBLDKeys::Calismalar::birim,CurrentBirim));
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
         try {
             doc.append(kvp(SBLDKeys::Calismalar::durum,SBLDKeys::Calismalar::DURUM::devamediyor));
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
         try {
             doc.append(kvp(SBLDKeys::Calismalar::kategori,kategoriComboBox->currentText().toUTF8()));
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
         try {
             doc.append(kvp(SBLDKeys::Calismalar::mahalleler,make_array(mahalleComboBox->currentText().toUTF8())));
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
         try {
             doc.append(kvp(SBLDKeys::Calismalar::tanim,tanimtextEdit->text().toUTF8()));
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
         // Tam Adres Yok
         try {
             doc.append(kvp(SBLDKeys::Calismalar::tamadres,adresLineEdit->text().toUTF8()));
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
         try {
             doc.append(kvp(SBLDKeys::Calismalar::yayin,SBLDKeys::Calismalar::Yayinda::yayindaDegil));
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
         auto bucket = this->db()->gridfs_bucket();
@@ -12392,7 +12420,7 @@ void Giris::Personel::CalismaGirWidget::YeniEkle()
         try {
             doc.append(kvp(SBLDKeys::Calismalar::icon,id));
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
         try {
@@ -12482,7 +12510,7 @@ void Giris::Personel::CalismaGirWidget::Ayarlar()
         try {
             doc.append(kvp(SBLDKeys::Calismalar::Ayarlar::Kategori::birim,CurrentBirim));
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
 
@@ -12565,12 +12593,12 @@ void Giris::Personel::CalismaGirWidget::ListKategori(WContainerWidget *listConta
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::kategori,kategoriAdi));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::birim,CurrentBirim));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
 
                     if( this->db()->collection(SBLDKeys::Calismalar::collection).count(filter.view()) )
@@ -12585,12 +12613,12 @@ void Giris::Personel::CalismaGirWidget::ListKategori(WContainerWidget *listConta
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::Ayarlar::Kategori::kategoriAdi,kategoriAdi));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
                     try {
                         filter.append(kvp(SBLDKeys::Calismalar::Ayarlar::Kategori::birim,CurrentBirim));
                     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                     }
 
 
@@ -12621,7 +12649,7 @@ void Giris::Personel::CalismaGirWidget::ListKategori(WContainerWidget *listConta
 
 
     } catch (mongocxx::exception &e) {
-
+std::cout << e.what() << std::endl;
     }
 
 
@@ -12703,7 +12731,7 @@ void Giris::Personel::CagriMerkezi::initialState()
             try {
                 filter.append(kvp(SBLDKeys::SikayetKey::mainKey::durum,SBLDKeys::SikayetKey::durumType::devamediyor));
             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
             }
             auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("{1} Adet").arg(this->db()->collection(SBLDKeys::SikayetKey::collection).count(filter.view()))),0,AlignmentFlag::Middle|AlignmentFlag::Center);
             text->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
@@ -12716,7 +12744,7 @@ void Giris::Personel::CagriMerkezi::initialState()
             try {
                 filter.append(kvp(SBLDKeys::SikayetKey::mainKey::durum,SBLDKeys::SikayetKey::durumType::devamediyor));
             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
             }
 
             this->listSikayet(filter.view());
@@ -12746,7 +12774,7 @@ void Giris::Personel::CagriMerkezi::initialState()
             try {
                 filter.append(kvp(SBLDKeys::SikayetKey::mainKey::durum,SBLDKeys::SikayetKey::durumType::tamamlandi));
             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
             }
             auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("{1} Adet").arg(this->db()->collection(SBLDKeys::SikayetKey::collection).count(filter.view()))),0,AlignmentFlag::Middle|AlignmentFlag::Center);
             text->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
@@ -12759,7 +12787,7 @@ void Giris::Personel::CagriMerkezi::initialState()
             try {
                 filter.append(kvp(SBLDKeys::SikayetKey::mainKey::durum,SBLDKeys::SikayetKey::durumType::tamamlandi));
             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
             }
 
             this->listSikayet(filter.view());
@@ -12813,7 +12841,7 @@ void Giris::Personel::CagriMerkezi::initialState()
             try {
                 filter.append(kvp(SBLDKeys::SikayetKey::mainKey::durum,SBLDKeys::SikayetKey::durumType::iptalEdildi));
             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
             }
             auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("{1} Adet").arg(this->db()->collection(SBLDKeys::SikayetKey::collection).count(filter.view()))),0,AlignmentFlag::Middle|AlignmentFlag::Center);
             text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
@@ -12826,7 +12854,7 @@ void Giris::Personel::CagriMerkezi::initialState()
             try {
                 filter.append(kvp(SBLDKeys::SikayetKey::mainKey::durum,SBLDKeys::SikayetKey::durumType::iptalEdildi));
             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
             }
 
             this->listSikayet(filter.view());
@@ -12855,7 +12883,7 @@ void Giris::Personel::CagriMerkezi::initialState()
             try {
                 filter.append(kvp(SBLDKeys::SikayetKey::mainKey::durum,SBLDKeys::SikayetKey::durumType::teyitEdilmemis));
             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
             }
             auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("{1} Adet").arg(this->db()->collection(SBLDKeys::SikayetKey::collection).count(filter.view()))),0,AlignmentFlag::Middle|AlignmentFlag::Center);
             text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
@@ -12868,7 +12896,7 @@ void Giris::Personel::CagriMerkezi::initialState()
             try {
                 filter.append(kvp(SBLDKeys::SikayetKey::mainKey::durum,SBLDKeys::SikayetKey::durumType::teyitEdilmemis));
             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
             }
 
             this->listSikayet(filter.view());
@@ -12897,7 +12925,7 @@ void Giris::Personel::CagriMerkezi::initialState()
             try {
                 filter.append(kvp(SBLDKeys::SikayetKey::mainKey::durum,SBLDKeys::SikayetKey::durumType::beklemede));
             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
             }
             auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("{1} Adet").arg(this->db()->collection(SBLDKeys::SikayetKey::collection).count(filter.view()))),0,AlignmentFlag::Middle|AlignmentFlag::Center);
             text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
@@ -12910,7 +12938,7 @@ void Giris::Personel::CagriMerkezi::initialState()
             try {
                 filter.append(kvp(SBLDKeys::SikayetKey::mainKey::durum,SBLDKeys::SikayetKey::durumType::beklemede));
             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
             }
 
             this->listSikayet(filter.view());
@@ -12940,7 +12968,7 @@ void Giris::Personel::CagriMerkezi::initialState()
             try {
                 filter.append(kvp(SBLDKeys::SikayetKey::mainKey::durum,SBLDKeys::SikayetKey::durumType::tekrarAcildi));
             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
             }
             auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("{1} Adet").arg(this->db()->collection(SBLDKeys::SikayetKey::collection).count(filter.view()))),0,AlignmentFlag::Middle|AlignmentFlag::Center);
             text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
@@ -12953,7 +12981,7 @@ void Giris::Personel::CagriMerkezi::initialState()
             try {
                 filter.append(kvp(SBLDKeys::SikayetKey::mainKey::durum,SBLDKeys::SikayetKey::durumType::tekrarAcildi));
             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
             }
 
             this->listSikayet(filter.view());
@@ -12983,7 +13011,7 @@ void Giris::Personel::CagriMerkezi::initialState()
             try {
                 filter.append(kvp(SBLDKeys::SikayetKey::mainKey::julianDay,bsoncxx::types::b_int64{WDate::currentDate().toJulianDay()}));
             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
             }
             auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("{1} Adet").arg(this->db()->collection(SBLDKeys::SikayetKey::collection).count(filter.view()))),0,AlignmentFlag::Middle|AlignmentFlag::Center);
             text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
@@ -12996,7 +13024,7 @@ void Giris::Personel::CagriMerkezi::initialState()
             try {
                 filter.append(kvp(SBLDKeys::SikayetKey::mainKey::julianDay,bsoncxx::types::b_int64{WDate::currentDate().toJulianDay()}));
             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
             }
 
             this->listSikayet(filter.view());
@@ -13025,7 +13053,7 @@ void Giris::Personel::CagriMerkezi::initialState()
             try {
                 filter.append(kvp(SBLDKeys::SikayetKey::mainKey::julianDay,make_document(kvp("$gte",bsoncxx::types::b_int64{WDate::currentDate().toJulianDay()-7}))));
             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
             }
             auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("{1} Adet").arg(this->db()->collection(SBLDKeys::SikayetKey::collection).count(filter.view()))),0,AlignmentFlag::Middle|AlignmentFlag::Center);
             text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
@@ -13038,7 +13066,7 @@ void Giris::Personel::CagriMerkezi::initialState()
             try {
                 filter.append(kvp(SBLDKeys::SikayetKey::mainKey::julianDay,make_document(kvp("$gte",bsoncxx::types::b_int64{WDate::currentDate().toJulianDay()-7}))));
             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
             }
 
             this->listSikayet(filter.view());
@@ -13068,7 +13096,7 @@ void Giris::Personel::CagriMerkezi::initialState()
             try {
                 filter.append(kvp(SBLDKeys::SikayetKey::mainKey::julianDay,make_document(kvp("$gte",bsoncxx::types::b_int64{WDate::currentDate().toJulianDay()-30}))));
             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
             }
             auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("{1} Adet").arg(this->db()->collection(SBLDKeys::SikayetKey::collection).count(filter.view()))),0,AlignmentFlag::Middle|AlignmentFlag::Center);
             text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
@@ -13081,7 +13109,7 @@ void Giris::Personel::CagriMerkezi::initialState()
             try {
                 filter.append(kvp(SBLDKeys::SikayetKey::mainKey::julianDay,make_document(kvp("$gte",bsoncxx::types::b_int64{WDate::currentDate().toJulianDay()-30}))));
             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
             }
 
             this->listSikayet(filter.view());
@@ -13110,7 +13138,7 @@ void Giris::Personel::CagriMerkezi::initialState()
             try {
                 filter.append(kvp(SBLDKeys::SikayetKey::mainKey::julianDay,make_document(kvp("$gte",bsoncxx::types::b_int64{WDate::currentDate().toJulianDay()-90}))));
             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
             }
             auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("{1} Adet").arg(this->db()->collection(SBLDKeys::SikayetKey::collection).count(filter.view()))),0,AlignmentFlag::Middle|AlignmentFlag::Center);
             text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
@@ -13123,7 +13151,7 @@ void Giris::Personel::CagriMerkezi::initialState()
             try {
                 filter.append(kvp(SBLDKeys::SikayetKey::mainKey::julianDay,make_document(kvp("$gte",bsoncxx::types::b_int64{WDate::currentDate().toJulianDay()-90}))));
             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
             }
 
             this->listSikayet(filter.view());
@@ -13220,19 +13248,19 @@ void Giris::Personel::CagriMerkezi::initReportMenu()
     try {
         arrayList.append(SBLDKeys::SikayetKey::durumType::beklemede);
     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
     }
 
     try {
         arrayList.append(SBLDKeys::SikayetKey::durumType::devamediyor);
     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
     }
 
     try {
         arrayList.append(SBLDKeys::SikayetKey::durumType::tekrarAcildi);
     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
     }
 
 
@@ -13242,7 +13270,7 @@ void Giris::Personel::CagriMerkezi::initReportMenu()
     try {
         filter.append(kvp(SBLDKeys::SikayetKey::mainKey::durum,make_document(kvp("$in",arrayList))));
     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
     }
 
     this->initReportList(rContainer,filter.view());
@@ -13267,7 +13295,7 @@ void Giris::Personel::CagriMerkezi::initReportList(WContainerWidget* rowContaine
         auto vLayout = LayContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
 
         {
-            auto titleBirim = vLayout->addWidget(cpp14::make_unique<WText>(WString("<h2>Gelen Şikayetler Raporu</h2>")),0,AlignmentFlag::Center);
+            vLayout->addWidget(cpp14::make_unique<WText>(WString("<h2>Gelen Şikayetler Raporu</h2>")),0,AlignmentFlag::Center);
         }
     }
 
@@ -13284,7 +13312,7 @@ void Giris::Personel::CagriMerkezi::initReportList(WContainerWidget* rowContaine
         try {
             sortDoc.append(kvp(SBLDKeys::oid,-1));
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
 
@@ -13306,13 +13334,14 @@ void Giris::Personel::CagriMerkezi::initReportList(WContainerWidget* rowContaine
             row++;
 
             {
-                auto titleBirim = vLayout->addWidget(cpp14::make_unique<WText>("<h2>"+WString("{1}").arg(row).toUTF8()+"</h2>"),0,AlignmentFlag::Center);
+                vLayout->addWidget(cpp14::make_unique<WText>("<h2>"+WString("{1}").arg(row).toUTF8()+"</h2>"),0,AlignmentFlag::Center);
             }
 
             try {
-                auto titleBirim = vLayout->addWidget(cpp14::make_unique<WText>("<h4>"+doc[SBLDKeys::SikayetKey::mainKey::tarih].get_utf8().value.to_string()+"</h4>"),0,AlignmentFlag::Center);
+                vLayout->addWidget(cpp14::make_unique<WText>("<h4>"+doc[SBLDKeys::SikayetKey::mainKey::tarih].get_utf8().value.to_string()+"</h4>"),0,AlignmentFlag::Center);
             } catch (bsoncxx::exception &e) {
-                auto titleBirim = vLayout->addWidget(cpp14::make_unique<WText>("<h4>Tarih Bilgisi Yok</h4>"),0,AlignmentFlag::Center);
+                std::cout << e.what() << std::endl;
+                vLayout->addWidget(cpp14::make_unique<WText>("<h4>Tarih Bilgisi Yok</h4>"),0,AlignmentFlag::Center);
             }
 
             try {
@@ -13322,7 +13351,7 @@ void Giris::Personel::CagriMerkezi::initReportList(WContainerWidget* rowContaine
                 try {
                     filter.append(kvp(SBLDKeys::TC::tcno,doc[SBLDKeys::SikayetKey::mainKey::vatandas].get_utf8().value));
                 } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                 }
 
                 auto val = this->db()->collection(SBLDKeys::TC::collection).find_one(filter.view());
@@ -13332,49 +13361,54 @@ void Giris::Personel::CagriMerkezi::initReportList(WContainerWidget* rowContaine
                     if( !val.value().view().empty() )
                     {
                         try {
-                            auto titlebaslik = vLayout->addWidget(cpp14::make_unique<WText>("<b> AdSoyad: "+val.value().view()[SBLDKeys::TC::isimsoyisim].get_utf8().value.to_string()+"</b>"),0,AlignmentFlag::Center);
+                            vLayout->addWidget(cpp14::make_unique<WText>("<b> AdSoyad: "+val.value().view()[SBLDKeys::TC::isimsoyisim].get_utf8().value.to_string()+"</b>"),0,AlignmentFlag::Center);
                         } catch (bsoncxx::exception &e) {
-                            auto titlebaslik = vLayout->addWidget(cpp14::make_unique<WText>("AdSoyad Yok"),0,AlignmentFlag::Center);
+                            std::cout << e.what() << std::endl;
+                            vLayout->addWidget(cpp14::make_unique<WText>("AdSoyad Yok"),0,AlignmentFlag::Center);
                         }
 
                         try {
-                            auto titlebaslik = vLayout->addWidget(cpp14::make_unique<WText>("<b> Telefon: "+val.value().view()[SBLDKeys::TC::cepTel].get_utf8().value.to_string()+"</b>"),0,AlignmentFlag::Center);
+                            vLayout->addWidget(cpp14::make_unique<WText>("<b> Telefon: "+val.value().view()[SBLDKeys::TC::cepTel].get_utf8().value.to_string()+"</b>"),0,AlignmentFlag::Center);
                         } catch (bsoncxx::exception &e) {
-                            auto titlebaslik = vLayout->addWidget(cpp14::make_unique<WText>("Telefon Yok"),0,AlignmentFlag::Center);
+                            std::cout << e.what() << std::endl;
+                            vLayout->addWidget(cpp14::make_unique<WText>("Telefon Yok"),0,AlignmentFlag::Center);
                         }
                     }
                 }
 
             } catch (mongocxx::exception &e) {
-
+std::cout << e.what() << std::endl;
             }
 
 
             try {
-                auto titlebaslik = vLayout->addWidget(cpp14::make_unique<WText>("<b>"+doc[SBLDKeys::SikayetKey::mainKey::konu].get_utf8().value.to_string()+"</b>"),0,AlignmentFlag::Center);
+                vLayout->addWidget(cpp14::make_unique<WText>("<b>"+doc[SBLDKeys::SikayetKey::mainKey::konu].get_utf8().value.to_string()+"</b>"),0,AlignmentFlag::Center);
             } catch (bsoncxx::exception &e) {
-                auto titlebaslik = vLayout->addWidget(cpp14::make_unique<WText>("Konu Yok"),0,AlignmentFlag::Center);
+                std::cout << e.what() << std::endl;
+                vLayout->addWidget(cpp14::make_unique<WText>("Konu Yok"),0,AlignmentFlag::Center);
             }
 
             try {
-                auto titleBirim = vLayout->addWidget(cpp14::make_unique<WText>("<b>"+doc[SBLDKeys::SikayetKey::mainKey::birim].get_utf8().value.to_string()+"</b>"),0,AlignmentFlag::Center);
+                vLayout->addWidget(cpp14::make_unique<WText>("<b>"+doc[SBLDKeys::SikayetKey::mainKey::birim].get_utf8().value.to_string()+"</b>"),0,AlignmentFlag::Center);
             } catch (bsoncxx::exception &e) {
-                auto titleBirim = vLayout->addWidget(cpp14::make_unique<WText>("Birim Atanmamış"),0,AlignmentFlag::Center);
+                std::cout << e.what() << std::endl;
+                vLayout->addWidget(cpp14::make_unique<WText>("Birim Atanmamış"),0,AlignmentFlag::Center);
             }
 
             try {
-                auto mahalle = vLayout->addWidget(cpp14::make_unique<WText>("<b>"+doc[SBLDKeys::SikayetKey::mainKey::mahalle].get_utf8().value.to_string()+"</b>"),0,AlignmentFlag::Center);
+                vLayout->addWidget(cpp14::make_unique<WText>("<b>"+doc[SBLDKeys::SikayetKey::mainKey::mahalle].get_utf8().value.to_string()+"</b>"),0,AlignmentFlag::Center);
             } catch (bsoncxx::exception &e) {
-                auto mahalle = vLayout->addWidget(cpp14::make_unique<WText>("Mahalle Yok"),0,AlignmentFlag::Center);
+                std::cout << e.what() << std::endl;
+                vLayout->addWidget(cpp14::make_unique<WText>("Mahalle Yok"),0,AlignmentFlag::Center);
             }
 
 
             {
-                auto tanimText = vLayout->addWidget(cpp14::make_unique<WText>(doc[SBLDKeys::SikayetKey::mainKey::durum].get_utf8().value.to_string()),0,AlignmentFlag::Left|AlignmentFlag::Justify);
+                vLayout->addWidget(cpp14::make_unique<WText>(doc[SBLDKeys::SikayetKey::mainKey::durum].get_utf8().value.to_string()),0,AlignmentFlag::Left|AlignmentFlag::Justify);
             }
 
             {
-                auto tanimText = vLayout->addWidget(cpp14::make_unique<WText>("<b>ilgili Personel(ler)</b>"),0,AlignmentFlag::Left|AlignmentFlag::Justify);
+                vLayout->addWidget(cpp14::make_unique<WText>("<b>ilgili Personel(ler)</b>"),0,AlignmentFlag::Left|AlignmentFlag::Justify);
             }
             try {
                 auto gorevliViewList = doc[SBLDKeys::SikayetKey::mainKey::gorevli].get_array().value;
@@ -13384,19 +13418,20 @@ void Giris::Personel::CagriMerkezi::initReportList(WContainerWidget* rowContaine
                 {
                     auto gorevliView = gorevli.get_document().view();
                     {
-                        auto mahalle = vLayout->addWidget(cpp14::make_unique<WText>("<b>"+gorevliView[SBLDKeys::SikayetKey::GorevliType::adsoyad].get_utf8().value.to_string()+"</b>"),0,AlignmentFlag::Center);
+                        vLayout->addWidget(cpp14::make_unique<WText>("<b>"+gorevliView[SBLDKeys::SikayetKey::GorevliType::adsoyad].get_utf8().value.to_string()+"</b>"),0,AlignmentFlag::Center);
                     }
                     {
-                        auto mahalle = vLayout->addWidget(cpp14::make_unique<WText>("<b>"+gorevliView[SBLDKeys::SikayetKey::GorevliType::tel].get_utf8().value.to_string()+"</b>"),0,AlignmentFlag::Center);
+                        vLayout->addWidget(cpp14::make_unique<WText>("<b>"+gorevliView[SBLDKeys::SikayetKey::GorevliType::tel].get_utf8().value.to_string()+"</b>"),0,AlignmentFlag::Center);
                     }
                 }
 
             } catch (bsoncxx::exception &e) {
-                auto mahalle = vLayout->addWidget(cpp14::make_unique<WText>("Görevli Personel Yok"),0,AlignmentFlag::Center);
+                std::cout << e.what() << std::endl;
+                vLayout->addWidget(cpp14::make_unique<WText>("Görevli Personel Yok"),0,AlignmentFlag::Center);
             }
 
             {
-                auto tanimText = vLayout->addWidget(cpp14::make_unique<WText>("Cevaplar - Açıklamalar"),0,AlignmentFlag::Left);
+                vLayout->addWidget(cpp14::make_unique<WText>("Cevaplar - Açıklamalar"),0,AlignmentFlag::Left);
             }
 
             {
@@ -13520,12 +13555,12 @@ void Giris::Personel::CagriMerkezi::initReportList(WContainerWidget* rowContaine
 
                     }
                 } catch (bsoncxx::exception &e) {
-
+                    std::cout << e.what() << std::endl;
                 }
 
                 if( !cevapExist )
                 {
-                    auto tanimText = vLayout->addWidget(cpp14::make_unique<WText>("<b>Henüz Cevap Yazılmamış</b>"),0,AlignmentFlag::Left);
+                    vLayout->addWidget(cpp14::make_unique<WText>("<b>Henüz Cevap Yazılmamış</b>"),0,AlignmentFlag::Left);
 
                 }
 
@@ -13541,7 +13576,7 @@ void Giris::Personel::CagriMerkezi::initReportList(WContainerWidget* rowContaine
 
 
     } catch (mongocxx::exception &e) {
-
+        std::cout << e.what() << std::endl;
     }
 
 
@@ -13600,7 +13635,7 @@ void Giris::Personel::CagriMerkezi::addlist(WContainerWidget *rContainer, bsoncx
     try {
         sortDoc.append(kvp(SBLDKeys::SikayetKey::mainKey::julianDay,-1));
     } catch (bsoncxx::exception &e) {
-
+        std::cout << e.what() << std::endl;
     }
 
     findOptions.sort(sortDoc.view());
@@ -13773,9 +13808,9 @@ void Giris::Personel::CagriMerkezi::setDetail(std::string oid)
         title->addStyleClass(Bootstrap::Label::Danger);
         title->setAttributeValue(Style::style,Style::font::size::s14px+Style::font::weight::bold);
         try {
-            auto text = vLayout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::SikayetKey::mainKey::vatandasadSoyad].get_utf8().value.to_string()),0,AlignmentFlag::Middle);
+            vLayout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::SikayetKey::mainKey::vatandasadSoyad].get_utf8().value.to_string()),0,AlignmentFlag::Middle);
         } catch (bsoncxx::exception &e) {
-            auto text = vLayout->addWidget(cpp14::make_unique<WText>(e.what()),0,AlignmentFlag::Middle);
+            vLayout->addWidget(cpp14::make_unique<WText>(e.what()),0,AlignmentFlag::Middle);
         }
     }
 
@@ -13802,9 +13837,9 @@ void Giris::Personel::CagriMerkezi::setDetail(std::string oid)
                 if( !val.value().view().empty() )
                 {
                     try {
-                        auto text = vLayout->addWidget(cpp14::make_unique<WText>(val.value().view()[SBLDKeys::TC::cepTel].get_utf8().value.to_string()),0,AlignmentFlag::Middle);
+                        vLayout->addWidget(cpp14::make_unique<WText>(val.value().view()[SBLDKeys::TC::cepTel].get_utf8().value.to_string()),0,AlignmentFlag::Middle);
                     } catch (bsoncxx::exception &e) {
-                        auto text = vLayout->addWidget(cpp14::make_unique<WText>(e.what()),0,AlignmentFlag::Middle);
+                        vLayout->addWidget(cpp14::make_unique<WText>(e.what()),0,AlignmentFlag::Middle);
                     }
                 }
             }
@@ -13823,9 +13858,9 @@ void Giris::Personel::CagriMerkezi::setDetail(std::string oid)
         title->addStyleClass(Bootstrap::Label::Primary);
         title->setAttributeValue(Style::style,Style::font::size::s14px+Style::font::weight::bold);
         try {
-            auto text = vLayout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::SikayetKey::mainKey::tarih].get_utf8().value.to_string()),0,AlignmentFlag::Middle);
+            vLayout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::SikayetKey::mainKey::tarih].get_utf8().value.to_string()),0,AlignmentFlag::Middle);
         } catch (bsoncxx::exception &e) {
-            auto text = vLayout->addWidget(cpp14::make_unique<WText>(e.what()),0,AlignmentFlag::Middle);
+            vLayout->addWidget(cpp14::make_unique<WText>(e.what()),0,AlignmentFlag::Middle);
         }
     }
 
@@ -13839,9 +13874,9 @@ void Giris::Personel::CagriMerkezi::setDetail(std::string oid)
         title->addStyleClass(Bootstrap::Label::Primary);
         title->setAttributeValue(Style::style,Style::font::size::s14px+Style::font::weight::bold);
         try {
-            auto text = vLayout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::SikayetKey::mainKey::mahalle].get_utf8().value.to_string()),0,AlignmentFlag::Middle);
+            vLayout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::SikayetKey::mainKey::mahalle].get_utf8().value.to_string()),0,AlignmentFlag::Middle);
         } catch (bsoncxx::exception &e) {
-            auto text = vLayout->addWidget(cpp14::make_unique<WText>(e.what()),0,AlignmentFlag::Middle);
+            vLayout->addWidget(cpp14::make_unique<WText>(e.what()),0,AlignmentFlag::Middle);
         }
     }
 
@@ -13855,9 +13890,9 @@ void Giris::Personel::CagriMerkezi::setDetail(std::string oid)
         title->addStyleClass(Bootstrap::Label::Primary);
         title->setAttributeValue(Style::style,Style::font::size::s14px+Style::font::weight::bold);
         try {
-            auto text = vLayout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::SikayetKey::mainKey::durum].get_utf8().value.to_string()),0,AlignmentFlag::Middle);
+            vLayout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::SikayetKey::mainKey::durum].get_utf8().value.to_string()),0,AlignmentFlag::Middle);
         } catch (bsoncxx::exception &e) {
-            auto text = vLayout->addWidget(cpp14::make_unique<WText>(e.what()),0,AlignmentFlag::Middle);
+            vLayout->addWidget(cpp14::make_unique<WText>(e.what()),0,AlignmentFlag::Middle);
         }
     }
 
@@ -13871,7 +13906,7 @@ void Giris::Personel::CagriMerkezi::setDetail(std::string oid)
         title->addStyleClass(Bootstrap::Label::Primary);
         title->setAttributeValue(Style::style,Style::font::size::s14px+Style::font::weight::bold);
         try {
-            auto text = vLayout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::SikayetKey::mainKey::birim].get_utf8().value.to_string()),0,AlignmentFlag::Middle);
+            vLayout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::SikayetKey::mainKey::birim].get_utf8().value.to_string()),0,AlignmentFlag::Middle);
         } catch (bsoncxx::exception &e) {
             vLayout->addWidget(cpp14::make_unique<WText>(e.what()),0,AlignmentFlag::Middle);
         }
@@ -13943,7 +13978,7 @@ void Giris::Personel::CagriMerkezi::setDetail(std::string oid)
                         auto _text = _layout->addWidget(cpp14::make_unique<WText>(doc[SBLDKeys::SikayetKey::asamakey::tip].get_utf8().value.to_string()));
                         _text->setAttributeValue(Style::style,Style::font::size::s14px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
                     } catch (bsoncxx::exception &e) {
-                        auto _text = _layout->addWidget(cpp14::make_unique<WText>(e.what()));
+                        _layout->addWidget(cpp14::make_unique<WText>(e.what()));
                     }
                 }
 
@@ -13958,7 +13993,7 @@ void Giris::Personel::CagriMerkezi::setDetail(std::string oid)
                         auto _text = _layout->addWidget(cpp14::make_unique<WText>(doc[SBLDKeys::SikayetKey::asamakey::tarih].get_utf8().value.to_string()));
                         _text->setAttributeValue(Style::style,Style::font::size::s14px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
                     } catch (bsoncxx::exception &e) {
-                        auto _text = _layout->addWidget(cpp14::make_unique<WText>(e.what()));
+                        _layout->addWidget(cpp14::make_unique<WText>(e.what()));
                     }
                 }
 
@@ -13973,7 +14008,7 @@ void Giris::Personel::CagriMerkezi::setDetail(std::string oid)
                         auto _text = _layout->addWidget(cpp14::make_unique<WText>(doc[SBLDKeys::SikayetKey::asamakey::saat].get_utf8().value.to_string()));
                         _text->setAttributeValue(Style::style,Style::font::size::s14px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
                     } catch (bsoncxx::exception &e) {
-                        auto _text = _layout->addWidget(cpp14::make_unique<WText>(e.what()));
+                        _layout->addWidget(cpp14::make_unique<WText>(e.what()));
                     }
                 }
 
@@ -13988,7 +14023,7 @@ void Giris::Personel::CagriMerkezi::setDetail(std::string oid)
                         auto _text = _layout->addWidget(cpp14::make_unique<WText>(doc[SBLDKeys::SikayetKey::asamakey::personel].get_document().view()[SBLDKeys::SikayetKey::asamakey::Personel::adSoyad].get_utf8().value.to_string()));
                         _text->setAttributeValue(Style::style,Style::font::size::s14px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
                     } catch (bsoncxx::exception &e) {
-                        auto _text = _layout->addWidget(cpp14::make_unique<WText>(e.what()));
+                        _layout->addWidget(cpp14::make_unique<WText>(e.what()));
                     }
                 }
 
@@ -14008,7 +14043,7 @@ void Giris::Personel::CagriMerkezi::setDetail(std::string oid)
                             auto _text = _layout->addWidget(cpp14::make_unique<WText>(doc[SBLDKeys::SikayetKey::asamakey::aciklama].get_utf8().value.to_string()));
                             _text->setAttributeValue(Style::style,Style::font::size::s14px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
                         } catch (bsoncxx::exception &e) {
-                            auto _text = _layout->addWidget(cpp14::make_unique<WText>(e.what()));
+                            _layout->addWidget(cpp14::make_unique<WText>(e.what()));
                         }
                     }
 
@@ -14024,19 +14059,19 @@ void Giris::Personel::CagriMerkezi::setDetail(std::string oid)
                             auto _text = _layout->addWidget(cpp14::make_unique<WText>(doc[SBLDKeys::SikayetKey::asamakey::degisim].get_utf8().value.to_string()));
                             _text->setAttributeValue(Style::style,Style::font::size::s14px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
                         } catch (bsoncxx::exception &e) {
-                            auto _text = _layout->addWidget(cpp14::make_unique<WText>(e.what()));
+                            _layout->addWidget(cpp14::make_unique<WText>(e.what()));
                         }
                     }
 
                 } catch (bsoncxx::exception &e) {
-
+                    std::cout << e.what() << std::endl;
                 }
 
             }
 
 
         } catch (bsoncxx::exception &e) {
-            auto text = vLayout->addWidget(cpp14::make_unique<WText>(e.what()),0,AlignmentFlag::Middle);
+            vLayout->addWidget(cpp14::make_unique<WText>(e.what()),0,AlignmentFlag::Middle);
         }
 
     }
@@ -14277,7 +14312,7 @@ void Giris::Personel::BaskanMesajlar::addList(WContainerWidget *rContainer, bson
     try {
         sortDoc.append(kvp(SBLDKeys::oid,-1));
     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
     }
 
     findOptions.sort(sortDoc.view());
@@ -14431,7 +14466,7 @@ void Giris::Personel::BaskanMesajlar::addList(WContainerWidget *rContainer, bson
 
 
     } catch (mongocxx::exception &e) {
-
+std::cout << e.what() << std::endl;
     }
 
 
@@ -14457,7 +14492,7 @@ void Giris::Personel::BaskanMesajlar::setMesajDetail(std::string oid)
     try {
         filter.append(kvp(SBLDKeys::oid,bsoncxx::oid{oid}));
     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
     }
 
 
@@ -14554,6 +14589,7 @@ void Giris::Personel::BaskanMesajlar::setMesajDetail(std::string oid)
                         text->addStyleClass(Bootstrap::Label::Warning);
                         text->setAttributeValue(Style::style,Style::color::color(Style::color::White::FloralWhite)+Style::font::size::s12px+Style::font::weight::bold);
                     } catch (bsoncxx::exception &e) {
+                        std::cout << e.what() << std::endl;
                         auto text = container->addWidget(cpp14::make_unique<WText>("Birime Yönlendirilmemiş"));
                         text->addStyleClass(Bootstrap::Label::Danger);
                     }
@@ -14602,6 +14638,7 @@ void Giris::Personel::BaskanMesajlar::setMesajDetail(std::string oid)
                             CevapText->setMargin(10,Side::Top|Side::Bottom);
                         }
                     } catch (bsoncxx::exception &e) {
+                        std::cout << e.what() << std::endl;
                         auto text = container->addWidget(cpp14::make_unique<WText>("Cevaplanmamış Mesaj"));
                         text->addStyleClass(Bootstrap::Label::Danger);
                         text->setAttributeValue(Style::style,Style::font::size::s14px);
@@ -14654,17 +14691,16 @@ void Giris::Personel::BaskanMesajlar::setMesajDetail(std::string oid)
                             try {
                                 _filter.append(kvp(SBLDKeys::oid,bsoncxx::oid{birimGorevList->attributeValue(Style::dataoid).toUTF8()}));
                             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                             }
 
-                            std::cout << "_FILTER: " << bsoncxx::to_json(_filter.view()) << std::endl;
 
                             auto setDoc = document{};
 
                             try {
                                 setDoc.append(kvp("$set",make_document(kvp(SBLDKeys::Yonetim::Baskan::MESAJ::birim,birim))));
                             } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
                             }
 
                             try {
@@ -14833,19 +14869,19 @@ std::vector<Giris::Personel::BaskanMesajlar::BirimGorevlendirmeList::BirimItem> 
     try {
         notSelect.append(make_document(kvp(SBLDKeys::Birimler::haberlesmekodu,"0")));
     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
     }
 
     try {
         notSelect.append(make_document(kvp(SBLDKeys::Birimler::haberlesmekodu,"-1")));
     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
     }
 
     try {
         _filter.append(kvp("$nor",notSelect));
     } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
     }
 
     std::vector<BirimItem> BirimList;
@@ -14871,7 +14907,7 @@ std::vector<Giris::Personel::BaskanMesajlar::BirimGorevlendirmeList::BirimItem> 
 
         }
     } catch (mongocxx::exception &e) {
-
+std::cout << e.what() << std::endl;
     }
 
 
@@ -14901,20 +14937,20 @@ Giris::Personel::BaskanMesajlar::CevapYazWidget::CevapYazWidget(mongocxx::databa
         try {
             filter.append(kvp(SBLDKeys::oid,bsoncxx::oid{mesajOid}));
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
         auto doc = document{};
         try {
             doc.append(kvp(SBLDKeys::Yonetim::Baskan::MESAJ::CEVAP::cevap,textEdit->text().toUTF8()));
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
         try {
             doc.append(kvp(SBLDKeys::Yonetim::Baskan::MESAJ::CEVAP::julianDate,bsoncxx::types::b_int64{WDate::currentDate().toJulianDay()}));
         } catch (bsoncxx::exception &e) {
-
+std::cout << e.what() << std::endl;
         }
 
 
