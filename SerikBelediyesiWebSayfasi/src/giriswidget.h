@@ -59,43 +59,6 @@ private:
 
 
 
-class Bilgilerim : public WContainerWidget
-{
-public:
-    Bilgilerim(mongocxx::database* _db , bsoncxx::document::value* _user);
-
-private:
-    mongocxx::database* db;
-    bsoncxx::document::value* user;
-};
-
-class Basvuru : public WContainerWidget
-{
-public:
-    Basvuru(mongocxx::database *_db,bsoncxx::document::value *_user);
-
-
-    Signal<NoClass> &clickBasvuru();
-private:
-    mongocxx::database* db;
-    bsoncxx::document::value *user;
-
-    Signal<NoClass> _mClickBasvuru_;
-
-    void save();
-
-    void showMessage( std::string title , std::string msg );
-
-    WTextEdit* mesajEdit;
-    WLineEdit* lineEditKonu,*lineEditAdres,*lineEditTel,*lineEditmail,*lineEditad,*lineEdittc;
-    WComboBox* comboBoxGeriDonus;
-
-    void ShowGeriDonusUyari(WString mesaj);
-
-    void resetForm();
-
-};
-
 class Basvurularim : public WContainerWidget
 {
 public:
