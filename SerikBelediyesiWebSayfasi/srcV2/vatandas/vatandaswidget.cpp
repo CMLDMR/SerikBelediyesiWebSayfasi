@@ -111,13 +111,18 @@ void VatandasWidget::initChangeTC()
         mTC->setMahalle (mahalleComboBox->currentText ().toUTF8 ().c_str ());
         mTC->setCepTelefonu (telefonLineEdit->text ().toUTF8 ().c_str ());
         mTC->setTamAdress (adreslineEdit->text ().toUTF8 ().c_str ());
+
+
+        mTC->printView ();
+
+
         if( this->updateTC (mTC) ){
             this->Content ()->clear ();
             this->Footer ()->clear ();
-
             this->initTC ();
+            this->showMessage ("Bilgi","Çıkış Yapıp Tekrar Giriş Yaptığınız Bilgileriniz Güncellenecektir.");
         }else{
-            this->showMessage ("Uyarı","Güncellenemedi");
+            this->showMessage ("Uyarı","Bilgileriniz Güncellenemedi");
         }
     });
 
@@ -170,6 +175,8 @@ void VatandasWidget::initTC()
         }else{
             layout->addWidget(cpp14::make_unique<WText>(mTC->TamAdres ().toStdString ()),0,AlignmentFlag::Center);
         }
+
+        std::cout << "Adres: " << mTC->TamAdres ().toStdString () << std::endl;
     }
 
     {
