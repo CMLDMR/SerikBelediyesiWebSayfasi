@@ -153,23 +153,87 @@ DISTFILES += \
     ../build-SerikBelediyesiWebSayfasi-Desktop_Qt_5_9_1_MSVC2015_64bit2-Release/docroot/script/testscript.js
 
 
+    MSVC_VER = $$(VisualStudioVersion)
+
+    equals(MSVC_VER, 14.0){
+        message("msvc 2015")
+
+        win32:CONFIG(release, debug|release): LIBS += -L$$PWD/lib/ -lbsoncxx
+        else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/lib/ -lbsoncxxd
+        else:unix: LIBS += -L$$PWD/lib/ -lbsoncxx
+
+        INCLUDEPATH += $$PWD/include/bsoncxx/v_noabi
+        DEPENDPATH += $$PWD/include/bsoncxx/v_noabi
 
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/lib/ -lbsoncxx
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/lib/ -lbsoncxxd
-else:unix: LIBS += -L$$PWD/lib/ -lbsoncxx
 
-INCLUDEPATH += $$PWD/include/bsoncxx/v_noabi
-DEPENDPATH += $$PWD/include/bsoncxx/v_noabi
+        win32:CONFIG(release, debug|release): LIBS += -L$$PWD/lib/ -lmongocxx
+        else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/lib/ -lmongocxxd
+        else:unix: LIBS += -L$$PWD/lib/ -lmongocxx
+
+        INCLUDEPATH += $$PWD/include/mongocxx/v_noabi
+        DEPENDPATH += $$PWD/include/mongocxx/v_noabi
+
+        win32: LIBS += -LC:/Wt-4.1.2-msvs2015-x64/lib/ -lwt
+
+        INCLUDEPATH += C:/Wt-4.1.2-msvs2015-x64/include
+        DEPENDPATH += C:/Wt-4.1.2-msvs2015-x64/include
+
+        win32: LIBS += -LC:/Wt-4.1.2-msvs2015-x64/lib/ -lwthttp
+
+        win32: LIBS += -LC:/Wt-4.1.2-msvs2015-x64/lib/ -llibhpdf
 
 
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/lib/ -lmongocxx
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/lib/ -lmongocxxd
-else:unix: LIBS += -L$$PWD/lib/ -lmongocxx
+        win32: LIBS += -LC:/SerikBLDCoreRelease/MSVC2015X64/lib/ -lSerikBLDCore
 
-INCLUDEPATH += $$PWD/include/mongocxx/v_noabi
-DEPENDPATH += $$PWD/include/mongocxx/v_noabi
+        INCLUDEPATH += C:/SerikBLDCoreRelease/MSVC2015X64/include
+        DEPENDPATH += C:/SerikBLDCoreRelease/MSVC2015X64/include
+
+
+    }
+
+    equals(MSVC_VER, 15.0){
+        message("msvc 2017")
+
+        win32:CONFIG(release, debug|release): LIBS += -L$$PWD/lib/ -lbsoncxx
+        else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/lib/ -lbsoncxxd
+        else:unix: LIBS += -L$$PWD/lib/ -lbsoncxx
+
+        INCLUDEPATH += $$PWD/include/bsoncxx/v_noabi
+        DEPENDPATH += $$PWD/include/bsoncxx/v_noabi
+
+
+
+        win32:CONFIG(release, debug|release): LIBS += -L$$PWD/lib/ -lmongocxx
+        else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/lib/ -lmongocxxd
+        else:unix: LIBS += -L$$PWD/lib/ -lmongocxx
+
+        INCLUDEPATH += $$PWD/include/mongocxx/v_noabi
+        DEPENDPATH += $$PWD/include/mongocxx/v_noabi
+
+
+        win32: LIBS += -LC:/Wt-4.1.2-msvs2015-x64/lib/ -lwt
+
+        INCLUDEPATH += C:/Wt-4.1.2-msvs2015-x64/include
+        DEPENDPATH += C:/Wt-4.1.2-msvs2015-x64/include
+
+        win32: LIBS += -LC:/Wt-4.1.2-msvs2015-x64/lib/ -lwthttp
+
+        win32: LIBS += -LC:/Wt-4.1.2-msvs2015-x64/lib/ -llibhpdf
+
+
+        win32: LIBS += -LC:/SerikBLDCoreRelease/MSVC2017X64/lib/ -lSerikBLDCore
+
+        INCLUDEPATH += C:/SerikBLDCoreRelease/MSVC2017X64/include
+        DEPENDPATH += C:/SerikBLDCoreRelease/MSVC2017X64/include
+
+
+    }
+
+
+
+
 
 
 
@@ -180,18 +244,4 @@ DEPENDPATH += C:/boost/boost
 
 
 
-win32: LIBS += -LC:/Wt-4.1.2-msvs2015-x64/lib/ -lwt
 
-INCLUDEPATH += C:/Wt-4.1.2-msvs2015-x64/include
-DEPENDPATH += C:/Wt-4.1.2-msvs2015-x64/include
-
-win32: LIBS += -LC:/Wt-4.1.2-msvs2015-x64/lib/ -lwthttp
-
-win32: LIBS += -LC:/Wt-4.1.2-msvs2015-x64/lib/ -llibhpdf
-
-
-
-win32: LIBS += -LC:/SerikBLDCoreRelease/MSVC2015X64/lib/ -lSerikBLDCore
-
-INCLUDEPATH += C:/SerikBLDCoreRelease/MSVC2015X64/include
-DEPENDPATH += C:/SerikBLDCoreRelease/MSVC2015X64/include
