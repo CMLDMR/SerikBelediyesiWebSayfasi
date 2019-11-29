@@ -1,6 +1,6 @@
 #include "bilgiedinmeclient.h"
 
-BilgiEdinmeClient::BilgiEdinmeClient(mongocxx::database *_db, bsoncxx::document::value &_user)
+BilgiEdinmeClient::BilgiEdinmeClient(mongocxx::database *_db, const bsoncxx::document::value &_user)
     :DBClass (_db),UserClass (_user),ContainerWidget ("Bilgi Edinme Başvuruları")
 {
 

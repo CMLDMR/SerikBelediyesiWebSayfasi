@@ -10,7 +10,7 @@
 class BilgiEdinmeClient : public DBClass , public UserClass , public ContainerWidget
 {
 public:
-    BilgiEdinmeClient(mongocxx::database* _db , bsoncxx::document::value &_user);
+    BilgiEdinmeClient(mongocxx::database* _db , const bsoncxx::document::value &_user);
 };
 
 #endif // BILGIEDINMECLIENT_H
