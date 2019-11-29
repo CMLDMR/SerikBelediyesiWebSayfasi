@@ -2319,7 +2319,7 @@ Giris::Taleplerim::AciklamaEkle::AciklamaEkle(mongocxx::database *_db, std::stri
     });
 }
 
-Giris::Taleplerim::AciklamaEkle::AciklamaEkle(mongocxx::database *_db, std::string _oid, WContainerWidget *widget, bsoncxx::document::value &user, bool isVatandas)
+Giris::Taleplerim::AciklamaEkle::AciklamaEkle(mongocxx::database *_db, std::string _oid, WContainerWidget *widget, const bsoncxx::document::value &user, bool isVatandas)
     :WContainerWidget(),
       db(_db),
       oid(_oid)
@@ -3252,7 +3252,7 @@ mongocxx::stdx::optional<bsoncxx::document::value> Giris::Personel::BaseWidget::
 
 }
 
-int64_t Giris::Personel::BaseWidget::count(std::string collection, bsoncxx::document::view &filter)
+int64_t Giris::Personel::BaseWidget::count(std::string collection, const bsoncxx::document::view &filter)
 {
     std::int64_t count = 0;
     try {
@@ -3265,16 +3265,16 @@ int64_t Giris::Personel::BaseWidget::count(std::string collection, bsoncxx::docu
 
 
 
-int64_t Giris::Personel::BaseWidget::count(std::string collection, bsoncxx::builder::basic::document &filter)
-{
-    std::int64_t count = 0;
-    try {
-        count = this->db()->collection(collection).count(filter.view());
-    } catch (mongocxx::exception &e) {
+//int64_t Giris::Personel::BaseWidget::count(std::string collection, const bsoncxx::builder::basic::document &filter)
+//{
+//    std::int64_t count = 0;
+//    try {
+//        count = this->db()->collection(collection).count(filter.view());
+//    } catch (mongocxx::exception &e) {
 
-    }
-    return count;
-}
+//    }
+//    return count;
+//}
 
 int64_t Giris::Personel::BaseWidget::count(std::string collection, bsoncxx::document::value val)
 {

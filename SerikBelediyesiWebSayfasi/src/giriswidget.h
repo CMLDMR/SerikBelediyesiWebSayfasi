@@ -164,7 +164,7 @@ public:
     {
     public:
         AciklamaEkle(mongocxx::database* _db , std::string _oid, WContainerWidget *widget, bsoncxx::document::value *user, bool isVatandas = true);
-        AciklamaEkle(mongocxx::database* _db , std::string _oid, WContainerWidget *widget, bsoncxx::document::value &user, bool isVatandas = true);
+        AciklamaEkle(mongocxx::database* _db , std::string _oid, WContainerWidget *widget, const bsoncxx::document::value &user, bool isVatandas = true);
 
     private:
         mongocxx::database* db;
@@ -310,8 +310,8 @@ public:
 
     mongocxx::stdx::optional<bsoncxx::document::value> find_one(std::string collection , const bsoncxx::document::view &view = document{}.view(), mongocxx::options::find options = mongocxx::options::find());
 
-    std::int64_t count(std::string collection , bsoncxx::document::view &filter);
-    std::int64_t count(std::string collection , document &filter = document{} );
+    std::int64_t count(std::string collection , const bsoncxx::document::view &filter);
+//    std::int64_t count(std::string collection , const document &filter = document{} );
     std::int64_t count(std::string collection , bsoncxx::document::value val );
 
 
