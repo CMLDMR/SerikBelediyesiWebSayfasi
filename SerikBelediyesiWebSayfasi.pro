@@ -156,7 +156,7 @@ DISTFILES += \
     MSVC_VER = $$(VisualStudioVersion)
 
     equals(MSVC_VER, 14.0){
-        message("msvc 2015")
+        message("msvc 2015 x64")
 
         win32:CONFIG(release, debug|release): LIBS += -L$$PWD/lib/ -lbsoncxx
         else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/lib/ -lbsoncxxd
@@ -194,7 +194,7 @@ DISTFILES += \
     }
 
     equals(MSVC_VER, 15.0){
-        message("msvc 2017")
+        message("msvc 2017 x64")
 
         win32:CONFIG(release, debug|release): LIBS += -L$$PWD/lib/ -lbsoncxx
         else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/lib/ -lbsoncxxd
@@ -227,6 +227,10 @@ DISTFILES += \
 
         INCLUDEPATH += C:/SerikBLDCoreRelease/MSVC2017X64/include
         DEPENDPATH += C:/SerikBLDCoreRelease/MSVC2017X64/include
+
+
+        INCLUDEPATH += C:/SerikBLDCoreRelease/MSVC2017X64/include/bilgiEdinme
+        DEPENDPATH += C:/SerikBLDCoreRelease/MSVC2017X64/include/bilgiEdinme
 
 
     }
