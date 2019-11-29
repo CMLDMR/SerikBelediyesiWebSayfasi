@@ -54,7 +54,7 @@ private:
 class TalepItemWidget : public ContainerWidget , public SerikBLDCore::Talep
 {
 public:
-    TalepItemWidget(SerikBLDCore::DB& db);
+    TalepItemWidget(const SerikBLDCore::DB& db);
 
     std::string mahalleString() const;
     std::string talepString() const;

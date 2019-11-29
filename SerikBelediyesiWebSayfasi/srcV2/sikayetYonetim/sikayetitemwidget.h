@@ -9,7 +9,7 @@
 class newSikayetItemWidget : public ContainerWidget , public DBClass , public UserClass
 {
 public:
-    newSikayetItemWidget(mongocxx::database* _db , UserClass &userValue );
+    newSikayetItemWidget(mongocxx::database* _db , const UserClass &userValue );
 
 
 private:
@@ -28,7 +28,7 @@ private:
 class SikayetItemWidget : public ContainerWidget , public DBClass , public UserClass
 {
 public:
-    SikayetItemWidget(mongocxx::database* _db , UserClass &userValue , const bsoncxx::oid &_oid);
+    SikayetItemWidget(mongocxx::database* _db , const UserClass &userValue , const bsoncxx::oid &_oid);
 
 
 private:

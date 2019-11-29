@@ -4,7 +4,7 @@
 
 using namespace SerikBLDCore;
 
-TalepYonetim::TalepYonetim(mongocxx::database *_db, bsoncxx::document::value _user)
+TalepYonetim::TalepYonetim(mongocxx::database *_db, const bsoncxx::document::value _user)
     :ContainerWidget ("Talep/Şikayet Yönetimi V2"),
       TalepManager (_db),
       mUser(new SerikBLDCore::User (_db,_user))

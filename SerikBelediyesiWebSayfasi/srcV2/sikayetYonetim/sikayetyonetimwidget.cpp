@@ -5,7 +5,7 @@
 #include "SerikBelediyesiWebSayfasi/BaseClass/dialog.h"
 
 
-SikayetYonetimWidget::SikayetYonetimWidget(mongocxx::database *_db, bsoncxx::document::value &userValue)
+SikayetYonetimWidget::SikayetYonetimWidget(mongocxx::database *_db, const bsoncxx::document::value &userValue)
     :UserClass (userValue),DBClass(_db)
 {
 

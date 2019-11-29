@@ -354,7 +354,7 @@ void TalepWidget::TCWidget::setTCItem(TC &tcItem)
 
 
 
-TalepWidget::TalepItemWidget::TalepItemWidget(DB &db )
+TalepWidget::TalepItemWidget::TalepItemWidget(const DB &db )
     :ContainerWidget(),mDB(db)
 {
     this->Header ()->addStyleClass (Bootstrap::ContextualBackGround::bg_info);

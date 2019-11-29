@@ -6,7 +6,7 @@ using namespace SerikBLDCore;
 
 
 
-TalepView::TalepView(Talep &talepItem, mongocxx::database *_db, User *_mUser, bool _mPublicLink)
+TalepView::TalepView(const Talep &talepItem, mongocxx::database *_db, User *_mUser, bool _mPublicLink)
     :ContainerWidget (_mPublicLink ? "Serik Belediyesi Talep/Şikayet Yönetim Sistemi ©2019" : ""),
       Talep (talepItem),
       TalepManager (_db),
@@ -87,7 +87,7 @@ TalepView::TalepView(Talep &talepItem, mongocxx::database *_db, User *_mUser, bo
 
 }
 
-TalepView::TalepView(Talep &talepItem, mongocxx::database *_db, TC* _mTC)
+TalepView::TalepView(const Talep &talepItem, mongocxx::database *_db, TC* _mTC)
     :ContainerWidget (""),
       Talep (talepItem),
       TalepManager (_db),

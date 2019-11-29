@@ -12,7 +12,7 @@
 class TalepYonetim : public ContainerWidget , public SerikBLDCore::TalepManager
 {
 public:
-    TalepYonetim(mongocxx::database* _db , bsoncxx::document::value _user);
+    TalepYonetim(mongocxx::database* _db , const bsoncxx::document::value _user);
 
     Signal<std::string> &clickOid();
 

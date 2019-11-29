@@ -13,7 +13,7 @@
 class TalepView : public ContainerWidget , public SerikBLDCore::Talep , public SerikBLDCore::TalepManager
 {
 public:
-    TalepView(Talep &talepItem ,
+    TalepView(const Talep &talepItem ,
               mongocxx::database* _db ,
               SerikBLDCore::User* _mUser,
               bool _mPublicLink = true );
@@ -24,7 +24,7 @@ public:
     /// \param _db
     /// \param _mTC
     ///
-    TalepView(Talep &talepItem ,
+    TalepView(const Talep &talepItem ,
               mongocxx::database* _db ,
               SerikBLDCore::TC *_mTC );
 

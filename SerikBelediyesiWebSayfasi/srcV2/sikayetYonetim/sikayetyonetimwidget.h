@@ -8,7 +8,7 @@
 class SikayetYonetimWidget : public ContainerWidget , public UserClass , public DBClass
 {
 public:
-    SikayetYonetimWidget(mongocxx::database* _db , bsoncxx::document::value &userValue);
+    SikayetYonetimWidget(mongocxx::database* _db , const bsoncxx::document::value &userValue);
 
 
 private:
