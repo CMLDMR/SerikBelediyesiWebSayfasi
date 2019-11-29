@@ -7,7 +7,7 @@
 class Dialog : public WDialog , public DBClass , public UserClass
 {
 public:
-    Dialog(mongocxx::database* _db , bsoncxx::document::value &userValue , const std::string &title = "");
+    Dialog(mongocxx::database* _db , const bsoncxx::document::value &userValue , const std::string &title = "");
 
 
 };

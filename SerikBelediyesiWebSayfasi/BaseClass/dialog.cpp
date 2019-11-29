@@ -1,6 +1,6 @@
 #include "dialog.h"
 
-Dialog::Dialog(mongocxx::database *_db, bsoncxx::document::value &userValue, const std::string &title)
+Dialog::Dialog(mongocxx::database *_db, const bsoncxx::document::value &userValue, const std::string &title)
     :DBClass (_db),UserClass (userValue)
 {
     this->titleBar()->addWidget(cpp14::make_unique<WText>(title));
