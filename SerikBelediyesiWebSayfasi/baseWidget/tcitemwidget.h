@@ -10,7 +10,7 @@ public:
     TCItemWidget(mongocxx::database* _db , bsoncxx::document::value &userValue);
 
     TCItemWidget(mongocxx::database* _db ,
-                 bsoncxx::document::value &userValue ,
+                 const bsoncxx::document::value &userValue ,
                  TC::TCItem* _mTCItem );
 
 

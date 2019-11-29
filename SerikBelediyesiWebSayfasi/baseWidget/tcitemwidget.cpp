@@ -8,7 +8,7 @@ TCItemWidget::TCItemWidget(mongocxx::database *_db, bsoncxx::document::value &us
     addWidget(cpp14::make_unique<WText>("TC Widget For New"));
 }
 
-TCItemWidget::TCItemWidget(mongocxx::database *_db, bsoncxx::document::value &userValue, TC::TCItem *_mTCItem)
+TCItemWidget::TCItemWidget(mongocxx::database *_db, const bsoncxx::document::value &userValue, TC::TCItem *_mTCItem)
     :DBClass (_db),UserClass (userValue),mTCItem(_mTCItem), mNewTCItem(false)
 {
     addStyleClass(Bootstrap::ImageShape::img_thumbnail);
