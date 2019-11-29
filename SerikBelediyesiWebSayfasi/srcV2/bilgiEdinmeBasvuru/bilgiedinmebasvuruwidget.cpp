@@ -1,9 +1,10 @@
 #include "bilgiedinmebasvuruwidget.h"
 
+#include "bilgiedinmeitem.h"
 
 
 BilgiEdinmeBasvuruWidget::BilgiEdinmeBasvuruWidget(SerikBLDCore::DB *_db)
-    :ContainerWidget ("Yeni Bilgi Edinme Başvurusu"),SerikBLDCore::BilgiEdinme::BilgiEdinmeManager(_db)
+    :ContainerWidget ("Yeni Bilgi Edinme Başvurusu"),SerikBLDCore::BilgiEdinmeManager(_db)
 {
     this->initHeader ();
 
@@ -11,7 +12,7 @@ BilgiEdinmeBasvuruWidget::BilgiEdinmeBasvuruWidget(SerikBLDCore::DB *_db)
 }
 
 BilgiEdinmeBasvuruWidget::BilgiEdinmeBasvuruWidget(SerikBLDCore::DB *_db, const SerikBLDCore::TC *mTCUser)
-    :ContainerWidget ("Yeni Başvuru"),SerikBLDCore::BilgiEdinme::BilgiEdinmeManager(_db),mTC(mTCUser)
+    :ContainerWidget ("Yeni Başvuru"),SerikBLDCore::BilgiEdinmeManager(_db),mTC(mTCUser)
 {
     this->initHeader ();
 
@@ -105,7 +106,7 @@ void BilgiEdinmeBasvuruWidget::initWithTC()
         }
 
 
-        SerikBLDCore::BilgiEdinme::BilgiEdinmeItem item;
+        SerikBLDCore::BilgiEdinmeItem item;
 
         item.setTCoid (mTC->oid ().value ());
         item.setKonu (konu->text ().toUTF8 ().c_str ());
@@ -247,7 +248,7 @@ void BilgiEdinmeBasvuruWidget::initPublic()
         }
 
 
-        SerikBLDCore::BilgiEdinme::BilgiEdinmeItem item;
+        SerikBLDCore::BilgiEdinmeItem item;
 
         auto val = mTCManager->Load_byTCNO (tcno->text ().toUTF8 ());
 
@@ -379,3 +380,4 @@ void BilgiEdinmeBasvuruWidget::initPublic()
 
 
 }
+

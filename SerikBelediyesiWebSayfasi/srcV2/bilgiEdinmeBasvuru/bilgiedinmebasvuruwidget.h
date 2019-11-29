@@ -1,12 +1,23 @@
 #ifndef BILGIEDINMEBASVURUWIDGET_H
 #define BILGIEDINMEBASVURUWIDGET_H
 
+
+
+
 #include "SerikBelediyesiWebSayfasi/BaseClass/containerwiget.h"
+
+
 #include "bilgiEdinme/bilgiedinmemanager.h"
+
+//namespace SerikBLDCore {
+//class BilgiEdinmeItem;
+//}
+
 #include "tc.h"
 #include "tcmanager.h"
 
-class BilgiEdinmeBasvuruWidget : public ContainerWidget , SerikBLDCore::BilgiEdinme::BilgiEdinmeManager
+
+class BilgiEdinmeBasvuruWidget : public ContainerWidget , public SerikBLDCore::BilgiEdinmeManager
 {
 public:
     BilgiEdinmeBasvuruWidget(SerikBLDCore::DB* _db);
@@ -18,6 +29,8 @@ private:
     void initWithTC();
 
     void initPublic();
+
+//    virtual void onList(const QVector<SerikBLDCore::BilgiEdinmeItem> *mlist) override;
 
     const SerikBLDCore::TC* mTC;
 
