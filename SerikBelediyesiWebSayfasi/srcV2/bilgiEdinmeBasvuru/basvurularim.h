@@ -16,9 +16,16 @@ class Basvurularim : public ContainerWidget , public SerikBLDCore::BilgiEdinmeMa
 public:
     Basvurularim(DB* _db , const SerikBLDCore::TC& _tcUser);
     virtual ~Basvurularim();
+
+
     void initControlWidget();
+
     virtual void onList(const QVector<SerikBLDCore::BilgiEdinmeItem> *mlist) final;
+
     std::unique_ptr<SerikBLDCore::BilgiEdinmeItem> mCurrentFilter;
+
+    void initItem( const std::string& itemOid );
+
 };
 
 

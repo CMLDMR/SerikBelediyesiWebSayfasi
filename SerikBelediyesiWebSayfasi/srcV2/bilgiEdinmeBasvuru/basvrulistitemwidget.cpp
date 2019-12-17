@@ -2,7 +2,7 @@
 #include "bilgiEdinme/bilgiedinmeitem.h"
 
 BasvruListItemWidget::BasvruListItemWidget(SerikBLDCore::BilgiEdinmeItem *_item)
-    :ContainerWidget (""),item(_item)
+    :ContainerWidget (""),item(_item),_mOid(_item->oid ().value ().to_string ())
 {
     addStyleClass (Bootstrap::ImageShape::img_thumbnail);
     addWidget (cpp14::make_unique<WText>(item->birim ().toStdString ()));
@@ -23,9 +23,10 @@ BasvruListItemWidget::BasvruListItemWidget(SerikBLDCore::BilgiEdinmeItem *_item)
     }
 
 
+
     decorationStyle ().setCursor (Cursor::PointingHand);
     clicked ().connect ([&](){
-        this->_ClickItem.emit (item->oid ().value ().to_string ());
+        this->_ClickItem.emit (_mOid);
     });
 }
 

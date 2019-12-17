@@ -21,6 +21,8 @@ private:
 
 
     Signal<std::string> _ClickItem;
+
+    std::string _mOid;
 };
 
 #endif // BASVRULISTITEMWIDGET_H
