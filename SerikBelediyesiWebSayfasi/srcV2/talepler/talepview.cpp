@@ -522,13 +522,22 @@ void TalepView::initTalepView()
                 titleContainer->setPositionScheme (PositionScheme::Absolute);
                 titleContainer->setOffsets (WLength(0),Side::Left|Side::Top);
 
-                auto titleText = titleContainer->addWidget (cpp14::make_unique<WText>(item.personelName ().toStdString ()+
-                                                                                      " / "+
-                                                                                      item.tarih ().toStdString ()+
-                                                                                      " " + item.saat ().toStdString ()+
-                                                                                      " " + item.typeStr ().toStdString () ));
-                titleText->addStyleClass ("textShadow");
-                titleText->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
+                if( !mPublicLink )
+                {
+                    auto titleText = titleContainer->addWidget (cpp14::make_unique<WText>(item.personelName ().toStdString ()+
+                                                                                          " / "+
+                                                                                          item.tarih ().toStdString ()+
+                                                                                          " " + item.saat ().toStdString ()+
+                                                                                          " " + item.typeStr ().toStdString () ));
+                    titleText->addStyleClass ("textShadow");
+                    titleText->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
+                }else{
+                    auto titleText = titleContainer->addWidget (cpp14::make_unique<WText>(item.tarih ().toStdString ()));
+                    titleText->addStyleClass ("textShadow");
+                    titleText->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
+                }
+
+
             }else if( item.userType () == TalepSubItem::TCUser ){
 
                 auto titleContainerTC = itemContainer->addWidget (cpp14::make_unique<WContainerWidget>());
@@ -857,13 +866,12 @@ void TalepView::initTalepVatandasView()
                 titleContainer->setPositionScheme (PositionScheme::Absolute);
                 titleContainer->setOffsets (WLength(0),Side::Left|Side::Top);
 
-                auto titleText = titleContainer->addWidget (cpp14::make_unique<WText>(item.personelName ().toStdString ()+
-                                                                                      " / "+
-                                                                                      item.tarih ().toStdString ()+
-                                                                                      " " + item.saat ().toStdString ()+
+                auto titleText = titleContainer->addWidget (cpp14::make_unique<WText>(item.tarih ().toStdString ()+
                                                                                       " " + item.typeStr ().toStdString () ));
                 titleText->addStyleClass ("textShadow");
                 titleText->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
+
+
             }else if( item.userType () == TalepSubItem::TCUser ){
 
                 auto titleContainerTC = itemContainer->addWidget (cpp14::make_unique<WContainerWidget>());
