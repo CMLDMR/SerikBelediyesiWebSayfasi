@@ -29,6 +29,7 @@ SOURCES += main.cpp \
     SerikBelediyesiWebSayfasi/baseItem/tcitem.cpp \
     SerikBelediyesiWebSayfasi/baseWidget/tcitemwidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/basvrulistitemwidget.cpp \
+    SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/basvuruitemviewwidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/basvurularim.cpp \
     SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/bilgiedinmebasvuruwidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekcelistwidgetitem.cpp \
@@ -93,6 +94,7 @@ HEADERS += \
     SerikBelediyesiWebSayfasi/baseItem/tcitem.h \
     SerikBelediyesiWebSayfasi/baseWidget/tcitemwidget.h \
     SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/basvrulistitemwidget.h \
+    SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/basvuruitemviewwidget.h \
     SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/basvurularim.h \
     SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/bilgiedinmebasvuruwidget.h \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekcelistwidgetitem.h \
@@ -144,13 +146,7 @@ HEADERS += \
     SerikBelediyesiWebSayfasi/srcV2/mainpagecontroller.h \
     SerikBelediyesiWebSayfasi/srcV2/baskanwidget.h
 
-DISTFILES += \
-    ../build-SerikBelediyesiWebSayfasi-Desktop_Qt_5_9_1_MSVC2015_64bit2-Release/docroot/css/mainPage.css \
-    ../build-SerikBelediyesiWebSayfasi-Desktop_Qt_5_9_1_MSVC2015_64bit2-Release/docroot/css/slider.css \
-    ../build-SerikBelediyesiWebSayfasi-Desktop_Qt_5_9_1_MSVC2015_64bit2-Release/docroot/css/eventWidget.css \
-    ../build-SerikBelediyesiWebSayfasi-Desktop_Qt_5_9_1_MSVC2015_64bit2-Release/docroot/css/header.css \
-    ../build-SerikBelediyesiWebSayfasi-Desktop_Qt_5_9_1_MSVC2015_64bit2-Release/docroot/script/Script.js \
-    ../build-SerikBelediyesiWebSayfasi-Desktop_Qt_5_9_1_MSVC2015_64bit2-Release/docroot/script/testscript.js
+DISTFILES +=
 
 
     MSVC_VER = $$(VisualStudioVersion)
