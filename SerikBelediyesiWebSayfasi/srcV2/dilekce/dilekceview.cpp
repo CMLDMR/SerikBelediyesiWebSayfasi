@@ -605,6 +605,13 @@ void DilekceView::initCevapView()
                 btn->addStyleClass (Bootstrap::Button::Primary);
                 btn->clicked ().connect ([=](){
 
+                    if( !mCevapUploader->isUploaded () )
+                    {
+                        this->showMessage ("Uyarı","Cevap Eklemeden Dilekçeyi Kapatamazsınız");
+                        return;
+                    }
+
+
                     DilekceCevap mCevap;
 
                     mCevap.setSaat (QTime::currentTime ().toString ("hh:mm"));
