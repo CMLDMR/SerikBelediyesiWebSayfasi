@@ -14,10 +14,15 @@ public:
 
     Signal<NoClass> &Closed();
 
+    Signal<std::string> &ClickedCevapFile();
+
+
 private:
     SerikBLDCore::BilgiEdinmeItem mItem;
 
     Signal<NoClass> _Closed;
+
+    Signal<std::string> _ClickedCevapFile;
 };
 
 #endif // BASVURUITEMVIEWWIDGET_H

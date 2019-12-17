@@ -2961,6 +2961,7 @@ void Giris::Personel::PersonelWidget::initMenu()
 
     menu->addItem(WString::fromUTF8("Dilekçeler"), Wt::cpp14::make_unique<DilekceYonetim>(db(),User()));
     menu->addItem(WString::fromUTF8("TaleplerimV2"), Wt::cpp14::make_unique<TalepYonetim>(db(),User()));
+    menu->addItem(WString::fromUTF8("BaşvurularımV2"), Wt::cpp14::make_unique<V2::GelenBasvurular>(new SerikBLDCore::DB(db()) , User()) );
 
 
     if(this->User().view()[SBLDKeys::Personel::statu].get_utf8().value.to_string() == SBLDKeys::Personel::statuType::baskan ||
@@ -3010,6 +3011,7 @@ void Giris::Personel::PersonelWidget::initMenu()
         menu->addItem(WString::fromUTF8("Evrak Arşivi"), Wt::cpp14::make_unique<EvrakArsiv>(db(),User()));
 
         menu->addItem(WString::fromUTF8("Başvurularım"), Wt::cpp14::make_unique<BilgiEdinmeClient>(db(),User()));
+
 
 //        menu->addItem(WString::fromUTF8("Çalışmalar"), Wt::cpp14::make_unique<CalismaGirWidget>(db(),User()));
         menu->addItem(WString::fromUTF8("Giriş Çıkışlarım"), Wt::cpp14::make_unique<GirisCikisWidget>(db(),User()));
