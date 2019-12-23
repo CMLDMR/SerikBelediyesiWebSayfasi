@@ -7,6 +7,8 @@
 #include "SerikBelediyesiWebSayfasi/srcV2/talepler/talepwidget.h"
 
 
+#include "user.h"
+
 
 
 namespace Giris {
@@ -322,42 +324,44 @@ private:
 
 };
 
-class ContainerWidget : public BaseWidget
+//class ContainerWidgetDeprecated : public BaseWidget
+//{
+//public:
+//    ContainerWidgetDeprecated(mongocxx::database* _db , bsoncxx::document::value _user , std::string ContainerTitle = "NOCONTAINER");
+
+//    WContainerWidget* getRowContainer() const{
+//        return this->mRowContainer;
+//    }
+
+//    inline int getRandom(int begin = 0 , int end = 127 )
+//    {
+//        std::random_device rd;
+//        std::mt19937 mt(rd());
+//        std::uniform_int_distribution<int> dist(begin,end);
+//        return dist(mt);
+//    }
+
+//private:
+//    WContainerWidget* mRowContainer;
+//};
+
+
+
+class PersonelWidget : public ContainerWidget
 {
 public:
-    ContainerWidget(mongocxx::database* _db , bsoncxx::document::value _user , std::string ContainerTitle = "NOCONTAINER");
-
-    WContainerWidget* getRowContainer() const{
-        return this->mRowContainer;
-    }
-
-    inline int getRandom(int begin = 0 , int end = 127 )
-    {
-        std::random_device rd;
-        std::mt19937 mt(rd());
-        std::uniform_int_distribution<int> dist(begin,end);
-        return dist(mt);
-    }
-
-private:
-    WContainerWidget* mRowContainer;
-};
-
-class PersonelWidget : public BaseWidget
-{
-public:
-    PersonelWidget(mongocxx::database* _db , std::string tel);
+    explicit PersonelWidget(mongocxx::database* _db , bsoncxx::document::value* _user );
 
 private:
 
     WContainerWidget* mMainContainer;
-    WContainerWidget* mHeaderContainer;
+
     WContainerWidget* mMenuContainer;
-    WContainerWidget* mContentContainer;
-    WStackedWidget* mContentWidget;
 
     void initMenu();
     void initHeader(WContainerWidget *_row);
+
+    SerikBLDCore::User *mUser;
 
 };
 
@@ -395,11 +399,6 @@ public:
 
     void setNewDurum( std::string oid , std::string oldPos , std::string newPos);
     void setPersonel( std::string oid );
-
-
-
-
-
 
 private:
 
@@ -486,243 +485,248 @@ private:
 
 };
 
-class ProjeWidget : public ContainerWidget
-{
-public:
-    ProjeWidget(mongocxx::database* _database , bsoncxx::document::value _user);
+//class ProjeWidget : public ContainerWidgetDeprecated
+//{
+//public:
+//    ProjeWidget(mongocxx::database* _database , bsoncxx::document::value _user);
 
-    void initProjectState();
+//    void initProjectState();
 
-    void initMenu(); // Mahalle Mahalle Proje İstatistikleri
+//    void initMenu(); // Mahalle Mahalle Proje İstatistikleri
 
-    WContainerWidget* mMainContainer;
+//    WContainerWidget* mMainContainer;
 
-    void initMahallelerdeProje();
-    struct MahalleItem
-    {
-        std::string mahalle;
-        std::string oid;
-    };
+//    void initMahallelerdeProje();
+//    struct MahalleItem
+//    {
+//        std::string mahalle;
+//        std::string oid;
+//    };
 
-    std::vector<MahalleItem> getMahalleList() const;
+//    std::vector<MahalleItem> getMahalleList() const;
 
-    void initBirimlerdeProje();
-    struct BirimItem
-    {
-        std::string birim;
-        std::string oid;
-    };
-    std::vector<BirimItem> getBirimList() const;
+//    void initBirimlerdeProje();
+//    struct BirimItem
+//    {
+//        std::string birim;
+//        std::string oid;
+//    };
+//    std::vector<BirimItem> getBirimList() const;
 
 
-    void initBirimMahalleProje();
+//    void initBirimMahalleProje();
 
-    void initMahalleYilProje();
+//    void initMahalleYilProje();
 
-    void setProjeDetail(std::string oid);
+//    void setProjeDetail(std::string oid);
 
-    void setProjeList(bsoncxx::document::view view, std::int32_t year = 0);
+//    void setProjeList(bsoncxx::document::view view, std::int32_t year = 0);
 
-    void setList(std::string projectDurum = "Toplam" );
-    void addList(WContainerWidget* mrContainer , bsoncxx::document::view filter );
-};
+//    void setList(std::string projectDurum = "Toplam" );
+//    void addList(WContainerWidget* mrContainer , bsoncxx::document::view filter );
+//};
 
-class CalismaWidget : public ContainerWidget
-{
-public:
-    CalismaWidget(mongocxx::database* _database , bsoncxx::document::value _user);
+//class CalismaWidget : public ContainerWidgetDeprecated
+//{
+//public:
+//    CalismaWidget(mongocxx::database* _database , bsoncxx::document::value _user);
 
 
-    void TotalState();
+//    void TotalState();
 
-    ///
-    /// \brief ZamanDongusu
-    /// 1 Günlük , 1 Haftalık , 1 Aylık , 3 Aylık
-    void ZamanDongusu();
+//    ///
+//    /// \brief ZamanDongusu
+//    /// 1 Günlük , 1 Haftalık , 1 Aylık , 3 Aylık
+//    void ZamanDongusu();
 
-    void initMenu();
+//    void initMenu();
 
-    WContainerWidget* mMainContainer;
+//    WContainerWidget* mMainContainer;
 
 
 
 
 
-    struct BirimItem
-    {
-        std::string birim;
-        std::string oid;
-    };
-    std::vector<BirimItem> getBirimList() const;
+//    struct BirimItem
+//    {
+//        std::string birim;
+//        std::string oid;
+//    };
+//    std::vector<BirimItem> getBirimList() const;
 
-    ///
-    /// \brief birimDongusu
-    /// Bugün Başlanan - Bu Hafta Başlanan - Bu Ay Başlanan - Son 6 Ay Başlanan
-    void birimDongusu();
-    void birimDongusuAdd(WContainerWidget* _rowContainer , const std::vector<BirimItem> birimList);
+//    ///
+//    /// \brief birimDongusu
+//    /// Bugün Başlanan - Bu Hafta Başlanan - Bu Ay Başlanan - Son 6 Ay Başlanan
+//    void birimDongusu();
+//    void birimDongusuAdd(WContainerWidget* _rowContainer , const std::vector<BirimItem> birimList);
 
 
 
-    struct MahalleItem
-    {
-        std::string mahalle;
-        std::string oid;
-    };
+//    struct MahalleItem
+//    {
+//        std::string mahalle;
+//        std::string oid;
+//    };
 
-    std::vector<MahalleItem> getMahalleList() const;
+//    std::vector<MahalleItem> getMahalleList() const;
 
 
-    void zamanTuneli();
+//    void zamanTuneli();
 
-    void addZamanTuneli(WContainerWidget* _rowContainer , WContainerWidget* LeftRowContainer, WContainerWidget*  RightRowContainer);
-    int skip = 0;
-    bool LeftSide;
-    void addCalismaItemToZamanTuneli(WContainerWidget* widget, bsoncxx::document::view doc );
+//    void addZamanTuneli(WContainerWidget* _rowContainer , WContainerWidget* LeftRowContainer, WContainerWidget*  RightRowContainer);
+//    int skip = 0;
+//    bool LeftSide;
+//    void addCalismaItemToZamanTuneli(WContainerWidget* widget, bsoncxx::document::view doc );
 
-    void setCalismaDetail(std::string oid);
+//    void setCalismaDetail(std::string oid);
 
 
 
-    void mahalleMahalle();
-    void mahalleMahalleAdd(WContainerWidget* rowContainer, const std::vector<MahalleItem> mahList);
+//    void mahalleMahalle();
+//    void mahalleMahalleAdd(WContainerWidget* rowContainer, const std::vector<MahalleItem> mahList);
 
 
-    void listCalismalar(bsoncxx::document::view filterView , std::string title );
-    void addCalismalartoList(WContainerWidget* rowContainer,bsoncxx::document::value filterValue);
+//    void listCalismalar(bsoncxx::document::view filterView , std::string title );
+//    void addCalismalartoList(WContainerWidget* rowContainer,bsoncxx::document::value filterValue);
 
-    void setReportMenu();
-    void reportlist(bsoncxx::document::view filterView, std::string title);
+//    void setReportMenu();
+//    void reportlist(bsoncxx::document::view filterView, std::string title);
 
-};
+//};
 
-class CalismaGirWidget : public ContainerWidget
-{
-public:
-    CalismaGirWidget(mongocxx::database* _database , bsoncxx::document::value _user);
 
-    void initTotalState();
 
 
+//class CalismaGirWidget : public ContainerWidgetDeprecated
+//{
+//public:
+//    CalismaGirWidget(mongocxx::database* _database , bsoncxx::document::value _user);
 
-    void ListCalismalar( bsoncxx::document::value filterValue );
-    void ListCalismalarAdd(WContainerWidget* rowContainer , bsoncxx::document::value filterValue );
+//    void initTotalState();
 
-    void setCalismaDetail(std::string oid);
-    void addUploader(WContainerWidget* rContainer);
-    std::vector<std::string> filePathList;
 
-    void YeniEkle();
-    QString newFileNamePath;
 
-    void Ayarlar();
-    void ListKategori(WContainerWidget* listContainer);
+//    void ListCalismalar( bsoncxx::document::value filterValue );
+//    void ListCalismalarAdd(WContainerWidget* rowContainer , bsoncxx::document::value filterValue );
 
-private:
-    std::string CurrentBirim;
+//    void setCalismaDetail(std::string oid);
+//    void addUploader(WContainerWidget* rContainer);
+//    std::vector<std::string> filePathList;
 
-    int skip;
-    const int limit = 25;
+//    void YeniEkle();
+//    QString newFileNamePath;
 
+//    void Ayarlar();
+//    void ListKategori(WContainerWidget* listContainer);
 
-    WContainerWidget* mMainContainer;
+//private:
+//    std::string CurrentBirim;
 
-    QString rootnewFileName;
+//    int skip;
+//    const int limit = 25;
 
-};
 
-class CagriMerkezi : public ContainerWidget
-{
-public:
-    CagriMerkezi(mongocxx::database* _database , bsoncxx::document::value _user);
+//    WContainerWidget* mMainContainer;
 
-    void initialState();
+//    QString rootnewFileName;
 
-    void listSikayet(bsoncxx::document::view filterView);
+//};
 
-    void initReportMenu();
 
-    void initReportList(WContainerWidget *rowContainer, bsoncxx::document::view filterView);
 
-    void addlist(WContainerWidget* rContainer, bsoncxx::document::value filterValue);
+//class CagriMerkezi : public ContainerWidgetDeprecated
+//{
+//public:
+//    CagriMerkezi(mongocxx::database* _database , bsoncxx::document::value _user);
 
-    void setDetail(std::string oid);
+//    void initialState();
 
-    WContainerWidget* mMainContainer;
+//    void listSikayet(bsoncxx::document::view filterView);
 
+//    void initReportMenu();
 
-private:
-    int skip = 0;
-    const int limit = 20;
-};
+//    void initReportList(WContainerWidget *rowContainer, bsoncxx::document::view filterView);
 
-class BaskanMesajlar : public ContainerWidget
-{
-public:
-    BaskanMesajlar(mongocxx::database* _database , bsoncxx::document::value _user);
+//    void addlist(WContainerWidget* rContainer, bsoncxx::document::value filterValue);
 
-    void init();
+//    void setDetail(std::string oid);
 
-    WContainerWidget* mMainContainer;
+//    WContainerWidget* mMainContainer;
 
-    void listMesajlar(bsoncxx::document::view filterView, std::string titleText);
 
-    void addList(WContainerWidget* rContainer, bsoncxx::document::view filterView);
+//private:
+//    int skip = 0;
+//    const int limit = 20;
+//};
 
-    void setMesajDetail(std::string oid);
+//class BaskanMesajlar : public ContainerWidgetDeprecated
+//{
+//public:
+//    BaskanMesajlar(mongocxx::database* _database , bsoncxx::document::value _user);
 
-    const int limit = 20;
-    int skip;
+//    void init();
 
-    class BirimGorevlendirmeList : public ContainerWidget
-    {
-    public:
-        BirimGorevlendirmeList( mongocxx::database* _database , bsoncxx::document::value _user );
+//    WContainerWidget* mMainContainer;
 
-        Signal<NoClass> &ClickBack(){ return _mClickBack;}
-        Signal<std::string> &ClickBirim(){ return mClickBirim;}
-    private:
-        Signal<NoClass> _mClickBack;
+//    void listMesajlar(bsoncxx::document::view filterView, std::string titleText);
 
-        Signal<std::string> mClickBirim;
+//    void addList(WContainerWidget* rContainer, bsoncxx::document::view filterView);
 
-        struct BirimItem
-        {
-            std::string birim;
-            std::string oid;
-        };
-        std::vector<BirimItem> getBirimList() const;
+//    void setMesajDetail(std::string oid);
 
-    };
+//    const int limit = 20;
+//    int skip;
 
+//    class BirimGorevlendirmeList : public ContainerWidget
+//    {
+//    public:
+//        BirimGorevlendirmeList( mongocxx::database* _database , bsoncxx::document::value _user );
 
-    class CevapYazWidget : public ContainerWidget
-    {
-    public:
-        CevapYazWidget(mongocxx::database* _database , bsoncxx::document::value _user , std::string mesajoid);
+//        Signal<NoClass> &ClickBack(){ return _mClickBack;}
+//        Signal<std::string> &ClickBirim(){ return mClickBirim;}
+//    private:
+//        Signal<NoClass> _mClickBack;
 
-        Signal<NoClass> &SuccessCevap(){ return _SuccessCevap; }
+//        Signal<std::string> mClickBirim;
 
-    private:
-        std::string mesajOid;
+//        struct BirimItem
+//        {
+//            std::string birim;
+//            std::string oid;
+//        };
+//        std::vector<BirimItem> getBirimList() const;
 
-        Signal<NoClass> _SuccessCevap;
-    };
+//    };
 
 
+//    class CevapYazWidget : public ContainerWidget
+//    {
+//    public:
+//        CevapYazWidget(mongocxx::database* _database , bsoncxx::document::value _user , std::string mesajoid);
 
-};
+//        Signal<NoClass> &SuccessCevap(){ return _SuccessCevap; }
 
-class ArizaKaydi : public ContainerWidget
-{
+//    private:
+//        std::string mesajOid;
 
-public:
-    ArizaKaydi(mongocxx::database* _database , bsoncxx::document::value _user);
+//        Signal<NoClass> _SuccessCevap;
+//    };
 
 
-private:
-    WContainerWidget* mMainContainer;
-    WContainerWidget* mContentContainer;
-};
+
+//};
+
+//class ArizaKaydi : public ContainerWidgetDeprecated
+//{
+
+//public:
+//    ArizaKaydi(mongocxx::database* _database , bsoncxx::document::value _user);
+
+
+//private:
+//    WContainerWidget* mMainContainer;
+//    WContainerWidget* mContentContainer;
+//};
 
 }
 
