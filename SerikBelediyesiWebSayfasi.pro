@@ -41,6 +41,8 @@ SOURCES += main.cpp \
     SerikBelediyesiWebSayfasi/srcV2/girisCikisWidget/giriscikiswidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/ik.cpp \
     SerikBelediyesiWebSayfasi/srcV2/kadinailestock.cpp \
+    SerikBelediyesiWebSayfasi/srcV2/meclis/meclisitempage.cpp \
+    SerikBelediyesiWebSayfasi/srcV2/meclis/meclispage.cpp \
     SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/bilgiedinmeclient.cpp \
     SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/bilgiedinmeitem.cpp \
     SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/bilgiedinmeyonetim.cpp \
@@ -106,6 +108,8 @@ HEADERS += \
     SerikBelediyesiWebSayfasi/srcV2/girisCikisWidget/giriscikiswidget.h \
     SerikBelediyesiWebSayfasi/srcV2/ik.h \
     SerikBelediyesiWebSayfasi/srcV2/kadinailestock.h \
+    SerikBelediyesiWebSayfasi/srcV2/meclis/meclisitempage.h \
+    SerikBelediyesiWebSayfasi/srcV2/meclis/meclispage.h \
     SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/bilgiedinmeclient.h \
     SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/bilgiedinmeitem.h \
     SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/bilgiedinmeyonetim.h \
