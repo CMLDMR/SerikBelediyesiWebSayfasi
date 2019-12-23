@@ -6,7 +6,7 @@
 
 
 
-ContainerWidget::ContainerWidget(std::string title, ContainerWidget::ContentType _contentType)
+ContainerWidget::ContainerWidget(const std::string &title, ContainerWidget::ContentType _contentType)
     :mTitle(title)
 {
     addStyleClass(Bootstrap::Grid::container_fluid);
@@ -14,7 +14,7 @@ ContainerWidget::ContainerWidget(std::string title, ContainerWidget::ContentType
     if( mTitle.size() )
     {
         mTitleBar = addWidget(cpp14::make_unique<WContainerWidget>());
-        mTitleBar->addWidget(cpp14::make_unique<WText>("<h4>"+title+"</h4>"));
+        mTitleBar->addWidget(cpp14::make_unique<WText>("<h4>"+title+"</h4>",TextFormat::XHTML));
         mTitleBar->setContentAlignment(AlignmentFlag::Center);
         mTitleBar->setMargin (15,Side::Bottom);
         mTitleBar->setMargin (-15,Side::Left|Side::Right);
@@ -76,6 +76,33 @@ WContainerWidget *ContainerWidget::Content()
 WContainerWidget *ContainerWidget::Footer()
 {
     return mFootContainer;
+}
+
+WDialog *ContainerWidget::createDialog(const std::string &title)
+{
+    auto mDialog = wApp->instance()->root()->addChild (cpp14::make_unique<WDialog>());
+
+    if( title.size () )
+    {
+        mDialog->titleBar ()->addWidget (cpp14::make_unique<WText>(title));
+        mDialog->titleBar ()->addStyleClass (Bootstrap::ContextualBackGround::bg_primary);
+    }
+
+
+    auto closeBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kapat"));
+    closeBtn->addStyleClass (Bootstrap::Button::Danger);
+
+    closeBtn->clicked ().connect ([=](){
+        wApp->instance()->root()->removeChild(mDialog);
+    });
+
+    mDialog->show ();
+    return mDialog;
+}
+
+void ContainerWidget::remogeDialog(WDialog *mDialog)
+{
+    wApp->instance()->root()->removeChild(mDialog);
 }
 
 void ContainerWidget::setContainerStyle(ContainerWidget::ContainerStyleType type)

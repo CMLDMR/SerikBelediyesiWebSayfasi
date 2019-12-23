@@ -15,11 +15,20 @@ public:
         Vertical
     };
 
-    ContainerWidget(std::string title = "" , ContentType _contentType = Vertical );
+    ContainerWidget(const std::string &title = "" , ContentType _contentType = Vertical );
 
     WContainerWidget* Header();
     WContainerWidget* Content();
     WContainerWidget* Footer();
+
+
+    /**
+     * @brief createDialog:  WDialog Oluşturur ve Geri ptr Geri Döndürür.
+     * @return
+     */
+    WDialog* createDialog( const std::string& title = "" );
+
+    void remogeDialog( WDialog* mDialog );
 
     enum ContainerStyleType
     {
@@ -71,29 +80,65 @@ public:
     explicit FileUploaderWidget( mongocxx::database* _db , const std::string &title = "PDF Cevap Yükle" );
 
 
+
+
+
+    /**
+     * @brief isUploaded: Check file is Uploaded
+     * @return
+     */
     bool isUploaded() const;
 
+
+
+
+
+    /**
+     * @brief The FilterType enum: Selectable File Type
+     */
     enum FilterType{
         Pdf,
         Image
     };
 
+
+
+
+
+    /**
+     * @brief setType: File Type
+     * @param type: Pdf , Image
+     */
     void setType( FilterType type );
 
 
 
-    ///
-    /// \brief fileLocation Location is fullPath
-    /// \return
-    ///
+
+
+
+    /**
+     * @brief fileLocation: Location is FULL PATH
+     * @return
+     */
     QString fileLocation() const;
 
-    ///
-    /// \brief doocRootLocation Location is without docroot
-    /// \return
-    ///
+
+
+
+
+    /**
+     * @brief doocRootLocation: Location is Without docroot folder
+     * @return
+     */
     QString doocRootLocation() const;
 
+
+
+
+    /**
+     * @brief Uploaded: Signal Triggered When File Uploaded
+     * @return
+     */
     Signal<NoClass> &Uploaded();
 
 private:
