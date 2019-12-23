@@ -42,6 +42,8 @@ public:
 
     bool loadTalep( const std::string &oid );
 
+    bool loadGundem( const std::string& oid );
+
 
 
 private:
