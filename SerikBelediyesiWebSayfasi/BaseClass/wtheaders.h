@@ -28,6 +28,7 @@
 #include <Wt/Http/Client.h>
 #include <Wt/WDialog.h>
 #include <Wt/WTimer.h>
+#include <Wt/WTimeEdit.h>
 #include <Wt/WToolBar.h>
 #include <Wt/WCheckBox.h>
 #include <Wt/WLabel.h>
