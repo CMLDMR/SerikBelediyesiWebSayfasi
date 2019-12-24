@@ -30,6 +30,8 @@ v2::MeclisItemPage::MeclisItemPage(DB *_db, const MeclisItem &item)
 
     this->initKararContoller ();
 
+
+
     SerikBLDCore::Meclis::KararManager::UpdateList (SerikBLDCore::Meclis::KararItem().setMeclisOid (this->oid ().value ().to_string ()));
     SerikBLDCore::Meclis::YouTubeManager::UpdateList (SerikBLDCore::Meclis::YouTubeLink().setMeclisOid (this->oid ().value ().to_string ()));
 
@@ -239,6 +241,13 @@ void v2::MeclisItemPage::initMeclisBilgileri()
         container->setContentAlignment (AlignmentFlag::Center);
         auto guncelleBtn = container->addWidget (cpp14::make_unique<WPushButton>("Meclis Bilgilerini Güncelle"));
         guncelleBtn->addStyleClass (Bootstrap::Button::Primary);
+        guncelleBtn->clicked ().connect([=](){
+            this->setGundem (mGundemEdit->text ().toUTF8 ().c_str());
+            this->setYayinda (mYayinda->isChecked ());
+            this->setYil (mYil->value ());
+            this->setAy (mAyLineEdit->text ().toUTF8 ().c_str ());
+            _updateRequest.emit (*this);
+        });
     }
 }
 
@@ -384,4 +393,9 @@ void v2::MeclisItemPage::addYoutubeLink()
     });
 
 
+}
+
+Signal<const SerikBLDCore::Meclis::MeclisItem &> &v2::MeclisItemPage::updateRequest()
+{
+    return _updateRequest;
 }

@@ -25,6 +25,8 @@ public:
 
     void addYoutubeLink();
 
+    Signal<const SerikBLDCore::Meclis::MeclisItem&> &updateRequest();
+
 private:
     WSpinBox* mYil;
     WLineEdit* mAyLineEdit;
@@ -33,6 +35,8 @@ private:
 
     WContainerWidget* mKararContainer;
     WContainerWidget* mLinkContainer;
+
+    Signal<const SerikBLDCore::Meclis::MeclisItem&> _updateRequest;
 };
 
 

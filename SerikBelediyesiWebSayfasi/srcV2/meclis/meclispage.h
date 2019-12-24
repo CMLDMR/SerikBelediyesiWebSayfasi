@@ -22,6 +22,8 @@ public:
     void yeniEkle();
 
     void initMeclisPage( const SerikBLDCore::Meclis::MeclisItem &meclisItem );
+
+    void updateMeclis( const SerikBLDCore::Meclis::MeclisItem& item );
 };
 
 /**

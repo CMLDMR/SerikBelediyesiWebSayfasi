@@ -53,8 +53,13 @@ void v2::MeclisPageManager::initController()
         container->addWidget (cpp14::make_unique<WText>("<b>Listele</b>"));
         container->decorationStyle ().setCursor (Cursor::PointingHand);
         container->clicked ().connect ([&](){
-            this->setLimit (1000);
-            this->UpdateList (SerikBLDCore::Meclis::MeclisItem());
+            SerikBLDCore::FindOptions options;
+            options.setLimit (1000);
+            options.setSkip (0);
+            SerikBLDCore::Item item("none");
+            item.append(SerikBLDCore::Meclis::Key::yil,-1);
+            options.setSort (item);
+            this->UpdateList (SerikBLDCore::Meclis::MeclisItem(),options);
         });
     }
 
@@ -166,8 +171,16 @@ void v2::MeclisPageManager::onList(const QVector<SerikBLDCore::Meclis::MeclisIte
             __container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
                                         Bootstrap::Grid::Medium::col_md_4+
                                         Bootstrap::Grid::Small::col_sm_4+
-                                        Bootstrap::Grid::ExtraSmall::col_xs_6);
-            __container->addWidget (cpp14::make_unique<WText>((item.yayinda () ? "Yayında" : "Yayında Değil")));
+                                        Bootstrap::Grid::ExtraSmall::col_xs_12);
+            auto text = __container->addWidget (cpp14::make_unique<WText>((item.yayinda () ? "Yayında" : "Yayında Değil")));
+            if( !item.yayinda () )
+            {
+                text->setAttributeValue (Style::style,Style::color::color (Style::color::Red::DarkRed)
+                                         +Style::font::weight::bold);
+            }else{
+                text->setAttributeValue (Style::style,Style::color::color (Style::color::Green::DarkGreen)
+                                         +Style::font::weight::bold);
+            }
         }
     }
 
@@ -207,11 +220,20 @@ void v2::MeclisPageManager::yeniEkle()
 
 void v2::MeclisPageManager::initMeclisPage( const SerikBLDCore::Meclis::MeclisItem &meclisItem )
 {
-
     this->Content ()->clear ();
+    auto item = this->Content ()->addWidget (cpp14::make_unique<v2::MeclisItemPage>(this->getDB (),meclisItem));
+    item->updateRequest ().connect (this,&v2::MeclisPageManager::updateMeclis );
+}
 
-    this->Content ()->addWidget (cpp14::make_unique<v2::MeclisItemPage>(this->getDB (),meclisItem));
-
+void v2::MeclisPageManager::updateMeclis(const SerikBLDCore::Meclis::MeclisItem &item)
+{
+    SerikBLDCore::Meclis::MeclisItem __item;
+    __item.setDocumentView (item.view ());
+    if( this->UpdateItem (__item) ){
+        this->initMeclisPage (__item);
+    }else{
+        this->showMessage ("Hata","Bilgiler Güncellenemedi");
+    }
 }
 
 v2::MeclisNewItemPage::MeclisNewItemPage()
