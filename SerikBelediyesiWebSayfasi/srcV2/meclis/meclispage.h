@@ -26,6 +26,8 @@ public:
     void updateMeclis( const SerikBLDCore::Meclis::MeclisItem& item );
 };
 
+
+
 /**
  * @brief The MeclisNewItemPage class
  */
@@ -37,10 +39,6 @@ public:
 
     Signal<NoClass> &ClickSaved();
 
-//    int yil() const;
-//    std::string ay() const;
-//    bool yayinda() const;
-//    std::string gundem() const;
 
 
 private:
@@ -48,6 +46,8 @@ private:
     WLineEdit* ayTextEdit;
     WCheckBox* onlineCheckBox;
     WTextEdit* mGundemEdit;
+    WDateEdit* mMeclisTarihi;
+    WTimeEdit* mMeclisSaat;
 
     Signal<NoClass> _ClickSaved;
 

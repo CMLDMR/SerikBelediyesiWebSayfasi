@@ -4,6 +4,8 @@
 #include "meclisitempage.h"
 
 
+#include <QTime>
+
 
 
 v2::MeclisPageManager::MeclisPageManager(SerikBLDCore::DB *db)
@@ -204,8 +206,18 @@ void v2::MeclisPageManager::yeniEkle()
         }else{
             item.setYayinda (newItem->yayinda ());
             item.setGundem (newItem->gundem());
-            item.setJulianDay (WDate::currentDate ().toJulianDay ());
-            this->InsertItem (item);
+            item.setJulianDay (newItem->julianDay ());
+            item.setSaat (newItem->saat ());
+            if( this->InsertItem (item).size () ){
+                SerikBLDCore::FindOptions options;
+                options.setLimit (1000);
+                options.setSkip (0);
+                SerikBLDCore::Item item("none");
+                item.append(SerikBLDCore::Meclis::Key::yil,-1);
+                options.setSort (item);
+                this->UpdateList (SerikBLDCore::Meclis::MeclisItem(),options);
+                this->showMessage ("Bilgi","Meclis Başarılı Bir Şekilde Eklendi.");
+            }
         }
 
 
@@ -245,9 +257,9 @@ v2::MeclisNewItemPage::MeclisNewItemPage()
 
     {
         auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
-                                  Bootstrap::Grid::Medium::col_md_4+
-                                  Bootstrap::Grid::Small::col_sm_4+
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
+                                  Bootstrap::Grid::Medium::col_md_3+
+                                  Bootstrap::Grid::Small::col_sm_3+
                                   Bootstrap::Grid::ExtraSmall::col_xs_12);
         auto vLayout = container->setLayout (cpp14::make_unique<WVBoxLayout>());
 
@@ -286,13 +298,46 @@ v2::MeclisNewItemPage::MeclisNewItemPage()
 
     }
 
+
+    {
+        auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
+                                  Bootstrap::Grid::Medium::col_md_6+
+                                  Bootstrap::Grid::Small::col_sm_6+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_6);
+
+        auto vLayout = container->setLayout (cpp14::make_unique<WVBoxLayout>());
+
+        vLayout->addWidget (cpp14::make_unique<WText>("Tarih"),1,AlignmentFlag::Center);
+        mMeclisTarihi = vLayout->addWidget (cpp14::make_unique<WDateEdit>(),1,AlignmentFlag::Center);
+
+    }
+
+    {
+        auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
+                                  Bootstrap::Grid::Medium::col_md_6+
+                                  Bootstrap::Grid::Small::col_sm_6+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_6);
+
+        auto vLayout = container->setLayout (cpp14::make_unique<WVBoxLayout>());
+
+        vLayout->addWidget (cpp14::make_unique<WText>("Saat"),1,AlignmentFlag::Center);
+        mMeclisSaat = vLayout->addWidget (cpp14::make_unique<WTimeEdit>(),1,AlignmentFlag::Center);
+        mMeclisSaat->setFormat ("hh:mm");
+        mMeclisSaat->setTime (WTime::currentServerTime ());
+
+    }
+
+    //WTimerWidget
+
     {
         auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
         container->addStyleClass (Bootstrap::Grid::col_full_12);
 
         auto vLayout = container->setLayout (cpp14::make_unique<WVBoxLayout>());
 
-        vLayout->addWidget (cpp14::make_unique<WText>("Gündem"),1,AlignmentFlag::Center);
+        vLayout->addWidget (cpp14::make_unique<WText>("Meclis Tarihi"),1,AlignmentFlag::Center);
         mGundemEdit = vLayout->addWidget (cpp14::make_unique<WTextEdit>(),1,AlignmentFlag::Justify);
         mGundemEdit->setHeight (250);
 
@@ -310,7 +355,21 @@ v2::MeclisNewItemPage::MeclisNewItemPage()
             this->setYil (yilSpinBox->value ());
             this->setYayinda (onlineCheckBox->isChecked ());
             this->setGundem (mGundemEdit->text ().toUTF8 ().c_str ());
-            _ClickSaved.emit (NoClass());
+            if( mMeclisTarihi->date ().isValid ( ) )
+            {
+                this->setJulianDay (mMeclisTarihi->date ().toJulianDay ());
+
+                if( mMeclisSaat->time ().isValid () )
+                {
+                    this->setSaat (QTime( mMeclisSaat->time ().hour (),
+                                          mMeclisSaat->time ().minute () ).msecsSinceStartOfDay ());
+                    _ClickSaved.emit (NoClass());
+                }else{
+                    this->showMessage ("Hata","Saat Hatalı");
+                }
+            }else{
+                this->showMessage ("Hata","Tarih Hatalı");
+            }
         });
         btn->addStyleClass (Bootstrap::Button::Primary);
     }
@@ -319,7 +378,5 @@ v2::MeclisNewItemPage::MeclisNewItemPage()
 
 Signal<NoClass> &v2::MeclisNewItemPage::ClickSaved()
 {
-
     return _ClickSaved;
-
 }
