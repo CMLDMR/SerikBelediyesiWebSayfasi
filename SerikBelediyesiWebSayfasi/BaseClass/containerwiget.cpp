@@ -192,12 +192,11 @@ FileUploaderWidget::FileUploaderWidget(mongocxx::database *_db, const std::strin
         mFileUploader->upload();
         mFileUploader->enable();
         mFileUploader->setHidden(false);
-
     });
 
     mFileUploader->uploaded().connect([=] {
-        auto list = mFileUploader->uploadedFiles();
 
+        auto list = mFileUploader->uploadedFiles();
 
         for( auto item : list )
         {
@@ -217,12 +216,7 @@ FileUploaderWidget::FileUploaderWidget(mongocxx::database *_db, const std::strin
         }
 
     });
-
     setType (Image);
-
-
-
-
 }
 
 bool FileUploaderWidget::isUploaded() const
