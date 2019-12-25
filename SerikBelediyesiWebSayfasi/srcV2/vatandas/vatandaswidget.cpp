@@ -185,3 +185,208 @@ void VatandasWidget::initTC()
         mSvBtn->clicked ().connect ( this , &VatandasWidget::initChangeTC );
     }
 }
+
+
+
+
+
+
+VatandasYeniKayitWidget::VatandasYeniKayitWidget(SerikBLDCore::DB *db)
+    :ContainerWidget ("Yeni TC Ekle"),
+      SerikBLDCore::TCManager (db),
+      mTC( new SerikBLDCore::TC() )
+{
+    this->Content ()->clear ();
+    this->Content ()->setContentAlignment (AlignmentFlag::Center);
+    this->Content ()->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+    this->Content ()->setWidth (WLength("100%"));
+
+    auto newPhotoWidget = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+    newPhotoWidget->setHeight (150);
+    newPhotoWidget->setWidth (WLength("100%"));
+
+
+    auto photoUploadWidget = this->Content ()->addWidget (cpp14::make_unique<FileUploaderWidget>(this->db (),"Resim Yükle"));
+    photoUploadWidget->setType (FileUploaderWidget::Image);
+
+    photoUploadWidget->Uploaded ().connect ([=](){
+        newPhotoWidget->setAttributeValue (Style::style,Style::background::url (photoUploadWidget->doocRootLocation ().toStdString ())+
+                                           Style::background::size::contain+
+                                           Style::background::repeat::norepeat+
+                                           Style::background::position::center_center);
+        newPhotoWidget->setHeight (150);
+        newPhotoWidget->setMinimumSize (WLength::Auto,WLength(150));
+
+    });
+
+    tcoidLineEdit = Content ()->addWidget (cpp14::make_unique<WLineEdit>());
+    tcoidLineEdit->setEnabled (false);
+
+
+    tcLineEdit = Content ()->addWidget (cpp14::make_unique<WLineEdit>());
+    tcLineEdit->setWidth (WLength("100%"));
+    tcLineEdit->setPlaceholderText ("TCNO Giriniz");
+    tcLineEdit->setText (mTC->CepTelefonu ().toStdString ());
+
+
+
+
+    adsoyadLineEdit = Content ()->addWidget (cpp14::make_unique<WLineEdit>());
+    adsoyadLineEdit->setWidth (WLength("100%"));
+    adsoyadLineEdit->setPlaceholderText ("Adınızı Soyadınızı Giriniz");
+    adsoyadLineEdit->setText (mTC->AdSoyad ().toStdString ());
+
+    telefonLineEdit = Content ()->addWidget (cpp14::make_unique<WLineEdit>());
+    telefonLineEdit->setWidth (WLength("100%"));
+    telefonLineEdit->setPlaceholderText ("Cep Telefonunuzu Giriniz");
+    telefonLineEdit->setText (mTC->CepTelefonu ().toStdString ());
+
+
+
+    tcLineEdit->textInput ().connect ([=](){
+        if( tcLineEdit->text ().toUTF8 ().size () == 11 )
+        {
+            auto val = this->Load_byTCNO (tcLineEdit->text ().toUTF8 () );
+            if( val )
+            {
+                this->showMessage ("Uyarı","Bu TC Kayıtlı." +
+                                   val.value ()->AdSoyad ().toStdString () +
+                                   " Adına Kayıtlı - " + val.value ()->CepTelefonu ().toStdString ());
+
+                __tcKayitli = true;
+                adsoyadLineEdit->setText (val.value ()->AdSoyad ().toStdString ());
+                telefonLineEdit->setText (val.value ()->CepTelefonu ().toStdString ());
+                tcoidLineEdit->setText (val.value ()->oid ().value ().to_string ());
+                auto filePath = this->downloadFileWeb (val.value ()->FotoOid ());
+                newPhotoWidget->setAttributeValue (Style::style,Style::background::url (filePath)+
+                                                   Style::background::size::contain+
+                                                   Style::background::repeat::norepeat+
+                                                   Style::background::position::center_center);
+                newPhotoWidget->setHeight (150);
+                newPhotoWidget->setMinimumSize (WLength::Auto,WLength(150));
+            }else{
+                __tcKayitli = false;
+            }
+        }else{
+            __kayitYapilabilir = false;
+        }
+    });
+
+
+
+    telefonLineEdit->textInput ().connect ([=](){
+        if( telefonLineEdit->text ().toUTF8 ().size () == 11 )
+        {
+            auto val = this->Load_byTEL (telefonLineEdit->text ().toUTF8 () );
+            if( val )
+            {
+                this->showMessage ("Uyarı","Bu Telefon Kayıtlı." +
+                                   val.value ()->AdSoyad ().toStdString () +
+                                   " Adına Kayıtlı - " + val.value ()->TCNO ().toStdString ());
+
+                __telefonKayitli = true;
+
+                adsoyadLineEdit->setText (val.value ()->AdSoyad ().toStdString ());
+                tcLineEdit->setText (val.value ()->TCNO ().toStdString ());
+                tcoidLineEdit->setText (val.value ()->oid ().value ().to_string ());
+                auto filePath = this->downloadFileWeb (val.value ()->FotoOid ());
+                newPhotoWidget->setAttributeValue (Style::style,Style::background::url (filePath)+
+                                                   Style::background::size::contain+
+                                                   Style::background::repeat::norepeat+
+                                                   Style::background::position::center_center);
+                newPhotoWidget->setHeight (150);
+                newPhotoWidget->setMinimumSize (WLength::Auto,WLength(150));
+            }else{
+                __telefonKayitli = false;
+            }
+        }else{
+            __kayitYapilabilir = false;
+        }
+    });
+
+    mahalleComboBox = Content ()->addWidget (cpp14::make_unique<WComboBox>());
+    mahalleComboBox->setWidth (WLength("100%"));
+    auto mahList = this->getMahalleler ();
+    for( auto item : mahList )
+    {
+        mahalleComboBox->addItem (item.toStdString ());
+    }
+
+
+    adreslineEdit = Content ()->addWidget (cpp14::make_unique<WLineEdit>());
+    adreslineEdit->setPlaceholderText ("Adresinizi Giriniz");
+    adreslineEdit->setText (mTC->TamAdres ().toStdString ());
+    adreslineEdit->setWidth (WLength("100%"));
+
+    Footer ()->clear ();
+
+    auto updateBtn = Footer ()->addWidget (cpp14::make_unique<WPushButton>("Güncelle"));
+    updateBtn->addStyleClass (Bootstrap::Button::Primary);
+    updateBtn->clicked ().connect ([=](){
+
+        if( __tcKayitli )
+        {
+            this->showMessage ("Hata","TCNO Kayıtlı. Başka Bir TC Seçiniz");
+            return;
+        }
+
+        if( __telefonKayitli )
+        {
+            this->showMessage ("Hata","Telefon Numarası Kayıtlı. Başka Bir Numara Seçiniz");
+            return;
+        }
+
+
+        if( photoUploadWidget->isUploaded () )
+        {
+            auto fileOid = this->uploadfile (photoUploadWidget->fileLocation ());
+            mTC->setFotoOid (fileOid.get_oid ().value.to_string ().c_str ());
+        }
+
+
+        if( mahalleComboBox->currentIndex () == 0 )
+        {
+            this->showMessage ("Uyarı","Mahalle Seçmediniz");
+            return;
+        }
+
+        if( tcLineEdit->text ().toUTF8 ().size () != 11 )
+        {
+            this->showMessage ("Uyarı","TCNO Hatalı Lütfen Kontrol Ediniz");
+            return;
+        }
+
+        if( adsoyadLineEdit->text ().toUTF8 ().size () < 5 )
+        {
+            this->showMessage ("Uyarı","Ad Soyad Hatalı Lütfen Kontrol Ediniz");
+            return;
+        }
+
+        if( adreslineEdit->text ().toUTF8 ().size () < 5 )
+        {
+            this->showMessage ("Uyarı","Adres Hatalı Lütfen Kontrol Ediniz");
+            return;
+        }
+
+        if( telefonLineEdit->text ().toUTF8 ().size () != 11 )
+        {
+            this->showMessage ("Uyarı","Cep Telefonu Hatalı Lütfen Kontrol Ediniz");
+            return;
+        }
+
+        mTC->setTCNO (tcLineEdit->text ().toUTF8 ().c_str ());
+        mTC->setAdSoyad (adsoyadLineEdit->text ().toUTF8 ().c_str ());
+        mTC->setMahalle (mahalleComboBox->currentText ().toUTF8 ().c_str ());
+        mTC->setCepTelefonu (telefonLineEdit->text ().toUTF8 ().c_str ());
+        mTC->setTamAdress (adreslineEdit->text ().toUTF8 ().c_str ());
+
+
+        if( this->insertTC ( mTC ) ){
+
+            tcoidLineEdit->setText (mTC->oid ().value ().to_string ());
+            this->showMessage ("Bilgi","Bilgiler Başarılı Bir Şekilde Kayıt Edildi.");
+        }else{
+            this->showMessage ("Uyarı","TC Bilgileri Kayıt Edilemedi");
+        }
+    });
+}
