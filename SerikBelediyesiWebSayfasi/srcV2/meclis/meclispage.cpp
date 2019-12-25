@@ -2,7 +2,7 @@
 
 
 #include "meclisitempage.h"
-
+#include "meclisuyesipage.h"
 
 #include <QTime>
 
@@ -81,7 +81,8 @@ void v2::MeclisPageManager::initController()
         container->addWidget (cpp14::make_unique<WText>("<b>Meclis Üyeleri</b>"));
         container->decorationStyle ().setCursor (Cursor::PointingHand);
         container->clicked ().connect ([&](){
-
+            this->Content ()->clear ();
+            auto newItem = this->Content ()->addWidget (cpp14::make_unique<v2::MeclisYonetimPage>(this->getDB ()));
         });
     }
 
