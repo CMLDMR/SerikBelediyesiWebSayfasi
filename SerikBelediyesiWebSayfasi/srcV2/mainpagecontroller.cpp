@@ -79,6 +79,7 @@ MainPageController::MainPageController(mongocxx::database *_db)
             btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,50),
                                                                                this->getRandom(25,50),
                                                                                this->getRandom(25,50)));
+
             btn->setHeight(100);
             btn->setWidth(100);
             btn->setMargin(15,AllSides);
