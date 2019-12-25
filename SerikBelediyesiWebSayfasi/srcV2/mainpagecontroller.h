@@ -21,7 +21,7 @@ using namespace Wt;
 class MainPageController : public DataBaseWidget
 {
 public:
-    MainPageController(mongocxx::database* _db);
+    explicit MainPageController(mongocxx::database* _db);
 
 
 
