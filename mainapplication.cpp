@@ -385,21 +385,16 @@ bool MainApplication::loadGundem(const std::string &oid)
 
     if( meclisGundem )
     {
-
         auto item = SerikBLDCore::Meclis::MeclisItem();
         item.setDocumentView (meclisGundem.value ().view ());
         wApp->setTitle ("Serik Belediyesi Meclis Gündemi - " + std::to_string (item.yil ()) + " " + item.ay ().toStdString ());
-
         root()->clear();
         root()->addStyleClass("rootBody");
         root ()->setContentAlignment (AlignmentFlag::Center);
         auto rContainer = root ()->addWidget (cpp14::make_unique<WContainerWidget>());
         rContainer->addStyleClass (Bootstrap::Grid::row);
         rContainer->setMaximumSize (WLength(1024),WLength::Auto);
-
-
-
-        rContainer->addWidget (cpp14::make_unique<WText>( item.gundem().toStdString(),TextFormat::UnsafeXHTML));
+        rContainer->addWidget (cpp14::make_unique<v2::MeclisItemPublicPage>(new SerikBLDCore::DB(&this->db),item));
         return true;
     }
 
