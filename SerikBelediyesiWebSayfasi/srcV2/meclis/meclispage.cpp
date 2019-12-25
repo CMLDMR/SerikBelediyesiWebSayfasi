@@ -150,18 +150,18 @@ void v2::MeclisPageManager::onList(const QVector<SerikBLDCore::Meclis::MeclisIte
 
         {
             auto __container = _Container->addWidget (cpp14::make_unique<WContainerWidget>());
-            __container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
-                                        Bootstrap::Grid::Medium::col_md_4+
-                                        Bootstrap::Grid::Small::col_sm_4+
+            __container->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                                        Bootstrap::Grid::Medium::col_md_2+
+                                        Bootstrap::Grid::Small::col_sm_2+
                                         Bootstrap::Grid::ExtraSmall::col_xs_6);
             __container->addWidget (cpp14::make_unique<WText>("<b>"+std::to_string (item.yil ())+"</b>"));
         }
 
         {
             auto __container = _Container->addWidget (cpp14::make_unique<WContainerWidget>());
-            __container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
-                                        Bootstrap::Grid::Medium::col_md_4+
-                                        Bootstrap::Grid::Small::col_sm_4+
+            __container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
+                                        Bootstrap::Grid::Medium::col_md_3+
+                                        Bootstrap::Grid::Small::col_sm_3+
                                         Bootstrap::Grid::ExtraSmall::col_xs_6);
             __container->addWidget (cpp14::make_unique<WText>(item.ay ().toStdString ()));
         }
@@ -170,10 +170,10 @@ void v2::MeclisPageManager::onList(const QVector<SerikBLDCore::Meclis::MeclisIte
 
         {
             auto __container = _Container->addWidget (cpp14::make_unique<WContainerWidget>());
-            __container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
-                                        Bootstrap::Grid::Medium::col_md_4+
-                                        Bootstrap::Grid::Small::col_sm_4+
-                                        Bootstrap::Grid::ExtraSmall::col_xs_12);
+            __container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
+                                        Bootstrap::Grid::Medium::col_md_3+
+                                        Bootstrap::Grid::Small::col_sm_3+
+                                        Bootstrap::Grid::ExtraSmall::col_xs_5);
             auto text = __container->addWidget (cpp14::make_unique<WText>((item.yayinda () ? "Yayında" : "Yayında Değil")));
             if( !item.yayinda () )
             {
@@ -184,6 +184,27 @@ void v2::MeclisPageManager::onList(const QVector<SerikBLDCore::Meclis::MeclisIte
                                          +Style::font::weight::bold);
             }
         }
+
+
+        {
+            auto __container = _Container->addWidget (cpp14::make_unique<WContainerWidget>());
+            __container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
+                                        Bootstrap::Grid::Medium::col_md_3+
+                                        Bootstrap::Grid::Small::col_sm_3+
+                                        Bootstrap::Grid::ExtraSmall::col_xs_5);
+            __container->addWidget (cpp14::make_unique<WText>(QDate::fromJulianDay (item.julianDay ()).toString ("dd/MM/yyyy dddd").toStdString ()));
+        }
+
+
+        {
+            auto __container = _Container->addWidget (cpp14::make_unique<WContainerWidget>());
+            __container->addStyleClass (Bootstrap::Grid::Large::col_lg_1+
+                                        Bootstrap::Grid::Medium::col_md_1+
+                                        Bootstrap::Grid::Small::col_sm_1+
+                                        Bootstrap::Grid::ExtraSmall::col_xs_2);
+            __container->addWidget (cpp14::make_unique<WText>(QTime::fromMSecsSinceStartOfDay (item.saat ()).toString ("hh:mm").toStdString ()));
+        }
+
     }
 
 }
