@@ -29,6 +29,7 @@ public:
 
 
 
+    Signal<std::string> &onExisted();
 
 private:
     SerikBLDCore::TC* mTC;
@@ -40,6 +41,9 @@ private:
     WLineEdit* adreslineEdit,*telefonLineEdit,*adsoyadLineEdit,*tcLineEdit;
     WComboBox* mahalleComboBox;
     WLineEdit* tcoidLineEdit;
+
+
+    Signal<std::string> _onExisted;
 
 
 };

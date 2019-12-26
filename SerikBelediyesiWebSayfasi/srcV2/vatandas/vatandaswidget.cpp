@@ -264,6 +264,7 @@ VatandasYeniKayitWidget::VatandasYeniKayitWidget(SerikBLDCore::DB *db)
                                                    Style::background::position::center_center);
                 newPhotoWidget->setHeight (150);
                 newPhotoWidget->setMinimumSize (WLength::Auto,WLength(150));
+                _onExisted.emit (val.value ()->oid ().value ().to_string ());
             }else{
                 __tcKayitli = false;
             }
@@ -296,6 +297,7 @@ VatandasYeniKayitWidget::VatandasYeniKayitWidget(SerikBLDCore::DB *db)
                                                    Style::background::position::center_center);
                 newPhotoWidget->setHeight (150);
                 newPhotoWidget->setMinimumSize (WLength::Auto,WLength(150));
+                _onExisted.emit (val.value ()->oid ().value ().to_string ());
             }else{
                 __telefonKayitli = false;
             }
@@ -385,8 +387,15 @@ VatandasYeniKayitWidget::VatandasYeniKayitWidget(SerikBLDCore::DB *db)
 
             tcoidLineEdit->setText (mTC->oid ().value ().to_string ());
             this->showMessage ("Bilgi","Bilgiler Başarılı Bir Şekilde Kayıt Edildi.");
+            _onExisted.emit (tcoidLineEdit->text ().toUTF8 ());
+
         }else{
             this->showMessage ("Uyarı","TC Bilgileri Kayıt Edilemedi");
         }
     });
+}
+
+Signal<std::string> &VatandasYeniKayitWidget::onExisted()
+{
+    return _onExisted;
 }
