@@ -9,7 +9,7 @@
 
 
 v2::MeclisPageManager::MeclisPageManager(SerikBLDCore::DB *db)
-    :ContainerWidget ("Meclis Kararlar - Gündem") , SerikBLDCore::Meclis::MeclisManager (db)
+    :ContainerWidget ("Meclis Yönetimi") , SerikBLDCore::Meclis::MeclisManager (db)
 {
     this->initController ();
 
