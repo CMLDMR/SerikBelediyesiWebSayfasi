@@ -31,6 +31,10 @@ private:
 };
 
 
+
+
+
+
 class MeclisUyeleriPage : public SerikBLDCore::Meclis::UyeManager , public ContainerWidget
 {
 public:
@@ -41,7 +45,19 @@ public:
     void yeniKayit();
 
     SerikBLDCore::TCManager* tcManager;
+
+    std::vector<SerikBLDCore::Meclis::MeclisDonemi> getDonemList();
+
+    std::vector<SerikBLDCore::Meclis::PartiItem> getPartiList();
+
+    std::vector<SerikBLDCore::Meclis::KomisyonItem> getKomisyonList();
+
+    QStringList mSelectedKomisyon;
 };
+
+
+
+
 
 
 class MeclisDonemPage : public SerikBLDCore::Meclis::DonemManager , public ContainerWidget
@@ -66,9 +82,16 @@ public:
 
 };
 
+class KomisyonManagerPage : public SerikBLDCore::Meclis::KomisyonManager , public ContainerWidget
+{
+public:
+    explicit KomisyonManagerPage(DB* _db);
 
+    void onList(const QVector<SerikBLDCore::Meclis::KomisyonItem> *mlist) override;
 
+    void yeniKayit();
 
+};
 
 
 }
