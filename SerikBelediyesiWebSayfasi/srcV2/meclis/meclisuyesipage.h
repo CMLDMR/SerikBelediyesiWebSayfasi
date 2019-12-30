@@ -30,11 +30,6 @@ private:
 
 };
 
-
-
-
-
-
 class MeclisUyeleriPage : public SerikBLDCore::Meclis::UyeManager , public ContainerWidget
 {
 public:
@@ -46,19 +41,8 @@ public:
 
     SerikBLDCore::TCManager* tcManager;
 
-    std::vector<SerikBLDCore::Meclis::MeclisDonemi> getDonemList();
-
-    std::vector<SerikBLDCore::Meclis::PartiItem> getPartiList();
-
-    std::vector<SerikBLDCore::Meclis::KomisyonItem> getKomisyonList();
-
     QStringList mSelectedKomisyon;
 };
-
-
-
-
-
 
 class MeclisDonemPage : public SerikBLDCore::Meclis::DonemManager , public ContainerWidget
 {
@@ -90,6 +74,26 @@ public:
     void onList(const QVector<SerikBLDCore::Meclis::KomisyonItem> *mlist) override;
 
     void yeniKayit();
+
+};
+
+class MeclisUyesiProfilPage : public ContainerWidget , public SerikBLDCore::Meclis::MeclisUyesi
+{
+public:
+    explicit MeclisUyesiProfilPage(const MeclisUyesi &uye , SerikBLDCore::DB* _db );
+
+
+private:
+    SerikBLDCore::DB* mDB;
+    SerikBLDCore::TCManager* mTcManager;
+    SerikBLDCore::TC* mTC;
+    SerikBLDCore::Meclis::UyeManager* mUyeManager;
+
+
+    void meclisUyesiBilgileri();
+
+    QVector<std::string> mSelectedKomisyon;
+
 
 };
 

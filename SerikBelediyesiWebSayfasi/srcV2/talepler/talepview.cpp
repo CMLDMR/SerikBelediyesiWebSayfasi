@@ -1445,7 +1445,7 @@ void TalepView::updateGorevliPersonelWidget()
             messageBox->buttonClicked().connect([=] {
                 if( messageBox->buttonResult () == Wt::StandardButton::Yes )
                 {
-                    Personel per;
+                    IK::Personel per;
                     per.setOid (deleteContainer->attributeValue (Style::dataoid).toUTF8 ());
                     this->DeleteGorevliPersonel (per);
                     if( this->updateTalep (this) ){
@@ -1533,7 +1533,7 @@ void TalepView::gorevliEkle()
 
             if( _container->attributeValue (Style::dataoid).toUTF8 () != "null" )
             {
-                Personel per;
+                IK::Personel per;
                 per.setOid (personel.oid ().value ().to_string ());
                 per.setAdSoyad (personel.AdSoyad ());
                 per.setFotoOid (personel.FotoOid ());

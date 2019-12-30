@@ -78,6 +78,11 @@ WContainerWidget *ContainerWidget::Footer()
     return mFootContainer;
 }
 
+void ContainerWidget::setTitleBarBackColor(const std::string &color)
+{
+    mTitleBar->setAttributeValue (Style::style,Style::background::color::color (color));
+}
+
 WDialog *ContainerWidget::createDialog(const std::string &title)
 {
     auto mDialog = wApp->instance()->root()->addChild (cpp14::make_unique<WDialog>());
@@ -146,6 +151,44 @@ void ContainerWidget::showMessage(std::string title, std::string msg, std::strin
 
     messageBox->webWidget()->setZIndex(1000);
     messageBox->show();
+}
+
+void ContainerWidget::showPopUpMessage(const std::string &msg, const std::string &infoType)
+{
+
+    auto container = wApp->root ()->addWidget (cpp14::make_unique<WContainerWidget>());
+    container->setPositionScheme (PositionScheme::Fixed);
+    container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+
+    if( infoType == "info" )
+    {
+        container->setOffsets (WLength("100%"),Side::Top);
+        container->setOffsets (WLength(0),Side::Right);
+        container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Green::ForestGreen)+
+                                      Style::color::color (Style::color::White::Snow)+
+                                      Style::font::weight::lighter);
+
+        container->addWidget (cpp14::make_unique<WText>(msg));
+        container->addStyleClass ("popMessage");
+    }else{
+        container->setOffsets (WLength("100%"),Side::Top);
+        container->setOffsets (WLength("50%"),Side::Right);
+        container->setPadding (25);
+        container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Red::FireBrick)+
+                                      Style::color::color (Style::color::White::Snow)+
+                                      Style::font::weight::bold);
+
+        container->addWidget (cpp14::make_unique<WText>(msg));
+        container->addStyleClass ("popMessageError");
+    }
+
+
+
+    WTimer::singleShot(std::chrono::milliseconds(3000),[=](){
+        wApp->root ()->removeWidget(container);
+    });
+
+
 }
 
 void ContainerWidget::removeTitleBar()

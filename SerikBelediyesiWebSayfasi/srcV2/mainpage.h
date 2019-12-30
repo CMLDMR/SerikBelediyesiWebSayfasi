@@ -5,6 +5,7 @@
 #include "headerpage.h"
 #include "SerikBelediyesiWebSayfasi/src/footer.h"
 
+
 class MainPage : public DataBaseWidget
 {
 public:

@@ -157,9 +157,6 @@ void v2::MeclisUyeleriPage::onList(const QVector<SerikBLDCore::Meclis::MeclisUye
     for( auto item : *mlist )
     {
 
-//        auto _Container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-//        _Container->addStyleClass (Bootstrap::Grid::col_full_12);
-
         auto tcItem = tcManager->Load_byOID (item.tcOid ().toStdString ());
 
         auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
@@ -169,6 +166,11 @@ void v2::MeclisUyeleriPage::onList(const QVector<SerikBLDCore::Meclis::MeclisUye
                                   Bootstrap::Grid::Small::col_sm_6+
                                   Bootstrap::Grid::ExtraSmall::col_xs_6);
         container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+        container->clicked ().connect ([=](){
+            Content ()->clear ();
+            Content ()->addWidget (cpp14::make_unique<MeclisUyesiProfilPage>(item,this->getDB ()));
+        });
+
         auto rContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
         rContainer->addStyleClass (Bootstrap::Grid::row);
 
@@ -240,8 +242,7 @@ void v2::MeclisUyeleriPage::yeniKayit()
     containerTC->setMargin (15,Side::Top);
 
 
-    auto gecerliDurumText = Content ()->addWidget (cpp14::make_unique<WText>("Geçersiz TC Kaydı"));
-    gecerliDurumText->addStyleClass (Bootstrap::Label::Danger);
+
 
 
     auto container = Content ()->addWidget (cpp14::make_unique<ContainerWidget>("Yeni Üye Belirle"));
@@ -251,9 +252,13 @@ void v2::MeclisUyeleriPage::yeniKayit()
                               Bootstrap::Grid::ExtraSmall::col_xs_12);
     container->setMargin (15,Side::Top);
 
+
+
     auto gLayout = container->Content ()->setLayout (cpp14::make_unique<WVBoxLayout>());
 
 
+    auto gecerliDurumText = gLayout->addWidget (cpp14::make_unique<WText>("Geçersiz TC Kaydı"));
+    gecerliDurumText->addStyleClass (Bootstrap::Label::Danger);
 
 
     //TCOID
@@ -378,59 +383,6 @@ void v2::MeclisUyeleriPage::yeniKayit()
 
 }
 
-std::vector<SerikBLDCore::Meclis::MeclisDonemi> v2::MeclisUyeleriPage::getDonemList()
-{
-    std::vector<SerikBLDCore::Meclis::MeclisDonemi> list;
-    auto cursor = SerikBLDCore::Meclis::UyeManager::find (SerikBLDCore::Meclis::MeclisDonemi(),0,0);
-    if( cursor )
-    {
-        for( auto item : *cursor )
-        {
-            SerikBLDCore::Meclis::MeclisDonemi donem;
-            donem.setDocumentView (item);
-            list.push_back (donem);
-        }
-    }
-    return list;
-}
-
-std::vector<SerikBLDCore::Meclis::PartiItem> v2::MeclisUyeleriPage::getPartiList()
-{
-    std::vector<SerikBLDCore::Meclis::PartiItem> list;
-    auto cursor = SerikBLDCore::Meclis::UyeManager::find (SerikBLDCore::Meclis::PartiItem(),0,0);
-    if( cursor )
-    {
-        for( auto item : *cursor )
-        {
-            SerikBLDCore::Meclis::PartiItem donem;
-            donem.setDocumentView (item);
-            list.push_back (donem);
-        }
-    }
-    return list;
-}
-
-std::vector<SerikBLDCore::Meclis::KomisyonItem> v2::MeclisUyeleriPage::getKomisyonList()
-{
-    std::vector<SerikBLDCore::Meclis::KomisyonItem> list;
-    auto cursor = SerikBLDCore::Meclis::UyeManager::find (SerikBLDCore::Meclis::KomisyonItem(),0,0);
-    if( cursor )
-    {
-        for( auto item : *cursor )
-        {
-            SerikBLDCore::Meclis::KomisyonItem donem;
-            donem.setDocumentView (item);
-            list.push_back (donem);
-        }
-    }
-    return list;
-}
-
-
-
-
-
-
 
 v2::MeclisDonemPage::MeclisDonemPage(DB *_db)
     :SerikBLDCore::Meclis::DonemManager (_db)
@@ -452,9 +404,7 @@ v2::MeclisDonemPage::MeclisDonemPage(DB *_db)
         svBtn->addStyleClass (Bootstrap::Button::Primary);
         svBtn->clicked ().connect ([=](){
             if( this->InsertItem (SerikBLDCore::Meclis::MeclisDonemi()
-                                  .setDonem ( std::to_string (baslangicYili->value ())+
-                                              "-"+
-                                              std::to_string (bitisYili->value ()))).size () )
+                                  .setDonem ( baslangicYili->value () , bitisYili->value ())).size () )
             {
                 SerikBLDCore::Meclis::DonemManager::UpdateList (SerikBLDCore::Meclis::MeclisDonemi());
                 remogeDialog (mDialog);
@@ -498,10 +448,8 @@ void v2::MeclisDonemPage::onList(const QVector<SerikBLDCore::Meclis::MeclisDonem
 
         delText->decorationStyle ().setCursor (Cursor::PointingHand);
         delText->clicked ().connect ([=](){
-            std::cout << text->text ().toUTF8 () << std::endl;
-
             SerikBLDCore::Meclis::MeclisDonemi item;
-            item.setDonem (text->text ().toUTF8 ());
+            item.setOid (item.oid ().value ().to_string ());
             SerikBLDCore::Meclis::DonemManager::deleteItem (item);
             SerikBLDCore::Meclis::DonemManager::UpdateList (SerikBLDCore::Meclis::MeclisDonemi());
         });
@@ -654,3 +602,244 @@ void v2::KomisyonManagerPage::yeniKayit()
 {
 
 }
+
+v2::MeclisUyesiProfilPage::MeclisUyesiProfilPage(const MeclisUyesi &uye, SerikBLDCore::DB* _db  )
+    :SerikBLDCore::Meclis::MeclisUyesi (uye),
+      mDB(_db),
+      mTcManager(new SerikBLDCore::TCManager (_db) )
+{
+
+    mUyeManager = new SerikBLDCore::Meclis::UyeManager(mDB);
+    auto val = mTcManager->Load_byOID (uye.tcOid ().toStdString ());
+    if( !val )
+    {
+        this->showMessage ("Uyarı","TC Bilgileri Yüklenemedi");
+        return;
+    }
+    mTC = val.value ();
+    this->Header ()->addWidget (cpp14::make_unique<VatandasWidget>(mDB,mTC));
+
+    Content ()->setMargin (25,Side::Top);
+    Content ()->addStyleClass ("boxShadow");
+    meclisUyesiBilgileri ();
+
+}
+
+void v2::MeclisUyesiProfilPage::meclisUyesiBilgileri()
+{
+
+    Content()->clear ();
+
+    auto container = Content ()->addWidget (cpp14::make_unique<ContainerWidget>("Meclis Üyeliği Bilgileri"));
+    container->addStyleClass (Bootstrap::Grid::col_full_12);
+    container->setMargin (15,Side::Top);
+
+    auto gLayout = container->Content ()->setLayout (cpp14::make_unique<WVBoxLayout>());
+
+
+
+
+    //TCOID
+    auto tcLineEdit = gLayout->addWidget (cpp14::make_unique<WLineEdit>(),1,AlignmentFlag::Justify);
+    tcLineEdit->setPlaceholderText (mTC->oid ().value ().to_string ());
+    tcLineEdit->setEnabled (false);
+
+    //    tcLineEdit->textInput ().connect ([=](){
+    //        if( tcLineEdit->text ().toUTF8 ().size () != 24 )
+    //        {
+    //            gecerliDurumText->removeStyleClass (Bootstrap::Label::Success,true);
+    //            gecerliDurumText->addStyleClass (Bootstrap::Label::Danger,true);
+    //        }else{
+    //            gecerliDurumText->removeStyleClass (Bootstrap::Label::Danger,true);
+    //            gecerliDurumText->addStyleClass (Bootstrap::Label::Success,true);
+    //        }
+    //    });
+
+
+    //    containerTC->onExisted ().connect ([=](const std::string& tcoid){
+    //        gecerliDurumText->setText ("Geçerli TC Kaydı");
+    //        gecerliDurumText->removeStyleClass (Bootstrap::Label::Danger,true);
+    //        gecerliDurumText->addStyleClass (Bootstrap::Label::Success,true);
+    //        tcLineEdit->setText (tcoid);
+    //    });
+
+
+
+
+    //Meclis Dönemi
+    gLayout->addWidget (cpp14::make_unique<WText>("Meclis Dönemi"));
+    auto mMeclisDonemi = gLayout->addWidget (cpp14::make_unique<WComboBox>(),1,AlignmentFlag::Justify);
+    auto donemList = mUyeManager->getDonemList ();
+    int partiCount = 0;
+    for( auto item : donemList )
+    {
+        mMeclisDonemi->addItem (item.donem ().toStdString ());
+        if( this->donemAdi () == item.donem () ){
+            mMeclisDonemi->setCurrentIndex (partiCount);
+        }
+        partiCount++;
+    }
+    mMeclisDonemi->changed ().connect ([=](){
+        SerikBLDCore::Meclis::MeclisUyesi uyeItem;
+        uyeItem.setOid (this->oid ().value ().to_string ());
+        auto val = mUyeManager->setField(uyeItem,SerikBLDCore::Meclis::UyeKey::donemAdi,mMeclisDonemi->currentText ().toUTF8 ());
+        if( val )
+        {
+            this->setDonemAdi (mMeclisDonemi->currentText ().toUTF8 ().c_str ());
+            this->showPopUpMessage ("Meclis Dönemi Değiştirildi");
+        }else{
+            this->showPopUpMessage (mUyeManager->getLastError ().toStdString (),"hata");
+        }
+    });
+
+
+
+
+    //Parti Uyeligi
+    gLayout->addWidget (cpp14::make_unique<WText>("Parti Üyeligi"));
+    auto mPartiGrubu = gLayout->addWidget (cpp14::make_unique<WComboBox>(),1,AlignmentFlag::Justify);
+    auto partiList = mUyeManager->getPartiList ();
+    partiCount = 0;
+    for( auto item : partiList )
+    {
+        mPartiGrubu->addItem (item.parti ().toStdString ());
+        if( this->partiAdi () == item.parti () ){
+            mPartiGrubu->setCurrentIndex (partiCount);
+        }
+        partiCount++;
+    }
+
+    mPartiGrubu->changed ().connect ([=](){
+        SerikBLDCore::Meclis::MeclisUyesi uyeItem;
+        uyeItem.setOid (this->oid ().value ().to_string ());
+        auto val = mUyeManager->setField(uyeItem,SerikBLDCore::Meclis::UyeKey::partiAdi,mPartiGrubu->currentText ().toUTF8 ());
+        if( val )
+        {
+            this->setPartiAdi (mPartiGrubu->currentText ().toUTF8 ().c_str ());
+            this->showPopUpMessage ("Parti Grubu Değiştirildi");
+        }else{
+            this->showPopUpMessage (mUyeManager->getLastError ().toStdString (),"hata");
+        }
+    });
+
+
+
+    //Komisyon Uyelikleri
+    gLayout->addWidget (cpp14::make_unique<WText>("Üye Olduğu Komisyonlar"));
+    auto komisyonContainer = gLayout->addWidget (cpp14::make_unique<WContainerWidget>());
+    komisyonContainer->addStyleClass (Bootstrap::Grid::row);
+
+    auto mKomisyonlar = komisyonContainer->addWidget (cpp14::make_unique<WComboBox>());
+    mKomisyonlar->addStyleClass (Bootstrap::Grid::Large::col_lg_8+
+                                 Bootstrap::Grid::Medium::col_md_8+
+                                 Bootstrap::Grid::Small::col_sm_7+
+                                 Bootstrap::Grid::ExtraSmall::col_xs_7);
+    auto komisyonList = mUyeManager->getKomisyonList ();
+    if( komisyonList.size() == 0 ) this->showPopUpMessage ("Komisyon Listesi Çekilemedi","Hata");
+    for( auto item : komisyonList )
+    {
+        mKomisyonlar->addItem (item.komisyonAdi ().toStdString ());
+    }
+
+
+    auto selectBtn = komisyonContainer->addWidget (cpp14::make_unique<WPushButton>("Ekle"));
+    selectBtn->addStyleClass (Bootstrap::Button::Primary);
+    selectBtn->addStyleClass (Bootstrap::Grid::col_full_12);
+
+    auto selectedContainer = gLayout->addWidget (cpp14::make_unique<WContainerWidget>());
+    selectedContainer->addStyleClass (Bootstrap::Grid::row);
+
+
+    for( auto item : this->komisyonUyelikleri ())
+    {
+
+        auto text = selectedContainer->addWidget (cpp14::make_unique<WText>(item.toStdString ()));
+        text->addStyleClass (Bootstrap::Grid::Large::col_lg_11+
+                             Bootstrap::Grid::Medium::col_md_11+
+                             Bootstrap::Grid::Small::col_sm_11+
+                             Bootstrap::Grid::ExtraSmall::col_xs_11);
+        text->addStyleClass (Bootstrap::ContextualBackGround::bg_primary);
+        text->setMargin (5,Side::Bottom);
+
+        auto delText = selectedContainer->addWidget (cpp14::make_unique<WText>("<b>X</b>",TextFormat::UnsafeXHTML));
+        delText->addStyleClass (Bootstrap::Grid::Large::col_lg_1+
+                                Bootstrap::Grid::Medium::col_md_1+
+                                Bootstrap::Grid::Small::col_sm_1+
+                                Bootstrap::Grid::ExtraSmall::col_xs_1);
+        delText->addStyleClass (Bootstrap::ContextualBackGround::bg_danger);
+        delText->setMargin (5,Side::Bottom);
+        delText->decorationStyle ().setCursor (Cursor::PointingHand);
+
+        delText->clicked ().connect ([=](){
+            SerikBLDCore::Meclis::MeclisUyesi uyeItem;
+            uyeItem.setOid (this->oid ().value ().to_string ());
+            auto val = mUyeManager->pullValue(uyeItem,SerikBLDCore::Meclis::UyeKey::komisyonAdi,text->text ().toUTF8 ());
+            if( val )
+            {
+                this->delKomisyonAdi (text->text ().toUTF8 ());
+                selectedContainer->removeWidget(text);
+                selectedContainer->removeWidget(delText);
+                this->showPopUpMessage ("Komisyon Silindi.");
+            }else{
+                this->showPopUpMessage (mUyeManager->getLastError ().toStdString (),"hata");
+            }
+        });
+
+    }
+
+
+    selectBtn->clicked ().connect ([=](){
+
+
+        if( this->komisyonUyelikleri ().contains (QString::fromStdString (mKomisyonlar->currentText ().toUTF8 ())) )
+        {
+            this->showPopUpMessage ("Hata: Bu Komisyona Zaten Üye","hata");
+            return;
+        }
+
+
+        SerikBLDCore::Meclis::MeclisUyesi uyeItem;
+        uyeItem.setOid (this->oid ().value ().to_string ());
+
+        auto val = mUyeManager->pushValue(uyeItem,SerikBLDCore::Meclis::UyeKey::komisyonAdi,mKomisyonlar->currentText ().toUTF8 ());
+        if( val )
+        {
+            this->addKomisyonAdi (mKomisyonlar->currentText ().toUTF8 ());
+            auto text = selectedContainer->addWidget (cpp14::make_unique<WText>(mKomisyonlar->currentText ().toUTF8 ()));
+            text->addStyleClass (Bootstrap::Grid::Large::col_lg_11+
+                                 Bootstrap::Grid::Medium::col_md_11+
+                                 Bootstrap::Grid::Small::col_sm_11+
+                                 Bootstrap::Grid::ExtraSmall::col_xs_11);
+            text->addStyleClass (Bootstrap::ContextualBackGround::bg_primary);
+            text->setMargin (5,Side::Bottom);
+
+            auto delText = selectedContainer->addWidget (cpp14::make_unique<WText>("<b>X</b>",TextFormat::UnsafeXHTML));
+            delText->addStyleClass (Bootstrap::Grid::Large::col_lg_1+
+                                    Bootstrap::Grid::Medium::col_md_1+
+                                    Bootstrap::Grid::Small::col_sm_1+
+                                    Bootstrap::Grid::ExtraSmall::col_xs_1);
+            delText->addStyleClass (Bootstrap::ContextualBackGround::bg_danger);
+            delText->setMargin (5,Side::Bottom);
+            delText->decorationStyle ().setCursor (Cursor::PointingHand);
+
+            delText->clicked ().connect ([=](){
+                auto val = mUyeManager->pullValue(uyeItem,SerikBLDCore::Meclis::UyeKey::komisyonAdi,text->text ().toUTF8 ());
+                if( val )
+                {
+                    this->delKomisyonAdi (text->text ().toUTF8 ());
+                    this->showPopUpMessage ("Komisyon Silindi.");
+                    selectedContainer->removeWidget(text);
+                    selectedContainer->removeWidget(delText);
+                }else{
+                    this->showPopUpMessage (mUyeManager->getLastError ().toStdString (),"hata");
+                }
+            });
+            this->showPopUpMessage ("Komisyon Eklendi.");
+        }else{
+            this->showPopUpMessage (mUyeManager->getLastError ().toStdString (),"hata");
+        }
+    });
+
+}
+
+

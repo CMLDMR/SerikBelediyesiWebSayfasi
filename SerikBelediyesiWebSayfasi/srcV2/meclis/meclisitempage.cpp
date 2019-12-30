@@ -16,12 +16,6 @@ v2::MeclisItemPage::MeclisItemPage(DB *_db, const MeclisItem &item )
 
     this->Content ()->setMargin (15,Side::Top);
 
-    {
-        auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass (Bootstrap::Grid::col_full_12);
-        mTeklifContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
-        mTeklifContainer->addStyleClass (Bootstrap::Grid::row);
-    }
 
     {
         auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
@@ -29,6 +23,15 @@ v2::MeclisItemPage::MeclisItemPage(DB *_db, const MeclisItem &item )
         mRaporContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
         mRaporContainer->addStyleClass (Bootstrap::Grid::row);
     }
+
+    {
+        auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::col_full_12);
+        mTeklifContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
+        mTeklifContainer->addStyleClass (Bootstrap::Grid::row);
+    }
+
+
 
     {
         auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
@@ -200,7 +203,6 @@ void v2::MeclisItemPage::onList(const QVector<SerikBLDCore::Meclis::RaporItem> *
     mRaporContainer->setMargin (25,Side::Top);
     mRaporContainer->addWidget (cpp14::make_unique<WText>("<b>Rapolar</b>",TextFormat::UnsafeXHTML))->addStyleClass (Bootstrap::Grid::col_full_12+Bootstrap::ContextualBackGround::bg_info);
 
-    int count = 1;
     for( auto item : *mlist )
     {
         {
@@ -219,7 +221,7 @@ void v2::MeclisItemPage::onList(const QVector<SerikBLDCore::Meclis::RaporItem> *
                 link.setTarget(Wt::LinkTarget::NewWindow);
                 std::unique_ptr<Wt::WAnchor> anchor =
                         Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                                            std::to_string(count++)+". "+item.raporAdi ().toStdString ());
+                                                            item.raporAdi ().toStdString ());
                 container->addWidget (std::move(anchor));
             }
         }
@@ -264,7 +266,6 @@ void v2::MeclisItemPage::onList(const QVector<SerikBLDCore::Meclis::TeklifItem> 
     mTeklifContainer->setMargin (25,Side::Top);
     mTeklifContainer->addWidget (cpp14::make_unique<WText>("<b>Teklifler</b>",TextFormat::UnsafeXHTML))->addStyleClass (Bootstrap::Grid::col_full_12+Bootstrap::ContextualBackGround::bg_info);
 
-    int count = 1;
     for( auto item : *mlist )
     {
         {
@@ -282,7 +283,7 @@ void v2::MeclisItemPage::onList(const QVector<SerikBLDCore::Meclis::TeklifItem> 
                 link.setTarget(Wt::LinkTarget::NewWindow);
                 std::unique_ptr<Wt::WAnchor> anchor =
                         Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                                            std::to_string (count++) + ". " + item.teklifAdi ().toStdString ());
+                                                            item.teklifAdi ().toStdString ());
                 container->addWidget (std::move(anchor));
             }
         }
@@ -766,32 +767,40 @@ v2::MeclisItemPublicPage::MeclisItemPublicPage(SerikBLDCore::DB *_db, const Seri
     this->Content ()->setMargin (15,Side::Top);
 
 
-    {
-        auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass (Bootstrap::Grid::col_full_12);
-        mTeklifContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
-        mTeklifContainer->addStyleClass (Bootstrap::Grid::row);
-    }
 
     {
         auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
         container->addStyleClass (Bootstrap::Grid::col_full_12);
         mRaporContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
         mRaporContainer->addStyleClass (Bootstrap::Grid::row);
+        mRaporContainer->addStyleClass ("boxShadow");
     }
+
+    {
+        auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::col_full_12);
+        mTeklifContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
+        mTeklifContainer->addStyleClass (Bootstrap::Grid::row);
+        mTeklifContainer->addStyleClass ("boxShadow");
+    }
+
 
     {
         auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
         container->addStyleClass (Bootstrap::Grid::col_full_12);
         mKararContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
         mKararContainer->addStyleClass (Bootstrap::Grid::row);
+        mKararContainer->addStyleClass ("boxShadow");
     }
 
     {
         auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
         container->addStyleClass (Bootstrap::Grid::col_full_12);
         mLinkContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
+        mLinkContainer->addStyleClass ("boxShadow");
         mLinkContainer->addStyleClass (Bootstrap::Grid::row);
+
+
     }
 
     SerikBLDCore::Meclis::KararManager::UpdateList (SerikBLDCore::Meclis::KararItem().setMeclisOid (this->oid ().value ().to_string ()));
@@ -908,7 +917,6 @@ void v2::MeclisItemPublicPage::onList(const QVector<SerikBLDCore::Meclis::RaporI
     mRaporContainer->setMargin (25,Side::Top);
     mRaporContainer->addWidget (cpp14::make_unique<WText>("<b>Rapolar</b>",TextFormat::UnsafeXHTML))->addStyleClass (Bootstrap::Grid::col_full_12+Bootstrap::ContextualBackGround::bg_info);
 
-    int count = 1;
     for( auto item : *mlist )
     {
         {
@@ -924,7 +932,7 @@ void v2::MeclisItemPublicPage::onList(const QVector<SerikBLDCore::Meclis::RaporI
                 link.setTarget(Wt::LinkTarget::NewWindow);
                 std::unique_ptr<Wt::WAnchor> anchor =
                         Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                                            std::to_string(count++)+". "+item.raporAdi ().toStdString ());
+                                                            item.raporAdi ().toStdString ());
                 container->addWidget (std::move(anchor));
             }
         }
@@ -944,7 +952,6 @@ void v2::MeclisItemPublicPage::onList(const QVector<SerikBLDCore::Meclis::Teklif
     mTeklifContainer->setMargin (25,Side::Top);
     mTeklifContainer->addWidget (cpp14::make_unique<WText>("<b>Teklifler</b>",TextFormat::UnsafeXHTML))->addStyleClass (Bootstrap::Grid::col_full_12+Bootstrap::ContextualBackGround::bg_info);
 
-    int count = 1;
     for( auto item : *mlist )
     {
         {
@@ -960,7 +967,7 @@ void v2::MeclisItemPublicPage::onList(const QVector<SerikBLDCore::Meclis::Teklif
                 link.setTarget(Wt::LinkTarget::NewWindow);
                 std::unique_ptr<Wt::WAnchor> anchor =
                         Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                                            std::to_string(count++)+ ". "+ item.teklifAdi ().toStdString ());
+                                                            item.teklifAdi ().toStdString ());
                 container->addWidget (std::move(anchor));
             }
         }

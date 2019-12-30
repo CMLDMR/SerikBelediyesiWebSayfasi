@@ -3,7 +3,7 @@
 
 
 VatandasWidget::VatandasWidget(SerikBLDCore::DB *db, SerikBLDCore::TC *tc)
-    :ContainerWidget ("Bilgilerim"),
+    :ContainerWidget ("TC Bilgileri"),
       SerikBLDCore::TCManager (db),
       mTC(tc)
 {
@@ -176,11 +176,10 @@ void VatandasWidget::initTC()
             layout->addWidget(cpp14::make_unique<WText>(mTC->TamAdres ().toStdString ()),0,AlignmentFlag::Center);
         }
 
-        std::cout << "Adres: " << mTC->TamAdres ().toStdString () << std::endl;
     }
 
     {
-        auto mSvBtn = this->Footer ()->addWidget (cpp14::make_unique<WPushButton>("Bilgilerimi Değiştir"));
+        auto mSvBtn = this->Footer ()->addWidget (cpp14::make_unique<WPushButton>("Bilgileri Değiştir"));
         mSvBtn->addStyleClass (Bootstrap::Button::Primary);
         mSvBtn->clicked ().connect ( this , &VatandasWidget::initChangeTC );
     }

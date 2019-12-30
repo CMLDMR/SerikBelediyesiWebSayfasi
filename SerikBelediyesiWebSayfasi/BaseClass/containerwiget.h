@@ -21,6 +21,8 @@ public:
     WContainerWidget* Content();
     WContainerWidget* Footer();
 
+    void setTitleBarBackColor( const std::string& color = Style::color::Purple::MidnightBlue );
+
 
     /**
      * @brief createDialog:  WDialog Oluşturur ve Geri ptr Geri Döndürür.
@@ -56,6 +58,8 @@ public:
 
     void showMessage( std::string title , std::string msg , std::string btnText = "Tamam");
 
+    void showPopUpMessage(const std::string & msg , const std::string &infoType = "info");
+
 
     ///
     /// \brief removeTitleBar: Eğer Title Mevcutsa Container da Bulunan Başlığı Siler.
@@ -70,6 +74,8 @@ private:
 
     WContainerWidget* mTitleBar;
     std::string mTitle;
+
+
 };
 
 

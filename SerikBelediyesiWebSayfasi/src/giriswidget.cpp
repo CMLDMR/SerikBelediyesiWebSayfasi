@@ -24,6 +24,7 @@
 #include "SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/basvurularim.h"
 
 #include "SerikBelediyesiWebSayfasi/srcV2/meclis/meclispage.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/personel/personelmanagerpage.h"
 
 
 
@@ -2911,6 +2912,8 @@ void Giris::Personel::PersonelWidget::initMenu()
     Wt::WMenu *menu = _mContainer->addWidget(Wt::cpp14::make_unique<Wt::WMenu>());
     menu->setStyleClass("nav nav-pills nav-stacked");
 
+    this->Content ()->clear ();
+    this->Content ()->addWidget (Wt::cpp14::make_unique<Giris::Personel::Yenilikler>());
 
     menu->addItem("Kod Repository")->clicked ().connect ([&](){
         this->Content ()->clear ();
@@ -2976,6 +2979,17 @@ void Giris::Personel::PersonelWidget::initMenu()
         menu->addItem(WString::fromUTF8("IK"))->clicked ().connect ([&](){
             this->Content ()->clear ();
             this->Content ()->addWidget (Wt::cpp14::make_unique<IK>(mUser->db (),mUser->Value ()));
+        });
+    }
+
+
+    if(this->mUser->Statu () == SerikBLDCore::User::Baskan ||
+            this->mUser->Statu () == SerikBLDCore::User::BaskanYardimcisi ||
+            this->mUser->Birimi () == "İnsan Kaynakları ve Eğitim Müdürlüğü" )
+    {
+        menu->addItem(WString::fromUTF8("IKV2"))->clicked ().connect ([&](){
+            this->Content ()->clear ();
+            this->Content ()->addWidget (Wt::cpp14::make_unique<IKManagerPage>(this->mUser->getDB ()));
         });
     }
 

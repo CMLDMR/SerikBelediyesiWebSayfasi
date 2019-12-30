@@ -8,6 +8,9 @@
 #include "SerikBelediyesiWebSayfasi/srcV2/talepler/talepwidget.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/externalWidget/haritawidget.h"
 
+#include "meclis/meclispage.h"
+#include "meclis/meclispublicpage.h"
+
 
 MainPage::MainPage(mongocxx::database *_db)
     :DataBaseWidget (_db),_signal(this,"_signal")
@@ -42,7 +45,6 @@ MainPage::MainPage(mongocxx::database *_db)
     footer = addWidget(cpp14::make_unique<Footer::Footer>());
 
 
-//    footer->setId("footerid");
 
     _signal.connect([=](int _width,int _height){
 
@@ -50,14 +52,9 @@ MainPage::MainPage(mongocxx::database *_db)
        double _h = static_cast<double>(_height);
        footer->setwidth(_w);
        footer->setheight(_h);
-
-       std::cout << " - VALUE: " << _width << " - " << _height << " R: " << _w / _h << std::endl;
-
        if( footer->getWidth() / footer->getHeight() > 1.433 ){
              footer->addStyleClass("footerStickAbsolute");
        }
-
-
     });
 
     header->ClickAnaSayfa().connect([=](){
@@ -131,14 +128,14 @@ void MainPage::init()
 void MainPage::initHaberler()
 {
     mContentWidget->clear();
-    auto widget = mContentWidget->addWidget(cpp14::make_unique<Body::Haber>(this->getDB()));
+    mContentWidget->addWidget(cpp14::make_unique<Body::Haber>(this->getDB()));
     footer->removeStyleClass("footerStickAbsolute");
 }
 
 void MainPage::initCalismalar()
 {
     mContentWidget->clear();
-    auto widget = mContentWidget->addWidget(cpp14::make_unique<Body::Calisma>(this->getDB()));
+    mContentWidget->addWidget(cpp14::make_unique<Body::Calisma>(this->getDB()));
     footer->removeStyleClass("footerStickAbsolute");
 }
 
@@ -177,9 +174,21 @@ void MainPage::initGiris()
 void MainPage::initMeclis()
 {
     mContentWidget->clear();
-    auto widget = mContentWidget->addWidget(cpp14::make_unique<Body::Meclis>(this->getDB()));
-    widget->setMaximumSize(1024,WLength::Auto);
+
+//    {
+//        auto widget = mContentWidget->addWidget(cpp14::make_unique<MeclisPublicPage>(new SerikBLDCore::DB(this->getDB())));
+//    }
+
+    {
+        auto widget = mContentWidget->addWidget(cpp14::make_unique<Body::Meclis>(this->getDB()));
+        widget->setMaximumSize(1280,WLength::Auto);
+    }
     footer->removeStyleClass("footerStickAbsolute");
+
+    // TODO: Meclis Karar Ekleme Sayfası Yapıldıktan sonra Çalıştırılacak.
+    //mContentWidget->addWidget (cpp14::make_unique<v2::MeclisPage>(new SerikBLDCore::DB(this->getDB ())));
+
+
 }
 
 void MainPage::initHakkinda()
