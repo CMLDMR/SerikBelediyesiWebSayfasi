@@ -54,6 +54,7 @@ SOURCES += main.cpp \
     SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetitemwidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetlistitemwidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetyonetimwidget.cpp \
+    SerikBelediyesiWebSayfasi/srcV2/sms/smsmanager.cpp \
     SerikBelediyesiWebSayfasi/srcV2/talepler/taleplistwidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/talepler/talepvatandasarayuz.cpp \
     SerikBelediyesiWebSayfasi/srcV2/talepler/talepview.cpp \
@@ -124,6 +125,7 @@ HEADERS += \
     SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetitemwidget.h \
     SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetlistitemwidget.h \
     SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetyonetimwidget.h \
+    SerikBelediyesiWebSayfasi/srcV2/sms/smsmanager.h \
     SerikBelediyesiWebSayfasi/srcV2/talepler/taleplistwidget.h \
     SerikBelediyesiWebSayfasi/srcV2/talepler/talepvatandasarayuz.h \
     SerikBelediyesiWebSayfasi/srcV2/talepler/talepview.h \

@@ -24,6 +24,10 @@ public:
     void setTitleBarBackColor( const std::string& color = Style::color::Purple::MidnightBlue );
 
 
+
+    WPushButton *askConfirm( const std::string& question );
+
+
     /**
      * @brief createDialog:  WDialog Oluşturur ve Geri ptr Geri Döndürür.
      * @return
@@ -58,7 +62,13 @@ public:
 
     void showMessage( std::string title , std::string msg , std::string btnText = "Tamam");
 
-    void showPopUpMessage(const std::string & msg , const std::string &infoType = "info");
+
+    /**
+     * @brief showPopUpMessage : Mesaj Gönder
+     * @param msg
+     * @param infoType info,msg ve boşluk
+     */
+    void showPopUpMessage(const std::string & msg , const std::string &infoType = "info" );///*msg*/
 
 
     ///
@@ -74,6 +84,7 @@ private:
 
     WContainerWidget* mTitleBar;
     std::string mTitle;
+
 
 
 };

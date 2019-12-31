@@ -29,18 +29,18 @@ ContainerWidget::ContainerWidget(const std::string &title, ContainerWidget::Cont
 
         auto _headerContainer = __container->addWidget (cpp14::make_unique<WContainerWidget>());
         _headerContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
-                                    Bootstrap::Grid::Medium::col_md_2+
-                                    Bootstrap::Grid::Small::col_sm_3+
-                                    Bootstrap::Grid::ExtraSmall::col_xs_12);
+                                         Bootstrap::Grid::Medium::col_md_2+
+                                         Bootstrap::Grid::Small::col_sm_3+
+                                         Bootstrap::Grid::ExtraSmall::col_xs_12);
 
         mHeaderContainer = _headerContainer->addWidget(cpp14::make_unique<WContainerWidget>());
         mHeaderContainer->addStyleClass(Bootstrap::Grid::row);
 
         auto _contentContainer = __container->addWidget (cpp14::make_unique<WContainerWidget>());
         _contentContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_10+
-                                    Bootstrap::Grid::Medium::col_md_10+
-                                    Bootstrap::Grid::Small::col_sm_9+
-                                    Bootstrap::Grid::ExtraSmall::col_xs_12);
+                                          Bootstrap::Grid::Medium::col_md_10+
+                                          Bootstrap::Grid::Small::col_sm_9+
+                                          Bootstrap::Grid::ExtraSmall::col_xs_12);
 
 
         mContentContainer = _contentContainer->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -81,6 +81,37 @@ WContainerWidget *ContainerWidget::Footer()
 void ContainerWidget::setTitleBarBackColor(const std::string &color)
 {
     mTitleBar->setAttributeValue (Style::style,Style::background::color::color (color));
+}
+
+WPushButton* ContainerWidget::askConfirm(const std::string &question)
+{
+    auto mDialog = wApp->instance()->root()->addChild (cpp14::make_unique<WDialog>());
+
+
+    mDialog->titleBar ()->addWidget (cpp14::make_unique<WText>("?"));
+    mDialog->titleBar ()->addStyleClass (Bootstrap::ContextualBackGround::bg_primary);
+
+
+    mDialog->contents ()->addWidget (cpp14::make_unique<WText>(question));
+    mDialog->contents ()->addStyleClass (Bootstrap::ContextualBackGround::bg_info);
+
+
+    auto yesBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Evet"));
+    yesBtn->addStyleClass (Bootstrap::Button::Primary);
+
+    auto closeBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Hayır"));
+    closeBtn->addStyleClass (Bootstrap::Button::Danger);
+
+    closeBtn->clicked ().connect ([=](){
+        wApp->instance()->root()->removeChild(mDialog);
+    });
+
+    yesBtn->clicked ().connect ([=](){
+        wApp->instance()->root()->removeChild(mDialog);
+    });
+
+    mDialog->show ();
+    return yesBtn;
 }
 
 WDialog *ContainerWidget::createDialog(const std::string &title)
@@ -158,7 +189,7 @@ void ContainerWidget::showPopUpMessage(const std::string &msg, const std::string
 
     auto container = wApp->root ()->addWidget (cpp14::make_unique<WContainerWidget>());
     container->setPositionScheme (PositionScheme::Fixed);
-    container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+    container->addStyleClass ("boxShadow");
 
     if( infoType == "info" )
     {
@@ -166,13 +197,23 @@ void ContainerWidget::showPopUpMessage(const std::string &msg, const std::string
         container->setOffsets (WLength(0),Side::Right);
         container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Green::ForestGreen)+
                                       Style::color::color (Style::color::White::Snow)+
-                                      Style::font::weight::lighter);
+                                      Style::font::weight::lighter+Style::font::size::s12px);
+
+        container->addWidget (cpp14::make_unique<WText>("  "+msg+"  "))->setPadding (10,Side::Left|Side::Right);
+        container->addStyleClass ("popMessage");
+    }else if ( infoType == "msg" ) {
+        container->setOffsets (WLength("100%"),Side::Top);
+        container->setOffsets (WLength("35%"),Side::Right);
+        container->setPadding (25);
+        container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Green::DarkCyan)+
+                                      Style::color::color (Style::color::White::Snow)+
+                                      Style::font::weight::bold);
 
         container->addWidget (cpp14::make_unique<WText>(msg));
-        container->addStyleClass ("popMessage");
+        container->addStyleClass ("popMessageError");
     }else{
         container->setOffsets (WLength("100%"),Side::Top);
-        container->setOffsets (WLength("50%"),Side::Right);
+        container->setOffsets (WLength("35%"),Side::Right);
         container->setPadding (25);
         container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Red::FireBrick)+
                                       Style::color::color (Style::color::White::Snow)+
@@ -184,7 +225,7 @@ void ContainerWidget::showPopUpMessage(const std::string &msg, const std::string
 
 
 
-    WTimer::singleShot(std::chrono::milliseconds(3000),[=](){
+    WTimer::singleShot(std::chrono::milliseconds(5000),[=](){
         wApp->root ()->removeWidget(container);
     });
 
@@ -251,8 +292,8 @@ FileUploaderWidget::FileUploaderWidget(mongocxx::database *_db, const std::strin
             mDoocRootLocation = QString("tempfile/")+ _fileName;
             if( QFile::copy(item.spoolFileName().c_str(),mFileLocation) )
             {
-                _Uploaded.emit(NoClass());
                 mIsUploaded = true;
+                _Uploaded.emit(NoClass());
             }else{
                 mIsUploaded = false;
             }
