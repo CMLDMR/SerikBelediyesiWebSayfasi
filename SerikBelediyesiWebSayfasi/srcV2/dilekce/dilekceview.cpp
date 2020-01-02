@@ -523,7 +523,7 @@ void DilekceView::initCevapView()
 
             mCevapContainer->addWidget (cpp14::make_unique<WBreak>());
 
-            mCevapUploader = mCevapContainer->addWidget (cpp14::make_unique<FileUploaderWidget>(this->db ()));
+            mCevapUploader = mCevapContainer->addWidget (cpp14::make_unique<FileUploaderWidget>());
             mCevapContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::LavenderBlush));
             mCevapUploader->Uploaded ().connect ([=](){
 
@@ -559,7 +559,7 @@ void DilekceView::initCevapView()
             mCevapEklerContainer->setWidth (WLength("100%"));
             mCevapEklerContainer->addWidget (cpp14::make_unique<WText>("<strong>Ekler</strong>"));
             mCevapEklerContainer->addWidget (cpp14::make_unique<WBreak>());
-            mCevapEkUploader = mCevapEklerContainer->addWidget (cpp14::make_unique<FileUploaderWidget>(this->db (),"Ek Dosya Yükle"));
+            mCevapEkUploader = mCevapEklerContainer->addWidget (cpp14::make_unique<FileUploaderWidget>("Ek Dosya Yükle"));
             mCevapEklerContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::HoneyDew));
             mCevapEkUploader->Uploaded ().connect ([=](){
 
