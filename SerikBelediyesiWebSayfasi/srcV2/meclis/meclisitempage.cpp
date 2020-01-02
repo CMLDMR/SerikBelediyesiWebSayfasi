@@ -535,7 +535,7 @@ void v2::MeclisItemPage::addKarar()
     __kararOidText->addStyleClass (Bootstrap::Grid::col_full_12);
 
 
-    auto __KararOidWidget = mDialog->contents ()->addWidget (cpp14::make_unique<FileUploaderWidget>(SerikBLDCore::Meclis::KararManager::db ()));
+    auto __KararOidWidget = mDialog->contents ()->addWidget (cpp14::make_unique<FileUploaderWidget>());
     __KararOidWidget->setType (FileUploaderWidget::Pdf);
     __KararOidWidget->addStyleClass (Bootstrap::Grid::col_full_12);
 
@@ -676,7 +676,7 @@ void v2::MeclisItemPage::addRapor()
     __kararOidText->addStyleClass (Bootstrap::Grid::col_full_12);
 
 
-    auto __KararOidWidget = mDialog->contents ()->addWidget (cpp14::make_unique<FileUploaderWidget>(SerikBLDCore::Meclis::RaporManager::db ()));
+    auto __KararOidWidget = mDialog->contents ()->addWidget (cpp14::make_unique<FileUploaderWidget>());
     __KararOidWidget->setType (FileUploaderWidget::Pdf);
     __KararOidWidget->addStyleClass (Bootstrap::Grid::col_full_12);
 
@@ -724,7 +724,7 @@ void v2::MeclisItemPage::addTeklif()
     __kararOidText->addStyleClass (Bootstrap::Grid::col_full_12);
 
 
-    auto __KararOidWidget = mDialog->contents ()->addWidget (cpp14::make_unique<FileUploaderWidget>(SerikBLDCore::Meclis::RaporManager::db ()));
+    auto __KararOidWidget = mDialog->contents ()->addWidget (cpp14::make_unique<FileUploaderWidget>());
     __KararOidWidget->setType (FileUploaderWidget::Pdf);
     __KararOidWidget->addStyleClass (Bootstrap::Grid::col_full_12);
 
