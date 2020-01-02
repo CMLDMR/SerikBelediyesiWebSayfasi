@@ -20,7 +20,7 @@ void VatandasWidget::initChangeTC()
     this->Content ()->setContentAlignment (AlignmentFlag::Center);
     this->Content ()->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
     this->Content ()->setWidth (WLength("100%"));
-    auto photoUploadWidget = this->Content ()->addWidget (cpp14::make_unique<FileUploaderWidget>(this->db (),"Resim Yükle"));
+    auto photoUploadWidget = this->Content ()->addWidget (cpp14::make_unique<FileUploaderWidget>("Resim Yükle"));
     photoUploadWidget->setType (FileUploaderWidget::Image);
 
     auto tcLineEdit = Content ()->addWidget (cpp14::make_unique<WLineEdit>());
@@ -205,7 +205,7 @@ VatandasYeniKayitWidget::VatandasYeniKayitWidget(SerikBLDCore::DB *db)
     newPhotoWidget->setWidth (WLength("100%"));
 
 
-    auto photoUploadWidget = this->Content ()->addWidget (cpp14::make_unique<FileUploaderWidget>(this->db (),"Resim Yükle"));
+    auto photoUploadWidget = this->Content ()->addWidget (cpp14::make_unique<FileUploaderWidget>("Resim Yükle"));
     photoUploadWidget->setType (FileUploaderWidget::Image);
 
     photoUploadWidget->Uploaded ().connect ([=](){
