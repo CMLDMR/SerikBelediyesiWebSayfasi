@@ -253,7 +253,7 @@ void V2::GelenBasvurular::initItem(const std::string &itemOid)
 
     }else{
         this->Content ()->addWidget (cpp14::make_unique<WBreak>());
-        auto uploadWidget = this->Content ()->addWidget (cpp14::make_unique<FileUploaderWidget>(this->db ()));
+        auto uploadWidget = this->Content ()->addWidget (cpp14::make_unique<FileUploaderWidget>());
         uploadWidget->setType (FileUploaderWidget::Pdf);
         uploadWidget->Uploaded ().connect ([=](){
             auto fileid = this->uploadfile ( uploadWidget->fileLocation () );
