@@ -67,7 +67,7 @@ bool SMSManager::insertAndSendSMS(const SerikBLDCore::SMS::SMSItem &item)
     _mHttpClient->done().connect([=](AsioWrapper::error_code code, Http::Message message){
 
         SerikBLDCore::SMS::SMSItem _item;
-        _item.setRaporID (0);
+        _item.setRaporID (6);
         _item.setID (message.body().c_str());
         _item.setSMS (item.smsText ());
         _item.setNumara (item.numaraText ());
