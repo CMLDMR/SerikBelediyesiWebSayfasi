@@ -1603,7 +1603,7 @@ void TalepView::addEventItem(TalepSubItem::ItemType type_ , const std::string &i
     switch (type_) {
     case TalepSubItem::ItemType::Pdf:
     {
-        auto fileUploader = vlayout->addWidget (cpp14::make_unique<FileUploaderWidget>(this->db (),"PDF Yükle"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+        auto fileUploader = vlayout->addWidget (cpp14::make_unique<FileUploaderWidget>("PDF Yükle"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
         fileUploader->setType (FileUploaderWidget::Pdf);
         auto ekleBtn = vlayout->addWidget (cpp14::make_unique<WPushButton>("Ekle"));
         ekleBtn->addStyleClass (Bootstrap::Button::Success);
@@ -1713,7 +1713,7 @@ void TalepView::addEventItem(TalepSubItem::ItemType type_ , const std::string &i
         break;
     case TalepSubItem::ItemType::Fotograf:
     {
-        auto fileUploader = vlayout->addWidget (cpp14::make_unique<FileUploaderWidget>(this->db (),"Resim Yükle"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+        auto fileUploader = vlayout->addWidget (cpp14::make_unique<FileUploaderWidget>("Resim Yükle"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
         fileUploader->setType (FileUploaderWidget::Image);
         auto ekleBtn = vlayout->addWidget (cpp14::make_unique<WPushButton>("Ekle"));
         ekleBtn->addStyleClass (Bootstrap::Button::Success);
@@ -1805,7 +1805,7 @@ void TalepView::addEventVatandasItem(TalepSubItem::ItemType type_)
     switch (type_) {
     case TalepSubItem::ItemType::Pdf:
     {
-        auto fileUploader = vlayout->addWidget (cpp14::make_unique<FileUploaderWidget>(this->db (),"PDF Yükle"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+        auto fileUploader = vlayout->addWidget (cpp14::make_unique<FileUploaderWidget>("PDF Yükle"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
         fileUploader->setType (FileUploaderWidget::Pdf);
         auto ekleBtn = vlayout->addWidget (cpp14::make_unique<WPushButton>("Ekle"));
         ekleBtn->addStyleClass (Bootstrap::Button::Success);
@@ -1862,7 +1862,7 @@ void TalepView::addEventVatandasItem(TalepSubItem::ItemType type_)
 
     case TalepSubItem::ItemType::Fotograf:
     {
-        auto fileUploader = vlayout->addWidget (cpp14::make_unique<FileUploaderWidget>(this->db (),"Resim Yükle"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+        auto fileUploader = vlayout->addWidget (cpp14::make_unique<FileUploaderWidget>("Resim Yükle"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
         fileUploader->setType (FileUploaderWidget::Image);
         auto ekleBtn = vlayout->addWidget (cpp14::make_unique<WPushButton>("Ekle"));
         ekleBtn->addStyleClass (Bootstrap::Button::Success);
