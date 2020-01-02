@@ -8,6 +8,10 @@
 #include "SerikBelediyesiWebSayfasi/srcV2/sms/smsmanager.h"
 #include <QRandomGenerator>
 
+#include "yenipersonelwidget.h"
+
+
+
 class IKManagerPage : public ContainerWidget
 {
 public:
@@ -64,11 +68,21 @@ public:
     explicit PersonelManagerPage(SerikBLDCore::DB* _db );
 
 
+
     virtual void onList(const QVector<SerikBLDCore::IK::Personel> *mlist) override;
+
+    void errorOccured(const std::string &errorText) override;
+
 private:
 
     void initBirimList();
     SerikBLDCore::BirimManager* mBirimManager;
+
+    void initNewPersonelWidget();
+
+    bool mListFromSearchText;
+
+    WComboBox* birimComboBoxFilter;
 
 };
 
