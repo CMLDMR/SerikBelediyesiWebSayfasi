@@ -303,7 +303,7 @@ void BilgiEdinmeWidget::initWidget()
         layout->addWidget(cpp14::make_unique<WText>("Cevap Yok"),0,AlignmentFlag::Top|AlignmentFlag::Center);
 
 
-        auto cContainer = rContainer->addWidget(cpp14::make_unique<FileUploaderWidget>(this->db()));
+        auto cContainer = rContainer->addWidget(cpp14::make_unique<FileUploaderWidget>());
 
 
         cContainer->Uploaded().connect([=](){
