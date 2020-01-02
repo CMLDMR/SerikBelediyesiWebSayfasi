@@ -403,7 +403,7 @@ TalepWidget::TalepItemWidget::TalepItemWidget(const DB &db )
     mAdres = vLayout->addWidget(cpp14::make_unique<WLineEdit>(),0,AlignmentFlag::Justify);
     mAdres->setPlaceholderText("Şikayet/Talep Adresi Giriniz");
 
-    mFileUploadManager = vLayout->addWidget (cpp14::make_unique<FileUploaderWidget>(mDB.db (),"Fotoğraf Yükle"),0,AlignmentFlag::Justify);
+    mFileUploadManager = vLayout->addWidget (cpp14::make_unique<FileUploaderWidget>("Fotoğraf Yükle"),0,AlignmentFlag::Justify);
     mFileUploadManager->setType (FileUploaderWidget::Image);
 
 }
