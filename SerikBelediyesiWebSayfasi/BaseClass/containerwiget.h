@@ -91,10 +91,10 @@ private:
 
 
 
-class FileUploaderWidget : public ContainerWidget , public DBClass
+class FileUploaderWidget : public ContainerWidget /*, public DBClass*/
 {
 public:
-    explicit FileUploaderWidget( mongocxx::database* _db , const std::string &title = "PDF Cevap Yükle" );
+    explicit FileUploaderWidget( const std::string &title = "PDF Cevap Yükle" );
 
 
 

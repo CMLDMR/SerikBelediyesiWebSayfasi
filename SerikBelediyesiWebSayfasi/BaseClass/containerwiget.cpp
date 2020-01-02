@@ -199,7 +199,7 @@ void ContainerWidget::showPopUpMessage(const std::string &msg, const std::string
                                       Style::color::color (Style::color::White::Snow)+
                                       Style::font::weight::lighter+Style::font::size::s12px);
 
-        container->addWidget (cpp14::make_unique<WText>("  "+msg+"  "))->setPadding (10,Side::Left|Side::Right);
+        container->addWidget (cpp14::make_unique<WText>("  "+msg+"  ",TextFormat::UnsafeXHTML))->setPadding (10,Side::Left|Side::Right);
         container->addStyleClass ("popMessage");
     }else if ( infoType == "msg" ) {
         container->setOffsets (WLength("100%"),Side::Top);
@@ -209,7 +209,7 @@ void ContainerWidget::showPopUpMessage(const std::string &msg, const std::string
                                       Style::color::color (Style::color::White::Snow)+
                                       Style::font::weight::bold);
 
-        container->addWidget (cpp14::make_unique<WText>(msg));
+        container->addWidget (cpp14::make_unique<WText>(msg,TextFormat::UnsafeXHTML));
         container->addStyleClass ("popMessageError");
     }else{
         container->setOffsets (WLength("100%"),Side::Top);
@@ -219,7 +219,7 @@ void ContainerWidget::showPopUpMessage(const std::string &msg, const std::string
                                       Style::color::color (Style::color::White::Snow)+
                                       Style::font::weight::bold);
 
-        container->addWidget (cpp14::make_unique<WText>(msg));
+        container->addWidget (cpp14::make_unique<WText>(msg,TextFormat::UnsafeXHTML));
         container->addStyleClass ("popMessageError");
     }
 
@@ -244,8 +244,8 @@ void ContainerWidget::removeTitleBar()
 
 
 
-FileUploaderWidget::FileUploaderWidget(mongocxx::database *_db, const std::string &title)
-    :DBClass (_db)
+FileUploaderWidget::FileUploaderWidget(const std::string &title)
+//    :DBClass (_db)
 {
 
     mIsUploaded = false;
