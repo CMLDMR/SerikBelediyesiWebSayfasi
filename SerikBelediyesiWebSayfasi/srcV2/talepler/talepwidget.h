@@ -13,8 +13,8 @@ class TalepItemWidget;
 class TalepWidget : public ContainerWidget , public SerikBLDCore::TalepManager
 {
 public:
-    TalepWidget(SerikBLDCore::DB* db);
-    TalepWidget( mongocxx::database* _db );
+    explicit TalepWidget(SerikBLDCore::DB* db);
+    explicit TalepWidget( mongocxx::database* _db );
 
     void init();
 
@@ -29,15 +29,33 @@ public:
 class TCWidget : public ContainerWidget , public SerikBLDCore::TCManager
 {
 public:
-    TCWidget(mongocxx::database* db);
+    explicit TCWidget(mongocxx::database* db);
 
     void TCChanged();
     void setDefault();
     boost::optional<SerikBLDCore::TC> TCItem();
 
+    boost::optional<SerikBLDCore::TC> saveTCItem();
+
+
+    std::string lastError() const;
+    void setError( const std::string &errorStr );
     void setTCItem( SerikBLDCore::TC &tcItem );
 
+    enum errorCode{
+        tcnoHatali,
+        adsoyadHatali,
+        mahalleHatali,
+        telefonHatali,
+        tcoidHatali
+    };
+
+    void setErrorCode(const TCWidget::errorCode &errorCode);
+    errorCode lasterrorCode() const;
 private:
+
+    std::string mErrorString;
+    errorCode mErrorCode;
 
     WLineEdit* mTcNO;
     WLineEdit* mAdSoyad;
@@ -54,7 +72,7 @@ private:
 class TalepItemWidget : public ContainerWidget , public SerikBLDCore::Talep
 {
 public:
-    TalepItemWidget(const SerikBLDCore::DB& db);
+    explicit TalepItemWidget(const SerikBLDCore::DB& db);
 
     std::string mahalleString() const;
     std::string talepString() const;

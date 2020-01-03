@@ -54,8 +54,22 @@ void TalepWidget::TalepWidget::init()
 
         if( !tcVal )
         {
-            this->showMessage ("Uyarı","TC Bilgileriniz Hatalı");
-            return;
+            this->showPopUpMessage (tcWidget->lastError () + ".  Kayıt Ediliyor...");
+
+            if( tcWidget->lasterrorCode () == TCWidget::tcoidHatali )
+            {
+                tcVal = tcWidget->saveTCItem ();
+                if( tcVal )
+                {
+                    this->showPopUpMessage ("TC Bilgileriniz Başarılı Bir Şekilde Kayıt Edildi","msg");
+                }else{
+                    this->showPopUpMessage ("TC Bilgileriniz Kayıt Edilemedi");
+                    return;
+                }
+            }else{
+                this->showPopUpMessage ("Lütfen Bilgilerinizi Eksiksiz Giriniz","hata");
+                return;
+            }
         }
 
         if( talepWidget->adresString ().size () < 10 )
@@ -281,21 +295,36 @@ boost::optional<TC> TalepWidget::TCWidget::TCItem()
 
     if( mTcNO->text ().toUTF8 ().size () != 11 )
     {
+        setError ("TCNO Hatalaı");
+        setErrorCode (errorCode::tcnoHatali);
         return boost::none;
     }
 
     if( mAdSoyad->text ().toUTF8 ().size () <= 5 )
     {
+        setError ("Ad Soyad Çok Kısa");
+        setErrorCode (errorCode::adsoyadHatali);
         return boost::none;
     }
 
     if( mMahalle->currentIndex () == 0 )
     {
+        setError ("Mahalle Seçilmedi");
+        setErrorCode (errorCode::mahalleHatali);
         return boost::none;
     }
 
     if( mTelefon->text ().toUTF8 ().size () != 11 )
     {
+        setError ("Telefon Numarası Uygun Formatta Değil ( 05321234567) ");
+        setErrorCode (errorCode::telefonHatali);
+        return boost::none;
+    }
+
+    if( mTCOid.size () != 24 )
+    {
+        setError ("TC Kayıtlı Değil");
+        setErrorCode (errorCode::tcoidHatali);
         return boost::none;
     }
 
@@ -307,6 +336,38 @@ boost::optional<TC> TalepWidget::TCWidget::TCItem()
     item.setOid (mTCOid);
 
     return std::move(item);
+}
+
+boost::optional<TC> TalepWidget::TCWidget::saveTCItem()
+{
+
+    TC item;
+    item.setTCNO (mTcNO->text ().toUTF8 ().c_str ())
+            .setAdSoyad (mAdSoyad->text ().toUTF8 ().c_str ())
+            .setMahalle (mMahalle->currentText ().toUTF8 ().c_str ())
+            .setCepTelefonu (mTelefon->text ().toUTF8 ().c_str ());
+
+    auto val = this->insertItem (item);
+    if( val )
+    {
+        auto _oid = val.value ().inserted_id ();
+        item.setOid (_oid.get_oid ().value.to_string ());
+        return std::move(item);
+    }else{
+        return boost::none;
+    }
+
+
+}
+
+std::string TalepWidget::TCWidget::lastError() const
+{
+    return mErrorString;
+}
+
+void TalepWidget::TCWidget::setError(const std::string &errorStr)
+{
+    this->mErrorString = errorStr;
 }
 
 void TalepWidget::TCWidget::setTCItem(TC &tcItem)
@@ -334,6 +395,18 @@ void TalepWidget::TCWidget::setTCItem(TC &tcItem)
     mMahalle->setEnabled (false);
 
     mTCLoadFromExternal = true;
+
+}
+
+void TalepWidget::TCWidget::setErrorCode(const errorCode &errorCode)
+{
+    mErrorCode = errorCode;
+}
+
+TalepWidget::TCWidget::errorCode TalepWidget::TCWidget::lasterrorCode() const
+{
+
+    return mErrorCode;
 
 }
 
