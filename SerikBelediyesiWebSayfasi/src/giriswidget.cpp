@@ -10,7 +10,7 @@
 #include "../url.h"
 
 #include "SerikBelediyesiWebSayfasi/srcV2/kadinailestock.h"
-#include "SerikBelediyesiWebSayfasi/srcV2/ik.h"
+
 #include "SerikBelediyesiWebSayfasi/srcV2/girisCikisWidget/giriscikiswidget.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetimyonetim.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/bilgiedinmeclient.h"
@@ -1513,7 +1513,7 @@ void Giris::SivilWidget::initMenu()
 
 
 
-    if( QDate::currentDate ().toJulianDay () < QDate(2020,1,1).toJulianDay () )
+    if( QDate::currentDate ().toJulianDay () < QDate(2020,2,1).toJulianDay () )
     {
         menu->addItem("Taleplerim")->clicked ().connect ([=](){
             this->Content ()->clear();
@@ -1528,7 +1528,7 @@ void Giris::SivilWidget::initMenu()
         this->Content ()->addWidget (Wt::cpp14::make_unique<TalepVatandasArayuz>(db,UserValue));
     });
 
-    if( QDate::currentDate ().toJulianDay () < QDate(2020,1,1).toJulianDay () )
+    if( QDate::currentDate ().toJulianDay () < QDate(2020,2,1).toJulianDay () )
     {
         menu->addItem("Başvurularım")->clicked ().connect ([=](){
             this->Content ()->clear();
@@ -1614,7 +1614,7 @@ Giris::Taleplerim::Taleplerim(mongocxx::database *_db, bsoncxx::document::value 
     auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     row->addStyleClass(Bootstrap::Grid::row);
 
-    auto titleRemoved = row->addWidget(cpp14::make_unique<WText>("<h5><b>Dikkat Bu Sistem Yılbaşından(01.01.2020) Sonra Kapatılacaktır.</b></h5>"));
+    auto titleRemoved = row->addWidget(cpp14::make_unique<WText>("<h5><b>Dikkat Bu Sistem Yılbaşından(01.02.2020 (Şubat) ) Sonra Kapatılacaktır.</b></h5>"));
     titleRemoved->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
     titleRemoved->setAttributeValue (Style::style,Style::color::color (Style::color::Red::Crimson));
 
@@ -2438,7 +2438,7 @@ Giris::Basvurularim::Basvurularim(mongocxx::database *_db, bsoncxx::document::va
     auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     row->addStyleClass(Bootstrap::Grid::row);
 
-    auto titleRemoved = row->addWidget(cpp14::make_unique<WText>("<h5><b>Dikkat Bu Sistem Yılbaşından(01.01.2020) Sonra Kapatılacaktır.</b></h5>"));
+    auto titleRemoved = row->addWidget(cpp14::make_unique<WText>("<h5><b>Dikkat Bu Sistem Yılbaşından(01.02.2020 (Şubat) ) Sonra Kapatılacaktır.</b></h5>"));
     titleRemoved->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
     titleRemoved->setAttributeValue (Style::style,Style::color::color (Style::color::Red::Crimson));
 
@@ -2920,9 +2920,16 @@ void Giris::Personel::PersonelWidget::initMenu()
         this->Content ()->addWidget (Wt::cpp14::make_unique<Giris::Personel::Yenilikler>());
     });
 
+//    menu->addItem("Bilgilerim")->clicked ().connect([&](){
+//        this->Content ()->clear ();
+//        this->Content ()->addWidget (Wt::cpp14::make_unique<Bilgilerim>(mUser->db (),mUser->Value ()));
+//    });
+
     menu->addItem("Bilgilerim")->clicked ().connect([&](){
         this->Content ()->clear ();
-        this->Content ()->addWidget (Wt::cpp14::make_unique<Bilgilerim>(mUser->db (),mUser->Value ()));
+        auto personel = SerikBLDCore::IK::Personel();
+        personel.setDocumentView (mUser->view ());
+        this->Content ()->addWidget (Wt::cpp14::make_unique<PersonelPage>( std::move(personel) , new SerikBLDCore::DB(mUser->db ()) , mUser )  );
     });
 
     menu->addItem(WString::fromUTF8("Dilekçeler"))->clicked ().connect ([&]{
@@ -2972,22 +2979,13 @@ void Giris::Personel::PersonelWidget::initMenu()
         });
     }
 
+
+
     if(this->mUser->Statu () == SerikBLDCore::User::Baskan ||
             this->mUser->Statu () == SerikBLDCore::User::BaskanYardimcisi ||
             this->mUser->Birimi () == "İnsan Kaynakları ve Eğitim Müdürlüğü" )
     {
         menu->addItem(WString::fromUTF8("IK"))->clicked ().connect ([&](){
-            this->Content ()->clear ();
-            this->Content ()->addWidget (Wt::cpp14::make_unique<IK>(mUser->db (),mUser->Value ()));
-        });
-    }
-
-
-    if(this->mUser->Statu () == SerikBLDCore::User::Baskan ||
-            this->mUser->Statu () == SerikBLDCore::User::BaskanYardimcisi ||
-            this->mUser->Birimi () == "İnsan Kaynakları ve Eğitim Müdürlüğü" )
-    {
-        menu->addItem(WString::fromUTF8("IKV2"))->clicked ().connect ([&](){
             this->Content ()->clear ();
             this->Content ()->addWidget (Wt::cpp14::make_unique<IKManagerPage>(this->mUser->getDB ()));
         });
@@ -3037,18 +3035,18 @@ void Giris::Personel::PersonelWidget::initHeader(WContainerWidget* _row)
     auto tempContainer = _row->addWidget(cpp14::make_unique<WContainerWidget>());
     tempContainer->addStyleClass(Bootstrap::Grid::col_full_12);
     tempContainer->setAttributeValue(Style::style,Style::background::color::rgba(120,155,175));
-//    tempContainer->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
     tempContainer->addStyleClass ("boxShadow");
 
 
     auto photoWidget = tempContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+    photoWidget->setMargin (5,Side::Top);
     photoWidget->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
     photoWidget->setAttributeValue (Style::style,Style::background::url (this->mUser->PhotoFilePathWeb ())+
                                     Style::background::repeat::norepeat+
                                     Style::background::position::center_center+
-                                    Style::background::size::contain);
+                                    Style::background::size::cover);
     photoWidget->setHeight (120);
-    photoWidget->setWidth (110);
+    photoWidget->setWidth (90);
 
     {
         auto infoContainer = tempContainer->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -3284,65 +3282,6 @@ void Giris::Personel::BaseWidget::setUser(const bsoncxx::document::value &User)
     _User = User;
 }
 
-Giris::Personel::Bilgilerim::Bilgilerim(mongocxx::database *_db, bsoncxx::document::value _user)
-    :Giris::Personel::BaseWidget (_db,_user)
-{
-
-    auto mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
-    mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
-
-    auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-    row->addWidget(cpp14::make_unique<WContainerWidget>());
-    row->addStyleClass(Bootstrap::Grid::row);
-
-    {
-        auto _container = row->addWidget(cpp14::make_unique<WContainerWidget>());
-        _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-        auto _layout = _container->setLayout(cpp14::make_unique<WHBoxLayout>());
-        {
-            auto container = _layout->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-            auto text = container->addWidget(cpp14::make_unique<WText>("Personel Bilgileri"));
-            text->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold);
-        }
-        _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                      Style::background::color::color(Style::color::Grey::Gainsboro));
-    }
-
-
-    {
-        auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-        auto layout = container->setLayout(cpp14::make_unique<WHBoxLayout>());
-        layout->addStretch(1);
-        auto bucket = this->db()->gridfs_bucket();
-        auto img = layout->addWidget(cpp14::make_unique<WImage>(WLink(SBLDKeys::downloadifNotExist(&bucket,this->User().view()[SBLDKeys::Personel::fotoOid].get_oid().value.to_string()))));
-        layout->addStretch(1);
-    }
-
-
-
-    {
-        auto text = row->addWidget(cpp14::make_unique<WText>(this->User().view()[SBLDKeys::Personel::ad].get_utf8().value.to_string()));
-        text->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-    }
-
-    {
-        auto text = row->addWidget(cpp14::make_unique<WText>(this->User().view()[SBLDKeys::Personel::birimi].get_utf8().value.to_string()));
-        text->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-    }
-
-    {
-        auto text = row->addWidget(cpp14::make_unique<WText>(this->User().view()[SBLDKeys::Personel::statu].get_utf8().value.to_string()));
-        text->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-    }
-
-    {
-        auto text = row->addWidget(cpp14::make_unique<WText>(this->User().view()[SBLDKeys::Personel::telefon].get_utf8().value.to_string()));
-        text->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-    }
-
-}
 
 Giris::Personel::Taleplerim::Taleplerim(mongocxx::database *_db, bsoncxx::document::value _user)
     :Giris::Personel::BaseWidget (_db,_user)
