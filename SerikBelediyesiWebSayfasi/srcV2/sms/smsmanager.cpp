@@ -135,7 +135,6 @@ bool SMSManager::checkRapor(const SerikBLDCore::SMS::SMSItem &item)
 
         _mHttpClient->done().connect([=](AsioWrapper::error_code code, Http::Message message){
 
-            std::cout << code.message () << " :\n" << message.body () << std::endl;
             SerikBLDCore::SMS::SMSItem _item;
             _item.setOid (mLastCheckItemOid.toStdString ());
             QString rapor = QString::fromStdString (message.body ());
