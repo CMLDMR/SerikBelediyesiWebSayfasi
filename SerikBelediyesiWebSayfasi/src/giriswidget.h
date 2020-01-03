@@ -347,11 +347,9 @@ private:
 };
 
 
-class Bilgilerim : public BaseWidget
-{
-public:
-    Bilgilerim(mongocxx::database* _db , bsoncxx::document::value _user);
-};
+
+
+
 
 class Taleplerim : public BaseWidget
 {
