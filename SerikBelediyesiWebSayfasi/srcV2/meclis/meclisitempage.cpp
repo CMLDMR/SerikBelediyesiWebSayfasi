@@ -565,6 +565,15 @@ void v2::MeclisItemPage::addKarar()
     mKaydetBtn->addStyleClass (Bootstrap::Button::Primary);
 
     mKaydetBtn->clicked ().connect ([=](){
+
+        if( __kararOidText->text ().toUTF8 ().size () == 0 )
+        {
+            __infoText->setText ("<b>Hata: Karar Dosyası Eklemediniz !</b>");
+            __infoText->setAttributeValue (Style::style,Style::color::color (Style::color::Red::DarkRed));
+            return;
+        }
+
+
         SerikBLDCore::Meclis::KararItem item;
         item.setSayi (__SayiWidget->value ());
 
@@ -641,6 +650,11 @@ void v2::MeclisItemPage::addYoutubeLink()
     mKaydetBtn->addStyleClass (Bootstrap::Button::Primary);
 
     mKaydetBtn->clicked ().connect ([=](){
+        if( __link->text ().toUTF8 ().size () == 0 )
+        {
+            this->showPopUpMessage ("Link Eklemediniz","hata");
+            return;
+        }
         SerikBLDCore::Meclis::YouTubeLink item;
         item.setVideoID (__link->text ().toUTF8 ());
         item.setMeclisOid (this->oid ().value ().to_string ());
@@ -688,6 +702,15 @@ void v2::MeclisItemPage::addRapor()
     mKaydetBtn->addStyleClass (Bootstrap::Button::Primary);
 
     mKaydetBtn->clicked ().connect ([=](){
+
+        if( __kararOidText->text ().toUTF8 ().size () == 0 )
+        {
+            this->showPopUpMessage ("Rapor Eklemediniz","hata");
+            return;
+        }
+
+
+
         SerikBLDCore::Meclis::RaporItem item;
         auto kararOid__ = SerikBLDCore::Meclis::RaporManager::uploadfile (__kararOidText->text ().toUTF8 ().c_str ());
         item.setRaporOid (kararOid__.get_oid ().value.to_string ());
@@ -736,6 +759,11 @@ void v2::MeclisItemPage::addTeklif()
     mKaydetBtn->addStyleClass (Bootstrap::Button::Primary);
 
     mKaydetBtn->clicked ().connect ([=](){
+        if( __kararOidText->text ().toUTF8 ().size () == 0 )
+        {
+            this->showPopUpMessage ("Teklif Eklemediniz","hata");
+            return;
+        }
         SerikBLDCore::Meclis::TeklifItem item;
         auto kararOid__ = SerikBLDCore::Meclis::TeklifManager::uploadfile (__kararOidText->text ().toUTF8 ().c_str ());
         item.setTeklifOid (kararOid__.get_oid ().value.to_string ());
