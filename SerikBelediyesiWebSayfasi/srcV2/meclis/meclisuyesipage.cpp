@@ -385,7 +385,8 @@ void v2::MeclisUyeleriPage::yeniKayit()
 
 
 v2::MeclisDonemPage::MeclisDonemPage(DB *_db)
-    :SerikBLDCore::Meclis::DonemManager (_db)
+    :SerikBLDCore::Meclis::DonemManager (_db),
+      mUyeManager( new SerikBLDCore::Meclis::UyeManager(_db))
 {
     auto btn = Footer ()->addWidget (cpp14::make_unique<WPushButton>("Yeni Dönem Ekle"));
     btn->addStyleClass (Bootstrap::Button::Primary);
@@ -440,6 +441,8 @@ void v2::MeclisDonemPage::onList(const QVector<SerikBLDCore::Meclis::MeclisDonem
                              Bootstrap::Grid::Small::col_sm_11+
                              Bootstrap::Grid::ExtraSmall::col_xs_10);
 
+        text->setAttributeValue (Style::dataoid,item.oid ().value ().to_string ());
+
         auto delText = container->addWidget (cpp14::make_unique<WText>("<b>X</b>",TextFormat::UnsafeXHTML));
         delText->addStyleClass (Bootstrap::Grid::Large::col_lg_1+
                                 Bootstrap::Grid::Medium::col_md_1+
@@ -448,10 +451,45 @@ void v2::MeclisDonemPage::onList(const QVector<SerikBLDCore::Meclis::MeclisDonem
 
         delText->decorationStyle ().setCursor (Cursor::PointingHand);
         delText->clicked ().connect ([=](){
-            SerikBLDCore::Meclis::MeclisDonemi item;
-            item.setOid (item.oid ().value ().to_string ());
-            SerikBLDCore::Meclis::DonemManager::deleteItem (item);
-            SerikBLDCore::Meclis::DonemManager::UpdateList (SerikBLDCore::Meclis::MeclisDonemi());
+
+            SerikBLDCore::Item Checkitem(SerikBLDCore::Meclis::UyeKey::Collection);
+            Checkitem.append(SerikBLDCore::Meclis::UyeKey::donemAdi,text->text ().toUTF8 ());
+            auto count = this->mUyeManager->countItem (Checkitem);
+
+            if( count < 0 )
+            {
+                this->showPopUpMessage ("Veritabanı Hatası: " + this->mUyeManager->getLastError ().toStdString (),"hata");
+                return;
+            }
+
+            if( count > 0 )
+            {
+                this->showPopUpMessage (WString("Bu Dönemden Seçilmiş {1} Adet Meclis Üyesi Var! İlk Önce Onlar Kaldırınız").arg (count).toUTF8 (),"msg");
+                return;
+            }
+
+            auto yesBtn = this->askConfirm ("Silmek İstediniz den Emin misiniz? " + std::to_string (count));
+
+            yesBtn->clicked ().connect ([=](){
+                SerikBLDCore::Meclis::MeclisDonemi item;
+                item.setOid (text->attributeValue (Style::dataoid).toUTF8 ());
+                auto delResult = SerikBLDCore::Meclis::DonemManager::deleteItem (item);
+                if( delResult )
+                {
+                    if( delResult.value ().deleted_count () )
+                    {
+                        this->showPopUpMessage ("Silindi","msg");
+                        SerikBLDCore::Meclis::DonemManager::UpdateList (SerikBLDCore::Meclis::MeclisDonemi());
+                    }else{
+                        this->showPopUpMessage ("Silme İşlemi Başarısız Oldu. " + SerikBLDCore::Meclis::DonemManager::getLastError ().toStdString (),"hata");
+                    }
+                }else{
+                    this->showPopUpMessage ("Silme İşlemi Başarısız Oldu. " + SerikBLDCore::Meclis::DonemManager::getLastError ().toStdString (),"hata");
+                }
+
+            });
+
+
         });
 
     }
@@ -463,7 +501,8 @@ void v2::MeclisDonemPage::yeniKayit()
 }
 
 v2::PartiManagerPage::PartiManagerPage(SerikBLDCore::DB *_db)
-    :SerikBLDCore::Meclis::PartiManager (_db)
+    :SerikBLDCore::Meclis::PartiManager (_db),
+      mUyeManager( new SerikBLDCore::Meclis::UyeManager(_db))
 {
     auto btn = Footer ()->addWidget (cpp14::make_unique<WPushButton>("Yeni Parti Ekle"));
     btn->addStyleClass (Bootstrap::Button::Primary);
@@ -519,19 +558,54 @@ void v2::PartiManagerPage::onList(const QVector<SerikBLDCore::Meclis::PartiItem>
 
         delText->decorationStyle ().setCursor (Cursor::PointingHand);
         delText->clicked ().connect ([=](){
-            std::cout << text->text ().toUTF8 () << std::endl;
 
-            SerikBLDCore::Meclis::PartiItem item;
-            item.setParti (text->text ().toUTF8 ());
-            SerikBLDCore::Meclis::PartiManager::deleteItem (item);
-            SerikBLDCore::Meclis::PartiManager::UpdateList (SerikBLDCore::Meclis::PartiItem());
+            SerikBLDCore::Item Checkitem(SerikBLDCore::Meclis::UyeKey::Collection);
+            Checkitem.append(SerikBLDCore::Meclis::UyeKey::partiAdi,text->text ().toUTF8 ());
+            auto count = this->mUyeManager->countItem (Checkitem);
+
+            if( count < 0 )
+            {
+                this->showPopUpMessage ("Veritabanı Hatası: " + this->mUyeManager->getLastError ().toStdString (),"hata");
+                return;
+            }
+
+            if( count > 0 )
+            {
+                this->showPopUpMessage (WString("Bu Partiden Seçilmiş {1} Adet Meclis Üyesi Var! İlk Önce Onlar Kaldırınız").arg (count).toUTF8 (),"msg");
+                return;
+            }
+
+            auto yesBtn = this->askConfirm ("Silmek İstediniz den Emin misiniz? " + std::to_string (count));
+
+            yesBtn->clicked ().connect ([=](){
+                SerikBLDCore::Meclis::PartiItem item;
+                item.setParti (text->text ().toUTF8 ());
+                auto delResult = SerikBLDCore::Meclis::PartiManager::deleteItem (item);
+                if( delResult )
+                {
+                    if( delResult.value ().deleted_count () )
+                    {
+                        this->showPopUpMessage ("Silindi","msg");
+                        SerikBLDCore::Meclis::PartiManager::UpdateList (SerikBLDCore::Meclis::PartiItem());
+                    }else{
+                        this->showPopUpMessage ("Silme İşlemi Başarısız Oldu. " + SerikBLDCore::Meclis::PartiManager::getLastError ().toStdString (),"hata");
+                    }
+                }else{
+                    this->showPopUpMessage ("Silme İşlemi Başarısız Oldu. " + SerikBLDCore::Meclis::PartiManager::getLastError ().toStdString (),"hata");
+                }
+
+            });
+
+
+
         });
 
     }
 }
 
 v2::KomisyonManagerPage::KomisyonManagerPage(SerikBLDCore::DB *_db)
-    :SerikBLDCore::Meclis::KomisyonManager (_db)
+    :SerikBLDCore::Meclis::KomisyonManager (_db),
+      mUyeManager( new SerikBLDCore::Meclis::UyeManager(_db))
 {
     auto btn = Footer ()->addWidget (cpp14::make_unique<WPushButton>("Yeni Komisyon Ekle"));
     btn->addStyleClass (Bootstrap::Button::Primary);
@@ -587,12 +661,43 @@ void v2::KomisyonManagerPage::onList(const QVector<SerikBLDCore::Meclis::Komisyo
 
         delText->decorationStyle ().setCursor (Cursor::PointingHand);
         delText->clicked ().connect ([=](){
-            std::cout << text->text ().toUTF8 () << std::endl;
+            SerikBLDCore::Item Checkitem(SerikBLDCore::Meclis::UyeKey::Collection);
+            Checkitem.append(SerikBLDCore::Meclis::UyeKey::komisyonAdi,text->text ().toUTF8 ());
+            auto count = this->mUyeManager->countItem (Checkitem);
 
-            SerikBLDCore::Meclis::PartiItem item;
-            item.setParti (text->text ().toUTF8 ());
-            SerikBLDCore::Meclis::KomisyonManager::deleteItem (item);
-            SerikBLDCore::Meclis::KomisyonManager::UpdateList (SerikBLDCore::Meclis::KomisyonItem());
+            if( count < 0 )
+            {
+                this->showPopUpMessage ("Veritabanı Hatası: " + this->mUyeManager->getLastError ().toStdString (),"hata");
+                return;
+            }
+
+            if( count > 0 )
+            {
+                this->showPopUpMessage (WString("Bu Komisyona Seçilmiş {1} Adet Meclis Üyesi Var! İlk Önce Onlar Kaldırınız").arg (count).toUTF8 (),"msg");
+                return;
+            }
+
+            auto yesBtn = this->askConfirm ("Silmek İstediniz den Emin misiniz? " + std::to_string (count));
+
+            yesBtn->clicked ().connect ([=](){
+                SerikBLDCore::Meclis::KomisyonItem item;
+                item.setKomisyonAdi (text->text ().toUTF8 ());
+                auto delResult = SerikBLDCore::Meclis::KomisyonManager::deleteItem (item);
+                if( delResult )
+                {
+                    if( delResult.value ().deleted_count () )
+                    {
+                        this->showPopUpMessage ("Silindi","msg");
+                        SerikBLDCore::Meclis::KomisyonManager::UpdateList (SerikBLDCore::Meclis::KomisyonItem());
+                    }else{
+                        this->showPopUpMessage ("Silme İşlemi Başarısız Oldu. " + SerikBLDCore::Meclis::KomisyonManager::getLastError ().toStdString (),"hata");
+                    }
+                }else{
+                    this->showPopUpMessage ("Silme İşlemi Başarısız Oldu. " + SerikBLDCore::Meclis::KomisyonManager::getLastError ().toStdString (),"hata");
+                }
+
+            });
+
         });
 
     }

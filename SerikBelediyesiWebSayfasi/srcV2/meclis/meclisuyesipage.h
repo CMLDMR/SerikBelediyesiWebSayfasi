@@ -53,6 +53,9 @@ public:
 
     void yeniKayit();
 
+private:
+    SerikBLDCore::Meclis::UyeManager* mUyeManager;
+
 };
 
 class PartiManagerPage : public SerikBLDCore::Meclis::PartiManager , public ContainerWidget
@@ -64,6 +67,9 @@ public:
 
     void yeniKayit();
 
+private:
+    SerikBLDCore::Meclis::UyeManager* mUyeManager;
+
 };
 
 class KomisyonManagerPage : public SerikBLDCore::Meclis::KomisyonManager , public ContainerWidget
@@ -74,6 +80,9 @@ public:
     void onList(const QVector<SerikBLDCore::Meclis::KomisyonItem> *mlist) override;
 
     void yeniKayit();
+
+private:
+    SerikBLDCore::Meclis::UyeManager* mUyeManager;
 
 };
 
