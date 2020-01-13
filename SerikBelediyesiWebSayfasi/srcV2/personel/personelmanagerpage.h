@@ -7,6 +7,7 @@
 #include "SerikBelediyesiWebSayfasi/BaseClass/containerwiget.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/sms/smsmanager.h"
 #include <QRandomGenerator>
+#include <QMap>
 
 #include "yenipersonelwidget.h"
 #include "user.h"
@@ -58,6 +59,11 @@ private:
     void initSMSLog();
     SMSManager* mSMSManager;
     Signal<NoClass> _clickedBack;
+    SerikBLDCore::BirimManager* mBirimManager;
+    SerikBLDCore::PersonelManager* mPersonelManager;
+
+    QMap<QString,QString> mMudurlukList;
+
 };
 
 
