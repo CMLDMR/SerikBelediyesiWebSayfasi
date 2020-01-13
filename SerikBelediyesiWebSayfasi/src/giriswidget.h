@@ -8,6 +8,7 @@
 
 
 #include "user.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/sms/smsmanager.h"
 
 
 
@@ -17,7 +18,7 @@ namespace Giris {
 class GirisWidget : public WContainerWidget
 {
 public:
-    GirisWidget(mongocxx::database* _db);
+    explicit GirisWidget(mongocxx::database* _db);
 
 private:
     mongocxx::database* db;
@@ -42,6 +43,10 @@ private:
     void initSivil();
 
     void initPersonel();
+
+    SerikBLDCore::User* mUser;
+
+    SerikBLDCore::BirimManager* mBirimManager;
 };
 
 
@@ -205,10 +210,32 @@ private:
     Signal<bsoncxx::oid> _clickTalep;
 };
 
+
+
+class LoginWidgetV2 : public ContainerWidget
+{
+public:
+    explicit LoginWidgetV2(SerikBLDCore::DB* _db);
+
+    void initLoginScreen();
+
+    WLineEdit* mTelefonNumarasi,*mSifre;
+    WPushButton* mGirisButton, *mUnuttumButton, *mkayitOlButton;
+
+    SMSManager* smsManager;
+
+    void sendNewPassword();
+
+};
+
+
+
+
+
 class LoginWidget : public WContainerWidget
 {
 public:
-    LoginWidget(mongocxx::database* _db);
+    explicit LoginWidget(mongocxx::database* _db);
 
     bool getUserisVatandas() const;
 
