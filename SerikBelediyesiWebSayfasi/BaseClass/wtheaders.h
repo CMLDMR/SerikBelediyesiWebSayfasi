@@ -46,6 +46,7 @@
 #include <Wt/WJavaScript.h>
 #include <Wt/WCalendar.h>
 #include <Wt/WPopupMenu.h>
+#include <Wt/WAbstractItemModel.h>
 
 #include <Wt/WSplitButton.h>
 
