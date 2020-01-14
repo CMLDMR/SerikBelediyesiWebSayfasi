@@ -614,7 +614,7 @@ void PersonelPage::initContent()
         auto vContainer = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
         vContainer->addStyleClass (Bootstrap::Grid::row);
 
-        auto text = vContainer->addWidget (cpp14::make_unique<WText>("<h6>Birimi</h6>",TextFormat::UnsafeXHTML));
+        auto text = vContainer->addWidget (cpp14::make_unique<WText>("<h6>Asıl Birimi</h6>",TextFormat::UnsafeXHTML));
         text->addStyleClass (Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_3);
         text->addStyleClass (Bootstrap::Label::Default);
 
@@ -826,7 +826,7 @@ void PersonelPage::initContent()
         auto vContainer = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
         vContainer->addStyleClass (Bootstrap::Grid::row);
 
-        auto text = vContainer->addWidget (cpp14::make_unique<WText>("<h6>Müdürlükleri</h6>",TextFormat::UnsafeXHTML));
+        auto text = vContainer->addWidget (cpp14::make_unique<WText>("<h6>Diğer Müdürlükleri</h6>",TextFormat::UnsafeXHTML));
         text->addStyleClass (Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_3);
         text->addStyleClass (Bootstrap::Label::Default);
 
