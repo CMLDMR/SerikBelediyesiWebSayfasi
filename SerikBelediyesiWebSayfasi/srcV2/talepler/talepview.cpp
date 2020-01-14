@@ -1413,52 +1413,56 @@ void TalepView::updateGorevliPersonelWidget()
         auto adSoyadText = container->addWidget (cpp14::make_unique<WText>(per.AdSoyad ().toStdString ()));
         adSoyadText->setAttributeValue (Style::style,Style::font::size::s10px);
 
-        auto deleteContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
-        deleteContainer->setPositionScheme (PositionScheme::Absolute);
-        deleteContainer->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
-        deleteContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::Red::DarkRed));
-        deleteContainer->setPadding (2,Side::Right|Side::Left);
-        auto delText = deleteContainer->addWidget (cpp14::make_unique<WText>("<b>X</b>"));
-        delText->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow)+Style::font::size::s9px);
-        deleteContainer->setOffsets (0,Side::Top|Side::Right);
-        deleteContainer->decorationStyle ().setCursor (Cursor::PointingHand);
-        deleteContainer->setAttributeValue (Style::dataoid,per.oid ().value ().to_string ());
+        if( this->mUser->Statu () == SerikBLDCore::IK::Statu::Mudur )
+        {
+            auto deleteContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
+            deleteContainer->setPositionScheme (PositionScheme::Absolute);
+            deleteContainer->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+            deleteContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::Red::DarkRed));
+            deleteContainer->setPadding (2,Side::Right|Side::Left);
+            auto delText = deleteContainer->addWidget (cpp14::make_unique<WText>("<b>X</b>"));
+            delText->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow)+Style::font::size::s9px);
+            deleteContainer->setOffsets (0,Side::Top|Side::Right);
+            deleteContainer->decorationStyle ().setCursor (Cursor::PointingHand);
+            deleteContainer->setAttributeValue (Style::dataoid,per.oid ().value ().to_string ());
 
-        deleteContainer->clicked ().connect ([=](){
+            deleteContainer->clicked ().connect ([=](){
 
-            if( this->durum ().toStdString () == SerikBLDCore::TalepKey::DurumKey::TeyitEdilmemis ||
-                    this->durum ().toStdString () == SerikBLDCore::TalepKey::DurumKey::Tamamlandi ||
-                    this->durum ().toStdString () == SerikBLDCore::TalepKey::DurumKey::RedEdildi )
-            {
-                this->showMessage ("Uyarı","Bu Talep Üzerinde İşlem Yapmak İçin Lütfen Beyaz Masadan yada Çağrı Merkezinden Tekrar Açtırınız");
-                return;
-            }
-
-
-            auto messageBox =
-                    deleteContainer->addChild(Wt::cpp14::make_unique<Wt::WMessageBox>(
-                                                  "Uyarı",
-                                                  "<p>Bu Personeli Kaldırmak İstediğinize Emin misiniz<b>?</b></p>",
-                                                  Wt::Icon::Information,
-                                                  Wt::StandardButton::Yes | Wt::StandardButton::No));
-            messageBox->setModal(false);
-            messageBox->buttonClicked().connect([=] {
-                if( messageBox->buttonResult () == Wt::StandardButton::Yes )
+                if( this->durum ().toStdString () == SerikBLDCore::TalepKey::DurumKey::TeyitEdilmemis ||
+                        this->durum ().toStdString () == SerikBLDCore::TalepKey::DurumKey::Tamamlandi ||
+                        this->durum ().toStdString () == SerikBLDCore::TalepKey::DurumKey::RedEdildi )
                 {
-                    IK::Personel per;
-                    per.setOid (deleteContainer->attributeValue (Style::dataoid).toUTF8 ());
-                    this->DeleteGorevliPersonel (per);
-                    if( this->updateTalep (this) ){
-                        this->updateGorevliPersonelWidget ();
-                    }else{
-                        std::cout << "can not remove personel Widget" << std::endl;
-                    }
-                }else{
-                    deleteContainer->removeChild (messageBox);
+                    this->showMessage ("Uyarı","Bu Talep Üzerinde İşlem Yapmak İçin Lütfen Beyaz Masadan yada Çağrı Merkezinden Tekrar Açtırınız");
+                    return;
                 }
+
+
+                auto messageBox =
+                        deleteContainer->addChild(Wt::cpp14::make_unique<Wt::WMessageBox>(
+                                                      "Uyarı",
+                                                      "<p>Bu Personeli Kaldırmak İstediğinize Emin misiniz<b>?</b></p>",
+                                                      Wt::Icon::Information,
+                                                      Wt::StandardButton::Yes | Wt::StandardButton::No));
+                messageBox->setModal(false);
+                messageBox->buttonClicked().connect([=] {
+                    if( messageBox->buttonResult () == Wt::StandardButton::Yes )
+                    {
+                        IK::Personel per;
+                        per.setOid (deleteContainer->attributeValue (Style::dataoid).toUTF8 ());
+                        this->DeleteGorevliPersonel (per);
+                        if( this->updateTalep (this) ){
+                            this->updateGorevliPersonelWidget ();
+                        }else{
+                            std::cout << "can not remove personel Widget" << std::endl;
+                        }
+                    }else{
+                        deleteContainer->removeChild (messageBox);
+                    }
+                });
+                messageBox->show();
             });
-            messageBox->show();
-        });
+        }
+
     }
 }
 
