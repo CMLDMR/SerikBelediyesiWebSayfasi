@@ -26,6 +26,8 @@
 #include "SerikBelediyesiWebSayfasi/srcV2/meclis/meclispage.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/personel/personelmanagerpage.h"
 
+#include "SerikBelediyesiWebSayfasi/srcV2/stok/stokkategoripage.h"
+
 
 
 Giris::GirisWidget::GirisWidget(mongocxx::database *_db)
@@ -3137,6 +3139,7 @@ void Giris::Personel::PersonelWidget::initMenu()
 
 
 
+
     if(this->mUser->Statu () == SerikBLDCore::User::Baskan ||
             this->mUser->Statu () == SerikBLDCore::User::BaskanYardimcisi ||
             this->mUser->Birimi () == "İnsan Kaynakları ve Eğitim Müdürlüğü" )
@@ -4052,15 +4055,15 @@ void Giris::Personel::Taleplerim::setDetail(bsoncxx::oid oid)
                         auto textLayout = textCOntainer->setLayout(cpp14::make_unique<WVBoxLayout>());
 
                         try {
-                            auto text = textLayout->addWidget(cpp14::make_unique<WText>(doc[SBLDKeys::SikayetKey::GorevliType::adsoyad].get_utf8().value.to_string()));
+                            textLayout->addWidget(cpp14::make_unique<WText>(doc[SBLDKeys::SikayetKey::GorevliType::adsoyad].get_utf8().value.to_string()));
                         } catch (bsoncxx::exception &e) {
-                            auto text = textLayout->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(e.what())));
+                            textLayout->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(e.what())));
                         }
 
                         try {
-                            auto text = textLayout->addWidget(cpp14::make_unique<WText>(doc[SBLDKeys::SikayetKey::GorevliType::tel].get_utf8().value.to_string()));
+                            textLayout->addWidget(cpp14::make_unique<WText>(doc[SBLDKeys::SikayetKey::GorevliType::tel].get_utf8().value.to_string()));
                         } catch (bsoncxx::exception &e) {
-                            auto text = textLayout->addWidget(cpp14::make_unique<WText>(WString("Telefon Yok: {1}").arg(e.what())));
+                            textLayout->addWidget(cpp14::make_unique<WText>(WString("Telefon Yok: {1}").arg(e.what())));
                         }
                     }
                 } catch (bsoncxx::exception &e) {

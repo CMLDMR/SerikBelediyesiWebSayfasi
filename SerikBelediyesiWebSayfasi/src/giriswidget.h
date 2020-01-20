@@ -3,7 +3,7 @@
 
 
 #include "SerikBelediyesiWebSayfasi/Giris/gelenmesajlarwidget.h"
-#include "SerikBelediyesiWebSayfasi/reporter/reportresource.h"
+
 #include "SerikBelediyesiWebSayfasi/srcV2/talepler/talepwidget.h"
 
 

@@ -5,10 +5,14 @@
 
 #include <vector>
 #include <memory>
+#include "SerikBelediyesiWebSayfasi/BaseClass/containerwiget.h"
+#include "db.h"
+#include "user.h"
+#include "vatandas/vatandaswidget.h"
 
 class StokYardim;
 
-class KadinAileStock : public BaseClass::ContainerWidget
+class KadinAileStock : public ContainerWidget , public SerikBLDCore::DB
 {
 public:
     KadinAileStock( mongocxx::database* _db , bsoncxx::document::value _user );
@@ -26,12 +30,14 @@ public:
 private:
     StokYardim* mYardim;
 
+    SerikBLDCore::User *mUser;
+
 };
 
 
 
 
-class StokYardim : public BaseClass::BaseWidget
+class StokYardim : public ContainerWidget , public SerikBLDCore::DB
 {
 
     struct StokKategoriDoc
@@ -87,6 +93,8 @@ private:
     const std::string mAlinisTarihiKEY{"alinisTarihi"};     //*
     const std::string mVerilisTarihiKEY{"verilisTarihi"};
     const std::string mStokta{"stokta"};
+
+    SerikBLDCore::User* mUser;
 
 };
 
@@ -203,7 +211,7 @@ private:
 
 };
 
-class StockGiris : public BaseClass::ContainerWidget
+class StockGiris : public ContainerWidget , public SerikBLDCore::DB
 {
 public:
     StockGiris( mongocxx::database* _db , bsoncxx::document::value _user );
@@ -222,6 +230,8 @@ private:
     WComboBox* mKategoriComboBox;
 
     TCWidget* mTCWidget;
+
+    SerikBLDCore::User* mUser;
 
 };
 

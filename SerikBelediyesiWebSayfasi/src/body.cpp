@@ -368,14 +368,14 @@ void Body::Body::initCalismalar()
 void Body::Body::initBasindaBiz()
 {
 
-    mMainContainer->clear();
+//    mMainContainer->clear();
 
-    mMainContainer->setContentAlignment(AlignmentFlag::Center);
-    auto container = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//    mMainContainer->setContentAlignment(AlignmentFlag::Center);
+//    auto container = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
 
-    container->setMaximumSize(1250,WLength::Auto);
-    container->setPadding(0,AllSides);
-    container->addStyleClass(Bootstrap::Grid::row);
+//    container->setMaximumSize(1250,WLength::Auto);
+//    container->setPadding(0,AllSides);
+//    container->addStyleClass(Bootstrap::Grid::row);
 
     // Giris Sayfası
     {
@@ -383,10 +383,10 @@ void Body::Body::initBasindaBiz()
         talep->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
         talep->_ClickBack.connect(this,&Body::initBody);*/
 
-        auto mBasindaBiz = container->addWidget(cpp14::make_unique<BasindaBizWidget>(db,false));
-        mBasindaBiz->addStyleClass(Bootstrap::Grid::col_full_12);
+//        auto mBasindaBiz = container->addWidget(cpp14::make_unique<BasindaBizWidget>(db,false));
+//        mBasindaBiz->addStyleClass(Bootstrap::Grid::col_full_12);
     }
-    wApp->setInternalPath("/initBasindaBiz",false);
+//    wApp->setInternalPath("/initBasindaBiz",false);
 
 }
 

@@ -248,9 +248,10 @@ VatandasYeniKayitWidget::VatandasYeniKayitWidget(SerikBLDCore::DB *db)
             auto val = this->Load_byTCNO (tcLineEdit->text ().toUTF8 () );
             if( val )
             {
-                this->showMessage ("Uyarı","Bu TC Kayıtlı." +
+                this->showMessage ("Uyarı","Bu TC " +
                                    val.value ()->AdSoyad ().toStdString () +
                                    " Adına Kayıtlı - " + val.value ()->CepTelefonu ().toStdString ());
+                tcLineEdit->setText ("");
 
                 __tcKayitli = true;
                 adsoyadLineEdit->setText (val.value ()->AdSoyad ().toStdString ());
@@ -280,9 +281,10 @@ VatandasYeniKayitWidget::VatandasYeniKayitWidget(SerikBLDCore::DB *db)
             auto val = this->Load_byTEL (telefonLineEdit->text ().toUTF8 () );
             if( val )
             {
-                this->showMessage ("Uyarı","Bu Telefon Kayıtlı." +
+                this->showMessage ("Uyarı","Bu Telefon " +
                                    val.value ()->AdSoyad ().toStdString () +
                                    " Adına Kayıtlı - " + val.value ()->TCNO ().toStdString ());
+                telefonLineEdit->setText ("");
 
                 __telefonKayitli = true;
 

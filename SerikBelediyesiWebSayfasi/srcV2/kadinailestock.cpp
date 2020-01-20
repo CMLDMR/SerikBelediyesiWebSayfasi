@@ -1,15 +1,19 @@
 #include "kadinailestock.h"
 
+#include "stok/stokkategoripage.h"
+
 KadinAileStock::KadinAileStock(mongocxx::database *_db, bsoncxx::document::value _user)
-    :BaseClass::ContainerWidget(_db,_user,"Stok Yardım")
+    :ContainerWidget ("Stok Yardım"),
+      SerikBLDCore::DB (_db),
+      mUser( new SerikBLDCore::User(_db,_user))
 {
 
-    mYardim = new StokYardim(this->db(),this->User());
+    mYardim = new StokYardim(this->db(),mUser->Value ());
 
-    this->getHeaderRowContainer()->setMargin(15,Side::Top|Side::Bottom);
+    this->Header()->setMargin(15,Side::Top|Side::Bottom);
 
     {
-        auto container = this->getHeaderRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
+        auto container = this->Header()->addWidget(cpp14::make_unique<WContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_6);
         container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
         container->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(),this->getRandom(),this->getRandom()));
@@ -18,11 +22,10 @@ KadinAileStock::KadinAileStock(mongocxx::database *_db, bsoncxx::document::value
         text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow));
         container->decorationStyle().setCursor(Cursor::PointingHand);
         container->clicked().connect(this,&KadinAileStock::initStockGiris);
-
     }
 
     {
-        auto container = this->getHeaderRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
+        auto container = this->Header()->addWidget(cpp14::make_unique<WContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_6);
         container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
         container->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(),this->getRandom(),this->getRandom()));
@@ -34,7 +37,7 @@ KadinAileStock::KadinAileStock(mongocxx::database *_db, bsoncxx::document::value
     }
 
     {
-        auto container = this->getHeaderRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
+        auto container = this->Header()->addWidget(cpp14::make_unique<WContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_6);
         container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
         container->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(),this->getRandom(),this->getRandom()));
@@ -46,7 +49,7 @@ KadinAileStock::KadinAileStock(mongocxx::database *_db, bsoncxx::document::value
     }
 
     {
-        auto container = this->getHeaderRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
+        auto container = this->Header()->addWidget(cpp14::make_unique<WContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_6);
         container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
         container->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(),this->getRandom(),this->getRandom()));
@@ -65,32 +68,45 @@ KadinAileStock::~KadinAileStock()
 
 void KadinAileStock::initAyarlar()
 {
-    this->getContentRowContainer()->clear();
-    this->getContentRowContainer()->addWidget( cpp14::make_unique<StokKategori>( mYardim , this->db() , this->User() ) )->addStyleClass(Bootstrap::Grid::col_full_12);
+    this->Content ()->clear();
+    Content()->addWidget ( cpp14::make_unique<v2::StokKategoriPage>(this->getDB (),this->mUser))->addStyleClass(Bootstrap::Grid::Large::col_lg_5+
+                                                                                                                Bootstrap::Grid::Medium::col_md_5+
+                                                                                                                Bootstrap::Grid::Small::col_sm_12+
+                                                                                                                Bootstrap::Grid::ExtraSmall::col_xs_12);
+    Content()->addWidget ( cpp14::make_unique<v2::StokKodPage>(this->getDB ()))->addStyleClass(Bootstrap::Grid::Offset::Large::col_lg_1+
+                                                                                               Bootstrap::Grid::Offset::Medium::col_md_1+
+                                                                                               Bootstrap::Grid::Large::col_lg_6+
+                                                                                               Bootstrap::Grid::Medium::col_md_6+
+                                                                                               Bootstrap::Grid::Small::col_sm_12+
+                                                                                               Bootstrap::Grid::ExtraSmall::col_xs_12);
 }
 
 void KadinAileStock::initTCKayit()
 {
-    this->getContentRowContainer()->clear();
-    this->getContentRowContainer()->addWidget( cpp14::make_unique<TCKayit>( this->db() , this->User() ) )->addStyleClass(Bootstrap::Grid::col_full_12);
+    this->Content()->clear();
+//    this->Content()->addWidget( cpp14::make_unique<TCKayit>( this->db() , this->mUser->Value () ) )->addStyleClass(Bootstrap::Grid::col_full_12);
+
+    Content ()->addWidget (cpp14::make_unique<VatandasYeniKayitWidget>( this->getDB () ) );
 }
 
 void KadinAileStock::initStockGiris()
 {
-    this->getContentRowContainer()->clear();
-    this->getContentRowContainer()->addWidget( cpp14::make_unique<StockGiris>( this->db() , this->User() ) )->addStyleClass(Bootstrap::Grid::col_full_12);
+    this->Content()->clear();
+    this->Content()->addWidget( cpp14::make_unique<StockGiris>( this->db() , this->mUser->Value () ) )->addStyleClass(Bootstrap::Grid::col_full_12);
 }
 
 void KadinAileStock::initStockCikis()
 {
-    this->getContentRowContainer()->clear();
-    this->getContentRowContainer()->addWidget( cpp14::make_unique<StockCikis>( this->db() , this->User() ) )->addStyleClass(Bootstrap::Grid::col_full_12);
+    this->Content()->clear();
+    this->Content()->addWidget( cpp14::make_unique<StockCikis>( this->db() , this->mUser->Value () ) )->addStyleClass(Bootstrap::Grid::col_full_12);
 }
 
 
 
 StokYardim::StokYardim(mongocxx::database *_db, bsoncxx::document::value _user)
-    :BaseClass::BaseWidget (_db,_user)
+    :ContainerWidget (),
+      SerikBLDCore::DB (_db),
+      mUser( new SerikBLDCore::User(_db,_user) )
 {
 
 }
@@ -110,14 +126,19 @@ bool StokYardim::addKategoriName(const std::string &kategoriName)
     try {
         insDoc.append(kvp(mKategoriKEY,kategoriName));
     } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        this->showPopUpMessage (str,"hata");
         returnValue = false;
     }
+
 
     std::int64_t count = 0;
 
     try {
-        count = this->db()->collection(mKategoriColl).count(insDoc.view());
+        count = this->db()->collection(mKategoriColl).count_documents (insDoc.view());
     } catch (mongocxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        this->showPopUpMessage (str,"hata");
         returnValue = false;
     }
 
@@ -134,6 +155,8 @@ bool StokYardim::addKategoriName(const std::string &kategoriName)
                 returnValue = false;
             }
         } catch (mongocxx::exception &e) {
+            std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+            this->showPopUpMessage (str,"hata");
             returnValue = false;
         }
     }else{
@@ -152,14 +175,18 @@ bool StokYardim::deleteKategoriName(const std::string &kategoriOid)
     try {
         delDoc.append(kvp(mOidKEY,bsoncxx::oid{kategoriOid}));
     } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        this->showPopUpMessage (str,"hata");
         returnValue = false;
     }
 
     std::int64_t count = 0;
 
     try {
-        count = this->db()->collection(mKategoriColl).count(delDoc.view());
+        count = this->db()->collection(mKategoriColl).count_documents (delDoc.view());
     } catch (mongocxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        this->showPopUpMessage (str,"hata");
         returnValue = false;
     }
 
@@ -175,22 +202,28 @@ bool StokYardim::deleteKategoriName(const std::string &kategoriOid)
             try {
                 mKategoriName = view[mMalzemeAdiKEY].get_utf8().value.to_string();
             } catch (bsoncxx::exception &e) {
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                this->showPopUpMessage (str,"hata");
                 returnValue = false;
             }
 
 
         }
     } catch (mongocxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        this->showPopUpMessage (str,"hata");
         returnValue = false;
     }
 
     try {
-        auto _count = this->db()->collection(mMalzemeColl).count(make_document(kvp(mMalzemeAdiKEY,mKategoriName)).view());
+        auto _count = this->db()->collection(mMalzemeColl).count_documents (make_document(kvp(mMalzemeAdiKEY,mKategoriName)).view());
         if( _count != 0 )
         {
             returnValue = false;
         }
     } catch (mongocxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        this->showPopUpMessage (str,"hata");
         returnValue = false;
     }
 
@@ -208,6 +241,8 @@ bool StokYardim::deleteKategoriName(const std::string &kategoriOid)
                 returnValue = false;
             }
         } catch (mongocxx::exception &e) {
+            std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+            this->showPopUpMessage (str,"hata");
             returnValue = false;
         }
     }else{
@@ -234,20 +269,23 @@ std::vector<StokYardim::StokKategoriDoc> StokYardim::getKategoriList()
             try {
                 _doc.mKategoriOid = doc[mOidKEY].get_oid().value.to_string();
             } catch (bsoncxx::exception &e) {
-
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                this->showPopUpMessage (str,"hata");
             }
 
             try {
                 _doc.mKategoriName = doc[mKategoriKEY].get_utf8().value.to_string();
             } catch (bsoncxx::exception &e) {
-
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                this->showPopUpMessage (str,"hata");
             }
 
             list.push_back(_doc);
         }
 
     } catch (mongocxx::exception &e) {
-
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        this->showPopUpMessage (str,"hata");
     }
 
     return list;
@@ -262,30 +300,40 @@ bool StokYardim::addMalzeme(const std::string &kategoriadi, const std::string &m
     try {
         insDoc.append(kvp(this->mKategoriKEY,kategoriadi));
     } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        this->showPopUpMessage (str,"hata");
         returnedValue = false;
     }
 
     try {
         insDoc.append(kvp(this->mStokta,true));
     } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        this->showPopUpMessage (str,"hata");
         returnedValue = false;
     }
 
     try {
         insDoc.append(kvp(this->mVerenTCNOKEY,tcno));
     } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        this->showPopUpMessage (str,"hata");
         returnedValue = false;
     }
 
     try {
         insDoc.append(kvp(this->mVerilisTarihiKEY,QDate::currentDate().toJulianDay()));
     } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        this->showPopUpMessage (str,"hata");
         returnedValue = false;
     }
 
     try {
         insDoc.append(kvp(this->mMalzemeAdiKEY,malzemeadi));
     } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        this->showPopUpMessage (str,"hata");
         returnedValue = false;
     }
 
@@ -309,6 +357,8 @@ bool StokYardim::addMalzeme(const std::string &kategoriadi, const std::string &m
             }
 
         } catch (mongocxx::exception &e) {
+            std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+            this->showPopUpMessage (str,"hata");
             returnedValue = false;
         }
     }
@@ -324,7 +374,8 @@ bool StokYardim::deleteMalzeme(const std::string &malzemeOid)
     try {
         filter.append(kvp("_id",bsoncxx::oid{malzemeOid}));
     } catch (bsoncxx::exception &e) {
-        std::cout << "Error: " << malzemeOid << " " << __LINE__ << __FILE__ << std::endl;
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        this->showPopUpMessage (str,"hata");
         return false;
     }
 
@@ -343,6 +394,8 @@ bool StokYardim::deleteMalzeme(const std::string &malzemeOid)
         }
 
     } catch (mongocxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        this->showPopUpMessage (str,"hata");
         return false;
     }
 
@@ -363,6 +416,8 @@ bool StokYardim::deleteMalzeme(const std::string &malzemeOid)
                 return false;
             }
         } catch (mongocxx::exception &e) {
+            std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+            this->showPopUpMessage (str,"hata");
             return false;
         }
     }else{
@@ -380,7 +435,8 @@ std::vector<StokYardim::StokMalzeme> StokYardim::getMalzemeList(const std::strin
     try {
         filter.append(kvp(this->mVerenTCNOKEY,tcno));
     } catch (bsoncxx::exception &e) {
-
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        this->showPopUpMessage (str,"hata");
     }
 
     try {
@@ -393,48 +449,56 @@ std::vector<StokYardim::StokMalzeme> StokYardim::getMalzemeList(const std::strin
             try {
                 malzeme.mMalzemeOid = doc["_id"].get_oid().value.to_string();
             } catch (bsoncxx::exception &e) {
-                std::cout << "ERROR: " << __LINE__ << __FILE__ << std::endl;
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                this->showPopUpMessage (str,"hata");
             }
             try {
                 malzeme.mKategori = doc[this->mKategoriKEY].get_utf8().value.to_string();
             } catch (bsoncxx::exception &e) {
-                std::cout << "ERROR: " << __LINE__ << __FILE__ << std::endl;
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                this->showPopUpMessage (str,"hata");
             }
             try {
                 malzeme.mMalzemeAdi = doc[this->mMalzemeAdiKEY].get_utf8().value.to_string();
             } catch (bsoncxx::exception &e) {
-                std::cout << "ERROR: " << __LINE__ << __FILE__ << std::endl;
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                this->showPopUpMessage (str,"hata");
 
             }
             try {
                 malzeme.mVerenTCNO = doc[this->mVerenTCNOKEY].get_utf8().value.to_string();
             } catch (bsoncxx::exception &e) {
-                std::cout << "ERROR: " << __LINE__ << __FILE__ << std::endl;
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                this->showPopUpMessage (str,"hata");
 
             }
             try {
                 malzeme.mVerilisTarihi = doc[this->mVerilisTarihiKEY].get_int64().value;
             } catch (bsoncxx::exception &e) {
-                std::cout << "ERROR: " << __LINE__ << __FILE__ << std::endl;
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                this->showPopUpMessage (str,"hata");
 
             }
             try {
                 malzeme.mAlanTCNO = doc[this->mAlanTCNOKEY].get_utf8().value.to_string();
             } catch (bsoncxx::exception &e) {
-                std::cout << "ERROR: " << __LINE__ << __FILE__ << std::endl;
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                this->showPopUpMessage (str,"hata");
 
             }
 
             try {
                 malzeme.mAlanisTarihi = doc[this->mAlinisTarihiKEY].get_int64().value;
             } catch (bsoncxx::exception &e) {
-                std::cout << "ERROR: " << __LINE__ << __FILE__ << std::endl;
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                this->showPopUpMessage (str,"hata");
 
             }
             try {
                 malzeme.mStokta = doc[this->mStokta].get_bool().value;
             } catch (bsoncxx::exception &e) {
-                std::cout << "ERROR: " << __LINE__ << __FILE__ << std::endl;
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                this->showPopUpMessage (str,"hata");
 
             }
 
@@ -442,7 +506,8 @@ std::vector<StokYardim::StokMalzeme> StokYardim::getMalzemeList(const std::strin
         }
 
     } catch (mongocxx::exception &e) {
-
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        this->showPopUpMessage (str,"hata");
     }
 
     return list;
@@ -456,7 +521,9 @@ std::vector<StokYardim::StokMalzeme> StokYardim::getMalzemeAlanList(const std::s
     try {
         filter.append(kvp(this->mAlanTCNOKEY,alanTCNO));
     } catch (bsoncxx::exception &e) {
-
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        this->showPopUpMessage (str,"hata");
+        return list;
     }
 
     try {
@@ -469,48 +536,56 @@ std::vector<StokYardim::StokMalzeme> StokYardim::getMalzemeAlanList(const std::s
             try {
                 malzeme.mMalzemeOid = doc["_id"].get_oid().value.to_string();
             } catch (bsoncxx::exception &e) {
-                std::cout << "ERROR: " << __LINE__ << __FILE__ << std::endl;
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                this->showPopUpMessage (str,"hata");
             }
             try {
                 malzeme.mKategori = doc[this->mKategoriKEY].get_utf8().value.to_string();
             } catch (bsoncxx::exception &e) {
-                std::cout << "ERROR: " << __LINE__ << __FILE__ << std::endl;
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                this->showPopUpMessage (str,"hata");
             }
             try {
                 malzeme.mMalzemeAdi = doc[this->mMalzemeAdiKEY].get_utf8().value.to_string();
             } catch (bsoncxx::exception &e) {
-                std::cout << "ERROR: " << __LINE__ << __FILE__ << std::endl;
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                this->showPopUpMessage (str,"hata");
 
             }
             try {
                 malzeme.mVerenTCNO = doc[this->mVerenTCNOKEY].get_utf8().value.to_string();
             } catch (bsoncxx::exception &e) {
-                std::cout << "ERROR: " << __LINE__ << __FILE__ << std::endl;
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                this->showPopUpMessage (str,"hata");
 
             }
             try {
                 malzeme.mVerilisTarihi = doc[this->mVerilisTarihiKEY].get_int64().value;
             } catch (bsoncxx::exception &e) {
-                std::cout << "ERROR: " << __LINE__ << __FILE__ << std::endl;
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                this->showPopUpMessage (str,"hata");
 
             }
             try {
                 malzeme.mAlanTCNO = doc[this->mAlanTCNOKEY].get_utf8().value.to_string();
             } catch (bsoncxx::exception &e) {
-                std::cout << "ERROR: " << __LINE__ << __FILE__ << std::endl;
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                this->showPopUpMessage (str,"hata");
 
             }
 
             try {
                 malzeme.mAlanisTarihi = doc[this->mAlinisTarihiKEY].get_int64().value;
             } catch (bsoncxx::exception &e) {
-                std::cout << "ERROR: " << __LINE__ << __FILE__ << std::endl;
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                this->showPopUpMessage (str,"hata");
 
             }
             try {
                 malzeme.mStokta = doc[this->mStokta].get_bool().value;
             } catch (bsoncxx::exception &e) {
-                std::cout << "ERROR: " << __LINE__ << __FILE__ << std::endl;
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                this->showPopUpMessage (str,"hata");
 
             }
 
@@ -518,7 +593,8 @@ std::vector<StokYardim::StokMalzeme> StokYardim::getMalzemeAlanList(const std::s
         }
 
     } catch (mongocxx::exception &e) {
-
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        this->showPopUpMessage (str,"hata");
     }
 
     return list;
@@ -532,14 +608,17 @@ std::vector<StokYardim::StokMalzeme> StokYardim::getStoktaList( const std::strin
     try {
         filter.append(kvp(this->mStokta,true));
     } catch (bsoncxx::exception &e) {
-
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        this->showPopUpMessage (str,"hata");
+        return list;
     }
     if( mkategori.size() > 0 )
     {
         try {
             filter.append(kvp(this->mKategoriKEY,mkategori));
         } catch (bsoncxx::exception &e) {
-
+            std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+            this->showPopUpMessage (str,"hata");
         }
     }
 
@@ -554,48 +633,56 @@ std::vector<StokYardim::StokMalzeme> StokYardim::getStoktaList( const std::strin
             try {
                 malzeme.mMalzemeOid = doc["_id"].get_oid().value.to_string();
             } catch (bsoncxx::exception &e) {
-                std::cout << "ERROR: " << __LINE__ << __FILE__ << std::endl;
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                this->showPopUpMessage (str,"hata");
             }
             try {
                 malzeme.mKategori = doc[this->mKategoriKEY].get_utf8().value.to_string();
             } catch (bsoncxx::exception &e) {
-                std::cout << "ERROR: " << __LINE__ << __FILE__ << std::endl;
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                this->showPopUpMessage (str,"hata");
             }
             try {
                 malzeme.mMalzemeAdi = doc[this->mMalzemeAdiKEY].get_utf8().value.to_string();
             } catch (bsoncxx::exception &e) {
-                std::cout << "ERROR: " << __LINE__ << __FILE__ << std::endl;
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                this->showPopUpMessage (str,"hata");
 
             }
             try {
                 malzeme.mVerenTCNO = doc[this->mVerenTCNOKEY].get_utf8().value.to_string();
             } catch (bsoncxx::exception &e) {
-                std::cout << "ERROR: " << __LINE__ << __FILE__ << std::endl;
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                this->showPopUpMessage (str,"hata");
 
             }
             try {
                 malzeme.mVerilisTarihi = doc[this->mVerilisTarihiKEY].get_int64().value;
             } catch (bsoncxx::exception &e) {
-                std::cout << "ERROR: " << __LINE__ << __FILE__ << std::endl;
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                this->showPopUpMessage (str,"hata");
 
             }
             try {
                 malzeme.mAlanTCNO = doc[this->mAlanTCNOKEY].get_utf8().value.to_string();
             } catch (bsoncxx::exception &e) {
-                std::cout << "ERROR: " << __LINE__ << __FILE__ << std::endl;
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                this->showPopUpMessage (str,"hata");
 
             }
 
             try {
                 malzeme.mAlanisTarihi = doc[this->mAlinisTarihiKEY].get_int64().value;
             } catch (bsoncxx::exception &e) {
-                std::cout << "ERROR: " << __LINE__ << __FILE__ << std::endl;
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                this->showPopUpMessage (str,"hata");
 
             }
             try {
                 malzeme.mStokta = doc[this->mStokta].get_bool().value;
             } catch (bsoncxx::exception &e) {
-                std::cout << "ERROR: " << __LINE__ << __FILE__ << std::endl;
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+                this->showPopUpMessage (str,"hata");
 
             }
 
@@ -603,7 +690,8 @@ std::vector<StokYardim::StokMalzeme> StokYardim::getStoktaList( const std::strin
         }
 
     } catch (mongocxx::exception &e) {
-
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        this->showPopUpMessage (str,"hata");
     }
 
     return list;
@@ -616,7 +704,8 @@ bool StokYardim::setMalzemeTeslim(const std::string &aliciTCNO, const int64_t &a
     try {
         filter.append(kvp("_id",bsoncxx::oid{mOid}));
     } catch (bsoncxx::exception &e) {
-        std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << __FILE__ << std::endl;
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        this->showPopUpMessage (str,"hata");
         return false;
     }
 
@@ -626,20 +715,23 @@ bool StokYardim::setMalzemeTeslim(const std::string &aliciTCNO, const int64_t &a
     try {
         doc.append(kvp(this->mAlanTCNOKEY,aliciTCNO));
     } catch (bsoncxx::exception &e) {
-        std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << __FILE__ << std::endl;
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        this->showPopUpMessage (str,"hata");
         return false;
     }
 
     try {
         doc.append(kvp(this->mAlinisTarihiKEY,bsoncxx::types::b_int64{alisTarihno}));
     } catch (bsoncxx::exception &e) {
-        std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << __FILE__ << std::endl;
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        this->showPopUpMessage (str,"hata");
         return false;
     }
     try {
         doc.append(kvp(this->mStokta,false));
     } catch (bsoncxx::exception &e) {
-        std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << __FILE__ << std::endl;
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        this->showPopUpMessage (str,"hata");
         return false;
     }
 
@@ -648,31 +740,29 @@ bool StokYardim::setMalzemeTeslim(const std::string &aliciTCNO, const int64_t &a
     try {
         setDoc.append(kvp("$set",doc));
     } catch (bsoncxx::exception &e) {
-        std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << __FILE__ << std::endl;
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        this->showPopUpMessage (str,"hata");
         return false;
     }
 
-    std::cout << "bsoncxx:: " << bsoncxx::to_json(setDoc.view()) << std::endl;
 
 
     try {
         auto upt = this->db()->collection(mMalzemeColl).update_one(filter.view(),setDoc.view());
         if( upt )
         {
-            std::cout << "Update: " << upt.value().result().modified_count() << " - " << upt.value().modified_count() << std::endl;
             if( upt.value().result().modified_count() )
             {
                 return true;
             }else{
-                std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << __FILE__ << std::endl;
                 return false;
             }
         }else{
-            std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << __FILE__ << std::endl;
             return false;
         }
     } catch (mongocxx::exception &e) {
-        std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << __FILE__ << std::endl;
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+        this->showPopUpMessage (str,"hata");
         return false;
     }
 }
@@ -717,7 +807,7 @@ void StokKategori::initKategoriler()
             auto katNameContainer = _rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             katNameContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_10+Bootstrap::Grid::Medium::col_md_10+Bootstrap::Grid::Small::col_sm_10+Bootstrap::Grid::ExtraSmall::col_xs_9);
             katNameContainer->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
-            auto text = katNameContainer->addWidget(cpp14::make_unique<WText>(doc.mKategoriName));
+            katNameContainer->addWidget(cpp14::make_unique<WText>(doc.mKategoriName));
         }
         {
             auto katNameContainer = _rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -836,12 +926,14 @@ TCKayit::TCKayit(mongocxx::database *_db, bsoncxx::document::value _user)
                 try {
                     mMahalle->addItem(doc["Mahalle"].get_utf8().value.to_string());
                 } catch (bsoncxx::exception &e) {
-
+                    std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//                    this->showPopUpMessage (str,"hata");
                 }
             }
 
         } catch (mongocxx::exception &e) {
-
+            std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//                    this->showPopUpMessage (str,"hata");
         }
 
     }
@@ -951,6 +1043,8 @@ bool TC::LoadTC(std::string mTCno)
     try {
         filter.append(kvp("TCNO",mTCno));
     } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//                    this->showPopUpMessage (str,"hata");
         returnedValue = false;
         return false;
     }
@@ -969,6 +1063,8 @@ bool TC::LoadTC(std::string mTCno)
             try {
                 this->setIsimSoyisim(val.value().view()["İsimSoyisim"].get_utf8().value.to_string());
             } catch (bsoncxx::exception &e) {
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//                    this->showPopUpMessage (str,"hata");
                 returnedValue = false;
             }
 
@@ -976,6 +1072,8 @@ bool TC::LoadTC(std::string mTCno)
             try {
                 this->setTel(val.value().view()["Cep Telefonu"].get_utf8().value.to_string());
             } catch (bsoncxx::exception &e) {
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//                    this->showPopUpMessage (str,"hata");
                 returnedValue = false;
             }
 
@@ -983,6 +1081,8 @@ bool TC::LoadTC(std::string mTCno)
             try {
                 this->setTCNO(val.value().view()["TCNO"].get_utf8().value.to_string());
             } catch (bsoncxx::exception &e) {
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//                    this->showPopUpMessage (str,"hata");
                 returnedValue = false;
             }
 
@@ -990,6 +1090,8 @@ bool TC::LoadTC(std::string mTCno)
             try {
                 this->setAddress(val.value().view()["Tam Adres"].get_utf8().value.to_string());
             } catch (bsoncxx::exception &e) {
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//                    this->showPopUpMessage (str,"hata");
                 returnedValue = false;
             }
 
@@ -997,6 +1099,8 @@ bool TC::LoadTC(std::string mTCno)
             try {
                 this->setMahalle(val.value().view()["Mahalle"].get_utf8().value.to_string());
             } catch (bsoncxx::exception &e) {
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//                    this->showPopUpMessage (str,"hata");
                 returnedValue = false;
             }
 
@@ -1004,6 +1108,8 @@ bool TC::LoadTC(std::string mTCno)
             try {
                 mOid = val.value().view()["_id"].get_oid().value.to_string();
             } catch (bsoncxx::exception &e) {
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//                    this->showPopUpMessage (str,"hata");
                 returnedValue = false;
             }
 
@@ -1020,6 +1126,8 @@ bool TC::LoadTC(std::string mTCno)
         }
 
     } catch (mongocxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//                    this->showPopUpMessage (str,"hata");
         returnedValue = false;
     }
 
@@ -1035,7 +1143,8 @@ bool TC::LoadTel(std::string mTelNo)
     try {
         filter.append(kvp("Cep Telefonu",mTelNo));
     } catch (bsoncxx::exception &e) {
-
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//                    this->showPopUpMessage (str,"hata");
     }
 
 
@@ -1051,30 +1160,40 @@ bool TC::LoadTel(std::string mTelNo)
             try {
                 this->setIsimSoyisim(val.value().view()["İsimSoyisim"].get_utf8().value.to_string());
             } catch (bsoncxx::exception &e) {
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//                    this->showPopUpMessage (str,"hata");
                 returnedValue = false;
             }
 
             try {
                 this->setTel(val.value().view()["Cep Telefonu"].get_utf8().value.to_string());
             } catch (bsoncxx::exception &e) {
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//                    this->showPopUpMessage (str,"hata");
                 returnedValue = false;
             }
 
             try {
                 this->setTCNO(val.value().view()["TCNO"].get_utf8().value.to_string());
             } catch (bsoncxx::exception &e) {
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//                    this->showPopUpMessage (str,"hata");
                 returnedValue = false;
             }
 
             try {
                 this->setAddress(val.value().view()["Tam Adres"].get_utf8().value.to_string());
             } catch (bsoncxx::exception &e) {
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//                    this->showPopUpMessage (str,"hata");
                 returnedValue = false;
             }
 
             try {
                 mOid = (val.value().view()["_id"].get_oid().value.to_string());
             } catch (bsoncxx::exception &e) {
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//                    this->showPopUpMessage (str,"hata");
                 returnedValue = false;
             }
 
@@ -1089,7 +1208,8 @@ bool TC::LoadTel(std::string mTelNo)
         }
 
     } catch (mongocxx::exception &e) {
-
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//                    this->showPopUpMessage (str,"hata");
     }
 
 
@@ -1104,7 +1224,8 @@ bool TC::LoadOid(bsoncxx::oid oid)
     try {
         filter.append(kvp("_id",oid));
     } catch (bsoncxx::exception &e) {
-
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//                    this->showPopUpMessage (str,"hata");
     }
 
 
@@ -1120,30 +1241,40 @@ bool TC::LoadOid(bsoncxx::oid oid)
             try {
                 this->setIsimSoyisim(val.value().view()["İsimSoyisim"].get_utf8().value.to_string());
             } catch (bsoncxx::exception &e) {
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//                    this->showPopUpMessage (str,"hata");
                 returnedValue = false;
             }
 
             try {
                 this->setTel(val.value().view()["Cep Telefonu"].get_utf8().value.to_string());
             } catch (bsoncxx::exception &e) {
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//                    this->showPopUpMessage (str,"hata");
                 returnedValue = false;
             }
 
             try {
                 this->setTCNO(val.value().view()["TCNO"].get_utf8().value.to_string());
             } catch (bsoncxx::exception &e) {
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//                    this->showPopUpMessage (str,"hata");
                 returnedValue = false;
             }
 
             try {
                 this->setAddress(val.value().view()["Tam Adres"].get_utf8().value.to_string());
             } catch (bsoncxx::exception &e) {
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//                    this->showPopUpMessage (str,"hata");
                 returnedValue = false;
             }
 
             try {
                 mOid = (val.value().view()["_id"].get_oid().value.to_string());
             } catch (bsoncxx::exception &e) {
+                std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//                    this->showPopUpMessage (str,"hata");
                 returnedValue = false;
             }
 
@@ -1158,7 +1289,8 @@ bool TC::LoadOid(bsoncxx::oid oid)
         }
 
     } catch (mongocxx::exception &e) {
-
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//                    this->showPopUpMessage (str,"hata");
     }
 
 
@@ -1172,7 +1304,8 @@ bool TC::SaveDB()
     try {
         filter.append(kvp("TCNO",this->tCNO()));
     } catch (bsoncxx::exception &e) {
-
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//                    this->showPopUpMessage (str,"hata");
     }
 
     if( this->count("TC",filter.extract() ) )
@@ -1185,7 +1318,8 @@ bool TC::SaveDB()
     try {
         filter.append(kvp("Cep Telefonu",this->tel()));
     } catch (bsoncxx::exception &e) {
-
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//                    this->showPopUpMessage (str,"hata");
     }
 
     if( this->count("TC",filter.extract() ) )
@@ -1199,30 +1333,40 @@ bool TC::SaveDB()
     try {
         insDoc.append(kvp("TCNO",this->tCNO()));
     } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//                    this->showPopUpMessage (str,"hata");
         return false;
     }
 
     try {
         insDoc.append(kvp("Cep Telefonu",this->tel()));
     } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//                    this->showPopUpMessage (str,"hata");
         return false;
     }
 
     try {
         insDoc.append(kvp("Mahalle",this->mahalle()));
     } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//                    this->showPopUpMessage (str,"hata");
         return false;
     }
 
     try {
         insDoc.append(kvp("İsimSoyisim",this->isimSoyisim()));
     } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//                    this->showPopUpMessage (str,"hata");
         return false;
     }
 
     try {
         insDoc.append(kvp("Tam Adres",this->address()));
     } catch (bsoncxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//                    this->showPopUpMessage (str,"hata");
         return false;
     }
 
@@ -1238,11 +1382,12 @@ bool TC::SaveDB()
         }
 
     } catch (mongocxx::exception &e) {
+        std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
+//                    this->showPopUpMessage (str,"hata");
         return false;
     }
 
 
-    return false;
 }
 
 bool TC::isValid() const
@@ -1276,9 +1421,11 @@ void TC::setClear()
 }
 
 StockGiris::StockGiris(mongocxx::database *_db, bsoncxx::document::value _user)
-    :BaseClass::ContainerWidget (_db,_user)
+    :ContainerWidget (),
+      SerikBLDCore::DB (new SerikBLDCore::DB(_db)),
+      mUser( new SerikBLDCore::User(_db,_user))
 {
-    this->getHeaderRowContainer()->addWidget(cpp14::make_unique<WText>("Stock Girişi"));
+    this->Header()->addWidget(cpp14::make_unique<WText>("Stock Girişi"));
 
     mTC = new TC(_db,_user);
 
@@ -1286,16 +1433,16 @@ StockGiris::StockGiris(mongocxx::database *_db, bsoncxx::document::value _user)
 
 
     {
-        auto container = this->getContentRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
+        auto container = this->Content ()->addWidget(cpp14::make_unique<WContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
         mTCNOLineEdit = container->addWidget(cpp14::make_unique<WLineEdit>());
         mTCNOLineEdit->setPlaceholderText("TCNO Giriniz");
     }
 
     {
-        auto container = this->getContentRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
+        auto container = this->Content()->addWidget(cpp14::make_unique<WContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
-        mTCWidget = container->addWidget(cpp14::make_unique<TCWidget>(this->db(),this->User()));
+        mTCWidget = container->addWidget(cpp14::make_unique<TCWidget>(this->db(),this->mUser->Value ()));
     }
 
     mTCNOLineEdit->textInput().connect([=](){
@@ -1310,10 +1457,10 @@ StockGiris::StockGiris(mongocxx::database *_db, bsoncxx::document::value _user)
 
 
     {
-        auto container = this->getContentRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
+        auto container = this->Content()->addWidget(cpp14::make_unique<WContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_12);
         auto mLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        auto text = mLayout->addWidget(cpp14::make_unique<WText>("Kategori Seç"),0,AlignmentFlag::Center);
+        mLayout->addWidget(cpp14::make_unique<WText>("Kategori Seç"),0,AlignmentFlag::Center);
         mKategoriComboBox = mLayout->addWidget(cpp14::make_unique<WComboBox>(),0,AlignmentFlag::Justify);
         auto list = mStok->getKategoriList();
         for( auto item : list )
@@ -1323,16 +1470,16 @@ StockGiris::StockGiris(mongocxx::database *_db, bsoncxx::document::value _user)
     }
 
     {
-        auto container = this->getContentRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
+        auto container = this->Content()->addWidget(cpp14::make_unique<WContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_12);
         auto mLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        auto text = mLayout->addWidget(cpp14::make_unique<WText>("Extra Bilgi"),0,AlignmentFlag::Center);
+        mLayout->addWidget(cpp14::make_unique<WText>("Extra Bilgi"),0,AlignmentFlag::Center);
         mExtraBilgiLineEdit = mLayout->addWidget(cpp14::make_unique<WLineEdit>(),0,AlignmentFlag::Justify);
         mExtraBilgiLineEdit->setPlaceholderText("Extra Bilgi Giriniz");
     }
 
     {
-        auto container = this->getContentRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
+        auto container = this->Content()->addWidget(cpp14::make_unique<WContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
         auto mSaveBtn = container->addWidget(cpp14::make_unique<WPushButton>("Kaydet"));
         mSaveBtn->addStyleClass(Bootstrap::Button::Primary);
@@ -1354,7 +1501,7 @@ StockGiris::StockGiris(mongocxx::database *_db, bsoncxx::document::value _user)
     }
 
     {
-        auto container = this->getContentRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
+        auto container = this->Content()->addWidget(cpp14::make_unique<WContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
         container->setMargin(5,Side::Top|Side::Bottom);
         auto mListBtn = container->addWidget(cpp14::make_unique<WPushButton>("Listele"));
@@ -1369,11 +1516,11 @@ StockGiris::StockGiris(mongocxx::database *_db, bsoncxx::document::value _user)
 void StockGiris::ListCurrentTCNOList(const std::string &tcno)
 {
 
-    this->getFooterRowContainer()->clear();
+    this->Footer ()->clear();
 
 
     {
-        auto container_ = this->getFooterRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
+        auto container_ = this->Footer()->addWidget(cpp14::make_unique<WContainerWidget>());
         container_->addStyleClass(Bootstrap::Grid::col_full_12+Bootstrap::ImageShape::img_thumbnail);
         container_->setAttributeValue(Style::style,Style::background::color::rgb(225,235,245));
         container_->setMargin(5,Side::Top);
@@ -1384,19 +1531,19 @@ void StockGiris::ListCurrentTCNOList(const std::string &tcno)
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
-            auto text = container->addWidget(cpp14::make_unique<WText>("Kategori"));
+            container->addWidget(cpp14::make_unique<WText>("Kategori"));
             container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
         }
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
-            auto text = container->addWidget(cpp14::make_unique<WText>("Extra Bilgi"));
+            container->addWidget(cpp14::make_unique<WText>("Extra Bilgi"));
             container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
         }
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
-            auto text = container->addWidget(cpp14::make_unique<WText>("Veriliş Tarih"));
+            container->addWidget(cpp14::make_unique<WText>("Veriliş Tarih"));
             container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
         }
 
@@ -1404,20 +1551,20 @@ void StockGiris::ListCurrentTCNOList(const std::string &tcno)
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
-            auto text = container->addWidget(cpp14::make_unique<WText>("Alan TCNO"));
+            container->addWidget(cpp14::make_unique<WText>("Alan TCNO"));
             container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
         }
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
-            auto text = container->addWidget(cpp14::make_unique<WText>("Alınış Tarihi"));
+            container->addWidget(cpp14::make_unique<WText>("Alınış Tarihi"));
             container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
         }
 
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_5);
-            auto text = container->addWidget(cpp14::make_unique<WText>("Durum"));
+            container->addWidget(cpp14::make_unique<WText>("Durum"));
         }
 
         {
@@ -1435,7 +1582,7 @@ void StockGiris::ListCurrentTCNOList(const std::string &tcno)
 
     for( auto item : list )
     {
-        auto container_ = this->getFooterRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
+        auto container_ = this->Footer()->addWidget(cpp14::make_unique<WContainerWidget>());
         container_->addStyleClass(Bootstrap::Grid::col_full_12+Bootstrap::ImageShape::img_thumbnail);
         container_->setAttributeValue(Style::style,Style::background::color::rgb(175,185,195));
         container_->setMargin(5,Side::Top);
@@ -1448,19 +1595,19 @@ void StockGiris::ListCurrentTCNOList(const std::string &tcno)
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
-            auto text = container->addWidget(cpp14::make_unique<WText>(item.mKategori));
+            container->addWidget(cpp14::make_unique<WText>(item.mKategori));
             container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
         }
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
-            auto text = container->addWidget(cpp14::make_unique<WText>(item.mMalzemeAdi));
+            container->addWidget(cpp14::make_unique<WText>(item.mMalzemeAdi));
             container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
         }
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
-            auto text = container->addWidget(cpp14::make_unique<WText>(WDate::fromJulianDay(item.mVerilisTarihi).toString("dd/MM/yyyy")));
+            container->addWidget(cpp14::make_unique<WText>(WDate::fromJulianDay(static_cast<int>(item.mVerilisTarihi)).toString("dd/MM/yyyy")));
             container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
         }
 
@@ -1470,7 +1617,7 @@ void StockGiris::ListCurrentTCNOList(const std::string &tcno)
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
             if( !item.mStokta )
             {
-                auto text = container->addWidget(cpp14::make_unique<WText>(item.mAlanTCNO));
+                container->addWidget(cpp14::make_unique<WText>(item.mAlanTCNO));
             }
             container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
         }
@@ -1479,7 +1626,7 @@ void StockGiris::ListCurrentTCNOList(const std::string &tcno)
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
             if( !item.mStokta )
             {
-                  auto text = container->addWidget(cpp14::make_unique<WText>(WDate::fromJulianDay(item.mAlanisTarihi).toString("dd/MM/yyyy")));
+                  container->addWidget(cpp14::make_unique<WText>(WDate::fromJulianDay(static_cast<int>(item.mAlanisTarihi)).toString("dd/MM/yyyy")));
             }
             container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
         }
@@ -1489,10 +1636,10 @@ void StockGiris::ListCurrentTCNOList(const std::string &tcno)
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_5);
             if( item.mStokta )
             {
-                auto text = container->addWidget(cpp14::make_unique<WText>("Stokta"));
+                container->addWidget(cpp14::make_unique<WText>("Stokta"));
 
             }else{
-                auto text = container->addWidget(cpp14::make_unique<WText>("Verilmiş"));
+                container->addWidget(cpp14::make_unique<WText>("Verilmiş"));
                 container_->setAttributeValue(Style::style,Style::background::color::rgb(165,225,185));
             }
         }
@@ -1503,10 +1650,7 @@ void StockGiris::ListCurrentTCNOList(const std::string &tcno)
             auto text = container->addWidget(cpp14::make_unique<WText>("X"));
             text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow));
             container->setAttributeValue(Style::style,Style::background::color::rgb(200,50,50));
-            if( !item.mStokta )
-            {
-                  container->setDisabled(true);
-            }
+
             container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
             container->decorationStyle().setCursor(Cursor::PointingHand);
 
@@ -1545,27 +1689,27 @@ void TCWidget::LoadTCNO(const std::string &mtcno)
         {
             auto container = this->getContentRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::col_full_12);
-            auto text = container->addWidget(cpp14::make_unique<WText>(this->mTC->isimSoyisim()));
+            container->addWidget(cpp14::make_unique<WText>(this->mTC->isimSoyisim()));
         }
         {
             auto container = this->getContentRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::col_full_12);
-            auto text = container->addWidget(cpp14::make_unique<WText>(this->mTC->tel()));
+            container->addWidget(cpp14::make_unique<WText>(this->mTC->tel()));
         }
         {
             auto container = this->getContentRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::col_full_12);
-            auto text = container->addWidget(cpp14::make_unique<WText>(this->mTC->tCNO()));
+            container->addWidget(cpp14::make_unique<WText>(this->mTC->tCNO()));
         }
         {
             auto container = this->getContentRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::col_full_12);
-            auto text = container->addWidget(cpp14::make_unique<WText>(this->mTC->mahalle()));
+            container->addWidget(cpp14::make_unique<WText>(this->mTC->mahalle()));
         }
         {
             auto container = this->getContentRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::col_full_12);
-            auto text = container->addWidget(cpp14::make_unique<WText>(this->mTC->address()));
+            container->addWidget(cpp14::make_unique<WText>(this->mTC->address()));
         }
 
     }else{
@@ -1684,7 +1828,7 @@ void StockCikis::ListCurrentTCNOList(const std::string &tcno)
         auto container = mTeslimEdilenWidget->addWidget(cpp14::make_unique<WContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
         container->setContentAlignment(AlignmentFlag::Center|AlignmentFlag::Middle);
-        auto text = container->addWidget(cpp14::make_unique<WText>("Daha Önce Kişiye Teslim Edilenler"));
+        container->addWidget(cpp14::make_unique<WText>("Daha Önce Kişiye Teslim Edilenler"));
 
     }
 
@@ -1700,40 +1844,40 @@ void StockCikis::ListCurrentTCNOList(const std::string &tcno)
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
-            auto text = container->addWidget(cpp14::make_unique<WText>("Kategori"));
+            container->addWidget(cpp14::make_unique<WText>("Kategori"));
             container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
         }
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
-            auto text = container->addWidget(cpp14::make_unique<WText>("Extra Bilgi"));
+            container->addWidget(cpp14::make_unique<WText>("Extra Bilgi"));
             container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
         }
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
-            auto text = container->addWidget(cpp14::make_unique<WText>("Veriliş Tarih"));
+            container->addWidget(cpp14::make_unique<WText>("Veriliş Tarih"));
             container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
         }
 
-
-        {
-            auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
-            auto text = container->addWidget(cpp14::make_unique<WText>("Alan TCNO"));
-            container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
-        }
-        {
-            auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
-            auto text = container->addWidget(cpp14::make_unique<WText>("Alınış Tarihi"));
-            container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
-        }
 
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
-            auto text = container->addWidget(cpp14::make_unique<WText>("Durum"));
+            container->addWidget(cpp14::make_unique<WText>("Alan TCNO"));
+            container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
+        }
+        {
+            auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+            container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
+            container->addWidget(cpp14::make_unique<WText>("Alınış Tarihi"));
+            container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
+        }
+
+        {
+            auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+            container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
+            container->addWidget(cpp14::make_unique<WText>("Durum"));
         }
 
 //        {
@@ -1764,19 +1908,19 @@ void StockCikis::ListCurrentTCNOList(const std::string &tcno)
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
-            auto text = container->addWidget(cpp14::make_unique<WText>(item.mKategori));
+            container->addWidget(cpp14::make_unique<WText>(item.mKategori));
             container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
         }
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
-            auto text = container->addWidget(cpp14::make_unique<WText>(item.mMalzemeAdi));
+            container->addWidget(cpp14::make_unique<WText>(item.mMalzemeAdi));
             container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
         }
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
-            auto text = container->addWidget(cpp14::make_unique<WText>(WDate::fromJulianDay(item.mVerilisTarihi).toString("dd/MM/yyyy")));
+            container->addWidget(cpp14::make_unique<WText>(WDate::fromJulianDay(static_cast<int>(item.mVerilisTarihi)).toString("dd/MM/yyyy")));
             container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
         }
 
@@ -1786,7 +1930,7 @@ void StockCikis::ListCurrentTCNOList(const std::string &tcno)
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
             if( !item.mStokta )
             {
-                auto text = container->addWidget(cpp14::make_unique<WText>(item.mAlanTCNO));
+                container->addWidget(cpp14::make_unique<WText>(item.mAlanTCNO));
             }
             container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
         }
@@ -1795,7 +1939,7 @@ void StockCikis::ListCurrentTCNOList(const std::string &tcno)
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
             if( !item.mStokta )
             {
-                  auto text = container->addWidget(cpp14::make_unique<WText>(WDate::fromJulianDay(item.mAlanisTarihi).toString("dd/MM/yyyy")));
+                  container->addWidget(cpp14::make_unique<WText>(WDate::fromJulianDay(static_cast<int>(item.mAlanisTarihi)).toString("dd/MM/yyyy")));
             }
             container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
         }
@@ -1805,9 +1949,9 @@ void StockCikis::ListCurrentTCNOList(const std::string &tcno)
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
             if( item.mStokta )
             {
-                auto text = container->addWidget(cpp14::make_unique<WText>("Stokta"));
+                container->addWidget(cpp14::make_unique<WText>("Stokta"));
             }else{
-                auto text = container->addWidget(cpp14::make_unique<WText>("Verilmiş"));
+                container->addWidget(cpp14::make_unique<WText>("Verilmiş"));
             }
         }
 
@@ -1850,7 +1994,7 @@ void StockCikis::ListStokList()
         auto container = mMalzemeListWidget->addWidget(cpp14::make_unique<WContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
         container->setContentAlignment(AlignmentFlag::Center|AlignmentFlag::Middle);
-        auto text = container->addWidget(cpp14::make_unique<WText>("Stoktaki Malzemeler"));
+        container->addWidget(cpp14::make_unique<WText>("Stoktaki Malzemeler"));
 
     }
 
@@ -1866,19 +2010,19 @@ void StockCikis::ListStokList()
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
-            auto text = container->addWidget(cpp14::make_unique<WText>("Kategori"));
+            container->addWidget(cpp14::make_unique<WText>("Kategori"));
             container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
         }
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
-            auto text = container->addWidget(cpp14::make_unique<WText>("Extra Bilgi"));
+            container->addWidget(cpp14::make_unique<WText>("Extra Bilgi"));
             container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
         }
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
-            auto text = container->addWidget(cpp14::make_unique<WText>("Veriliş Tarih"));
+            container->addWidget(cpp14::make_unique<WText>("Veriliş Tarih"));
             container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
         }
 
@@ -1930,19 +2074,19 @@ void StockCikis::ListStokList()
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
-            auto text = container->addWidget(cpp14::make_unique<WText>(item.mKategori));
+            container->addWidget(cpp14::make_unique<WText>(item.mKategori));
             container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
         }
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
-            auto text = container->addWidget(cpp14::make_unique<WText>(item.mMalzemeAdi));
+            container->addWidget(cpp14::make_unique<WText>(item.mMalzemeAdi));
             container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
         }
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
-            auto text = container->addWidget(cpp14::make_unique<WText>(WDate::fromJulianDay(item.mVerilisTarihi).toString("dd/MM/yyyy")));
+            container->addWidget(cpp14::make_unique<WText>(WDate::fromJulianDay(static_cast<int>(item.mVerilisTarihi)).toString("dd/MM/yyyy")));
             container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
         }
 
