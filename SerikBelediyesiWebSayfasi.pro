@@ -55,6 +55,7 @@ SOURCES += main.cpp \
     SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetlistitemwidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetyonetimwidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/sms/smsmanager.cpp \
+    SerikBelediyesiWebSayfasi/srcV2/stok/stokkategoripage.cpp \
     SerikBelediyesiWebSayfasi/srcV2/talepler/taleplistwidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/talepler/talepvatandasarayuz.cpp \
     SerikBelediyesiWebSayfasi/srcV2/talepler/talepview.cpp \
@@ -64,14 +65,12 @@ SOURCES += main.cpp \
     main.cpp \
     mainapplication.cpp \
     SerikBelediyesiWebSayfasi/src/header.cpp \
-    Comman/wjavascriptslider.cpp \
     SerikBelediyesiWebSayfasi/src/body.cpp \
     SerikBelediyesiWebSayfasi/src/footer.cpp \
     SerikBelediyesiWebSayfasi/src/giriswidget.cpp \
     SerikBelediyesiWebSayfasi/chart/donutchart.cpp \
     SerikBelediyesiWebSayfasi/BaseClass/basewidget.cpp \
     SerikBelediyesiWebSayfasi/Giris/gelenmesajlarwidget.cpp \
-    SerikBelediyesiWebSayfasi/reporter/reportresource.cpp \
     SerikBelediyesiWebSayfasi/src/yenilikler.cpp \
     SerikBelediyesiWebSayfasi/src/anonswidget.cpp \
     SerikBelediyesiWebSayfasi/BaseClass/databasewidget.cpp \
@@ -126,6 +125,7 @@ HEADERS += \
     SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetlistitemwidget.h \
     SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetyonetimwidget.h \
     SerikBelediyesiWebSayfasi/srcV2/sms/smsmanager.h \
+    SerikBelediyesiWebSayfasi/srcV2/stok/stokkategoripage.h \
     SerikBelediyesiWebSayfasi/srcV2/talepler/taleplistwidget.h \
     SerikBelediyesiWebSayfasi/srcV2/talepler/talepvatandasarayuz.h \
     SerikBelediyesiWebSayfasi/srcV2/talepler/talepview.h \
@@ -135,7 +135,6 @@ HEADERS += \
     mainapplication.h \
     Necessary \
     SerikBelediyesiWebSayfasi/src/header.h \
-    Comman/wjavascriptslider.h \
     ../../Comman/bootstrap.h \
     ../../Comman/inlinestyle.h \
     ../../Comman/inlinestyle.h \
@@ -146,7 +145,6 @@ HEADERS += \
     SerikBelediyesiWebSayfasi/chart/donutchart.h \
     SerikBelediyesiWebSayfasi/BaseClass/basewidget.h \
     SerikBelediyesiWebSayfasi/Giris/gelenmesajlarwidget.h \
-    SerikBelediyesiWebSayfasi/reporter/reportresource.h \
     ../url.h \
     SerikBelediyesiWebSayfasi/src/yenilikler.h \
     SerikBelediyesiWebSayfasi/src/anonswidget.h \
