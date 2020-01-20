@@ -14,7 +14,7 @@ ContainerWidget::ContainerWidget(const std::string &title, ContainerWidget::Cont
     if( mTitle.size() )
     {
         mTitleBar = addWidget(cpp14::make_unique<WContainerWidget>());
-        mTitleBar->addWidget(cpp14::make_unique<WText>("<h4>"+title+"</h4>",TextFormat::XHTML));
+        mTitleBar->addWidget(cpp14::make_unique<WText>("<h5>"+title+"</h5>",TextFormat::XHTML));
         mTitleBar->setContentAlignment(AlignmentFlag::Center);
         mTitleBar->setMargin (15,Side::Bottom);
         mTitleBar->setMargin (-15,Side::Left|Side::Right);

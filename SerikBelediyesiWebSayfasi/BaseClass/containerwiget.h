@@ -7,6 +7,19 @@
 
 #include <QString>
 
+
+constexpr int MAJOR = 3;
+constexpr int MINOR = 0;
+constexpr int REV = 24;
+constexpr int COM = 416;
+
+
+
+
+
+
+
+
 class ContainerWidget : public WContainerWidget
 {
 public:
@@ -84,8 +97,6 @@ private:
 
     WContainerWidget* mTitleBar;
     std::string mTitle;
-
-
 
 };
 
