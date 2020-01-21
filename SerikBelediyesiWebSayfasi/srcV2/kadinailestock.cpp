@@ -69,22 +69,28 @@ KadinAileStock::~KadinAileStock()
 void KadinAileStock::initAyarlar()
 {
     this->Content ()->clear();
-    Content()->addWidget ( cpp14::make_unique<v2::StokKategoriPage>(this->getDB (),this->mUser))->addStyleClass(Bootstrap::Grid::Large::col_lg_5+
-                                                                                                                Bootstrap::Grid::Medium::col_md_5+
-                                                                                                                Bootstrap::Grid::Small::col_sm_12+
-                                                                                                                Bootstrap::Grid::ExtraSmall::col_xs_12);
-    Content()->addWidget ( cpp14::make_unique<v2::StokKodPage>(this->getDB ()))->addStyleClass(Bootstrap::Grid::Offset::Large::col_lg_1+
-                                                                                               Bootstrap::Grid::Offset::Medium::col_md_1+
-                                                                                               Bootstrap::Grid::Large::col_lg_6+
-                                                                                               Bootstrap::Grid::Medium::col_md_6+
-                                                                                               Bootstrap::Grid::Small::col_sm_12+
-                                                                                               Bootstrap::Grid::ExtraSmall::col_xs_12);
+    auto kategoriWidget = Content()->addWidget ( cpp14::make_unique<v2::StokKategoriPage>(this->getDB (),this->mUser));
+    kategoriWidget->addStyleClass(Bootstrap::Grid::Large::col_lg_5+
+                                  Bootstrap::Grid::Medium::col_md_5+
+                                  Bootstrap::Grid::Small::col_sm_12+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_12);
+
+
+    auto StokKodWidget = Content()->addWidget ( cpp14::make_unique<v2::StokKodPage>(this->getDB ()));
+    StokKodWidget->addStyleClass(Bootstrap::Grid::Offset::Large::col_lg_1+
+                                 Bootstrap::Grid::Offset::Medium::col_md_1+
+                                 Bootstrap::Grid::Large::col_lg_6+
+                                 Bootstrap::Grid::Medium::col_md_6+
+                                 Bootstrap::Grid::Small::col_sm_12+
+                                 Bootstrap::Grid::ExtraSmall::col_xs_12);
+
+    kategoriWidget->SelectedKategoriOid ().connect( StokKodWidget , &v2::StokKodPage::selectedKategoriOid );
 }
 
 void KadinAileStock::initTCKayit()
 {
     this->Content()->clear();
-//    this->Content()->addWidget( cpp14::make_unique<TCKayit>( this->db() , this->mUser->Value () ) )->addStyleClass(Bootstrap::Grid::col_full_12);
+    //    this->Content()->addWidget( cpp14::make_unique<TCKayit>( this->db() , this->mUser->Value () ) )->addStyleClass(Bootstrap::Grid::col_full_12);
 
     Content ()->addWidget (cpp14::make_unique<VatandasYeniKayitWidget>( this->getDB () ) );
 }
@@ -92,13 +98,16 @@ void KadinAileStock::initTCKayit()
 void KadinAileStock::initStockGiris()
 {
     this->Content()->clear();
-    this->Content()->addWidget( cpp14::make_unique<StockGiris>( this->db() , this->mUser->Value () ) )->addStyleClass(Bootstrap::Grid::col_full_12);
+//    this->Content()->addWidget( cpp14::make_unique<StockGiris>( this->db() , this->mUser->Value () ) )->addStyleClass(Bootstrap::Grid::col_full_12);
+    this->Content()->addWidget( cpp14::make_unique<v2::StokManagerPage>( "Stok Girişi",this->mUser ) )->addStyleClass(Bootstrap::Grid::col_full_12);
 }
 
 void KadinAileStock::initStockCikis()
 {
     this->Content()->clear();
-    this->Content()->addWidget( cpp14::make_unique<StockCikis>( this->db() , this->mUser->Value () ) )->addStyleClass(Bootstrap::Grid::col_full_12);
+//    this->Content()->addWidget( cpp14::make_unique<StockCikis>( this->db() , this->mUser->Value () ) )->addStyleClass(Bootstrap::Grid::col_full_12);
+    this->Content()->addWidget( cpp14::make_unique<v2::StokManagerCikisPage>( "Stok Çıkışı" , this->mUser ) )->addStyleClass(Bootstrap::Grid::col_full_12);
+
 }
 
 
@@ -927,13 +936,13 @@ TCKayit::TCKayit(mongocxx::database *_db, bsoncxx::document::value _user)
                     mMahalle->addItem(doc["Mahalle"].get_utf8().value.to_string());
                 } catch (bsoncxx::exception &e) {
                     std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//                    this->showPopUpMessage (str,"hata");
+                    //                    this->showPopUpMessage (str,"hata");
                 }
             }
 
         } catch (mongocxx::exception &e) {
             std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//                    this->showPopUpMessage (str,"hata");
+            //                    this->showPopUpMessage (str,"hata");
         }
 
     }
@@ -1044,7 +1053,7 @@ bool TC::LoadTC(std::string mTCno)
         filter.append(kvp("TCNO",mTCno));
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//                    this->showPopUpMessage (str,"hata");
+        //                    this->showPopUpMessage (str,"hata");
         returnedValue = false;
         return false;
     }
@@ -1064,7 +1073,7 @@ bool TC::LoadTC(std::string mTCno)
                 this->setIsimSoyisim(val.value().view()["İsimSoyisim"].get_utf8().value.to_string());
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//                    this->showPopUpMessage (str,"hata");
+                //                    this->showPopUpMessage (str,"hata");
                 returnedValue = false;
             }
 
@@ -1073,7 +1082,7 @@ bool TC::LoadTC(std::string mTCno)
                 this->setTel(val.value().view()["Cep Telefonu"].get_utf8().value.to_string());
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//                    this->showPopUpMessage (str,"hata");
+                //                    this->showPopUpMessage (str,"hata");
                 returnedValue = false;
             }
 
@@ -1082,7 +1091,7 @@ bool TC::LoadTC(std::string mTCno)
                 this->setTCNO(val.value().view()["TCNO"].get_utf8().value.to_string());
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//                    this->showPopUpMessage (str,"hata");
+                //                    this->showPopUpMessage (str,"hata");
                 returnedValue = false;
             }
 
@@ -1091,7 +1100,7 @@ bool TC::LoadTC(std::string mTCno)
                 this->setAddress(val.value().view()["Tam Adres"].get_utf8().value.to_string());
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//                    this->showPopUpMessage (str,"hata");
+                //                    this->showPopUpMessage (str,"hata");
                 returnedValue = false;
             }
 
@@ -1100,7 +1109,7 @@ bool TC::LoadTC(std::string mTCno)
                 this->setMahalle(val.value().view()["Mahalle"].get_utf8().value.to_string());
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//                    this->showPopUpMessage (str,"hata");
+                //                    this->showPopUpMessage (str,"hata");
                 returnedValue = false;
             }
 
@@ -1109,7 +1118,7 @@ bool TC::LoadTC(std::string mTCno)
                 mOid = val.value().view()["_id"].get_oid().value.to_string();
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//                    this->showPopUpMessage (str,"hata");
+                //                    this->showPopUpMessage (str,"hata");
                 returnedValue = false;
             }
 
@@ -1127,7 +1136,7 @@ bool TC::LoadTC(std::string mTCno)
 
     } catch (mongocxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//                    this->showPopUpMessage (str,"hata");
+        //                    this->showPopUpMessage (str,"hata");
         returnedValue = false;
     }
 
@@ -1144,7 +1153,7 @@ bool TC::LoadTel(std::string mTelNo)
         filter.append(kvp("Cep Telefonu",mTelNo));
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//                    this->showPopUpMessage (str,"hata");
+        //                    this->showPopUpMessage (str,"hata");
     }
 
 
@@ -1161,7 +1170,7 @@ bool TC::LoadTel(std::string mTelNo)
                 this->setIsimSoyisim(val.value().view()["İsimSoyisim"].get_utf8().value.to_string());
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//                    this->showPopUpMessage (str,"hata");
+                //                    this->showPopUpMessage (str,"hata");
                 returnedValue = false;
             }
 
@@ -1169,7 +1178,7 @@ bool TC::LoadTel(std::string mTelNo)
                 this->setTel(val.value().view()["Cep Telefonu"].get_utf8().value.to_string());
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//                    this->showPopUpMessage (str,"hata");
+                //                    this->showPopUpMessage (str,"hata");
                 returnedValue = false;
             }
 
@@ -1177,7 +1186,7 @@ bool TC::LoadTel(std::string mTelNo)
                 this->setTCNO(val.value().view()["TCNO"].get_utf8().value.to_string());
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//                    this->showPopUpMessage (str,"hata");
+                //                    this->showPopUpMessage (str,"hata");
                 returnedValue = false;
             }
 
@@ -1185,7 +1194,7 @@ bool TC::LoadTel(std::string mTelNo)
                 this->setAddress(val.value().view()["Tam Adres"].get_utf8().value.to_string());
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//                    this->showPopUpMessage (str,"hata");
+                //                    this->showPopUpMessage (str,"hata");
                 returnedValue = false;
             }
 
@@ -1193,7 +1202,7 @@ bool TC::LoadTel(std::string mTelNo)
                 mOid = (val.value().view()["_id"].get_oid().value.to_string());
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//                    this->showPopUpMessage (str,"hata");
+                //                    this->showPopUpMessage (str,"hata");
                 returnedValue = false;
             }
 
@@ -1209,7 +1218,7 @@ bool TC::LoadTel(std::string mTelNo)
 
     } catch (mongocxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//                    this->showPopUpMessage (str,"hata");
+        //                    this->showPopUpMessage (str,"hata");
     }
 
 
@@ -1225,7 +1234,7 @@ bool TC::LoadOid(bsoncxx::oid oid)
         filter.append(kvp("_id",oid));
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//                    this->showPopUpMessage (str,"hata");
+        //                    this->showPopUpMessage (str,"hata");
     }
 
 
@@ -1242,7 +1251,7 @@ bool TC::LoadOid(bsoncxx::oid oid)
                 this->setIsimSoyisim(val.value().view()["İsimSoyisim"].get_utf8().value.to_string());
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//                    this->showPopUpMessage (str,"hata");
+                //                    this->showPopUpMessage (str,"hata");
                 returnedValue = false;
             }
 
@@ -1250,7 +1259,7 @@ bool TC::LoadOid(bsoncxx::oid oid)
                 this->setTel(val.value().view()["Cep Telefonu"].get_utf8().value.to_string());
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//                    this->showPopUpMessage (str,"hata");
+                //                    this->showPopUpMessage (str,"hata");
                 returnedValue = false;
             }
 
@@ -1258,7 +1267,7 @@ bool TC::LoadOid(bsoncxx::oid oid)
                 this->setTCNO(val.value().view()["TCNO"].get_utf8().value.to_string());
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//                    this->showPopUpMessage (str,"hata");
+                //                    this->showPopUpMessage (str,"hata");
                 returnedValue = false;
             }
 
@@ -1266,7 +1275,7 @@ bool TC::LoadOid(bsoncxx::oid oid)
                 this->setAddress(val.value().view()["Tam Adres"].get_utf8().value.to_string());
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//                    this->showPopUpMessage (str,"hata");
+                //                    this->showPopUpMessage (str,"hata");
                 returnedValue = false;
             }
 
@@ -1274,7 +1283,7 @@ bool TC::LoadOid(bsoncxx::oid oid)
                 mOid = (val.value().view()["_id"].get_oid().value.to_string());
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//                    this->showPopUpMessage (str,"hata");
+                //                    this->showPopUpMessage (str,"hata");
                 returnedValue = false;
             }
 
@@ -1290,7 +1299,7 @@ bool TC::LoadOid(bsoncxx::oid oid)
 
     } catch (mongocxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//                    this->showPopUpMessage (str,"hata");
+        //                    this->showPopUpMessage (str,"hata");
     }
 
 
@@ -1305,7 +1314,7 @@ bool TC::SaveDB()
         filter.append(kvp("TCNO",this->tCNO()));
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//                    this->showPopUpMessage (str,"hata");
+        //                    this->showPopUpMessage (str,"hata");
     }
 
     if( this->count("TC",filter.extract() ) )
@@ -1319,7 +1328,7 @@ bool TC::SaveDB()
         filter.append(kvp("Cep Telefonu",this->tel()));
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//                    this->showPopUpMessage (str,"hata");
+        //                    this->showPopUpMessage (str,"hata");
     }
 
     if( this->count("TC",filter.extract() ) )
@@ -1334,7 +1343,7 @@ bool TC::SaveDB()
         insDoc.append(kvp("TCNO",this->tCNO()));
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//                    this->showPopUpMessage (str,"hata");
+        //                    this->showPopUpMessage (str,"hata");
         return false;
     }
 
@@ -1342,7 +1351,7 @@ bool TC::SaveDB()
         insDoc.append(kvp("Cep Telefonu",this->tel()));
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//                    this->showPopUpMessage (str,"hata");
+        //                    this->showPopUpMessage (str,"hata");
         return false;
     }
 
@@ -1350,7 +1359,7 @@ bool TC::SaveDB()
         insDoc.append(kvp("Mahalle",this->mahalle()));
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//                    this->showPopUpMessage (str,"hata");
+        //                    this->showPopUpMessage (str,"hata");
         return false;
     }
 
@@ -1358,7 +1367,7 @@ bool TC::SaveDB()
         insDoc.append(kvp("İsimSoyisim",this->isimSoyisim()));
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//                    this->showPopUpMessage (str,"hata");
+        //                    this->showPopUpMessage (str,"hata");
         return false;
     }
 
@@ -1366,7 +1375,7 @@ bool TC::SaveDB()
         insDoc.append(kvp("Tam Adres",this->address()));
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//                    this->showPopUpMessage (str,"hata");
+        //                    this->showPopUpMessage (str,"hata");
         return false;
     }
 
@@ -1383,7 +1392,7 @@ bool TC::SaveDB()
 
     } catch (mongocxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-//                    this->showPopUpMessage (str,"hata");
+        //                    this->showPopUpMessage (str,"hata");
         return false;
     }
 
@@ -1487,8 +1496,8 @@ StockGiris::StockGiris(mongocxx::database *_db, bsoncxx::document::value _user)
             if( mTCWidget->getTCNO().size() == 11 )
             {
                 if( this->mStok->addMalzeme(mKategoriComboBox->currentText().toUTF8(),
-                                        mExtraBilgiLineEdit->text().toUTF8(),
-                                        mTCWidget->getTCNO()) )
+                                            mExtraBilgiLineEdit->text().toUTF8(),
+                                            mTCWidget->getTCNO()) )
                 {
 
                     this->ListCurrentTCNOList( mTCWidget->getTCNO() );
@@ -1626,7 +1635,7 @@ void StockGiris::ListCurrentTCNOList(const std::string &tcno)
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
             if( !item.mStokta )
             {
-                  container->addWidget(cpp14::make_unique<WText>(WDate::fromJulianDay(static_cast<int>(item.mAlanisTarihi)).toString("dd/MM/yyyy")));
+                container->addWidget(cpp14::make_unique<WText>(WDate::fromJulianDay(static_cast<int>(item.mAlanisTarihi)).toString("dd/MM/yyyy")));
             }
             container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
         }
@@ -1880,14 +1889,14 @@ void StockCikis::ListCurrentTCNOList(const std::string &tcno)
             container->addWidget(cpp14::make_unique<WText>("Durum"));
         }
 
-//        {
-//            auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//            container->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Small::col_sm_1+Bootstrap::Grid::ExtraSmall::col_xs_1);
-//            auto text = container->addWidget(cpp14::make_unique<WText>("Sil"));
-//            text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow));
-//            container->setAttributeValue(Style::style,Style::background::color::rgb(220,100,100));
-//            container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
-//        }
+        //        {
+        //            auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+        //            container->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Small::col_sm_1+Bootstrap::Grid::ExtraSmall::col_xs_1);
+        //            auto text = container->addWidget(cpp14::make_unique<WText>("Sil"));
+        //            text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow));
+        //            container->setAttributeValue(Style::style,Style::background::color::rgb(220,100,100));
+        //            container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+        //        }
 
     }
 
@@ -1939,7 +1948,7 @@ void StockCikis::ListCurrentTCNOList(const std::string &tcno)
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
             if( !item.mStokta )
             {
-                  container->addWidget(cpp14::make_unique<WText>(WDate::fromJulianDay(static_cast<int>(item.mAlanisTarihi)).toString("dd/MM/yyyy")));
+                container->addWidget(cpp14::make_unique<WText>(WDate::fromJulianDay(static_cast<int>(item.mAlanisTarihi)).toString("dd/MM/yyyy")));
             }
             container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
         }
@@ -1955,26 +1964,26 @@ void StockCikis::ListCurrentTCNOList(const std::string &tcno)
             }
         }
 
-//        {
-//            auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//            container->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Small::col_sm_1+Bootstrap::Grid::ExtraSmall::col_xs_1);
-//            auto text = container->addWidget(cpp14::make_unique<WText>("X"));
-//            text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow));
-//            container->setAttributeValue(Style::style,Style::background::color::rgb(200,50,50));
-//            if( !item.mStokta )
-//            {
-//                  container->setDisabled(true);
-//            }
-//            container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
-//            container->decorationStyle().setCursor(Cursor::PointingHand);
+        //        {
+        //            auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+        //            container->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Small::col_sm_1+Bootstrap::Grid::ExtraSmall::col_xs_1);
+        //            auto text = container->addWidget(cpp14::make_unique<WText>("X"));
+        //            text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow));
+        //            container->setAttributeValue(Style::style,Style::background::color::rgb(200,50,50));
+        //            if( !item.mStokta )
+        //            {
+        //                  container->setDisabled(true);
+        //            }
+        //            container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+        //            container->decorationStyle().setCursor(Cursor::PointingHand);
 
-//            container->clicked().connect([=](){
-//                if( this->mStok->deleteMalzeme(container_->attributeValue(Style::dataoid).toUTF8()) )
-//                {
-//                    this->ListCurrentTCNOList(tcno);
-//                }
-//            });
-//        }
+        //            container->clicked().connect([=](){
+        //                if( this->mStok->deleteMalzeme(container_->attributeValue(Style::dataoid).toUTF8()) )
+        //                {
+        //                    this->ListCurrentTCNOList(tcno);
+        //                }
+        //            });
+        //        }
 
     }
 
@@ -2030,21 +2039,21 @@ void StockCikis::ListStokList()
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
-//            auto text = container->addWidget(cpp14::make_unique<WText>("Alan TCNO"));
-//            container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
+            //            auto text = container->addWidget(cpp14::make_unique<WText>("Alan TCNO"));
+            //            container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
         }
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
-//            auto text = container->addWidget(cpp14::make_unique<WText>("Alınış Tarihi"));
-//            container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
+            //            auto text = container->addWidget(cpp14::make_unique<WText>("Alınış Tarihi"));
+            //            container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
         }
 
-//        {
-//            auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//            container->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_5);
-//            auto text = container->addWidget(cpp14::make_unique<WText>("Durum"));
-//        }
+        //        {
+        //            auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+        //            container->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_5);
+        //            auto text = container->addWidget(cpp14::make_unique<WText>("Durum"));
+        //        }
 
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -2094,32 +2103,32 @@ void StockCikis::ListStokList()
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
-//            if( !item.mStokta )
-//            {
-//                auto text = container->addWidget(cpp14::make_unique<WText>(item.mAlanTCNO));
-//            }
+            //            if( !item.mStokta )
+            //            {
+            //                auto text = container->addWidget(cpp14::make_unique<WText>(item.mAlanTCNO));
+            //            }
             container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
         }
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
-//            if( !item.mStokta )
-//            {
-//                  auto text = container->addWidget(cpp14::make_unique<WText>(WDate::fromJulianDay(item.mAlanisTarihi).toString("dd/MM/yyyy")));
-//            }
+            //            if( !item.mStokta )
+            //            {
+            //                  auto text = container->addWidget(cpp14::make_unique<WText>(WDate::fromJulianDay(item.mAlanisTarihi).toString("dd/MM/yyyy")));
+            //            }
             container->setAttributeValue(Style::style,Style::Border::right::border("1px solid white"));
         }
 
-//        {
-//            auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//            container->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_5);
-//            if( item.mStokta )
-//            {
-//                auto text = container->addWidget(cpp14::make_unique<WText>("Stokta"));
-//            }else{
-//                auto text = container->addWidget(cpp14::make_unique<WText>("Verilmiş"));
-//            }
-//        }
+        //        {
+        //            auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+        //            container->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_5);
+        //            if( item.mStokta )
+        //            {
+        //                auto text = container->addWidget(cpp14::make_unique<WText>("Stokta"));
+        //            }else{
+        //                auto text = container->addWidget(cpp14::make_unique<WText>("Verilmiş"));
+        //            }
+        //        }
 
         {
             auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -2129,7 +2138,7 @@ void StockCikis::ListStokList()
             container->setAttributeValue(Style::style,Style::background::color::rgb(120,200,100));
             if( !item.mStokta )
             {
-                  container->setDisabled(true);
+                container->setDisabled(true);
             }
             container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
             container->decorationStyle().setCursor(Cursor::PointingHand);
