@@ -1,5 +1,8 @@
 #include "stokkategoripage.h"
 
+#include "SerikBelediyesiWebSayfasi/srcV2/vatandas/vatandaswidget.h"
+
+
 v2::StokKategoriPage::StokKategoriPage(DB *_db, SerikBLDCore::User *_mUser)
     :ContainerWidget ("Stok Kategori"),
       SerikBLDCore::Stok::StokKategoriManager (_db),
@@ -63,43 +66,52 @@ v2::StokKategoriPage::StokKategoriPage(DB *_db, SerikBLDCore::User *_mUser)
 
 void v2::StokKategoriPage::onList( const QVector<SerikBLDCore::Stok::StokKategori> *mlist )
 {
-        Content ()->clear ();
-        for( auto item : *mlist )
-        {
-            auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass (Bootstrap::Grid::Large::col_lg_11+
-                                      Bootstrap::Grid::Medium::col_md_11+
-                                      Bootstrap::Grid::Small::col_sm_11+
-                                      Bootstrap::Grid::ExtraSmall::col_xs_11);
-            container->addWidget (cpp14::make_unique<WText>(item.kategoriName ()));
-            container->addStyleClass ("boxRadius");
-            container->setMargin (3,Side::Top|Side::Bottom);
-            container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Grey::LightGray)+Style::color::color (Style::color::Grey::Black));
+    Content ()->clear ();
+    for( auto item : *mlist )
+    {
+        auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_11+
+                                  Bootstrap::Grid::Medium::col_md_11+
+                                  Bootstrap::Grid::Small::col_sm_11+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_11);
+        container->addWidget (cpp14::make_unique<WText>(item.kategoriName ()));
+        container->addStyleClass ("boxRadius");
+        container->setMargin (3,Side::Top|Side::Bottom);
+        container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Grey::LightGray)+Style::color::color (Style::color::Grey::Black));
+        container->decorationStyle ().setCursor (Cursor::PointingHand);
+        container->clicked ().connect ([=](){
+            auto selectOid = item.oid ();
+            if( selectOid )
+            {
+                _SelectedKategoriOid.emit (selectOid.value ().to_string (),item.kategoriName ());
+            }
+        });
 
-            auto delContainer = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-            delContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_1+
-                                         Bootstrap::Grid::Medium::col_md_1+
-                                         Bootstrap::Grid::Small::col_sm_1+
-                                         Bootstrap::Grid::ExtraSmall::col_xs_1);
-            delContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::Red::Crimson)+Style::color::color (Style::color::White::Snow));
-            delContainer->addStyleClass ("boxRadius");
-            delContainer->addWidget (cpp14::make_unique<WText>("<b>X</b>",TextFormat::UnsafeXHTML));
-            delContainer->decorationStyle ().setCursor (Cursor::PointingHand);
-            delContainer->setMargin (3,Side::Top|Side::Bottom);
-            delContainer->clicked ().connect ([=](){
-                auto delBtn = this->askConfirm ("Silmek İstediğinize Emin misiniz?");
-                delBtn->clicked ().connect ([=](){
-                    SerikBLDCore::Stok::StokKategori filter(mUser->Birimi ());
-                    filter.setOid (item.oid ().value ().to_string ());
-                    if( !this->DeleteItem (filter) )
-                    {
 
-                    }else{
-                        this->UpdateList (SerikBLDCore::Stok::StokKategori(mUser->Birimi ()));
-                    }
-                });
+        auto delContainer = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        delContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_1+
+                                     Bootstrap::Grid::Medium::col_md_1+
+                                     Bootstrap::Grid::Small::col_sm_1+
+                                     Bootstrap::Grid::ExtraSmall::col_xs_1);
+        delContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::Red::Crimson)+Style::color::color (Style::color::White::Snow));
+        delContainer->addStyleClass ("boxRadius");
+        delContainer->addWidget (cpp14::make_unique<WText>("<b>X</b>",TextFormat::UnsafeXHTML));
+        delContainer->decorationStyle ().setCursor (Cursor::PointingHand);
+        delContainer->setMargin (3,Side::Top|Side::Bottom);
+        delContainer->clicked ().connect ([=](){
+            auto delBtn = this->askConfirm ("Silmek İstediğinize Emin misiniz?");
+            delBtn->clicked ().connect ([=](){
+                SerikBLDCore::Stok::StokKategori filter(mUser->Birimi ());
+                filter.setOid (item.oid ().value ().to_string ());
+                if( !this->DeleteItem (filter) )
+                {
+
+                }else{
+                    this->UpdateList (SerikBLDCore::Stok::StokKategori(mUser->Birimi ()));
+                }
             });
-        }
+        });
+    }
 }
 
 void v2::StokKategoriPage::errorOccured( const std::string &errorText )
@@ -107,10 +119,26 @@ void v2::StokKategoriPage::errorOccured( const std::string &errorText )
     this->showPopUpMessage (errorText,"hata");
 }
 
+Signal<std::string, std::string> &v2::StokKategoriPage::SelectedKategoriOid()
+{
+    return _SelectedKategoriOid;
+}
+
+
+
+
 v2::StokKodPage::StokKodPage(SerikBLDCore::DB *_db)
     :ContainerWidget("Stok Birim "),
       SerikBLDCore::Stok::StokKodManager (_db)
 {
+
+    {
+        auto container = Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::col_full_12);
+        mCurrentKategoriOidText = container->addWidget (cpp14::make_unique<WText>(""));
+        mCurrentKategoriOidText->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+        mCurrentKategoriOidText->setMargin (5,Side::Top|Side::Bottom);
+    }
 
     {
         auto container = Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
@@ -146,6 +174,12 @@ v2::StokKodPage::StokKodPage(SerikBLDCore::DB *_db)
 
         svBtn->clicked ().connect ([=](){
 
+            if( !mCurrentKategoriOid.size () )
+            {
+                this->errorOccured ("Kategori Seçmediniz");
+                return;
+            }
+
             if( !mBirimTipiLineEdit->text ().toUTF8 ().size () )
             {
                 this->errorOccured ("Birim Tipini Girmediniz");
@@ -160,8 +194,9 @@ v2::StokKodPage::StokKodPage(SerikBLDCore::DB *_db)
 
 
             SerikBLDCore::Stok::StokKodItem birim;
-            birim.setAdi (mBirimTipiLineEdit->text ().toUTF8 ());
-            birim.setBirim (mKodAdiLineEdit->text ().toUTF8 ());
+            birim.setAdi (mKodAdiLineEdit->text ().toUTF8 ());
+            birim.setBirim (mBirimTipiLineEdit->text ().toUTF8 ());
+            birim.setKategoriOid (bsoncxx::oid{mCurrentKategoriOid});
 
             auto countItem = this->countItem (birim);
 
@@ -191,9 +226,9 @@ void v2::StokKodPage::onList(const QVector<SerikBLDCore::Stok::StokKodItem> *mli
     {
         auto birimcontainer = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
         birimcontainer->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
-                                  Bootstrap::Grid::Medium::col_md_6+
-                                  Bootstrap::Grid::Small::col_sm_6+
-                                  Bootstrap::Grid::ExtraSmall::col_xs_6);
+                                       Bootstrap::Grid::Medium::col_md_6+
+                                       Bootstrap::Grid::Small::col_sm_6+
+                                       Bootstrap::Grid::ExtraSmall::col_xs_6);
         birimcontainer->addWidget (cpp14::make_unique<WText>(item.birim ()));
         birimcontainer->addStyleClass ("boxRadius");
         birimcontainer->setMargin (3,Side::Top|Side::Bottom);
@@ -241,5 +276,576 @@ void v2::StokKodPage::onList(const QVector<SerikBLDCore::Stok::StokKodItem> *mli
 
 void v2::StokKodPage::errorOccured(const std::string &errorText)
 {
-this->showPopUpMessage (errorText,"hata");
+    this->showPopUpMessage (errorText,"hata");
+}
+
+void v2::StokKodPage::selectedKategoriOid(const std::string &selectedKategoriOid, const std::string &kategoriAdi)
+{
+    mCurrentKategoriOid = selectedKategoriOid;
+    mCurrentKategoriOidText->setText (kategoriAdi + " - " +mCurrentKategoriOid);
+    this->UpdateList (SerikBLDCore::Stok::StokKodItem().setKategoriOid (bsoncxx::oid{mCurrentKategoriOid}));
+}
+
+v2::StokManagerPage::StokManagerPage(const std::string &stokTitle, SerikBLDCore::User *_mUser)
+    :ContainerWidget (stokTitle),
+      SerikBLDCore::Stok::StokManager (_mUser),
+      mTCManager( new SerikBLDCore::TCManagerV2(_mUser->getDB ())),
+      mCurrentTC( new SerikBLDCore::TC())
+{
+
+
+
+
+    {
+        auto container = Header() ->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
+                                  Bootstrap::Grid::Medium::col_md_6+
+                                  Bootstrap::Grid::Small::col_sm_12+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_12);
+
+        auto mTcLineEdit = container->addWidget (cpp14::make_unique<WLineEdit>());
+        mTcLineEdit->setPlaceholderText ("TCNO ile Ara ( 11 Hane ) ");
+
+        mTcLineEdit->textInput ().connect ([=](){
+
+            mTCViewWidget->Header ()->clear ();
+            mTCViewWidget->Content ()->clear ();
+            mTCViewWidget->Footer ()->clear ();
+
+            mCurrentTC->clear ();
+
+
+            if( mTcLineEdit->text ().toUTF8 ().size () < 11 )
+            {
+                return;
+            }
+
+            if( mTcLineEdit->text ().toUTF8 ().size () > 11 )
+            {
+                this->showPopUpMessage ("Telefon Numarası Hatalı","hata");
+                return;
+            }
+
+            auto mtc = mTCManager->Load_byTCNO (mTcLineEdit->text ().toUTF8 ());
+
+            if( mtc )
+            {
+                mCurrentTC = mtc.value ();
+                mTCViewWidget->initTCView (mCurrentTC);
+            }else{
+                this->showPopUpMessage ("TC Bilgileri Bulunamadı","hata");
+            }
+
+
+        });
+    }
+
+
+
+    {
+        auto container = Header() ->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
+                                  Bootstrap::Grid::Medium::col_md_6+
+                                  Bootstrap::Grid::Small::col_sm_12+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_12);
+
+        auto mTelefonLineEdit = container->addWidget (cpp14::make_unique<WLineEdit>());
+        mTelefonLineEdit->setPlaceholderText ("Cep Telefonu Numarası İle Ara ( 11 Hane ) ");
+
+        mTelefonLineEdit->textInput ().connect ([=](){
+
+            mTCViewWidget->Header ()->clear ();
+            mTCViewWidget->Content ()->clear ();
+            mTCViewWidget->Footer ()->clear ();
+
+            mCurrentTC->clear ();
+
+
+            if( mTelefonLineEdit->text ().toUTF8 ().size () < 11 )
+            {
+                return;
+            }
+
+            if( mTelefonLineEdit->text ().toUTF8 ().size () > 11 )
+            {
+                this->showPopUpMessage ("Telefon Numarası Hatalı","hata");
+                return;
+            }
+
+            auto mtc = mTCManager->Load_byTEL (mTelefonLineEdit->text ().toUTF8 ());
+
+            if( mtc )
+            {
+                mCurrentTC = mtc.value ();
+                mTCViewWidget->initTCView (mCurrentTC);
+            }else{
+                this->showPopUpMessage ("TC Bilgileri Bulunamadı","hata");
+            }
+
+
+        });
+    }
+
+
+
+    {
+        mTCViewWidget = Header() ->addWidget (cpp14::make_unique<VatandasWidget>(this->user ()->getDB (),mCurrentTC));
+        mTCViewWidget->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
+                                      Bootstrap::Grid::Medium::col_md_4+
+                                      Bootstrap::Grid::Small::col_sm_12+
+                                      Bootstrap::Grid::ExtraSmall::col_xs_12);
+
+        mTCViewWidget->Header ()->clear ();
+        mTCViewWidget->Content ()->clear ();
+        mTCViewWidget->Footer ()->clear ();
+
+        mTCViewWidget->setMargin ( 15 , Side::Top|Side::Bottom );
+    }
+
+
+    {
+        auto _SearchContentContainer = Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        _SearchContentContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_8+
+                                               Bootstrap::Grid::Medium::col_md_8+
+                                               Bootstrap::Grid::Small::col_sm_12+
+                                               Bootstrap::Grid::ExtraSmall::col_xs_12);
+
+
+        mSearchContentContainer = _SearchContentContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+        mSearchContentContainer->addStyleClass (Bootstrap::Grid::row);
+
+        mSearchContentContainer->setMargin ( 15 , Side::Top|Side::Bottom );
+
+
+
+    }
+
+
+
+    {
+        auto container = mSearchContentContainer ->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
+                                  Bootstrap::Grid::Medium::col_md_4+
+                                  Bootstrap::Grid::Small::col_sm_6+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_6);
+        mKategoriComboBox = container->addWidget (cpp14::make_unique<WComboBox>());
+        mKategoriComboBox->changed ().connect ([=](){
+            this->updateStokKodList (SerikBLDCore::Stok::StokKodItem().setKategoriOid (mKategoriList[mKategoriComboBox->currentText ().toUTF8 ()]));
+        });
+    }
+
+
+
+    {
+        auto container = mSearchContentContainer ->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
+                                  Bootstrap::Grid::Medium::col_md_4+
+                                  Bootstrap::Grid::Small::col_sm_6+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_6);
+        mStokItemComboBox = container->addWidget (cpp14::make_unique<WComboBox>());
+    }
+
+
+
+    {
+        auto container = mSearchContentContainer ->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
+                                  Bootstrap::Grid::Medium::col_md_3+
+                                  Bootstrap::Grid::Small::col_sm_8+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_8);
+        mMiktarSpinBox = container->addWidget (cpp14::make_unique<WSpinBox>());
+        mMiktarSpinBox->setRange (0,999999);
+    }
+
+
+
+    {
+        auto container = mSearchContentContainer ->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_1+
+                                  Bootstrap::Grid::Medium::col_md_1+
+                                  Bootstrap::Grid::Small::col_sm_4+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_4);
+        auto ekleBtn = container->addWidget (cpp14::make_unique<WPushButton>("Ekle"));
+        ekleBtn->addStyleClass (Bootstrap::Button::Primary);
+
+        ekleBtn->clicked ().connect ([=](){
+
+            if( mCurrentTC->view ().empty () )
+            {
+                this->showPopUpMessage ("TC Bilgileri Hatalı","hata");
+                return;
+            }
+
+            if( mMiktarSpinBox->value () <= 0 )
+            {
+                this->showPopUpMessage ("Miktar Hatalı","hata");
+                return;
+            }
+
+
+            SerikBLDCore::Stok::Stok stokItem(SerikBLDCore::Stok::Stok::Giris::giris,this->user ()->Birimi ());
+            stokItem.setAdi (mStokItemComboBox->currentText ().toUTF8 ());
+            stokItem.setKodu (mStokKodList[mStokItemComboBox->currentText ().toUTF8 ()]);
+            stokItem.setKategori (mKategoriList[mKategoriComboBox->currentText ().toUTF8 ()]);
+            stokItem.setMiktar (mMiktarSpinBox->value ());
+            stokItem.setTcOid (mCurrentTC->oid ().value ());
+            if( this->addStok (stokItem) ){
+                this->showPopUpMessage (stokItem.adi () + " Eklendi","msg");
+
+                stokItem.clear ();
+
+                stokItem.setTcOid (mCurrentTC->oid ().value ());
+                stokItem.setMudurluk (this->user ()->Birimi ());
+                this->updateStokList (stokItem);
+            }
+        });
+    }
+
+
+    mCurrentTC->clear ();
+
+    this->updateKategoriList(SerikBLDCore::Stok::StokKategori(this->user ()->Birimi ()));
+
+}
+
+void v2::StokManagerPage::onList(const QVector<SerikBLDCore::Stok::Stok> *mlist)
+{
+
+    Content ()->setMargin (25,Side::Top|Side::Bottom);
+    Content ()->clear ();
+
+    auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+    container->addStyleClass (Bootstrap::Grid::col_full_12);
+    container->setMargin (5,Side::Top|Side::Bottom);
+
+    container->addWidget (cpp14::make_unique<WText>("Teslim Alınan Yardımlar"));
+    container->addStyleClass (Bootstrap::ContextualBackGround::bg_primary);
+
+    for( auto item : *mlist )
+    {
+        auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
+                                  Bootstrap::Grid::Medium::col_md_3+
+                                  Bootstrap::Grid::Small::col_sm_4+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_6+
+                                  Bootstrap::ImageShape::img_thumbnail);
+        container->setMargin (5,Side::Top|Side::Bottom);
+        auto hLayout = container->setLayout (cpp14::make_unique<WHBoxLayout>());
+        auto nameText = hLayout->addWidget (cpp14::make_unique<WText>(item.adi ()),0,AlignmentFlag::Left);
+        auto miktarText = hLayout->addWidget (cpp14::make_unique<WText>(std::to_string (item.miktar ())),0,AlignmentFlag::Right);
+    }
+}
+
+void v2::StokManagerPage::onList(const QVector<SerikBLDCore::Stok::StokKodItem> *mlist)
+{
+    mStokItemComboBox->clear ();
+    mStokKodList.clear ();
+    for( auto item : *mlist )
+    {
+        mStokKodList[item.adi ()] = item.oid ().value ();
+        mStokItemComboBox->addItem (item.adi ());
+    }
+}
+
+void v2::StokManagerPage::onList(const QVector<SerikBLDCore::Stok::StokKategori> *mlist)
+{
+    mKategoriComboBox->clear ();
+    mKategoriList.clear ();
+    for( auto item : *mlist )
+    {
+        mKategoriComboBox->addItem (item.kategoriName ());
+        mKategoriList[item.kategoriName ()] = item.oid ().value ();
+    }
+}
+
+void v2::StokManagerPage::errorOccured(const std::string &errorText)
+{
+    this->showPopUpMessage (errorText,"hata");
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+v2::StokManagerCikisPage::StokManagerCikisPage(const std::string &stokTitle, SerikBLDCore::User *_mUser)
+    :ContainerWidget (stokTitle),
+      SerikBLDCore::Stok::StokManager (_mUser),
+      mTCManager( new SerikBLDCore::TCManagerV2(_mUser->getDB ())),
+      mCurrentTC( new SerikBLDCore::TC())
+{
+
+
+    {
+        auto container = Header() ->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
+                                  Bootstrap::Grid::Medium::col_md_6+
+                                  Bootstrap::Grid::Small::col_sm_12+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_12);
+
+        auto mTcLineEdit = container->addWidget (cpp14::make_unique<WLineEdit>());
+        mTcLineEdit->setPlaceholderText ("TCNO ile Ara ( 11 Hane ) ");
+
+        mTcLineEdit->textInput ().connect ([=](){
+
+            mTCViewWidget->Header ()->clear ();
+            mTCViewWidget->Content ()->clear ();
+            mTCViewWidget->Footer ()->clear ();
+
+            mCurrentTC->clear ();
+
+
+            if( mTcLineEdit->text ().toUTF8 ().size () < 11 )
+            {
+                return;
+            }
+
+            if( mTcLineEdit->text ().toUTF8 ().size () > 11 )
+            {
+                this->showPopUpMessage ("Telefon Numarası Hatalı","hata");
+                return;
+            }
+
+            auto mtc = mTCManager->Load_byTCNO (mTcLineEdit->text ().toUTF8 ());
+
+            if( mtc )
+            {
+                mCurrentTC = mtc.value ();
+                mTCViewWidget->initTCView (mCurrentTC);
+            }else{
+                this->showPopUpMessage ("TC Bilgileri Bulunamadı","hata");
+            }
+
+
+        });
+    }
+
+
+
+    {
+        auto container = Header() ->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
+                                  Bootstrap::Grid::Medium::col_md_6+
+                                  Bootstrap::Grid::Small::col_sm_12+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_12);
+
+        auto mTelefonLineEdit = container->addWidget (cpp14::make_unique<WLineEdit>());
+        mTelefonLineEdit->setPlaceholderText ("Cep Telefonu Numarası İle Ara ( 11 Hane ) ");
+
+        mTelefonLineEdit->textInput ().connect ([=](){
+
+            mTCViewWidget->Header ()->clear ();
+            mTCViewWidget->Content ()->clear ();
+            mTCViewWidget->Footer ()->clear ();
+
+            mCurrentTC->clear ();
+
+
+            if( mTelefonLineEdit->text ().toUTF8 ().size () < 11 )
+            {
+                return;
+            }
+
+            if( mTelefonLineEdit->text ().toUTF8 ().size () > 11 )
+            {
+                this->showPopUpMessage ("Telefon Numarası Hatalı","hata");
+                return;
+            }
+
+            auto mtc = mTCManager->Load_byTEL (mTelefonLineEdit->text ().toUTF8 ());
+
+            if( mtc )
+            {
+                mCurrentTC = mtc.value ();
+                mTCViewWidget->initTCView (mCurrentTC);
+            }else{
+                this->showPopUpMessage ("TC Bilgileri Bulunamadı","hata");
+            }
+
+
+        });
+    }
+
+
+
+    {
+        mTCViewWidget = Header() ->addWidget (cpp14::make_unique<VatandasWidget>(this->user ()->getDB (),mCurrentTC));
+        mTCViewWidget->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
+                                      Bootstrap::Grid::Medium::col_md_4+
+                                      Bootstrap::Grid::Small::col_sm_12+
+                                      Bootstrap::Grid::ExtraSmall::col_xs_12);
+
+        mTCViewWidget->Header ()->clear ();
+        mTCViewWidget->Content ()->clear ();
+        mTCViewWidget->Footer ()->clear ();
+
+        mTCViewWidget->setMargin ( 15 , Side::Top|Side::Bottom );
+    }
+
+
+    {
+        auto _SearchContentContainer = Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        _SearchContentContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_8+
+                                               Bootstrap::Grid::Medium::col_md_8+
+                                               Bootstrap::Grid::Small::col_sm_12+
+                                               Bootstrap::Grid::ExtraSmall::col_xs_12);
+
+
+        mSearchContentContainer = _SearchContentContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+        mSearchContentContainer->addStyleClass (Bootstrap::Grid::row);
+
+        mSearchContentContainer->setMargin ( 15 , Side::Top|Side::Bottom );
+
+
+
+    }
+
+
+
+    {
+        auto container = mSearchContentContainer ->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
+                                  Bootstrap::Grid::Medium::col_md_4+
+                                  Bootstrap::Grid::Small::col_sm_6+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_6);
+        mKategoriComboBox = container->addWidget (cpp14::make_unique<WComboBox>());
+        mKategoriComboBox->changed ().connect ([=](){
+            this->updateStokKodList (SerikBLDCore::Stok::StokKodItem().setKategoriOid (mKategoriList[mKategoriComboBox->currentText ().toUTF8 ()]));
+        });
+    }
+
+
+
+    {
+        auto container = mSearchContentContainer ->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
+                                  Bootstrap::Grid::Medium::col_md_4+
+                                  Bootstrap::Grid::Small::col_sm_6+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_6);
+        mStokItemComboBox = container->addWidget (cpp14::make_unique<WComboBox>());
+    }
+
+
+
+    {
+        auto container = mSearchContentContainer ->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
+                                  Bootstrap::Grid::Medium::col_md_4+
+                                  Bootstrap::Grid::Small::col_sm_12+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_12);
+        auto listeleBtn = container->addWidget (cpp14::make_unique<WPushButton>("Listele"));
+        listeleBtn->addStyleClass (Bootstrap::Button::Primary);
+
+        listeleBtn->clicked ().connect ([=](){
+            SerikBLDCore::Stok::Stok stokItem(SerikBLDCore::Stok::Stok::Giris::giris,this->user ()->Birimi ());
+            this->updateStokList (stokItem);
+        });
+    }
+
+
+    mCurrentTC->clear ();
+
+    this->updateKategoriList(SerikBLDCore::Stok::StokKategori(this->user ()->Birimi ()));
+
+}
+
+void v2::StokManagerCikisPage::onList(const QVector<SerikBLDCore::Stok::Stok> *mlist)
+{
+    Content ()->setMargin (25,Side::Top|Side::Bottom);
+    Content ()->clear ();
+
+    auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+    container->addStyleClass (Bootstrap::Grid::col_full_12);
+    container->setMargin (5,Side::Top|Side::Bottom);
+
+    container->addWidget (cpp14::make_unique<WText>("<h4>Mevcut Stok</h4>",TextFormat::UnsafeXHTML));
+    container->addStyleClass (Bootstrap::ContextualBackGround::bg_info);
+
+    for( auto item : *mlist )
+    {
+        auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
+                                  Bootstrap::Grid::Medium::col_md_6+
+                                  Bootstrap::Grid::Small::col_sm_6+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_6+
+                                  Bootstrap::ImageShape::img_thumbnail);
+        container->setMargin (5,Side::Top|Side::Bottom);
+
+        auto rContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
+        rContainer->addStyleClass (Bootstrap::Grid::row);
+
+        auto adText = rContainer->addWidget (cpp14::make_unique<WText>(item.adi ()));
+        adText->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
+                               Bootstrap::Grid::Medium::col_md_6+
+                               Bootstrap::Grid::Small::col_sm_12+
+                               Bootstrap::Grid::ExtraSmall::col_xs_12);
+
+        auto miktarText = rContainer->addWidget (cpp14::make_unique<WText>(std::to_string (item.miktar ())));
+        miktarText->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                               Bootstrap::Grid::Medium::col_md_2+
+                               Bootstrap::Grid::Small::col_sm_4+
+                               Bootstrap::Grid::ExtraSmall::col_xs_4);
+
+
+        auto kalanmiktarText = rContainer->addWidget (cpp14::make_unique<WText>(std::to_string (item.miktar ())));
+        kalanmiktarText->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                               Bootstrap::Grid::Medium::col_md_2+
+                               Bootstrap::Grid::Small::col_sm_4+
+                               Bootstrap::Grid::ExtraSmall::col_xs_4);
+
+
+        auto teslimEtBtn = rContainer->addWidget (cpp14::make_unique<WPushButton>("Teslim Et"));
+        teslimEtBtn->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                               Bootstrap::Grid::Medium::col_md_2+
+                               Bootstrap::Grid::Small::col_sm_4+
+                               Bootstrap::Grid::ExtraSmall::col_xs_4);
+
+        teslimEtBtn->clicked ().connect ([=](){
+
+        });
+
+
+    }
+}
+
+void v2::StokManagerCikisPage::onList(const QVector<SerikBLDCore::Stok::StokKodItem> *mlist)
+{
+    mStokItemComboBox->clear ();
+    mStokKodList.clear ();
+    for( auto item : *mlist )
+    {
+        mStokKodList[item.adi ()] = item.oid ().value ();
+        mStokItemComboBox->addItem (item.adi ());
+    }
+}
+
+void v2::StokManagerCikisPage::onList(const QVector<SerikBLDCore::Stok::StokKategori> *mlist)
+{
+    mKategoriComboBox->clear ();
+    mKategoriList.clear ();
+    for( auto item : *mlist )
+    {
+        mKategoriComboBox->addItem (item.kategoriName ());
+        mKategoriList[item.kategoriName ()] = item.oid ().value ();
+    }
+}
+
+void v2::StokManagerCikisPage::errorOccured(const std::string &errorText)
+{
+    this->showPopUpMessage (errorText,"hata");
 }
