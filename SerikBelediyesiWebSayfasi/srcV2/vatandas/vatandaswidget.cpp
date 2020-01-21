@@ -8,6 +8,8 @@ VatandasWidget::VatandasWidget(SerikBLDCore::DB *db, SerikBLDCore::TC *tc)
       mTC(tc)
 {
 
+    mEnableEdit = true;
+
     this->initTC ();
 
 
@@ -178,11 +180,18 @@ void VatandasWidget::initTC()
 
     }
 
-    {
+    if( mEnableEdit ){
         auto mSvBtn = this->Footer ()->addWidget (cpp14::make_unique<WPushButton>("Bilgileri Değiştir"));
         mSvBtn->addStyleClass (Bootstrap::Button::Primary);
         mSvBtn->clicked ().connect ( this , &VatandasWidget::initChangeTC );
     }
+}
+
+void VatandasWidget::initTCView( SerikBLDCore::TC *_mTC )
+{
+    mEnableEdit = false;
+    mTC = _mTC;
+    this->initTC ();
 }
 
 

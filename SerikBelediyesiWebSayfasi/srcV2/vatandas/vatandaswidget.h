@@ -10,6 +10,7 @@ class VatandasWidget : public ContainerWidget , public SerikBLDCore::TCManager
 public:
     VatandasWidget( SerikBLDCore::DB* db , SerikBLDCore::TC* tc );
 
+    void initTCView(SerikBLDCore::TC* _mTC);
 
 private:
     SerikBLDCore::TC* mTC;
@@ -17,6 +18,9 @@ private:
     void initChangeTC();
 
     void initTC();
+
+    bool mEnableEdit;
+
 };
 
 
