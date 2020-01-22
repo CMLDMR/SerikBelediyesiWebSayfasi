@@ -111,6 +111,17 @@ Giris::Personel::Yenilikler::Yenilikler()
                 listContainer->addWidget(cpp14::make_unique<WText>("■ <i>Windows</i>"));
             }
 
+            {
+                auto listContainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
+                listContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+                listContainer->setList(true);
+                listContainer->addWidget(cpp14::make_unique<WText>("<b>Release</b>"));
+                listContainer->addWidget(cpp14::make_unique<WBreak>());
+                Wt::WLink linkR = Wt::WLink("https://github.com/CMLDMR/BeyazMasa/releases/download/v0.9.309/BeyazMasaDeploy_x86.rar");
+                linkR.setTarget(Wt::LinkTarget::NewWindow);
+                listContainer->addWidget(cpp14::make_unique<WAnchor>(linkR,"<b>■ BeyazMasa v0.9.309 x86 indir</b>"));
+            }
+
         }
 
         {
@@ -215,7 +226,7 @@ Giris::Personel::Yenilikler::Yenilikler()
                     Wt::cpp14::make_unique<Wt::WAnchor>(link,
                                     "EArşiv v0.1");
 
-            container->addWidget(cpp14::make_unique<WAnchor>(link,"<b>● EArşiv v0.2</b>"));
+            container->addWidget(cpp14::make_unique<WAnchor>(link,"<b>● EArşiv v0.2.3</b>"));
 
 
 
@@ -241,6 +252,23 @@ Giris::Personel::Yenilikler::Yenilikler()
                 listContainer->addWidget(cpp14::make_unique<WText>("■ <i>Web</i>"));
                 listContainer->addWidget(cpp14::make_unique<WBreak>());
                 listContainer->addWidget(cpp14::make_unique<WText>("■ <i>Windows</i>"));
+            }
+
+            {
+                auto listContainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
+                listContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+                listContainer->setList(true);
+                listContainer->addWidget(cpp14::make_unique<WText>("<b>Release</b>"));
+                listContainer->addWidget(cpp14::make_unique<WBreak>());
+                // Create an anchor that links to a URL through clickable text.
+                Wt::WLink linkR = Wt::WLink("https://github.com/CMLDMR/EArsiv/releases/download/v0.2.3/EArsivSerikBelediyesi_msvc_x64_V0.2.3.rar");
+                linkR.setTarget(Wt::LinkTarget::NewWindow);
+
+                std::unique_ptr<Wt::WAnchor> anchor =
+                        Wt::cpp14::make_unique<Wt::WAnchor>(linkR,
+                                        "EArşiv v0.2.3");
+
+                listContainer->addWidget(cpp14::make_unique<WAnchor>(linkR,"<b>■ EArşiv v0.2.3 x64 indir</b>"));
             }
         }
 
