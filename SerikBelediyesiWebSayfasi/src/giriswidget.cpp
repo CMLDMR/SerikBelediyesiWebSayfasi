@@ -3344,8 +3344,8 @@ void Giris::Personel::PersonelWidget::initHeader(WContainerWidget* _row)
                                     Style::background::repeat::norepeat+
                                     Style::background::position::center_center+
                                     Style::background::size::cover);
-    photoWidget->setHeight (130);
-    photoWidget->setWidth (90);
+    photoWidget->setHeight (145);
+    photoWidget->setWidth (120);
 
     {
         auto infoContainer = _row->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -3353,7 +3353,7 @@ void Giris::Personel::PersonelWidget::initHeader(WContainerWidget* _row)
                                      Bootstrap::Grid::Medium::col_md_12+
                                      Bootstrap::Grid::Small::col_sm_12+
                                      Bootstrap::Grid::ExtraSmall::col_xs_6);
-        infoContainer->setHeight (130);
+        infoContainer->setHeight (155);
         infoContainer->setAttributeValue(Style::style,Style::background::color::rgba(100,125,155));
         infoContainer->addStyleClass ("boxShadow");
 
