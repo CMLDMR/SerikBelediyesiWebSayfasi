@@ -3054,15 +3054,29 @@ Giris::Personel::PersonelWidget::PersonelWidget(mongocxx::database *_db, bsoncxx
     this->initHeader(_row);
     mMenuContainer = _row->addWidget(cpp14::make_unique<WContainerWidget>());
     mMenuContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+    mMenuContainer->addStyleClass (Bootstrap::Grid::Hidden::hidden_xs);
     mMenuContainer->setPadding(0,AllSides);
 
+
+    mMobilMenuContainer = _row->addWidget(cpp14::make_unique<WContainerWidget>());
+    mMobilMenuContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+    mMobilMenuContainer->addStyleClass (Bootstrap::Grid::Hidden::hidden_lg+
+                                        Bootstrap::Grid::Hidden::hidden_md+
+                                        Bootstrap::Grid::Hidden::hidden_sm);
+    mMobilMenuContainer->setPadding(0,AllSides);
+
+
+
     this->initMenu();
+
+    this->initMobilMenu ();
 
 
 }
 
 void Giris::Personel::PersonelWidget::initMenu()
 {
+
 
     auto _mContainer = mMenuContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     _mContainer->setPadding(35,Side::Bottom|Side::Top);
@@ -3078,10 +3092,133 @@ void Giris::Personel::PersonelWidget::initMenu()
         this->Content ()->addWidget (Wt::cpp14::make_unique<Giris::Personel::Yenilikler>());
     });
 
-//    menu->addItem("Bilgilerim")->clicked ().connect([&](){
-//        this->Content ()->clear ();
-//        this->Content ()->addWidget (Wt::cpp14::make_unique<Bilgilerim>(mUser->db (),mUser->Value ()));
-//    });
+
+    menu->addItem("Bilgilerim")->clicked ().connect([&](){
+        this->Content ()->clear ();
+        auto personel = SerikBLDCore::IK::Personel();
+        personel.setDocumentView (mUser->view ());
+        this->Content ()->addWidget (Wt::cpp14::make_unique<PersonelPage>( std::move(personel) , new SerikBLDCore::DB(mUser->db ()) , mUser )  );
+    });
+
+    menu->addItem(WString::fromUTF8("Dilekçeler"))->clicked ().connect ([&]{
+        this->Content ()->clear ();
+        this->Content ()->addWidget (Wt::cpp14::make_unique<DilekceYonetim>(mUser->db (),mUser->Value ()));
+    });
+
+
+
+    menu->addItem(WString::fromUTF8("TaleplerimV2"))->clicked ().connect ([&](){
+        this->Content ()->clear();
+        this->Content ()->addWidget (Wt::cpp14::make_unique<TalepYonetim>(mUser->db (),mUser->Value ()));
+    });
+
+
+    menu->addItem(WString::fromUTF8("BaşvurularımV2"))->clicked ().connect ([&](){
+        this->Content ()->clear ();
+        this->Content ()->addWidget (Wt::cpp14::make_unique<V2::GelenBasvurular>(new SerikBLDCore::DB(mUser->db ()) , mUser->Value ()));
+    });
+
+
+    if( this->mUser->Birimi () == "Yazı İşleri Müdürlüğü" || this->mUser->Statu () == SerikBLDCore::User::Baskan || this->mUser->Statu () == SerikBLDCore::User::BaskanYardimcisi )
+    {
+        menu->addItem(WString::fromUTF8("Meclis"))->clicked ().connect ([&](){
+            this->Content ()->clear ();
+            this->Content ()->addWidget (Wt::cpp14::make_unique<v2::MeclisPageManager>(new SerikBLDCore::DB(mUser->db ())));
+        });
+    }
+
+
+    if(this->mUser->Statu () == SerikBLDCore::User::Baskan ||
+            this->mUser->Birimi ()  == "Bilgi İşlem Müdürlüğü" )
+    {
+        menu->addItem(WString::fromUTF8("Anons Sistemi"))->clicked ().connect ([&](){
+            this->Content ()->clear ();
+            this->Content ()->addWidget (Wt::cpp14::make_unique<AnonsWidget>(mUser->db (),mUser->Value ()));
+        });
+    }
+
+    if(this->mUser->Statu () == SerikBLDCore::User::Baskan ||
+            this->mUser->Statu () == SerikBLDCore::User::BaskanYardimcisi ||
+            this->mUser->Birimi ()  == "Kadın ve Aile Hizmetleri Müdürlüğü" )
+    {
+        menu->addItem(WString::fromUTF8("Stok Yardım"))->clicked ().connect ([&](){
+            this->Content ()->clear ();
+            this->Content ()->addWidget (Wt::cpp14::make_unique<KadinAileStock>(mUser->db (),mUser->Value ()));
+        });
+    }
+
+
+
+
+    if(this->mUser->Statu () == SerikBLDCore::User::Baskan ||
+            this->mUser->Statu () == SerikBLDCore::User::BaskanYardimcisi ||
+            this->mUser->Birimi () == "İnsan Kaynakları ve Eğitim Müdürlüğü" )
+    {
+        menu->addItem(WString::fromUTF8("IK"))->clicked ().connect ([&](){
+            this->Content ()->clear ();
+            this->Content ()->addWidget (Wt::cpp14::make_unique<IKManagerPage>(this->mUser->getDB ()));
+        });
+    }
+
+
+
+
+    if( this->mUser->Statu () == SerikBLDCore::User::Baskan || this->mUser->Statu () == SerikBLDCore::User::BaskanYardimcisi )
+    {
+        menu->addItem(WString::fromUTF8("Giriş Çıkış"))->clicked ().connect ([&](){
+            this->Content ()->clear ();
+            this->Content ()->addWidget (Wt::cpp14::make_unique<GirisCikisWidget>(mUser->db (),mUser->Value ()));
+        });
+
+    }else{
+
+        menu->addItem(WString::fromUTF8("Taleplerim"))->clicked ().connect ([&](){
+            this->Content ()->clear ();
+            this->Content ()->addWidget (Wt::cpp14::make_unique<Taleplerim>(mUser->db (),mUser->Value ()));
+        });
+
+
+        menu->addItem(WString::fromUTF8("Evrak Arşivi"))->clicked ().connect ([&](){
+            this->Content ()->clear ();
+            this->Content ()->addWidget (Wt::cpp14::make_unique<EvrakArsiv>(mUser->db (),mUser->Value ()));
+        });
+
+
+        menu->addItem(WString::fromUTF8("Başvurularım"))->clicked ().connect ([&](){
+            this->Content ()->clear ();
+            this->Content ()->addWidget (Wt::cpp14::make_unique<BilgiEdinmeClient>(mUser->db (),mUser->Value ()));
+        });
+
+
+        menu->addItem(WString::fromUTF8("Giriş Çıkışlarım"))->clicked ().connect ([&](){
+            this->Content ()->clear ();
+            this->Content ()->addWidget (Wt::cpp14::make_unique<GirisCikisWidget>(mUser->db (),mUser->Value ()));
+        });
+    }
+}
+
+void Giris::Personel::PersonelWidget::initMobilMenu()
+{
+    Wt::WNavigationBar *navigation = mMobilMenuContainer->addNew<Wt::WNavigationBar>();
+    navigation->setResponsive(true);
+
+
+
+//    auto _mContainer = mMenuContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//    _mContainer->setPadding(35,Side::Bottom|Side::Top);
+
+    auto _menu = Wt::cpp14::make_unique<Wt::WMenu>();
+    _menu->setStyleClass("nav nav-pills nav-stacked");
+    auto menu = navigation->addMenu (std::move(_menu), Wt::AlignmentFlag::Right);
+
+    this->Content ()->clear ();
+    this->Content ()->addWidget (Wt::cpp14::make_unique<Giris::Personel::Yenilikler>());
+
+    menu->addItem("Kod Repository")->clicked ().connect ([&](){
+        this->Content ()->clear ();
+        this->Content ()->addWidget (Wt::cpp14::make_unique<Giris::Personel::Yenilikler>());
+    });
+
 
     menu->addItem("Bilgilerim")->clicked ().connect([&](){
         this->Content ()->clear ();
@@ -3192,7 +3329,10 @@ void Giris::Personel::PersonelWidget::initHeader(WContainerWidget* _row)
 
 
     auto tempContainer = _row->addWidget(cpp14::make_unique<WContainerWidget>());
-    tempContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+    tempContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12+
+                                 Bootstrap::Grid::Medium::col_md_12+
+                                 Bootstrap::Grid::Small::col_sm_12+
+                                 Bootstrap::Grid::ExtraSmall::col_xs_6);
     tempContainer->setAttributeValue(Style::style,Style::background::color::rgba(120,155,175));
     tempContainer->addStyleClass ("boxShadow");
 
@@ -3204,11 +3344,19 @@ void Giris::Personel::PersonelWidget::initHeader(WContainerWidget* _row)
                                     Style::background::repeat::norepeat+
                                     Style::background::position::center_center+
                                     Style::background::size::cover);
-    photoWidget->setHeight (120);
+    photoWidget->setHeight (130);
     photoWidget->setWidth (90);
 
     {
-        auto infoContainer = tempContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+        auto infoContainer = _row->addWidget(cpp14::make_unique<WContainerWidget>());
+        infoContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12+
+                                     Bootstrap::Grid::Medium::col_md_12+
+                                     Bootstrap::Grid::Small::col_sm_12+
+                                     Bootstrap::Grid::ExtraSmall::col_xs_6);
+        infoContainer->setHeight (130);
+        infoContainer->setAttributeValue(Style::style,Style::background::color::rgba(100,125,155));
+        infoContainer->addStyleClass ("boxShadow");
+
 
         auto container = infoContainer->addWidget(cpp14::make_unique<WContainerWidget>());
         auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());

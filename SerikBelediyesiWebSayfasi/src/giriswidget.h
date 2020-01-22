@@ -365,8 +365,11 @@ private:
     WContainerWidget* mMainContainer;
 
     WContainerWidget* mMenuContainer;
+    WContainerWidget* mMobilMenuContainer;
+
 
     void initMenu();
+    void initMobilMenu();
     void initHeader(WContainerWidget *_row);
 
     SerikBLDCore::User *mUser;
