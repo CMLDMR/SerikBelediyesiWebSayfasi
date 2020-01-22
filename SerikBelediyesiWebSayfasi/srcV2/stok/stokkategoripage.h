@@ -118,8 +118,11 @@ private:
 
     SerikBLDCore::TC* mCurrentTC;
     VatandasWidget* mTCViewWidget;
+    void teslimler(); // Daha Önce Teslim Edilenler
 
     WContainerWidget* mSearchContentContainer;
+
+    WContainerWidget* mTeslimAlinanContainer;
 };
 
 
