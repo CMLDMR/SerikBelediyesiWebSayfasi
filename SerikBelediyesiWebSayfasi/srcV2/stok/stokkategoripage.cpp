@@ -843,6 +843,12 @@ void v2::StokManagerCikisPage::onList(const QVector<SerikBLDCore::Stok::Stok> *m
                 auto mDialog = createDialog (mCurrentTC->AdSoyad ().toStdString () + " Teslimat Bilgileri");
 
 
+                auto hLayout = mDialog->contents ()->setLayout (cpp14::make_unique<WHBoxLayout>());
+
+                hLayout->addWidget (cpp14::make_unique<WText>("<b>Kaç Adet</b>",TextFormat::UnsafeXHTML));
+
+                auto kacAdetValue = hLayout->addWidget (cpp14::make_unique<WSpinBox>());
+                kacAdetValue->setValue (1);
 
                 auto addBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Teslim Et"));
                 addBtn->addStyleClass (Bootstrap::Button::Primary);
@@ -852,7 +858,7 @@ void v2::StokManagerCikisPage::onList(const QVector<SerikBLDCore::Stok::Stok> *m
 
                     SerikBLDCore::Stok::Stok::TeslimAlan teslim;
 
-                    teslim.miktar = 1;
+                    teslim.miktar = kacAdetValue->value ();
                     teslim.julianDay = QDate::currentDate ().toJulianDay ();
                     teslim.mSecSinceStartOfDay = QTime::currentTime ().msecsSinceStartOfDay ();
                     teslim.teslimAlan = mCurrentTC->oid ().value ().to_string ();
@@ -970,4 +976,32 @@ void v2::StokManagerCikisPage::teslimler()
     }
 
 
+}
+
+v2::StokIstatistikPage::StokIstatistikPage(const std::string &stokTitle, SerikBLDCore::User *_mUser)
+    :ContainerWidget (stokTitle),
+      SerikBLDCore::Stok::StokManager (_mUser),
+      mTCManager( new SerikBLDCore::TCManagerV2(_mUser->getDB ()))
+{
+
+}
+
+void v2::StokIstatistikPage::onList(const QVector<SerikBLDCore::Stok::Stok> *mlist)
+{
+
+}
+
+void v2::StokIstatistikPage::onList(const QVector<SerikBLDCore::Stok::StokKodItem> *mlist)
+{
+
+}
+
+void v2::StokIstatistikPage::onList(const QVector<SerikBLDCore::Stok::StokKategori> *mlist)
+{
+
+}
+
+void v2::StokIstatistikPage::errorOccured(const std::string &errorText)
+{
+    this->showPopUpMessage (errorText,"hata");
 }

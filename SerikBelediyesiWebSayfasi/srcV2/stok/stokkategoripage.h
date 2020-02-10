@@ -126,6 +126,26 @@ private:
 };
 
 
+class StokIstatistikPage : public ContainerWidget , public SerikBLDCore::Stok::StokManager
+{
+public:
+    explicit StokIstatistikPage( const std::string& stokTitle , SerikBLDCore::User* _mUser );
+
+    virtual void onList(const QVector<SerikBLDCore::Stok::Stok> *mlist) override;
+
+    virtual void onList(const QVector<SerikBLDCore::Stok::StokKodItem> *mlist) override;
+
+    virtual void onList(const QVector<SerikBLDCore::Stok::StokKategori> *mlist) override;
+
+    virtual void errorOccured(const std::string &errorText) override;
+
+    SerikBLDCore::TCManagerV2* mTCManager;
+
+private:
+
+};
+
+
 
 }
 
