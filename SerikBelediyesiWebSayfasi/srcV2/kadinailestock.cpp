@@ -14,7 +14,7 @@ KadinAileStock::KadinAileStock(mongocxx::database *_db, bsoncxx::document::value
 
     {
         auto container = this->Header()->addWidget(cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_6);
+        container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_2+Bootstrap::Grid::ExtraSmall::col_xs_4);
         container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
         container->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(),this->getRandom(),this->getRandom()));
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
@@ -26,7 +26,7 @@ KadinAileStock::KadinAileStock(mongocxx::database *_db, bsoncxx::document::value
 
     {
         auto container = this->Header()->addWidget(cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_6);
+        container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_2+Bootstrap::Grid::ExtraSmall::col_xs_4);
         container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
         container->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(),this->getRandom(),this->getRandom()));
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
@@ -38,7 +38,7 @@ KadinAileStock::KadinAileStock(mongocxx::database *_db, bsoncxx::document::value
 
     {
         auto container = this->Header()->addWidget(cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_6);
+        container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_2+Bootstrap::Grid::ExtraSmall::col_xs_4);
         container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
         container->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(),this->getRandom(),this->getRandom()));
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
@@ -58,6 +58,18 @@ KadinAileStock::KadinAileStock(mongocxx::database *_db, bsoncxx::document::value
         text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow));
         container->decorationStyle().setCursor(Cursor::PointingHand);
         container->clicked().connect(this,&KadinAileStock::initAyarlar);
+    }
+
+    {
+        auto container = this->Header()->addWidget(cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_6);
+        container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+        container->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(),this->getRandom(),this->getRandom()));
+        auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
+        auto text = vLayout->addWidget(cpp14::make_unique<WText>("İstatistikler"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+        text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow));
+        container->decorationStyle().setCursor(Cursor::PointingHand);
+        container->clicked().connect(this,&KadinAileStock::initStatistik );
     }
 }
 
@@ -107,6 +119,14 @@ void KadinAileStock::initStockCikis()
     this->Content()->clear();
 //    this->Content()->addWidget( cpp14::make_unique<StockCikis>( this->db() , this->mUser->Value () ) )->addStyleClass(Bootstrap::Grid::col_full_12);
     this->Content()->addWidget( cpp14::make_unique<v2::StokManagerCikisPage>( "Stok Çıkışı" , this->mUser ) )->addStyleClass(Bootstrap::Grid::col_full_12);
+
+}
+
+void KadinAileStock::initStatistik()
+{
+
+    Content ()->clear ();
+    this->Content()->addWidget( cpp14::make_unique<v2::StokIstatistikPage>( "Stok İstatistik" , this->mUser ) )->addStyleClass(Bootstrap::Grid::col_full_12);
 
 }
 

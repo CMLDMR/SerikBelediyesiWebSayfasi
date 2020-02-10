@@ -26,6 +26,8 @@ public:
 
     void initStockCikis();
 
+    void initStatistik();
+
 
 private:
     StokYardim* mYardim;
