@@ -9,7 +9,7 @@
 class MainPage : public DataBaseWidget
 {
 public:
-    MainPage(mongocxx::database* _db);
+    explicit MainPage(mongocxx::database* _db);
 
     WContainerWidget* mContentWidget;
 
