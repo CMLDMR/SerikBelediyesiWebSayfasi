@@ -76,15 +76,15 @@ Footer::Footer::Footer()
             layout->addWidget(std::move(anchor));
         }
 
-        {
-            Wt::WLink link = Wt::WLink("https://github.com/CMLDMR/SerikBelediyesiWebSayfasi");
-            link.setTarget(Wt::LinkTarget::NewWindow);
+//        {
+//            Wt::WLink link = Wt::WLink("https://github.com/CMLDMR/SerikBelediyesiWebSayfasi");
+//            link.setTarget(Wt::LinkTarget::NewWindow);
 
-            std::unique_ptr<Wt::WAnchor> anchor =
-                    Wt::cpp14::make_unique<Wt::WAnchor>(link,"gitHub");
+//            std::unique_ptr<Wt::WAnchor> anchor =
+//                    Wt::cpp14::make_unique<Wt::WAnchor>(link,"gitHub");
 
-            layout->addWidget(std::move(anchor));
-        }
+//            layout->addWidget(std::move(anchor));
+//        }
 
         layout->addWidget(cpp14::make_unique<WText>(QString("   yapım@%1.%2.%3.%4").arg (MAJOR).arg (MINOR).arg (REV).arg (COM).toStdString ()))->addStyleClass("footerText");
 
