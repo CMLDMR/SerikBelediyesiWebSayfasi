@@ -17,6 +17,8 @@ v2::MeclisPublicPage::MeclisPublicPage(SerikBLDCore::DB *db)
 
 
     this->UpdateList (SerikBLDCore::Meclis::MeclisItem(),findOptions);
+
+    Content ()->setMargin (50,Side::Bottom);
 }
 
 void v2::MeclisPublicPage::onList(const QVector<SerikBLDCore::Meclis::MeclisItem> *mlist)
@@ -49,7 +51,7 @@ void v2::MeclisPublicPage::onList(const QVector<SerikBLDCore::Meclis::MeclisItem
 
         container->setContentAlignment (AlignmentFlag::Center);
         WLink link = WLink(LinkType::Url,"?type=gundem&_id="+item.oid ().value ().to_string ());
-        link.setTarget(Wt::LinkTarget::NewWindow);
+        link.setTarget(Wt::LinkTarget::ThisWindow);
 
         std::unique_ptr<Wt::WAnchor> anchor =
                 Wt::cpp14::make_unique<Wt::WAnchor>(link,
@@ -58,17 +60,6 @@ void v2::MeclisPublicPage::onList(const QVector<SerikBLDCore::Meclis::MeclisItem
 
         container->addStyleClass (Bootstrap::ContextualBackGround::bg_info);
 
-
-
-
-//        auto text = container->addWidget (cpp14::make_unique<WText>(std::to_string (item.yil ())+" "+item.ay ().toStdString ()));
-//        text->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow)+Style::font::weight::bold);
-
-//        container->decorationStyle ().setCursor (Cursor::PointingHand);
-
-//        container->clicked ().connect ([=](){
-//            wApp->setInternalPath ("/?test=12&Value=2233");
-//        });
     }
 
 
