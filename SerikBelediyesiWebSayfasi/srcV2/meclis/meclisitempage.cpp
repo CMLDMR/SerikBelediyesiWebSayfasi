@@ -831,7 +831,13 @@ v2::MeclisItemPublicPage::MeclisItemPublicPage(SerikBLDCore::DB *_db, const Seri
 
     }
 
-    SerikBLDCore::Meclis::KararManager::UpdateList (SerikBLDCore::Meclis::KararItem().setMeclisOid (this->oid ().value ().to_string ()));
+    SerikBLDCore::FindOptions findOptions;
+    findOptions.setLimit (1000);
+
+    findOptions.setSort (SerikBLDCore::Item("none").append(SerikBLDCore::Meclis::KararKey::Sayi,1));
+
+
+    SerikBLDCore::Meclis::KararManager::UpdateList (SerikBLDCore::Meclis::KararItem().setMeclisOid (this->oid ().value ().to_string ()),findOptions);
     SerikBLDCore::Meclis::YouTubeManager::UpdateList (SerikBLDCore::Meclis::YouTubeLink().setMeclisOid (this->oid ().value ().to_string ()));
     SerikBLDCore::Meclis::RaporManager::UpdateList (SerikBLDCore::Meclis::RaporItem().setMeclisOid (this->oid ().value ().to_string ()));
     SerikBLDCore::Meclis::TeklifManager::UpdateList (SerikBLDCore::Meclis::TeklifItem().setMeclisOid (this->oid ().value ().to_string ()));
