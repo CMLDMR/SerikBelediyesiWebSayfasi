@@ -433,7 +433,7 @@ void v2::MeclisItemPage::initMeclisBilgileri()
 
         std::unique_ptr<Wt::WAnchor> anchor =
                 Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                                    "Gündem Linki");
+                                                    "<b>Meclis Linki</b>");
         container->addWidget (std::move(anchor));
 
         container->addStyleClass (Bootstrap::ContextualBackGround::bg_info);
