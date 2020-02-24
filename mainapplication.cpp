@@ -394,7 +394,13 @@ bool MainApplication::loadGundem(const std::string &oid)
         auto rContainer = root ()->addWidget (cpp14::make_unique<WContainerWidget>());
         rContainer->addStyleClass (Bootstrap::Grid::row);
         rContainer->setMaximumSize (WLength(1024),WLength::Auto);
-        rContainer->addWidget (cpp14::make_unique<v2::MeclisItemPublicPage>(new SerikBLDCore::DB(&this->db),item));
+
+        if( item.yayinda () )
+        {
+            rContainer->addWidget (cpp14::make_unique<v2::MeclisItemPublicPage>(new SerikBLDCore::DB(&this->db),item));
+        }else{
+            rContainer->addWidget (cpp14::make_unique<WText>("<h4>Bu Meclis Bilgileri Şuanda Kullanılabilir Değil</h4>",TextFormat::UnsafeXHTML));
+        }
         return true;
     }
 
