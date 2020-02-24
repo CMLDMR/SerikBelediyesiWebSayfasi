@@ -9,13 +9,33 @@ v2::MeclisItemPage::MeclisItemPage(DB *_db, const MeclisItem &item )
       SerikBLDCore::Meclis::KararManager (_db),
       SerikBLDCore::Meclis::YouTubeManager( _db ),
       SerikBLDCore::Meclis::RaporManager ( _db ),
-      SerikBLDCore::Meclis::TeklifManager ( _db )
+      SerikBLDCore::Meclis::TeklifManager ( _db ),
+      SerikBLDCore::Meclis::GundemManager ( _db )
 {
 
     this->initMeclisBilgileri ();
 
     this->Content ()->setMargin (15,Side::Top);
 
+
+    {
+        auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::col_full_12);
+        mGundemContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
+        mGundemContainer->addStyleClass (Bootstrap::Grid::row);
+
+
+        {
+            auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+            container->addStyleClass (Bootstrap::Grid::col_full_12);
+            container->setContentAlignment (AlignmentFlag::Center);
+            auto guncelleBtn = container->addWidget (cpp14::make_unique<WPushButton>("Gündem Ekle"));
+            guncelleBtn->addStyleClass (Bootstrap::Button::Primary);
+            guncelleBtn->clicked ().connect([=](){
+                addGundem ();
+            });
+        }
+    }
 
     {
         auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
@@ -59,6 +79,14 @@ v2::MeclisItemPage::MeclisItemPage(DB *_db, const MeclisItem &item )
     SerikBLDCore::Meclis::YouTubeManager::UpdateList (SerikBLDCore::Meclis::YouTubeLink().setMeclisOid (this->oid ().value ().to_string ()));
     SerikBLDCore::Meclis::RaporManager::UpdateList (SerikBLDCore::Meclis::RaporItem().setMeclisOid (this->oid ().value ().to_string ()));
     SerikBLDCore::Meclis::TeklifManager::UpdateList (SerikBLDCore::Meclis::TeklifItem().setMeclisOid (this->oid ().value ().to_string ()));
+
+    {
+        SerikBLDCore::FindOptions findOptions;
+        findOptions.setLimit (1000);
+        findOptions.setSort (SerikBLDCore::Item("none").append("_id",1));
+        SerikBLDCore::Meclis::GundemManager::UpdateList (SerikBLDCore::Meclis::GundemItem().setMeclisOid (this->oid ().value ().to_string ()),findOptions);
+    }
+
 
 
 }
@@ -209,9 +237,9 @@ void v2::MeclisItemPage::onList(const QVector<SerikBLDCore::Meclis::RaporItem> *
             auto container = mRaporContainer->addWidget (cpp14::make_unique<WContainerWidget>());
             container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
             container->addStyleClass (Bootstrap::Grid::Large::col_lg_11+
-                                         Bootstrap::Grid::Medium::col_md_11+
-                                         Bootstrap::Grid::Small::col_sm_11+
-                                         Bootstrap::Grid::ExtraSmall::col_xs_10);
+                                      Bootstrap::Grid::Medium::col_md_11+
+                                      Bootstrap::Grid::Small::col_sm_11+
+                                      Bootstrap::Grid::ExtraSmall::col_xs_10);
             container->decorationStyle ().setCursor (Cursor::PointingHand);
             container->setContentAlignment (AlignmentFlag::Left);
             container->setMargin (5,Side::Top);
@@ -272,9 +300,9 @@ void v2::MeclisItemPage::onList(const QVector<SerikBLDCore::Meclis::TeklifItem> 
             auto container = mTeklifContainer->addWidget (cpp14::make_unique<WContainerWidget>());
             container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
             container->addStyleClass (Bootstrap::Grid::Large::col_lg_11+
-                                         Bootstrap::Grid::Medium::col_md_11+
-                                         Bootstrap::Grid::Small::col_sm_11+
-                                         Bootstrap::Grid::ExtraSmall::col_xs_10);            container->decorationStyle ().setCursor (Cursor::PointingHand);
+                                      Bootstrap::Grid::Medium::col_md_11+
+                                      Bootstrap::Grid::Small::col_sm_11+
+                                      Bootstrap::Grid::ExtraSmall::col_xs_10);            container->decorationStyle ().setCursor (Cursor::PointingHand);
             container->setMargin (5,Side::Top);
             container->setContentAlignment (AlignmentFlag::Left);
             {
@@ -294,7 +322,7 @@ void v2::MeclisItemPage::onList(const QVector<SerikBLDCore::Meclis::TeklifItem> 
             container->addStyleClass (Bootstrap::Grid::Large::col_lg_1+
                                       Bootstrap::Grid::Medium::col_md_1+
                                       Bootstrap::Grid::Small::col_sm_1+
-                                      Bootstrap::Grid::ExtraSmall::col_xs_1);
+                                      Bootstrap::Grid::ExtraSmall::col_xs_2);
             container->decorationStyle ().setCursor (Cursor::PointingHand);
             container->setMargin (5,Side::Top);
             container->setAttributeValue (Style::style,Style::background::color::rgba (125,105,175,1.0));
@@ -316,6 +344,81 @@ void v2::MeclisItemPage::onList(const QVector<SerikBLDCore::Meclis::TeklifItem> 
     }
 }
 
+void v2::MeclisItemPage::onList(const QVector<SerikBLDCore::Meclis::GundemItem> *mlist)
+{
+    if( !mGundemContainer )
+    {
+        return;
+    }
+
+    mGundemContainer->clear ();
+
+    mGundemContainer->setMargin (25,Side::Top);
+    mGundemContainer->addWidget (cpp14::make_unique<WText>("<b>Gündem Maddeleri</b>",TextFormat::UnsafeXHTML))->addStyleClass (Bootstrap::Grid::col_full_12+Bootstrap::ContextualBackGround::bg_info);
+
+    for( auto item : *mlist )
+    {
+        {
+            auto container = mGundemContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+            container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+            container->addStyleClass (Bootstrap::Grid::Large::col_lg_11+
+                                      Bootstrap::Grid::Medium::col_md_11+
+                                      Bootstrap::Grid::Small::col_sm_11+
+                                      Bootstrap::Grid::ExtraSmall::col_xs_10);
+
+            container->setMargin (5,Side::Top);
+            container->setContentAlignment (AlignmentFlag::Left);
+            if( item.gundemDosyasiVar () ){
+                auto fileLink = SerikBLDCore::Meclis::GundemManager::downloadFileWeb (item.gundemDosyasi ().c_str ());
+                Wt::WLink link = Wt::WLink(fileLink);
+                link.setTarget(Wt::LinkTarget::NewWindow);
+                std::unique_ptr<Wt::WAnchor> anchor =
+                        Wt::cpp14::make_unique<Wt::WAnchor>(link,
+                                                            item.gundemAdi ());
+                container->addWidget (std::move(anchor));
+                container->decorationStyle ().setCursor (Cursor::PointingHand);
+
+            }else{
+                container->addWidget (cpp14::make_unique<WText>(item.gundemAdi ()));
+            }
+        }
+
+        {
+            auto container = mGundemContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+            container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+            container->addStyleClass (Bootstrap::Grid::Large::col_lg_1+
+                                      Bootstrap::Grid::Medium::col_md_1+
+                                      Bootstrap::Grid::Small::col_sm_1+
+                                      Bootstrap::Grid::ExtraSmall::col_xs_2);
+            container->decorationStyle ().setCursor (Cursor::PointingHand);
+            container->setMargin (5,Side::Top);
+            container->setAttributeValue (Style::style,Style::background::color::rgba (105,145,175,1.0));
+            auto SilText = container->addWidget (cpp14::make_unique<WText>("Sil"));
+            SilText->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
+            container->clicked ().connect ([=](){
+                SerikBLDCore::Meclis::GundemItem _item;
+                _item.setOid (item.oid ().value ().to_string ());
+                if( item.gundemDosyasiVar () )
+                {
+                    if( !SerikBLDCore::Meclis::GundemManager::deleteGridFS (item.gundemDosyasi ().c_str ()) ){
+                        this->showMessage ("Uyarı","Gündem Veri Tabanından Silinemedi");
+                    }else{
+                        SerikBLDCore::Meclis::GundemManager::DeleteItem ( _item );
+                        SerikBLDCore::Meclis::GundemManager::UpdateList (SerikBLDCore::Meclis::GundemItem().setMeclisOid (this->oid ().value ().to_string ()));
+                        this->showMessage ("Bilgi","Gündem Başarılı Bir Şekilde Silindi.");
+                    }
+                }else{
+                    SerikBLDCore::Meclis::GundemManager::DeleteItem ( _item );
+                    SerikBLDCore::Meclis::GundemManager::UpdateList (SerikBLDCore::Meclis::GundemItem().setMeclisOid (this->oid ().value ().to_string ()));
+                    this->showMessage ("Bilgi","Gündem Başarılı Bir Şekilde Silindi.");
+                }
+
+
+            });
+        }
+    }
+}
+
 void v2::MeclisItemPage::initMeclisBilgileri()
 {
     this->Header ()->setMargin (25,Side::Top);
@@ -330,7 +433,7 @@ void v2::MeclisItemPage::initMeclisBilgileri()
 
         std::unique_ptr<Wt::WAnchor> anchor =
                 Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                "Gündem Linki");
+                                                    "Gündem Linki");
         container->addWidget (std::move(anchor));
 
         container->addStyleClass (Bootstrap::ContextualBackGround::bg_info);
@@ -339,10 +442,10 @@ void v2::MeclisItemPage::initMeclisBilgileri()
 
     {
         auto container = this->Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
-                                 Bootstrap::Grid::Medium::col_md_4+
-                                 Bootstrap::Grid::Small::col_sm_4+
-                                 Bootstrap::Grid::ExtraSmall::col_xs_6);
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                                  Bootstrap::Grid::Medium::col_md_2+
+                                  Bootstrap::Grid::Small::col_sm_2+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_6);
         mYil = container->addWidget (cpp14::make_unique<WSpinBox>());
         mYil->setRange (2014,2024);
         mYil->setValue (this->yil ());
@@ -351,10 +454,10 @@ void v2::MeclisItemPage::initMeclisBilgileri()
 
     {
         auto container = this->Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
-                                 Bootstrap::Grid::Medium::col_md_4+
-                                 Bootstrap::Grid::Small::col_sm_4+
-                                 Bootstrap::Grid::ExtraSmall::col_xs_6);
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
+                                  Bootstrap::Grid::Medium::col_md_3+
+                                  Bootstrap::Grid::Small::col_sm_3+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_6);
         mAyLineEdit = container->addWidget (cpp14::make_unique<WLineEdit>());
         mAyLineEdit->setText (this->ay ().toStdString ());
         mAyLineEdit->setPlaceholderText ("Meclis Ayını: ( Ocak , Mart Olağanüstü )");
@@ -362,10 +465,10 @@ void v2::MeclisItemPage::initMeclisBilgileri()
 
     {
         auto container = this->Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
-                                 Bootstrap::Grid::Medium::col_md_4+
-                                 Bootstrap::Grid::Small::col_sm_4+
-                                 Bootstrap::Grid::ExtraSmall::col_xs_12);
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                                  Bootstrap::Grid::Medium::col_md_2+
+                                  Bootstrap::Grid::Small::col_sm_2+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_12);
         mYayinda = container->addWidget (cpp14::make_unique<WCheckBox>("Yayında"));
         mYayinda->setChecked (this->yayinda ());
     }
@@ -373,10 +476,10 @@ void v2::MeclisItemPage::initMeclisBilgileri()
 
     {
         auto container = this->Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
-                                 Bootstrap::Grid::Medium::col_md_6+
-                                 Bootstrap::Grid::Small::col_sm_6+
-                                 Bootstrap::Grid::ExtraSmall::col_xs_6);
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                                  Bootstrap::Grid::Medium::col_md_2+
+                                  Bootstrap::Grid::Small::col_sm_2+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_6);
         container->setMargin (5,Side::Top);
         mMeclisTarih = container->addWidget (cpp14::make_unique<WDateEdit>());
         mMeclisTarih->setDate (WDate::fromJulianDay (this->julianDay ()));
@@ -385,10 +488,10 @@ void v2::MeclisItemPage::initMeclisBilgileri()
 
     {
         auto container = this->Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
-                                 Bootstrap::Grid::Medium::col_md_6+
-                                 Bootstrap::Grid::Small::col_sm_6+
-                                 Bootstrap::Grid::ExtraSmall::col_xs_6);
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
+                                  Bootstrap::Grid::Medium::col_md_3+
+                                  Bootstrap::Grid::Small::col_sm_3+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_6);
         container->setMargin (5,Side::Top);
         mMeclisSaat = container->addWidget (cpp14::make_unique<WTimeEdit>());
         mMeclisSaat->setTime (WTime(QTime::fromMSecsSinceStartOfDay (this->saat ()).hour (),
@@ -396,20 +499,6 @@ void v2::MeclisItemPage::initMeclisBilgileri()
         mMeclisSaat->setFormat ("hh:mm");
     }
 
-    {
-        auto container = this->Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass (Bootstrap::Grid::col_full_12);
-        container->setMargin (20,Side::Top|Side::Bottom);
-        container->addStyleClass ("boxShadow");
-
-        auto vLayout = container->setLayout (cpp14::make_unique<WVBoxLayout>());
-
-        vLayout->addWidget (cpp14::make_unique<WText>("Gündem"),0,AlignmentFlag::Center);
-
-        mGundemEdit = vLayout->addWidget (cpp14::make_unique<WTextEdit>(),0,AlignmentFlag::Justify);
-        mGundemEdit->setText (this->gundem ().toStdString ());
-        mGundemEdit->setHeight (350);
-    }
 
     {
         auto container = this->Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
@@ -418,7 +507,6 @@ void v2::MeclisItemPage::initMeclisBilgileri()
         auto guncelleBtn = container->addWidget (cpp14::make_unique<WPushButton>("Meclis Bilgilerini Güncelle"));
         guncelleBtn->addStyleClass (Bootstrap::Button::Primary);
         guncelleBtn->clicked ().connect([=](){
-            this->setGundem (mGundemEdit->text ().toUTF8 ().c_str());
             this->setYayinda (mYayinda->isChecked ());
             this->setYil (mYil->value ());
             this->setAy (mAyLineEdit->text ().toUTF8 ().c_str ());
@@ -514,6 +602,61 @@ void v2::MeclisItemPage::initKararContoller()
             this->addYoutubeLink ();
         });
     }
+}
+
+void v2::MeclisItemPage::addGundem()
+{
+
+    auto mDialog = this->createDialog ("Gündem Ekle");
+
+    mDialog->contents ()->addStyleClass (Bootstrap::Grid::row);
+    mDialog->contents ()->setContentAlignment (AlignmentFlag::Center);
+
+    auto __GundemAdi = mDialog->contents ()->addWidget (cpp14::make_unique<WLineEdit>());
+    __GundemAdi->setPlaceholderText ("Gündem Adını Giriniz");
+    __GundemAdi->addStyleClass (Bootstrap::Grid::col_full_12);
+
+
+
+    auto __contentWidget = mDialog->contents ()->addWidget (cpp14::make_unique<WContainerWidget>());
+    __contentWidget->addStyleClass (Bootstrap::Grid::col_full_12);
+
+    auto __gundemOidText = mDialog->contents ()->addWidget (cpp14::make_unique<WText>());
+    __gundemOidText->addStyleClass (Bootstrap::Grid::col_full_12);
+
+
+    auto __KararOidWidget = mDialog->contents ()->addWidget (cpp14::make_unique<FileUploaderWidget>());
+    __KararOidWidget->setType (FileUploaderWidget::Pdf);
+    __KararOidWidget->addStyleClass (Bootstrap::Grid::col_full_12);
+
+    __KararOidWidget->Uploaded ().connect ([=](){
+        __gundemOidText->setText (__KararOidWidget->fileLocation ().toStdString ());
+    });
+
+    auto mKaydetBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet"));
+    mKaydetBtn->addStyleClass (Bootstrap::Button::Primary);
+
+    mKaydetBtn->clicked ().connect ([=](){
+
+        SerikBLDCore::Meclis::GundemItem item;
+        if( __gundemOidText->text ().toUTF8 ().size () != 0 )
+        {
+            auto kararOid__ = SerikBLDCore::Meclis::GundemManager::uploadfile (__gundemOidText->text ().toUTF8 ().c_str ());
+            item.setGundemDosyasi (kararOid__.get_oid ().value);
+        }
+        item.setMeclisOid (this->oid ().value ().to_string ());
+        item.setGundemAdi (__GundemAdi->text ().toUTF8 ());
+        SerikBLDCore::Meclis::GundemManager::InsertItem (item);
+        {
+            SerikBLDCore::FindOptions findOptions;
+            findOptions.setLimit (1000);
+            findOptions.setSort (SerikBLDCore::Item("none").append("_id",1));
+            SerikBLDCore::Meclis::GundemManager::UpdateList (SerikBLDCore::Meclis::GundemItem().setMeclisOid (this->oid ().value ().to_string ()),findOptions);
+        }
+        this->remogeDialog (mDialog);
+    });
+
+
 }
 
 void v2::MeclisItemPage::addKarar()
@@ -781,20 +924,30 @@ Signal<const SerikBLDCore::Meclis::MeclisItem &> &v2::MeclisItemPage::updateRequ
     return _updateRequest;
 }
 
+
+
+
+
 v2::MeclisItemPublicPage::MeclisItemPublicPage(SerikBLDCore::DB *_db, const SerikBLDCore::Meclis::MeclisItem &item)
     :ContainerWidget ("Serik Belediyesi "+std::to_string (item.yil ()) + " " + item.ay ().toStdString () + " Meclisi"),
       SerikBLDCore::Meclis::MeclisItem(item),
       SerikBLDCore::Meclis::KararManager (_db),
       SerikBLDCore::Meclis::YouTubeManager( _db ),
       SerikBLDCore::Meclis::RaporManager ( _db ),
-      SerikBLDCore::Meclis::TeklifManager ( _db )
+      SerikBLDCore::Meclis::TeklifManager ( _db ),
+      SerikBLDCore::Meclis::GundemManager ( _db )
 {
 
     this->initMeclisBilgileri ();
 
     this->Content ()->setMargin (15,Side::Top);
 
-
+    {
+        auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::col_full_12);
+        mGundemContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
+        mGundemContainer->addStyleClass (Bootstrap::Grid::row);
+    }
 
     {
         auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
@@ -831,16 +984,24 @@ v2::MeclisItemPublicPage::MeclisItemPublicPage(SerikBLDCore::DB *_db, const Seri
 
     }
 
-    SerikBLDCore::FindOptions findOptions;
-    findOptions.setLimit (1000);
+    {
+        SerikBLDCore::FindOptions findOptions;
+        findOptions.setLimit (1000);
+        findOptions.setSort (SerikBLDCore::Item("none").append(SerikBLDCore::Meclis::KararKey::Sayi,1));
+        SerikBLDCore::Meclis::KararManager::UpdateList (SerikBLDCore::Meclis::KararItem().setMeclisOid (this->oid ().value ().to_string ()),findOptions);
+    }
 
-    findOptions.setSort (SerikBLDCore::Item("none").append(SerikBLDCore::Meclis::KararKey::Sayi,1));
-
-
-    SerikBLDCore::Meclis::KararManager::UpdateList (SerikBLDCore::Meclis::KararItem().setMeclisOid (this->oid ().value ().to_string ()),findOptions);
     SerikBLDCore::Meclis::YouTubeManager::UpdateList (SerikBLDCore::Meclis::YouTubeLink().setMeclisOid (this->oid ().value ().to_string ()));
     SerikBLDCore::Meclis::RaporManager::UpdateList (SerikBLDCore::Meclis::RaporItem().setMeclisOid (this->oid ().value ().to_string ()));
     SerikBLDCore::Meclis::TeklifManager::UpdateList (SerikBLDCore::Meclis::TeklifItem().setMeclisOid (this->oid ().value ().to_string ()));
+
+    {
+        SerikBLDCore::FindOptions findOptions;
+        findOptions.setLimit (1000);
+        findOptions.setSort (SerikBLDCore::Item("none").append("_id",1));
+        SerikBLDCore::Meclis::GundemManager::UpdateList (SerikBLDCore::Meclis::GundemItem().setMeclisOid (this->oid ().value ().to_string ()),findOptions);
+    }
+
 
 
 }
@@ -955,7 +1116,7 @@ void v2::MeclisItemPublicPage::onList(const QVector<SerikBLDCore::Meclis::RaporI
     {
         {
             auto container = mRaporContainer->addWidget (cpp14::make_unique<WContainerWidget>());
-//            container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+            //            container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
             container->addStyleClass (Bootstrap::Grid::col_full_12);
             container->decorationStyle ().setCursor (Cursor::PointingHand);
             container->setMargin (5,Side::Top);
@@ -990,7 +1151,7 @@ void v2::MeclisItemPublicPage::onList(const QVector<SerikBLDCore::Meclis::Teklif
     {
         {
             auto container = mTeklifContainer->addWidget (cpp14::make_unique<WContainerWidget>());
-//            container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+            //            container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
             container->addStyleClass (Bootstrap::Grid::col_full_12);
             container->decorationStyle ().setCursor (Cursor::PointingHand);
             container->setContentAlignment (AlignmentFlag::Left);
@@ -1009,6 +1170,47 @@ void v2::MeclisItemPublicPage::onList(const QVector<SerikBLDCore::Meclis::Teklif
     }
 }
 
+void v2::MeclisItemPublicPage::onList(const QVector<SerikBLDCore::Meclis::GundemItem> *mlist)
+{
+    if( !mGundemContainer )
+    {
+        return;
+    }
+
+    mGundemContainer->clear ();
+
+    mGundemContainer->setMargin (25,Side::Top);
+    mGundemContainer->addWidget (cpp14::make_unique<WText>("<b>Gündem Maddeleri</b>",TextFormat::UnsafeXHTML))->addStyleClass (Bootstrap::Grid::col_full_12+Bootstrap::ContextualBackGround::bg_info);
+
+    for( auto item : *mlist )
+    {
+        {
+            auto container = mGundemContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+            container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+            container->addStyleClass (Bootstrap::Grid::Large::col_lg_12+
+                                      Bootstrap::Grid::Medium::col_md_12+
+                                      Bootstrap::Grid::Small::col_sm_12+
+                                      Bootstrap::Grid::ExtraSmall::col_xs_12);
+
+            container->setMargin (5,Side::Top);
+            container->setContentAlignment (AlignmentFlag::Left);
+            if( item.gundemDosyasiVar () ){
+                auto fileLink = SerikBLDCore::Meclis::GundemManager::downloadFileWeb (item.gundemDosyasi ().c_str ());
+                Wt::WLink link = Wt::WLink(fileLink);
+                link.setTarget(Wt::LinkTarget::NewWindow);
+                std::unique_ptr<Wt::WAnchor> anchor =
+                        Wt::cpp14::make_unique<Wt::WAnchor>(link,
+                                                            item.gundemAdi ());
+                container->addWidget (std::move(anchor));
+                container->decorationStyle ().setCursor (Cursor::PointingHand);
+
+            }else{
+                container->addWidget (cpp14::make_unique<WText>(item.gundemAdi ()));
+            }
+        }
+    }
+}
+
 void v2::MeclisItemPublicPage::initMeclisBilgileri()
 {
     this->Header ()->setMargin (25,Side::Top);
@@ -1018,9 +1220,9 @@ void v2::MeclisItemPublicPage::initMeclisBilgileri()
     {
         auto container = this->Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
         container->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
-                                 Bootstrap::Grid::Medium::col_md_6+
-                                 Bootstrap::Grid::Small::col_sm_6+
-                                 Bootstrap::Grid::ExtraSmall::col_xs_6);
+                                  Bootstrap::Grid::Medium::col_md_6+
+                                  Bootstrap::Grid::Small::col_sm_6+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_6);
         container->addWidget (cpp14::make_unique<WText>("Yıl: "+std::to_string (this->yil ())));
     }
 
@@ -1028,9 +1230,9 @@ void v2::MeclisItemPublicPage::initMeclisBilgileri()
     {
         auto container = this->Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
         container->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
-                                 Bootstrap::Grid::Medium::col_md_6+
-                                 Bootstrap::Grid::Small::col_sm_6+
-                                 Bootstrap::Grid::ExtraSmall::col_xs_6);
+                                  Bootstrap::Grid::Medium::col_md_6+
+                                  Bootstrap::Grid::Small::col_sm_6+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_6);
         container->addWidget (cpp14::make_unique<WText>(this->ay ().toStdString ()));
     }
 
@@ -1039,9 +1241,9 @@ void v2::MeclisItemPublicPage::initMeclisBilgileri()
     {
         auto container = this->Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
         container->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
-                                 Bootstrap::Grid::Medium::col_md_6+
-                                 Bootstrap::Grid::Small::col_sm_6+
-                                 Bootstrap::Grid::ExtraSmall::col_xs_6);
+                                  Bootstrap::Grid::Medium::col_md_6+
+                                  Bootstrap::Grid::Small::col_sm_6+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_6);
         container->setMargin (5,Side::Top);
         container->addWidget (cpp14::make_unique<WText>("Tarih: "+QDate::fromJulianDay (this->julianDay ()).toString ("dd/MM/yyyy  dddd").toStdString ()));
     }
@@ -1049,16 +1251,16 @@ void v2::MeclisItemPublicPage::initMeclisBilgileri()
     {
         auto container = this->Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
         container->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
-                                 Bootstrap::Grid::Medium::col_md_6+
-                                 Bootstrap::Grid::Small::col_sm_6+
-                                 Bootstrap::Grid::ExtraSmall::col_xs_6);
+                                  Bootstrap::Grid::Medium::col_md_6+
+                                  Bootstrap::Grid::Small::col_sm_6+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_6);
         container->setMargin (5,Side::Top);
         container->addWidget (cpp14::make_unique<WText>("Saat: "+WTime(QTime::fromMSecsSinceStartOfDay (this->saat ()).hour (),
-                                                                            QTime::fromMSecsSinceStartOfDay (this->saat ()).minute ()).toString ("hh:mm")));
+                                                                       QTime::fromMSecsSinceStartOfDay (this->saat ()).minute ()).toString ("hh:mm")));
 
     }
 
-    {
+    if( this->gundem ().toStdString ().size () ){
         auto container = this->Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
         container->addStyleClass (Bootstrap::Grid::col_full_12);
         container->setMargin (20,Side::Top|Side::Bottom);

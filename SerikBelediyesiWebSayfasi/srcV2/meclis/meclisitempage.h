@@ -13,7 +13,8 @@ class MeclisItemPage : public ContainerWidget ,
         public SerikBLDCore::Meclis::KararManager ,
         public SerikBLDCore::Meclis::YouTubeManager ,
         public SerikBLDCore::Meclis::RaporManager,
-        public SerikBLDCore::Meclis::TeklifManager
+        public SerikBLDCore::Meclis::TeklifManager,
+        public SerikBLDCore::Meclis::GundemManager
 {
 public:
     explicit MeclisItemPage(DB *_db , const MeclisItem &item );
@@ -27,9 +28,13 @@ public:
 
     void onList(const QVector<SerikBLDCore::Meclis::TeklifItem> *mlist) override;
 
+    void onList(const QVector<SerikBLDCore::Meclis::GundemItem> *mlist) override;
+
     void initMeclisBilgileri();
 
     void initKararContoller();
+
+    void addGundem();
 
     void addKarar();
 
@@ -45,10 +50,11 @@ private:
     WSpinBox* mYil;
     WLineEdit* mAyLineEdit;
     WCheckBox* mYayinda;
-    WTextEdit* mGundemEdit;
+//    WTextEdit* mGundemEdit;
     WTimeEdit* mMeclisSaat;
     WDateEdit* mMeclisTarih;
 
+    WContainerWidget* mGundemContainer;
     WContainerWidget* mTeklifContainer;
     WContainerWidget* mRaporContainer;
     WContainerWidget* mKararContainer;
@@ -64,7 +70,8 @@ class MeclisItemPublicPage : public ContainerWidget ,
         public SerikBLDCore::Meclis::KararManager ,
         public SerikBLDCore::Meclis::YouTubeManager ,
         public SerikBLDCore::Meclis::RaporManager,
-        public SerikBLDCore::Meclis::TeklifManager
+        public SerikBLDCore::Meclis::TeklifManager,
+        public SerikBLDCore::Meclis::GundemManager
 {
 public:
     explicit MeclisItemPublicPage(DB *_db , const MeclisItem &item );
@@ -78,6 +85,8 @@ public:
 
     void onList(const QVector<SerikBLDCore::Meclis::TeklifItem> *mlist) override;
 
+    void onList(const QVector<SerikBLDCore::Meclis::GundemItem> *mlist) override;
+
     void initMeclisBilgileri();
 
 
@@ -89,6 +98,7 @@ private:
     WTimeEdit* mMeclisSaat;
     WDateEdit* mMeclisTarih;
 
+    WContainerWidget* mGundemContainer;
     WContainerWidget* mTeklifContainer;
     WContainerWidget* mRaporContainer;
     WContainerWidget* mKararContainer;
