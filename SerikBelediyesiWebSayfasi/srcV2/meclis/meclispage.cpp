@@ -351,19 +351,19 @@ v2::MeclisNewItemPage::MeclisNewItemPage()
 
     }
 
-    //WTimerWidget
+//    //WTimerWidget
 
-    {
-        auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass (Bootstrap::Grid::col_full_12);
+//    {
+//        auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+//        container->addStyleClass (Bootstrap::Grid::col_full_12);
 
-        auto vLayout = container->setLayout (cpp14::make_unique<WVBoxLayout>());
+//        auto vLayout = container->setLayout (cpp14::make_unique<WVBoxLayout>());
 
-        vLayout->addWidget (cpp14::make_unique<WText>("Meclis Tarihi"),1,AlignmentFlag::Center);
-        mGundemEdit = vLayout->addWidget (cpp14::make_unique<WTextEdit>(),1,AlignmentFlag::Justify);
-        mGundemEdit->setHeight (250);
+//        vLayout->addWidget (cpp14::make_unique<WText>("Meclis Tarihi"),1,AlignmentFlag::Center);
+//        mGundemEdit = vLayout->addWidget (cpp14::make_unique<WTextEdit>(),1,AlignmentFlag::Justify);
+//        mGundemEdit->setHeight (250);
 
-    }
+//    }
 
     {
         auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
@@ -376,7 +376,7 @@ v2::MeclisNewItemPage::MeclisNewItemPage()
             this->setAy (ayTextEdit->text ().toUTF8 ().c_str ());
             this->setYil (yilSpinBox->value ());
             this->setYayinda (onlineCheckBox->isChecked ());
-            this->setGundem (mGundemEdit->text ().toUTF8 ().c_str ());
+//            this->setGundem (mGundemEdit->text ().toUTF8 ().c_str ());
             if( mMeclisTarihi->date ().isValid ( ) )
             {
                 this->setJulianDay (mMeclisTarihi->date ().toJulianDay ());
