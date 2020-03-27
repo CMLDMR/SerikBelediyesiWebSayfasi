@@ -1,5 +1,7 @@
 #include "taleplistwidget.h"
 
+#include "Talep/talep.h"
+
 TalepListWidget::TalepListWidget(const std::string &oid,
                                  const std::string &mahalle,
                                  const std::string &tarih,
@@ -60,8 +62,13 @@ TalepListWidget::TalepListWidget(const std::string &oid,
         {
             auto text = _container->addWidget (cpp14::make_unique<WText>(mKategoriName));
             text->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
-            _container->addStyleClass ("blink ");
-            _container->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow)+Style::background::color::color (Style::color::Red::Crimson));
+            if( mDurum == SerikBLDCore::TalepKey::DurumKey::DevamEdiyor )
+            {
+                _container->addStyleClass ("blink ");
+                _container->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow)+Style::background::color::color (Style::color::Red::Crimson));
+            }else{
+                _container->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow)+Style::background::color::color (Style::color::Green::SeaGreen));
+            }
             _container->addStyleClass ("textShadow");
         }else{
             auto text = _container->addWidget (cpp14::make_unique<WText>("."));
