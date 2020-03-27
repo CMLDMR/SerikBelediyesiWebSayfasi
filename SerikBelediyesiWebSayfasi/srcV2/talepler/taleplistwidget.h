@@ -21,7 +21,8 @@ public:
                     const std::string& mahalle,
                     const std::string& tarih,
                     const std::string& durum,
-                    const std::string& durumColor);
+                    const std::string& durumColor,
+                    const std::string& kategoriName );
 
 
     ///
@@ -37,6 +38,7 @@ private:
     std::string mTarih;
     std::string mDurum;
     std::string mDurumColor;
+    std::string mKategoriName;
 
     Signal<std::string> _clickItem;
 };

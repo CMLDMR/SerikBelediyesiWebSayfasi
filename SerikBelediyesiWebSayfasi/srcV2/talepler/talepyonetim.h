@@ -8,6 +8,7 @@
 #include "db.h"
 #include "user.h"
 #include "Talep/talepmanager.h"
+#include "Talep/talepkategorimanager.h"
 
 class TalepYonetim : public ContainerWidget , public SerikBLDCore::TalepManager
 {
@@ -18,6 +19,7 @@ public:
 
 private:
     SerikBLDCore::User* mUser;
+    SerikBLDCore::TalepKategoriManager* mTalepKategoriManager;
 
     void initControlPanel();
 

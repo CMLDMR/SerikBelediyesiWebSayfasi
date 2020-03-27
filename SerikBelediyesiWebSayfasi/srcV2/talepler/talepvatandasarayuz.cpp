@@ -20,7 +20,8 @@ void TalepVatandasArayuz::initList()
                                                                           item.mahalle ().toStdString (),
                                                                           item.tarih ().toStdString (),
                                                                           item.durum ().toStdString (),
-                                                                         item.durumColor ().toStdString ()))->ClickItem ().connect ([=](std::string oid){
+                                                                         item.durumColor ().toStdString (),
+                                                                         ""))->ClickItem ().connect ([=](std::string oid){
             this->initTalep (oid);
         });
     }

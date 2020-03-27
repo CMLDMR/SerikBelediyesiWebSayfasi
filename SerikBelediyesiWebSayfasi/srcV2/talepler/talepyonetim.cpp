@@ -7,9 +7,13 @@ using namespace SerikBLDCore;
 TalepYonetim::TalepYonetim(mongocxx::database *_db, const bsoncxx::document::value _user)
     :ContainerWidget ("Talep/Şikayet Yönetimi V2"),
       TalepManager (_db),
-      mUser(new SerikBLDCore::User (_db,_user))
+      mUser(new SerikBLDCore::User (_db,_user)),
+      mTalepKategoriManager( new SerikBLDCore::TalepKategoriManager(new SerikBLDCore::DB(_db)))
 {
 
+
+    mTalepKategoriManager->setLimit (1000);
+    mTalepKategoriManager->UpdateList ();
 
     if( this->mUser->Statu () == SerikBLDCore::User::Mudur ){
         this->initControlPanel ();
@@ -383,15 +387,22 @@ void TalepYonetim::listTalepler(const Talep &filter)
     if( filter.view ().empty () ) return;
 
 
-    auto cursor = this->findTalep (filter);
+
+    auto cursor = this->findTalep (filter,250);
     this->Content ()->clear ();
     for( auto item : cursor )
     {
+        auto kategoriName = mTalepKategoriManager->KategoriName(item.kategoriOid ());
+
+
+
+
         this->Content ()->addWidget (cpp14::make_unique<TalepListWidget>(item.oid ().toStdString (),
                                                                           item.mahalle ().toStdString (),
                                                                           item.tarih ().toStdString (),
                                                                           item.durum ().toStdString (),
-                                                                         item.durumColor ().toStdString ()))->ClickItem ().connect ([=](std::string oid){
+                                                                         item.durumColor ().toStdString (),
+                                                                          kategoriName.toStdString ()))->ClickItem ().connect ([=](std::string oid){
             _clickOid.emit (oid);
         });
     }

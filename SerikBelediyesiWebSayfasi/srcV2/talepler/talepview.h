@@ -9,6 +9,7 @@
 #include "user.h"
 #include "tcmanager.h"
 #include "personelmanager.h"
+#include "Talep/talepkategorimanager.h"
 
 class TalepView : public ContainerWidget , public SerikBLDCore::Talep , public SerikBLDCore::TalepManager
 {
@@ -41,6 +42,7 @@ private:
 
     SerikBLDCore::TCManager* mTCManager;
     SerikBLDCore::PersonelManager* mPersonelManager;
+    SerikBLDCore::TalepKategoriManager* mTalepKategoriManager;
 
     void initTCView();
 

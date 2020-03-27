@@ -10,8 +10,13 @@ TalepView::TalepView(const Talep &talepItem, mongocxx::database *_db, User *_mUs
     :ContainerWidget (_mPublicLink ? "Serik Belediyesi Talep/Şikayet Yönetim Sistemi ©2019" : ""),
       Talep (talepItem),
       TalepManager (_db),
-      mPublicLink(_mPublicLink)
+      mPublicLink(_mPublicLink),
+      mTalepKategoriManager( new SerikBLDCore::TalepKategoriManager(new SerikBLDCore::DB (_db)))
 {
+
+    mTalepKategoriManager->setLimit (1000);
+    mTalepKategoriManager->UpdateList ();
+
     if( !mPublicLink )
     {
         mUser = _mUser;
@@ -297,6 +302,31 @@ void TalepView::initTalepView()
         _container->addWidget (std::move(anchor));
         _container->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
         _container->addStyleClass ("textShadow");
+    }
+
+    {
+        auto _container = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+        _container->addStyleClass (Bootstrap::Grid::col_full_12);
+        _container->setContentAlignment (AlignmentFlag::Center);
+        _container->setMargin (5,Side::Bottom|Side::Top);
+
+
+        auto kategoriName = mTalepKategoriManager->KategoriName(this->kategoriOid ());
+
+        if( kategoriName == "Covid-19" )
+        {
+            auto text = _container->addWidget (cpp14::make_unique<WText>(kategoriName.toStdString ()));
+            text->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
+            _container->addStyleClass ("blink ");
+            _container->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow)+Style::background::color::color (Style::color::Red::Crimson));
+            _container->addStyleClass ("textShadow");
+        }else{
+            auto text = _container->addWidget (cpp14::make_unique<WText>("Kategori: "+kategoriName.toStdString ()));
+            text->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
+            _container->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
+            _container->addStyleClass ("textShadow");
+        }
+
     }
 
     {

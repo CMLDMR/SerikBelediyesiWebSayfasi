@@ -4,12 +4,14 @@ TalepListWidget::TalepListWidget(const std::string &oid,
                                  const std::string &mahalle,
                                  const std::string &tarih,
                                  const std::string &durum,
-                                 const std::string &durumColor)
+                                 const std::string &durumColor,
+                                 const std::string &kategoriName)
     :mOid(oid),
       mMahalle(mahalle),
       mTarih(tarih),
       mDurum(durum),
-      mDurumColor(durumColor)
+      mDurumColor(durumColor),
+      mKategoriName(kategoriName)
 {
 
     decorationStyle ().setCursor (Cursor::PointingHand);
@@ -47,6 +49,30 @@ TalepListWidget::TalepListWidget(const std::string &oid,
         _container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
 
     }
+
+
+    {
+        auto _container = addWidget (cpp14::make_unique<WContainerWidget>());
+        _container->setWidth (WLength(std::to_string (100.0)+"%"));
+
+
+        if( mKategoriName == "Covid-19" )
+        {
+            auto text = _container->addWidget (cpp14::make_unique<WText>(mKategoriName));
+            text->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
+            _container->addStyleClass ("blink ");
+            _container->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow)+Style::background::color::color (Style::color::Red::Crimson));
+            _container->addStyleClass ("textShadow");
+        }else{
+            auto text = _container->addWidget (cpp14::make_unique<WText>("."));
+            text->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
+            _container->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
+            _container->addStyleClass ("textShadow");
+        }
+
+    }
+
+
 
 }
 
