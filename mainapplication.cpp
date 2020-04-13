@@ -196,8 +196,6 @@ void MainApplication::init()
 
     root()->addStyleClass("rootBody");
 
-    //    std::cout << "Julian Day: " << QDate::currentDate().toJulianDay() << std::endl;
-
 //     Afis Ön Görsel
         if( true ){
 
@@ -213,19 +211,47 @@ void MainApplication::init()
             _container->setWidth(WLength("100%"));
             _container->setHeight(WLength("100%"));
             _container->setPositionScheme(PositionScheme::Fixed);
-            _container->setAttributeValue(Style::style,Style::background::url("v2/img/saglik.jpg")
-                                         +Style::background::size::contain
-                                          +Style::background::position::center_center
-                                          +Style::background::repeat::norepeat);
+
             _container->setZIndex(1000);
 
-            WTimer::singleShot(std::chrono::milliseconds(5000),[=](){
-               root()->removeWidget(container);
-            });
+            WTimer::singleShot(std::chrono::milliseconds(116000),[=](){
+                           root()->removeWidget(container);
+                        });
 
-            _container->clicked().connect([=](){
-               root()->removeWidget(container);
-            });
+            {
+                _container->setContentAlignment (AlignmentFlag::Center);
+                _container->setPadding (25,Side::Top);
+                auto mContainer = _container->addWidget(cpp14::make_unique<WContainerWidget>());
+                mContainer->setPositionScheme (PositionScheme::Relative);
+                mContainer->setContentAlignment(AlignmentFlag::Center);
+                mContainer->setMaximumSize(1280,WLength::Auto);
+                mContainer->setHeight (512);
+                {
+                    auto link = "<iframe src=\"https://www.youtube.com/embed/aVViU6SIkWE?autoplay=1\" style=\"border:0px #ffffff none;\" name=\"myiFrame\" scrolling=\"no\" frameborder=\"1\" marginheight=\"5px\" marginwidth=\"5px\" height=\"100%\" width=\"100%\" "
+                                                             "allow=\"accelerometer; autoplay=true; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>";
+                    auto text = mContainer->addWidget(cpp14::make_unique<WText>(link,TextFormat::UnsafeXHTML));
+                    text->setMaximumSize(1280,WLength::Auto);
+                }
+
+                {
+                    auto skipContainer = mContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+                    skipContainer->setPositionScheme (PositionScheme::Absolute);
+                    skipContainer->setOffsets (0,Side::Right|Side::Top);
+                    skipContainer->setWidth (200);
+                    skipContainer->setHeight (75);
+                    skipContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::Red::DarkRed));
+                    skipContainer->decorationStyle ().setCursor (Cursor::PointingHand);
+
+                    auto layout = skipContainer->setLayout (cpp14::make_unique<WVBoxLayout>());
+                    auto text = layout->addWidget (cpp14::make_unique<WText>("Ana SAYFA"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+                    text->setAttributeValue (Style::style,Style::font::weight::bold+Style::font::size::s14px+Style::color::color (Style::color::White::Azure));
+
+                    skipContainer->clicked ().connect ([=](){
+                        root()->removeWidget(container);
+                    });
+
+                }
+            }
         }
 
 
