@@ -12,6 +12,12 @@
 
 class TalepYonetim : public ContainerWidget , public SerikBLDCore::TalepManager
 {
+    enum class SiralamaType{
+        NormalSiralama,
+        Raporlama
+    };
+
+
 public:
     TalepYonetim(mongocxx::database* _db , const bsoncxx::document::value _user);
 
@@ -25,13 +31,19 @@ private:
 
     void initPersonelPanel();
 
-    void listTalepler( const SerikBLDCore::Talep& filter = SerikBLDCore::Talep() );
+    void listTalepler( const SerikBLDCore::Talep& filter = SerikBLDCore::Talep() ,
+                       const SerikBLDCore::FindOptions& options = SerikBLDCore::FindOptions() ,
+                       SiralamaType siralamaType = SiralamaType::NormalSiralama );
+
+    void initKategoriDagilimi();
 
     void initTalep( const std::string &oid );
 
     std::unique_ptr<WPushButton> createButton( const char* classname , const WString& name );
 
     Signal<std::string> _clickOid;
+
+
 
 };
 
