@@ -699,11 +699,17 @@ void Body::Body::setAnnounceDetail(std::string oid)
     mMainContainer->clear();
     mMainContainer->setContentAlignment(AlignmentFlag::Center);
 
+//    auto row1 = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//    row1->addStyleClass(Bootstrap::Grid::row);
+//    row1->setHeight (100);
+//    row1->setAttributeValue (Style::style,Style::background::color::color (" red "));
+//    row1->setId ("row1");
+
 
     auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     row->addStyleClass(Bootstrap::Grid::row);
 
-    WText* announceTitle = nullptr;;
+    WText* announceTitle = nullptr;
     WText* AnnounceContent = nullptr;
     WText* LastDate = nullptr;
     WText* Department = nullptr;
@@ -3405,17 +3411,10 @@ Body::NewsAnnounceContent::AnnouncePanel::AnnounceList::AnnounceList(mongocxx::d
       db(_db)
 {
 
-    //    setAttributeValue(Style::style,Style::Border::border("3px solid red"));
-
-
-    auto mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
-    mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
-    mMainContainer->setContentAlignment(AlignmentFlag::Center);
-
     {
-        auto container = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+        auto container = addWidget(cpp14::make_unique<WContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::row);
-        container->setMaximumSize(1024,WLength::Auto);
+        container->setMaximumSize(1280,WLength::Auto);
         container->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::Azure));
 
         {
@@ -3437,24 +3436,20 @@ Body::NewsAnnounceContent::AnnouncePanel::AnnounceList::AnnounceList(mongocxx::d
             serik->setAttributeValue(Style::style,Style::font::size::s36px+Style::color::color(Style::color::White::AliceBlue));
         }
 
-//        auto text = container->addWidget(cpp14::make_unique<WText>("Duyurular"));
-//        text->setAttributeValue(Style::style,Style::font::size::s20px);
     }
 
 
 
 
-    auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+    auto row = addWidget(cpp14::make_unique<WContainerWidget>());
     row->addStyleClass(Bootstrap::Grid::row);
-    row->setMaximumSize(1024,WLength::Auto);
+    row->setMaximumSize(1280,WLength::Auto);
     row->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::Azure));
 
 
 
-    row->addStyleClass("announceRow");
 
     auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
-    container->addStyleClass("AnnounceListSliderCss");
 
     Collection = db->collection(SBLDKeys::Duyurular::collection);
 
@@ -3483,21 +3478,20 @@ Body::NewsAnnounceContent::AnnouncePanel::AnnounceList::AnnounceList(mongocxx::d
     try {
         auto cursor = Collection.find(filter.view(),findOption);
 
-        std::int64_t count = Collection.count(filter.view());
-
-        if( count > 5 )
-        {
-            container->addStyleClass("AnnounceListSliderPlay");
-        }else{
-            container->addStyleClass("AnnounceListSliderPaused");
-        }
-
         for( auto doc : cursor )
         {
-            auto item = container->addWidget(cpp14::make_unique<AnnounceItem>(doc[SBLDKeys::Duyurular::oid].get_oid().value.to_string(),doc[SBLDKeys::Duyurular::title].get_utf8().value.to_string(),
-                    doc[SBLDKeys::Duyurular::department].get_utf8().value.to_string()));
-            item->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-            item->_ClickItem.connect(this,&AnnounceList::_ClickItem);
+            {
+                auto item = container->addWidget(cpp14::make_unique<AnnounceItem>(doc[SBLDKeys::Duyurular::oid].get_oid().value.to_string(),doc[SBLDKeys::Duyurular::title].get_utf8().value.to_string(),
+                        doc[SBLDKeys::Duyurular::department].get_utf8().value.to_string()));
+                item->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+                item->_ClickItem.connect(this,&AnnounceList::_ClickItem);
+            }
+            {
+                auto item = container->addWidget(cpp14::make_unique<AnnounceItem>(doc[SBLDKeys::Duyurular::oid].get_oid().value.to_string(),doc[SBLDKeys::Duyurular::title].get_utf8().value.to_string(),
+                        doc[SBLDKeys::Duyurular::department].get_utf8().value.to_string()));
+                item->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+                item->_ClickItem.connect(this,&AnnounceList::_ClickItem);
+            }
         }
 
     } catch (mongocxx::exception &e) {

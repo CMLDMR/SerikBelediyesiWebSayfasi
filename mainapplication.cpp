@@ -204,7 +204,7 @@ void MainApplication::init()
             container->setWidth(WLength("100%"));
             container->setHeight(WLength("100%"));
             container->setPositionScheme(PositionScheme::Fixed);
-            container->setAttributeValue(Style::style,Style::background::color::rgba(0,0,0));
+            container->setAttributeValue(Style::style,Style::background::color::rgba(255,255,255,0.75));
             container->setZIndex(1000);
 
             auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -220,14 +220,15 @@ void MainApplication::init()
 
             {
                 _container->setContentAlignment (AlignmentFlag::Center);
-                _container->setPadding (25,Side::Top);
+                _container->setPadding (50,Side::Top);
                 auto mContainer = _container->addWidget(cpp14::make_unique<WContainerWidget>());
                 mContainer->setPositionScheme (PositionScheme::Relative);
                 mContainer->setContentAlignment(AlignmentFlag::Center);
-                mContainer->setMaximumSize(1280,WLength::Auto);
+                mContainer->setMaximumSize(1024,WLength::Auto);
                 mContainer->setHeight (512);
+                mContainer->addStyleClass ("boxShadow boxRadius");
                 {
-                    auto link = "<iframe src=\"https://www.youtube.com/embed/aVViU6SIkWE?autoplay=1\" style=\"border:0px #ffffff none;\" name=\"myiFrame\" scrolling=\"no\" frameborder=\"1\" marginheight=\"5px\" marginwidth=\"5px\" height=\"100%\" width=\"100%\" "
+                    auto link = "<iframe src=\"https://www.youtube.com/embed/aVViU6SIkWE?autoplay=1&showinfo=0&controls=0\" style=\"border:0px #ffffff none;\" name=\"myiFrame\" scrolling=\"no\" frameborder=\"1\" marginheight=\"5px\" marginwidth=\"5px\" height=\"100%\" width=\"100%\" "
                                                              "allow=\"accelerometer; autoplay=true; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>";
                     auto text = mContainer->addWidget(cpp14::make_unique<WText>(link,TextFormat::UnsafeXHTML));
                     text->setMaximumSize(1280,WLength::Auto);
@@ -237,14 +238,14 @@ void MainApplication::init()
                     auto skipContainer = mContainer->addWidget (cpp14::make_unique<WContainerWidget>());
                     skipContainer->setPositionScheme (PositionScheme::Absolute);
                     skipContainer->setOffsets (0,Side::Right|Side::Top);
-                    skipContainer->setWidth (200);
-                    skipContainer->setHeight (75);
-                    skipContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::Red::DarkRed));
+                    skipContainer->setWidth (170);
+                    skipContainer->setHeight (60);
+                    skipContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::White));
                     skipContainer->decorationStyle ().setCursor (Cursor::PointingHand);
 
                     auto layout = skipContainer->setLayout (cpp14::make_unique<WVBoxLayout>());
                     auto text = layout->addWidget (cpp14::make_unique<WText>("Ana SAYFA"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
-                    text->setAttributeValue (Style::style,Style::font::weight::bold+Style::font::size::s14px+Style::color::color (Style::color::White::Azure));
+                    text->setAttributeValue (Style::style,Style::font::weight::lighter+Style::font::size::s14px+Style::color::color (Style::color::Grey::Black));
 
                     skipContainer->clicked ().connect ([=](){
                         root()->removeWidget(container);

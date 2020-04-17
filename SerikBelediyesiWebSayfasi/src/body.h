@@ -78,50 +78,6 @@ namespace Body {
     class Meclis;
 
 
-//    class DataBaseWidget : public WContainerWidget
-//    {
-//        mongocxx::database* db;
-//    public:
-//        DataBaseWidget(mongocxx::database* _db )
-//            :db(_db)
-//        {
-//            Bucket = this->db->gridfs_bucket();
-//        }
-
-//        mongocxx::collection collection(std::string collection) const{
-//            return this->db->collection(collection);
-//        }
-
-//        mongocxx::gridfs::bucket bucket() const{
-//            return Bucket;
-//        }
-
-//        mongocxx::database* getDB(){
-//            return this->db;
-//        }
-
-//        inline int getRandom(int begin = 0 , int end = 255 )
-//        {
-//            std::random_device rd;
-//            std::mt19937 mt(rd());
-//            std::uniform_int_distribution<int> dist(begin,end);
-//            return dist(mt);
-//        }
-
-
-//        void showMessage( std::string title , std::string msg , std::string btnText = "OK");
-//        void showMessage( std::string title , std::string msg , bsoncxx::exception &e , Wt::Icon icon = Icon::Warning);
-//        void showMessage( std::string title , std::string msg , mongocxx::exception &e , Wt::Icon icon = Icon::Warning);
-
-//        std::int64_t count(std::string collection , bsoncxx::document::view &filter ) ;
-//        std::int64_t count(std::string collection , const document &filter = document{} ) ;
-//        std::int64_t count(std::string collection , bsoncxx::document::value val ) ;
-
-//    private:
-//        mongocxx::gridfs::bucket Bucket;
-
-//    };
-
 
     class Body : public WContainerWidget
     {
@@ -371,6 +327,7 @@ namespace Body {
             AnnouncePanel(mongocxx::database* _db);
 
 
+
             class AnnounceList : public WContainerWidget
             {
             public:
@@ -390,13 +347,11 @@ namespace Body {
             private:
                 mongocxx::database* db;
                 mongocxx::collection Collection;
-
                 void _ClickItem(std::string oid);
-
                 Signal<std::string> mClickoid;
-
-
             };
+
+
 
             class TaskList : public WContainerWidget
             {

@@ -374,12 +374,6 @@ void MainPage::initAnounceList()
     mMainContainer->mGetOid().connect([=](std::string mOid){
         initAnounceDetail(mOid);
     });
-    //    {
-    //        auto list = anounceContainer->addWidget(cpp14::make_unique<Body::NewsAnnounceContent::AnnouncePanel::AnnounceList>(this->getDB()));
-    //        list->mGetOid().connect([=](std::string mOid){
-    //           _Announce.emit(mOid);
-    //        });
-    //    }
 
     footer->removeStyleClass("footerStickAbsolute");
 }
@@ -395,7 +389,7 @@ void MainPage::initAnounceDetail( std::string mOid )
 
     auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     row->addStyleClass(Bootstrap::Grid::row);
-    row->setMaximumSize(1024,WLength::Auto);
+    row->setMaximumSize(1280,WLength::Auto);
 
     WText* announceTitle = nullptr;
     WText* AnnounceContent = nullptr;
@@ -422,7 +416,9 @@ void MainPage::initAnounceDetail( std::string mOid )
     }
 
     auto list = row->addWidget(cpp14::make_unique<Body::NewsAnnounceContent::AnnouncePanel::AnnounceList>(this->getDB()));
-    list->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_2+Bootstrap::Grid::ExtraSmall::col_xs_12);
+    list->addStyleClass(Bootstrap::Grid::Large::col_lg_4+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_12);
+    list->addStyleClass (Bootstrap::Grid::Hidden::hidden_sm+Bootstrap::Grid::Hidden::hidden_xs);
+
     list->mGetOid().connect([=](std::string _mOid){
        this->initAnounceDetail(_mOid);
     });
@@ -430,7 +426,7 @@ void MainPage::initAnounceDetail( std::string mOid )
 
 
     auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
-    container->addStyleClass(Bootstrap::Grid::Large::col_lg_9+Bootstrap::Grid::Medium::col_md_9+Bootstrap::Grid::Small::col_sm_10+Bootstrap::Grid::ExtraSmall::col_xs_12);
+    container->addStyleClass(Bootstrap::Grid::Large::col_lg_8+Bootstrap::Grid::Medium::col_md_8+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
 
     container->setPadding(0,AllSides);
 
@@ -476,11 +472,6 @@ void MainPage::initAnounceDetail( std::string mOid )
                 auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
                 _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
                 auto _layout = _container->setLayout(cpp14::make_unique<WHBoxLayout>());
-//                auto back = _layout->addWidget(cpp14::make_unique<WPushButton>("Ana Sayfa"),0,AlignmentFlag::Left);
-//                back->clicked().connect([=](){
-//                    this->_clickBack.emit(NoClass());
-//                });
-//                back->addStyleClass(Bootstrap::Button::Primary);
 
                 auto textContainer = _layout->addWidget(cpp14::make_unique<WContainerWidget>());
 
@@ -515,57 +506,32 @@ void MainPage::initAnounceDetail( std::string mOid )
                                               Style::background::color::color(Style::color::Grey::Gainsboro));
             }
 
+            {
+                auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
+                _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+                _container->addStyleClass (Bootstrap::Grid::Hidden::hidden_lg+Bootstrap::Grid::Hidden::hidden_md);
+                _container->setAttributeValue(Style::style,Style::background::color::color(Style::color::Grey::Gainsboro));
+                auto backList = _container->addWidget (cpp14::make_unique<WPushButton>("Duyurular"));
+                backList->addStyleClass (Bootstrap::Button::Primary);
+                backList->clicked ().connect ([=](){
+                    mContentWidget->clear();
+
+                    auto _mMainContainer = mContentWidget->addWidget(cpp14::make_unique<Body::NewsAnnounceContent::AnnouncePanel::AnnounceList>(this->getDB()));
+                    _mMainContainer->setPadding( 90 , Side::Top );
+                    _mMainContainer->setContentAlignment(AlignmentFlag::Center);
+
+                    _mMainContainer->mGetOid().connect([=](std::string mOid){
+                        initAnounceDetail(mOid);
+                    });
+                });
+            }
+
 
         }
     } catch (mongocxx::exception &e) {
         mMainContainer->addWidget(cpp14::make_unique<WText>(WString("Error: {1}").arg(e.what())));
         return;
     }
-
-
-
-
-
-
-//    if( !AnnounceList ) return;
-//    AnnounceList->mGetOid().connect([=](std::string oid){
-//        auto filter = document{};
-//        try {
-//            filter.append(kvp(SBLDKeys::Duyurular::oid,bsoncxx::oid{oid}));
-//        } catch (bsoncxx::exception &e) {
-//            return;
-//        }
-//        try {
-//            mongocxx::stdx::optional<bsoncxx::document::value> val = DuyurularCollection.find_one(filter.view());
-//            if( !val )
-//            {
-//                return;
-//            }else{
-//                auto view = val.value().view();
-//                if( announceTitle )
-//                {
-//                    announceTitle->setText(view[SBLDKeys::Duyurular::title].get_utf8().value.to_string().c_str());
-//                }
-//                if( AnnounceContent )
-//                {
-//                    AnnounceContent->setText(view[SBLDKeys::Duyurular::html].get_utf8().value.to_string().c_str());
-//                }
-
-//                if( Department )
-//                {
-//                    Department->setText("<b>"+view[SBLDKeys::Duyurular::department].get_utf8().value.to_string()+"</b>");
-//                }
-
-//                if( LastDate )
-//                {
-//                    LastDate->setText("Son Yayınlanma  Tarihi:"+QDate::fromString(QString::number((int)view[SBLDKeys::Duyurular::endDate].get_double().value),"yyyyMMdd").toString("dddd dd/MM/yyyy").toStdString());
-//                }
-
-//            }
-//        } catch (mongocxx::exception &e) {
-//            return;
-//        }
-//    });
 
 }
 
