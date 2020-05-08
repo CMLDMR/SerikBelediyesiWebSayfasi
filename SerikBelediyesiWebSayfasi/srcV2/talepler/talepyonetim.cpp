@@ -11,6 +11,7 @@ TalepYonetim::TalepYonetim(mongocxx::database *_db, const bsoncxx::document::val
       mTalepKategoriManager( new SerikBLDCore::TalepKategoriManager(new SerikBLDCore::DB(_db)))
 {
 
+    mTCManagerV2 = new SerikBLDCore::TCManagerV2(this->getDB ());
 
     mTalepKategoriManager->setLimit (1000);
     mTalepKategoriManager->UpdateList ();
@@ -115,6 +116,49 @@ void TalepYonetim::initControlPanel()
         auto GoruntulemetypeContainer = siralamaContainer->addWidget (cpp14::make_unique<WComboBox>());
         GoruntulemetypeContainer->addItem ("Normal Görünüm");
         GoruntulemetypeContainer->addItem ("Detaylı Görünüm");
+
+
+        auto telefonileSorgulaContainer = Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        telefonileSorgulaContainer->addStyleClass (Bootstrap::Grid::col_full_12);
+        auto telefonIleLineEdit = telefonileSorgulaContainer->addWidget (cpp14::make_unique<WLineEdit>());
+        telefonIleLineEdit->setPlaceholderText ("Telefon Numarası ile Listele (05321234567)");
+
+        telefonIleLineEdit->changed ().connect ([=](){
+            if( telefonIleLineEdit->text ().toUTF8 ().size () == 11 )
+            {
+                auto tc = mTCManagerV2->Load_byTEL (telefonIleLineEdit->text ().toUTF8 ());
+                if( tc )
+                {
+
+                    SerikBLDCore::FindOptions options;
+                    options.setLimit (1000);
+
+                    if( typeContainer->currentText ().toUTF8 () == "Tarihe Göre Sırala(+)" ){
+                        options.setSort (SerikBLDCore::Item("").append("_id",-1));
+                    }else if ( typeContainer->currentText ().toUTF8 () == "Tarihe Göre Sırala(-)" ) {
+                        options.setSort (SerikBLDCore::Item("").append("_id",1));
+                    } else if ( typeContainer->currentText ().toUTF8 () == "Mahalleye Göre Sırala(+)" ) {
+                        options.setSort (SerikBLDCore::Item("").append(SerikBLDCore::TalepKey::Mahalle,-1));
+                    }else if ( typeContainer->currentText ().toUTF8 () == "Mahalleye Göre Sırala(-)" ) {
+                        options.setSort (SerikBLDCore::Item("").append(SerikBLDCore::TalepKey::Mahalle,1));
+                    }
+
+
+                    SiralamaType sType;
+                    if( GoruntulemetypeContainer->currentIndex () == 0 )
+                    {
+                        sType = SiralamaType::NormalSiralama;
+                    }else{
+                        sType = SiralamaType::Raporlama;
+                    }
+
+                    this->listTalepler (Talep()
+                                        .setBirim (this->mUser->Birimi ().c_str ())
+                                        .setTCOID (tc.value ()->oid ().value ().to_string ().c_str ()) , options , sType );
+
+                }
+            }
+        });
 
 
 
@@ -546,12 +590,18 @@ void TalepYonetim::listTalepler(const Talep &filter, const FindOptions &options,
 
             auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
             container->addStyleClass (Bootstrap::Grid::col_full_12+Bootstrap::ImageShape::img_thumbnail);
+            container->setMargin (5,Side::Top|Side::Bottom);
+            container->decorationStyle ().setCursor (Cursor::PointingHand);
+            container->clicked ().connect ([=](){
+                _clickOid.emit (item.oid ().toStdString ());
+            });
             auto vLayout = container->setLayout (cpp14::make_unique<WVBoxLayout>());
 
 
-            vLayout->addWidget (cpp14::make_unique<WText>(WString("{1}. {2}  <b>{3}</b><br>").arg (index++)
+            vLayout->addWidget (cpp14::make_unique<WText>(WString("{1}. {2}  <b>{3}</b> {4}<br>").arg (index++)
                                                           .arg (item.tarih ().toStdString ())
-                                                          .arg(kategoriName.toStdString ()),TextFormat::UnsafeXHTML),0,AlignmentFlag::Left);
+                                                          .arg(kategoriName.toStdString ())
+                                                          .arg(item.durum ().toStdString ()),TextFormat::UnsafeXHTML),0,AlignmentFlag::Left);
 
             vLayout->addWidget (cpp14::make_unique<WText>(WString("<b>Mahalle: {1}</b><br>").arg (item.mahalle ().toStdString ()),TextFormat::UnsafeXHTML),0,AlignmentFlag::Left);
             if( item.kisiGizli () )

@@ -9,6 +9,7 @@
 #include "user.h"
 #include "Talep/talepmanager.h"
 #include "Talep/talepkategorimanager.h"
+#include "tcmanager.h"
 
 class TalepYonetim : public ContainerWidget , public SerikBLDCore::TalepManager
 {
@@ -26,6 +27,8 @@ public:
 private:
     SerikBLDCore::User* mUser;
     SerikBLDCore::TalepKategoriManager* mTalepKategoriManager;
+    SerikBLDCore::TCManagerV2* mTCManagerV2;
+
 
     void initControlPanel();
 
