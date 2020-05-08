@@ -1671,31 +1671,31 @@ void Giris::SivilWidget::initMenu()
 
 
 
-    if( QDate::currentDate ().toJulianDay () < QDate(2020,2,1).toJulianDay () )
-    {
-        menu->addItem("Taleplerim")->clicked ().connect ([=](){
-            this->Content ()->clear();
-            this->Content ()->addWidget (Wt::cpp14::make_unique<Taleplerim>(db,UserValue));
-        });
-    }
+//    if( QDate::currentDate ().toJulianDay () < QDate(2020,2,1).toJulianDay () )
+//    {
+//        menu->addItem("Taleplerim")->clicked ().connect ([=](){
+//            this->Content ()->clear();
+//            this->Content ()->addWidget (Wt::cpp14::make_unique<Taleplerim>(db,UserValue));
+//        });
+//    }
 
 
 
-    menu->addItem("TaleplerimV2")->clicked ().connect ([=](){
+    menu->addItem("Taleplerim")->clicked ().connect ([=](){
         this->Content ()->clear();
         this->Content ()->addWidget (Wt::cpp14::make_unique<TalepVatandasArayuz>(db,UserValue));
     });
 
-    if( QDate::currentDate ().toJulianDay () < QDate(2020,2,1).toJulianDay () )
-    {
-        menu->addItem("Başvurularım")->clicked ().connect ([=](){
-            this->Content ()->clear();
-            this->Content ()->addWidget (Wt::cpp14::make_unique<Basvurularim>(db,UserValue));
-        });
-    }
+//    if( QDate::currentDate ().toJulianDay () < QDate(2020,2,1).toJulianDay () )
+//    {
+//        menu->addItem("Başvurularım")->clicked ().connect ([=](){
+//            this->Content ()->clear();
+//            this->Content ()->addWidget (Wt::cpp14::make_unique<Basvurularim>(db,UserValue));
+//        });
+//    }
 
 
-    menu->addItem("BaşvurularımV2")->clicked ().connect ([=](){
+    menu->addItem("Başvurularım")->clicked ().connect ([=](){
         this->Content ()->clear();
         this->Content ()->addWidget (Wt::cpp14::make_unique<V2::Basvurularim>(new SerikBLDCore::DB(db),mTCUser));
     });
@@ -1704,6 +1704,12 @@ void Giris::SivilWidget::initMenu()
     menu->addItem("Yeni Başvuru")->clicked ().connect ([=](){
         this->Content ()->clear();
         this->Content ()->addWidget (Wt::cpp14::make_unique<BilgiEdinmeBasvuruWidget>(new SerikBLDCore::DB(db),&mTCUser));
+    });
+
+
+    menu->addItem("Mimari Proje Başvurusu")->clicked ().connect ([=](){
+        this->Content ()->clear();
+//        this->Content ()->addWidget (Wt::cpp14::make_unique<BilgiEdinmeBasvuruWidget>(new SerikBLDCore::DB(db),&mTCUser));
     });
 
 }
