@@ -48,6 +48,12 @@
 #include <Wt/WPopupMenu.h>
 #include <Wt/WAbstractItemModel.h>
 #include <Wt/WNavigationBar.h>
+#include <Wt/WServer.h>
+
+#include <Wt/WResource.h>
+#include <Wt/Http/Request.h>
+#include <Wt/Http/Response.h>
+
 
 #include <Wt/WSplitButton.h>
 

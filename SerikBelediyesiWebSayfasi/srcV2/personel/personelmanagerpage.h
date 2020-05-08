@@ -95,10 +95,29 @@ class BirimManagerPage : public SerikBLDCore::BirimManager , public ContainerWid
 public:
     explicit BirimManagerPage( SerikBLDCore::DB* _db );
     void onList(const QVector<SerikBLDCore::IK::BirimItem> *mlist) override;
+
+    void initAltBirimler( const std::string &birimOid , const std::string &birimAdi );
 private:
     Signal<std::string> Error;
     Signal<std::string> Succes;
     SerikBLDCore::PersonelManager* mPersonelManager;
 };
+
+
+class AltBirimManagerPage : public SerikBLDCore::AltBirimManager , public ContainerWidget
+{
+public:
+    explicit AltBirimManagerPage( SerikBLDCore::DB* _db , const bsoncxx::oid& birimOid , const std::string& birimAdi );
+
+
+    void onList(const QVector<SerikBLDCore::IK::AltBirimItem> *mlist) override;
+
+    void updateAltBirimList();
+private:
+    bsoncxx::oid mBirimOid;
+    std::string mBirimAdi;
+};
+
+
 
 #endif // PERSONELMANAGERPAGE_H

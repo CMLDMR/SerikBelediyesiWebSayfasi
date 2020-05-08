@@ -16,6 +16,8 @@
 #include "../url.h"
 
 
+
+
 MainApplication::MainApplication(const Wt::WEnvironment &env)
     :WApplication(env)
 {
@@ -23,6 +25,8 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
     wApp->addMetaHeader(MetaHeaderType::Meta,"Content-Type","text/html; charset=windows-1254");
 
     wApp->addMetaHeader("description","Serik Belediyesi Resmi Web Sayfası","text/html; charset=utf-8");
+
+
 
 
     try {
@@ -69,10 +73,6 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
     Wt::WApplication::require("script/jszip/jszip.js");
     //FileSaver.js
     Wt::WApplication::require("script/jszip/FileSaver.js");
-
-
-
-
 
 
     WApplication::instance()->require("https://www.googletagmanager.com/gtag/js?id=UA-56529726-1");

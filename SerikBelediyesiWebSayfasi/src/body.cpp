@@ -3486,12 +3486,6 @@ Body::NewsAnnounceContent::AnnouncePanel::AnnounceList::AnnounceList(mongocxx::d
                 item->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
                 item->_ClickItem.connect(this,&AnnounceList::_ClickItem);
             }
-            {
-                auto item = container->addWidget(cpp14::make_unique<AnnounceItem>(doc[SBLDKeys::Duyurular::oid].get_oid().value.to_string(),doc[SBLDKeys::Duyurular::title].get_utf8().value.to_string(),
-                        doc[SBLDKeys::Duyurular::department].get_utf8().value.to_string()));
-                item->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-                item->_ClickItem.connect(this,&AnnounceList::_ClickItem);
-            }
         }
 
     } catch (mongocxx::exception &e) {
