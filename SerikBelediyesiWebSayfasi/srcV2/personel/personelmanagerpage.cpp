@@ -661,6 +661,8 @@ void PersonelPage::initContent()
 
 
 
+
+
     {
         auto rContainer = vLayout->addWidget (cpp14::make_unique<WContainerWidget>());
 
@@ -836,6 +838,10 @@ void PersonelPage::initContent()
             }
         });
     }
+
+
+
+
 
 
     {
@@ -1037,14 +1043,14 @@ void PersonelPage::initContent()
                                         {
                                             if( delRes.value ().modified_count () )
                                             {
-                                                std::cout << "Before Deleted: "<<  text->attributeValue (Style::dataoid).toUTF8 () << std::endl;
+//                                                std::cout << "Before Deleted: "<<  text->attributeValue (Style::dataoid).toUTF8 () << std::endl;
 
                                                 this->deleteMudurluk (text->attributeValue (Style::dataoid).toUTF8 ().c_str ());
 
-                                                for( auto _item : this->mudurlukList () )
-                                                {
-                                                    std::cout << "After Deleted: "<<  _item.to_string () << std::endl;
-                                                }
+//                                                for( auto _item : this->mudurlukList () )
+//                                                {
+//                                                    std::cout << "After Deleted: "<<  _item.to_string () << std::endl;
+//                                                }
 
 
                                                 this->showPopUpMessage ("Birim Silindi","msg");
@@ -1109,6 +1115,145 @@ void PersonelPage::initContent()
                     break;
                 }
             }
+        });
+    }
+
+
+
+
+
+
+
+    {
+        auto rContainer = vLayout->addWidget (cpp14::make_unique<WContainerWidget>());
+
+        auto vContainer = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+        vContainer->addStyleClass (Bootstrap::Grid::row);
+
+        auto text = vContainer->addWidget (cpp14::make_unique<WText>("<h6>Çalıştığı Servisler</h6>",TextFormat::UnsafeXHTML));
+        text->addStyleClass (Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_3);
+        text->addStyleClass (Bootstrap::Label::Default);
+
+        auto lineEditContainer = vContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+        lineEditContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_8+Bootstrap::Grid::Medium::col_md_8+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
+        auto altBirimComboBox = lineEditContainer->addWidget (cpp14::make_unique<WComboBox>());
+        auto list = this->altBirimList (bsoncxx::oid{this->birimOid (this->Birim ().toStdString ())});
+        for( auto item : list.keys () )
+        {
+            altBirimComboBox->addItem ( list[item].toStdString ());
+        }
+
+        auto kaydetText = vContainer->addWidget (cpp14::make_unique<WText>("<h6>Kaydet</h6>",TextFormat::UnsafeXHTML));
+
+        auto altBirimList = vContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+        altBirimList->addStyleClass (Bootstrap::Grid::Large::col_lg_10+Bootstrap::Grid::Medium::col_md_10+Bootstrap::Grid::Small::col_sm_9+Bootstrap::Grid::ExtraSmall::col_xs_9+
+                                     Bootstrap::Grid::Offset::Large::col_lg_2+Bootstrap::Grid::Offset::Medium::col_md_2+Bootstrap::Grid::Offset::Small::col_sm_2+Bootstrap::Grid::Offset::ExtraSmall::col_xs_2);
+        auto rAltBirimList = altBirimList->addWidget (cpp14::make_unique<WContainerWidget>());
+        rAltBirimList->addStyleClass (Bootstrap::Grid::row);
+
+        kaydetText->addStyleClass (Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_3);
+        kaydetText->addStyleClass (Bootstrap::Label::Primary);
+        kaydetText->decorationStyle ().setCursor (Cursor::PointingHand);
+
+
+
+        {
+            auto list_ = this->altBirimList (bsoncxx::oid{this->birimOid (this->Birim ().toStdString ())});
+
+            rAltBirimList->clear ();
+            for( auto item : this->altBirimOidList () ){
+
+                auto altBirimAdi = list_[item.to_string ().c_str ()];
+
+                    auto container1 = rAltBirimList->addWidget (cpp14::make_unique<WContainerWidget>());
+                    container1->addStyleClass (Bootstrap::Grid::Large::col_lg_10+Bootstrap::Grid::Medium::col_md_10+Bootstrap::Grid::Small::col_sm_10+Bootstrap::Grid::ExtraSmall::col_xs_10);
+                    container1->setContentAlignment (AlignmentFlag::Center);
+                    auto text1 = container1->addWidget (cpp14::make_unique<WText>(altBirimAdi.toStdString ()));
+                    container1->setMargin (3,Side::Bottom|Side::Top);
+
+
+                    auto container2 = rAltBirimList->addWidget (cpp14::make_unique<WContainerWidget>());
+                    container2->addStyleClass (Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_2+Bootstrap::Grid::ExtraSmall::col_xs_2);
+                    container2->setContentAlignment (AlignmentFlag::Center);
+                    auto text2 = container2->addWidget (cpp14::make_unique<WText>("<b>X</b>"));
+                    container2->setAttributeValue (Style::style,Style::background::color::color (Style::color::Red::DarkSalmon)+Style::color::color (Style::color::White::Snow));
+                    container2->setMargin (3,Side::Bottom|Side::Top);
+                    container2->decorationStyle ().setCursor (Cursor::PointingHand);
+                    container2->setAttributeValue (Style::dataoid,item.to_string ());
+                    container2->clicked ().connect ([=](){
+
+                        auto upt = this->pullValue(Personel().setOid (this->oid ().value ().to_string ()),SerikBLDCore::IK::Personel::KeyAltBirim,bsoncxx::oid{container2->attributeValue (Style::dataoid).toUTF8 ()});
+                        if( upt )
+                        {
+                            auto __bOid = bsoncxx::oid{container2->attributeValue (Style::dataoid).toUTF8 ()};
+                            auto __valueOid = bsoncxx::types::value (bsoncxx::types::b_oid{__bOid});
+                            this->pullArray (SerikBLDCore::IK::Personel::KeyAltBirim,__valueOid);
+                            rAltBirimList->removeWidget(container1);
+                            rAltBirimList->removeWidget(container2);
+                            this->showPopUpMessage ("Servis Kaldırıldı");
+                        }
+                    });
+
+
+            }
+
+        }
+
+
+        kaydetText->clicked ().connect ([=](){
+
+
+            auto list_ = this->altBirimList (bsoncxx::oid{this->birimOid (this->Birim ().toStdString ())});
+
+            this->addAltBirim (list_.key (altBirimComboBox->currentText ().toUTF8 ().c_str ()));
+
+            if( this->UpdateItem (*this) )
+            {
+                auto list = this->altBirimList (bsoncxx::oid{this->birimOid (this->Birim ().toStdString ())});
+
+                rAltBirimList->clear ();
+                for( auto item : this->altBirimOidList () ){
+
+                    auto altBirimAdi = list[item.to_string ().c_str ()];
+                    auto container1 = rAltBirimList->addWidget (cpp14::make_unique<WContainerWidget>());
+                    container1->addStyleClass (Bootstrap::Grid::Large::col_lg_10+Bootstrap::Grid::Medium::col_md_10+Bootstrap::Grid::Small::col_sm_10+Bootstrap::Grid::ExtraSmall::col_xs_10);
+                    container1->setContentAlignment (AlignmentFlag::Center);
+                    auto text1 = container1->addWidget (cpp14::make_unique<WText>(altBirimAdi.toStdString ()));
+                    container1->setMargin (3,Side::Bottom|Side::Top);
+
+
+                    auto container2 = rAltBirimList->addWidget (cpp14::make_unique<WContainerWidget>());
+                    container2->addStyleClass (Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_2+Bootstrap::Grid::ExtraSmall::col_xs_2);
+                    container2->setContentAlignment (AlignmentFlag::Center);
+                    auto text2 = container2->addWidget (cpp14::make_unique<WText>("<b>X</b>"));
+                    container2->setAttributeValue (Style::style,Style::background::color::color (Style::color::Red::DarkSalmon)+Style::color::color (Style::color::White::Snow));
+                    container2->setMargin (3,Side::Bottom|Side::Top);
+                    container2->decorationStyle ().setCursor (Cursor::PointingHand);
+                    container2->setAttributeValue (Style::dataoid,item.to_string ());
+                    container2->clicked ().connect ([=](){
+
+                        auto upt = this->pullValue(Personel().setOid (this->oid ().value ().to_string ()),SerikBLDCore::IK::Personel::KeyAltBirim,bsoncxx::oid{container2->attributeValue (Style::dataoid).toUTF8 ()});
+                        if( upt )
+                        {
+                            auto __bOid = bsoncxx::oid{container2->attributeValue (Style::dataoid).toUTF8 ()};
+                            auto __valueOid = bsoncxx::types::value (bsoncxx::types::b_oid{__bOid});
+                            this->pullArray (SerikBLDCore::IK::Personel::KeyAltBirim,__valueOid);
+                            rAltBirimList->removeWidget(container1);
+                            rAltBirimList->removeWidget(container2);
+                            this->showPopUpMessage ("Servis Kaldırıldı");
+                        }
+                    });
+
+                }
+                this->showPopUpMessage ("Çalıştığı Servis Eklendi");
+            }else{
+                this->showPopUpMessage ("Çalıştığı Servis Eklenemedi","err");
+            }
+
+
+
+
+
         });
     }
 
