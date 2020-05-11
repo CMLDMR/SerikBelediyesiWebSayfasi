@@ -32,12 +32,14 @@ SOURCES += main.cpp \
     SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/basvuruitemviewwidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/basvurularim.cpp \
     SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/bilgiedinmebasvuruwidget.cpp \
+    SerikBelediyesiWebSayfasi/srcV2/birimIsleri/birimislericontainer.cpp \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekcelistwidgetitem.cpp \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekcetcyonetim.cpp \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekceview.cpp \
     SerikBelediyesiWebSayfasi/srcV2/dilekceyonetim.cpp \
     SerikBelediyesiWebSayfasi/srcV2/externalWidget/haritawidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/externalWidget/nobetcieczanewidget.cpp \
+    SerikBelediyesiWebSayfasi/srcV2/firma/firmamanagerpage.cpp \
     SerikBelediyesiWebSayfasi/srcV2/girisCikisWidget/giriscikiswidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/kadinailestock.cpp \
     SerikBelediyesiWebSayfasi/srcV2/meclis/meclisitempage.cpp \
@@ -102,12 +104,14 @@ HEADERS += \
     SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/basvuruitemviewwidget.h \
     SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/basvurularim.h \
     SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/bilgiedinmebasvuruwidget.h \
+    SerikBelediyesiWebSayfasi/srcV2/birimIsleri/birimislericontainer.h \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekcelistwidgetitem.h \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekcetcyonetim.h \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekceview.h \
     SerikBelediyesiWebSayfasi/srcV2/dilekceyonetim.h \
     SerikBelediyesiWebSayfasi/srcV2/externalWidget/haritawidget.h \
     SerikBelediyesiWebSayfasi/srcV2/externalWidget/nobetcieczanewidget.h \
+    SerikBelediyesiWebSayfasi/srcV2/firma/firmamanagerpage.h \
     SerikBelediyesiWebSayfasi/srcV2/girisCikisWidget/giriscikiswidget.h \
     SerikBelediyesiWebSayfasi/srcV2/kadinailestock.h \
     SerikBelediyesiWebSayfasi/srcV2/meclis/meclisitempage.h \

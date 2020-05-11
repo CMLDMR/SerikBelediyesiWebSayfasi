@@ -49,6 +49,7 @@
 #include <Wt/WAbstractItemModel.h>
 #include <Wt/WNavigationBar.h>
 #include <Wt/WServer.h>
+#include <Wt/WSuggestionPopup.h>
 
 #include <Wt/WResource.h>
 #include <Wt/Http/Request.h>

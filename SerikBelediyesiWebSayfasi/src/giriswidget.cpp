@@ -27,6 +27,7 @@
 #include "SerikBelediyesiWebSayfasi/srcV2/personel/personelmanagerpage.h"
 
 #include "SerikBelediyesiWebSayfasi/srcV2/stok/stokkategoripage.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/birimIsleri/birimislericontainer.h"
 
 
 
@@ -114,7 +115,7 @@ void Giris::GirisWidget::initLoginScreen()
     loginWidget->getClickLoginSucces().connect(this,&Giris::GirisWidget::initMenu);
     loginWidget->getClickLogicPersonelSucces().connect(this,&Giris::GirisWidget::initPersonelMenu);
 
-//    auto loginWidgetv2 = mContentContainer->addWidget(cpp14::make_unique<LoginWidgetV2>(new SerikBLDCore::DB(db)));
+    //    auto loginWidgetv2 = mContentContainer->addWidget(cpp14::make_unique<LoginWidgetV2>(new SerikBLDCore::DB(db)));
 }
 
 void Giris::GirisWidget::initMenu(bsoncxx::document::value vatandas)
@@ -145,7 +146,7 @@ void Giris::GirisWidget::initMenu(bsoncxx::document::value vatandas)
                 std::cout << "init Sivil " << std::endl;
                 this->initSivil();
             }else{
-                std::cout << "init Option " << std::endl;
+                //                std::cout << "init Option " << std::endl;
                 this->initOption();
             }
         }else{
@@ -221,9 +222,9 @@ void Giris::GirisWidget::initPersonelMenu(bsoncxx::document::value vatandas)
 
                         auto _container = mContentContainer->addWidget (cpp14::make_unique<ContainerWidget>());
                         _container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
-                                                  Bootstrap::Grid::Medium::col_md_3+
-                                                  Bootstrap::Grid::Small::col_sm_4+
-                                                  Bootstrap::Grid::ExtraSmall::col_xs_6);
+                                                   Bootstrap::Grid::Medium::col_md_3+
+                                                   Bootstrap::Grid::Small::col_sm_4+
+                                                   Bootstrap::Grid::ExtraSmall::col_xs_6);
                         auto container = _container->addWidget(cpp14::make_unique<WContainerWidget>());
                         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
                         vLayout->addStretch (1);
@@ -365,7 +366,7 @@ void Giris::GirisWidget::initPersonel()
     }
 
 
-    std::cout << "Müdürlük Sayısı: " << mUser->mudurlukList ().count () << std::endl;
+    //    std::cout << "Müdürlük Sayısı: " << mUser->mudurlukList ().count () << std::endl;
 
     mBirimManager->setLimit (100);
     mBirimManager->UpdateList ();
@@ -382,9 +383,9 @@ void Giris::GirisWidget::initPersonel()
         {
             auto _container = mContentContainer->addWidget (cpp14::make_unique<ContainerWidget>());
             _container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
-                                      Bootstrap::Grid::Medium::col_md_3+
-                                      Bootstrap::Grid::Small::col_sm_4+
-                                      Bootstrap::Grid::ExtraSmall::col_xs_6);
+                                       Bootstrap::Grid::Medium::col_md_3+
+                                       Bootstrap::Grid::Small::col_sm_4+
+                                       Bootstrap::Grid::ExtraSmall::col_xs_6);
             auto container = _container->addWidget(cpp14::make_unique<WContainerWidget>());
             auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
             vLayout->addStretch (1);
@@ -414,9 +415,9 @@ void Giris::GirisWidget::initPersonel()
 
                     auto _container = mContentContainer->addWidget (cpp14::make_unique<ContainerWidget>());
                     _container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
-                                              Bootstrap::Grid::Medium::col_md_3+
-                                              Bootstrap::Grid::Small::col_sm_4+
-                                              Bootstrap::Grid::ExtraSmall::col_xs_6);
+                                               Bootstrap::Grid::Medium::col_md_3+
+                                               Bootstrap::Grid::Small::col_sm_4+
+                                               Bootstrap::Grid::ExtraSmall::col_xs_6);
                     auto container = _container->addWidget(cpp14::make_unique<WContainerWidget>());
                     auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
                     vLayout->addStretch (1);
@@ -1671,13 +1672,13 @@ void Giris::SivilWidget::initMenu()
 
 
 
-//    if( QDate::currentDate ().toJulianDay () < QDate(2020,2,1).toJulianDay () )
-//    {
-//        menu->addItem("Taleplerim")->clicked ().connect ([=](){
-//            this->Content ()->clear();
-//            this->Content ()->addWidget (Wt::cpp14::make_unique<Taleplerim>(db,UserValue));
-//        });
-//    }
+    //    if( QDate::currentDate ().toJulianDay () < QDate(2020,2,1).toJulianDay () )
+    //    {
+    //        menu->addItem("Taleplerim")->clicked ().connect ([=](){
+    //            this->Content ()->clear();
+    //            this->Content ()->addWidget (Wt::cpp14::make_unique<Taleplerim>(db,UserValue));
+    //        });
+    //    }
 
 
 
@@ -1686,13 +1687,13 @@ void Giris::SivilWidget::initMenu()
         this->Content ()->addWidget (Wt::cpp14::make_unique<TalepVatandasArayuz>(db,UserValue));
     });
 
-//    if( QDate::currentDate ().toJulianDay () < QDate(2020,2,1).toJulianDay () )
-//    {
-//        menu->addItem("Başvurularım")->clicked ().connect ([=](){
-//            this->Content ()->clear();
-//            this->Content ()->addWidget (Wt::cpp14::make_unique<Basvurularim>(db,UserValue));
-//        });
-//    }
+    //    if( QDate::currentDate ().toJulianDay () < QDate(2020,2,1).toJulianDay () )
+    //    {
+    //        menu->addItem("Başvurularım")->clicked ().connect ([=](){
+    //            this->Content ()->clear();
+    //            this->Content ()->addWidget (Wt::cpp14::make_unique<Basvurularim>(db,UserValue));
+    //        });
+    //    }
 
 
     menu->addItem("Başvurularım")->clicked ().connect ([=](){
@@ -1709,7 +1710,7 @@ void Giris::SivilWidget::initMenu()
 
     menu->addItem("Mimari Proje Başvurusu")->clicked ().connect ([=](){
         this->Content ()->clear();
-//        this->Content ()->addWidget (Wt::cpp14::make_unique<BilgiEdinmeBasvuruWidget>(new SerikBLDCore::DB(db),&mTCUser));
+        //        this->Content ()->addWidget (Wt::cpp14::make_unique<BilgiEdinmeBasvuruWidget>(new SerikBLDCore::DB(db),&mTCUser));
     });
 
 }
@@ -3113,13 +3114,13 @@ void Giris::Personel::PersonelWidget::initMenu()
 
 
 
-    menu->addItem(WString::fromUTF8("TaleplerimV2"))->clicked ().connect ([&](){
+    menu->addItem(WString::fromUTF8("Taleplerim"))->clicked ().connect ([&](){
         this->Content ()->clear();
         this->Content ()->addWidget (Wt::cpp14::make_unique<TalepYonetim>(mUser->db (),mUser->Value ()));
     });
 
 
-    menu->addItem(WString::fromUTF8("BaşvurularımV2"))->clicked ().connect ([&](){
+    menu->addItem(WString::fromUTF8("Başvurularım"))->clicked ().connect ([&](){
         this->Content ()->clear ();
         this->Content ()->addWidget (Wt::cpp14::make_unique<V2::GelenBasvurular>(new SerikBLDCore::DB(mUser->db ()) , mUser->Value ()));
     });
@@ -3178,10 +3179,10 @@ void Giris::Personel::PersonelWidget::initMenu()
 
     }else{
 
-        menu->addItem(WString::fromUTF8("Taleplerim"))->clicked ().connect ([&](){
-            this->Content ()->clear ();
-            this->Content ()->addWidget (Wt::cpp14::make_unique<Taleplerim>(mUser->db (),mUser->Value ()));
-        });
+        //        menu->addItem(WString::fromUTF8("Taleplerim"))->clicked ().connect ([&](){
+        //            this->Content ()->clear ();
+        //            this->Content ()->addWidget (Wt::cpp14::make_unique<Taleplerim>(mUser->db (),mUser->Value ()));
+        //        });
 
 
         menu->addItem(WString::fromUTF8("Evrak Arşivi"))->clicked ().connect ([&](){
@@ -3190,17 +3191,22 @@ void Giris::Personel::PersonelWidget::initMenu()
         });
 
 
-        menu->addItem(WString::fromUTF8("Başvurularım"))->clicked ().connect ([&](){
-            this->Content ()->clear ();
-            this->Content ()->addWidget (Wt::cpp14::make_unique<BilgiEdinmeClient>(mUser->db (),mUser->Value ()));
-        });
+        //        menu->addItem(WString::fromUTF8("Başvurularım"))->clicked ().connect ([&](){
+        //            this->Content ()->clear ();
+        //            this->Content ()->addWidget (Wt::cpp14::make_unique<BilgiEdinmeClient>(mUser->db (),mUser->Value ()));
+        //        });
 
 
-        menu->addItem(WString::fromUTF8("Giriş Çıkışlarım"))->clicked ().connect ([&](){
-            this->Content ()->clear ();
-            this->Content ()->addWidget (Wt::cpp14::make_unique<GirisCikisWidget>(mUser->db (),mUser->Value ()));
-        });
+        //        menu->addItem(WString::fromUTF8("Giriş Çıkışlarım"))->clicked ().connect ([&](){
+        //            this->Content ()->clear ();
+        //            this->Content ()->addWidget (Wt::cpp14::make_unique<GirisCikisWidget>(mUser->db (),mUser->Value ()));
+        //        });
     }
+
+    menu->addItem(WString::fromUTF8("Birim İşleri"))->clicked ().connect ([&](){
+        this->Content ()->clear ();
+        this->Content ()->addWidget (Wt::cpp14::make_unique<v2::BirimIsleriContainer>(mUser));
+    });
 }
 
 void Giris::Personel::PersonelWidget::initMobilMenu()
@@ -3210,8 +3216,8 @@ void Giris::Personel::PersonelWidget::initMobilMenu()
 
 
 
-//    auto _mContainer = mMenuContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//    _mContainer->setPadding(35,Side::Bottom|Side::Top);
+    //    auto _mContainer = mMenuContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+    //    _mContainer->setPadding(35,Side::Bottom|Side::Top);
 
     auto _menu = Wt::cpp14::make_unique<Wt::WMenu>();
     _menu->setStyleClass("nav nav-pills nav-stacked");
@@ -3240,13 +3246,13 @@ void Giris::Personel::PersonelWidget::initMobilMenu()
 
 
 
-    menu->addItem(WString::fromUTF8("TaleplerimV2"))->clicked ().connect ([&](){
+    menu->addItem(WString::fromUTF8("Taleplerim"))->clicked ().connect ([&](){
         this->Content ()->clear();
         this->Content ()->addWidget (Wt::cpp14::make_unique<TalepYonetim>(mUser->db (),mUser->Value ()));
     });
 
 
-    menu->addItem(WString::fromUTF8("BaşvurularımV2"))->clicked ().connect ([&](){
+    menu->addItem(WString::fromUTF8("Başvurularım"))->clicked ().connect ([&](){
         this->Content ()->clear ();
         this->Content ()->addWidget (Wt::cpp14::make_unique<V2::GelenBasvurular>(new SerikBLDCore::DB(mUser->db ()) , mUser->Value ()));
     });
@@ -3298,17 +3304,17 @@ void Giris::Personel::PersonelWidget::initMobilMenu()
 
     if( this->mUser->Statu () == SerikBLDCore::User::Baskan || this->mUser->Statu () == SerikBLDCore::User::BaskanYardimcisi )
     {
-        menu->addItem(WString::fromUTF8("Giriş Çıkış"))->clicked ().connect ([&](){
-            this->Content ()->clear ();
-            this->Content ()->addWidget (Wt::cpp14::make_unique<GirisCikisWidget>(mUser->db (),mUser->Value ()));
-        });
+//        menu->addItem(WString::fromUTF8("Giriş Çıkış"))->clicked ().connect ([&](){
+//            this->Content ()->clear ();
+//            this->Content ()->addWidget (Wt::cpp14::make_unique<GirisCikisWidget>(mUser->db (),mUser->Value ()));
+//        });
 
     }else{
 
-        menu->addItem(WString::fromUTF8("Taleplerim"))->clicked ().connect ([&](){
-            this->Content ()->clear ();
-            this->Content ()->addWidget (Wt::cpp14::make_unique<Taleplerim>(mUser->db (),mUser->Value ()));
-        });
+//        menu->addItem(WString::fromUTF8("Taleplerim"))->clicked ().connect ([&](){
+//            this->Content ()->clear ();
+//            this->Content ()->addWidget (Wt::cpp14::make_unique<Taleplerim>(mUser->db (),mUser->Value ()));
+//        });
 
 
         menu->addItem(WString::fromUTF8("Evrak Arşivi"))->clicked ().connect ([&](){
@@ -3317,17 +3323,22 @@ void Giris::Personel::PersonelWidget::initMobilMenu()
         });
 
 
-        menu->addItem(WString::fromUTF8("Başvurularım"))->clicked ().connect ([&](){
-            this->Content ()->clear ();
-            this->Content ()->addWidget (Wt::cpp14::make_unique<BilgiEdinmeClient>(mUser->db (),mUser->Value ()));
-        });
+//        menu->addItem(WString::fromUTF8("Başvurularım"))->clicked ().connect ([&](){
+//            this->Content ()->clear ();
+//            this->Content ()->addWidget (Wt::cpp14::make_unique<BilgiEdinmeClient>(mUser->db (),mUser->Value ()));
+//        });
 
 
-        menu->addItem(WString::fromUTF8("Giriş Çıkışlarım"))->clicked ().connect ([&](){
-            this->Content ()->clear ();
-            this->Content ()->addWidget (Wt::cpp14::make_unique<GirisCikisWidget>(mUser->db (),mUser->Value ()));
-        });
+//        menu->addItem(WString::fromUTF8("Giriş Çıkışlarım"))->clicked ().connect ([&](){
+//            this->Content ()->clear ();
+//            this->Content ()->addWidget (Wt::cpp14::make_unique<GirisCikisWidget>(mUser->db (),mUser->Value ()));
+//        });
     }
+
+    menu->addItem(WString::fromUTF8("Birim İşleri"))->clicked ().connect ([&](){
+        this->Content ()->clear ();
+        this->Content ()->addWidget (Wt::cpp14::make_unique<v2::BirimIsleriContainer>(mUser));
+    });
 }
 
 void Giris::Personel::PersonelWidget::initHeader(WContainerWidget* _row)
@@ -5804,15 +5815,15 @@ void Giris::LoginWidgetV2::initLoginScreen()
 
         mGirisButton = layout->addWidget(cpp14::make_unique<WPushButton>("Giriş"),0,AlignmentFlag::Center);
         mGirisButton->addStyleClass(Bootstrap::Button::Primary);
-//        mGirisButton->clicked().connect(this,&Giris::LoginWidget::ConfirmLogin);
+        //        mGirisButton->clicked().connect(this,&Giris::LoginWidget::ConfirmLogin);
 
         mUnuttumButton = layout->addWidget(cpp14::make_unique<WPushButton>("Şifremi Unuttum"),0,AlignmentFlag::Center);
         mUnuttumButton->addStyleClass(Bootstrap::Button::Warning);
-//        mUnuttumButton->clicked().connect(this,&Giris::LoginWidget::sendtempPasswordSMS);
+        //        mUnuttumButton->clicked().connect(this,&Giris::LoginWidget::sendtempPasswordSMS);
 
         mkayitOlButton = layout->addWidget(cpp14::make_unique<WPushButton>("Kayıt Ol"),0,AlignmentFlag::Center);
         mkayitOlButton->addStyleClass(Bootstrap::Button::info);
-//        mkayitOlButton->clicked().connect(this,&Giris::LoginWidget::kayitOld);
+        //        mkayitOlButton->clicked().connect(this,&Giris::LoginWidget::kayitOld);
     }
 
 }
