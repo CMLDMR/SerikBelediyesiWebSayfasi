@@ -47,7 +47,28 @@ v2::FirmaManagerPage::FirmaManagerPage(SerikBLDCore::User *_user)
         auto yeniBtn = araBtn->addWidget (cpp14::make_unique<WPushButton>("Ara"));
         yeniBtn->addStyleClass (Bootstrap::Button::Primary);
         yeniBtn->clicked ().connect ([=](){
-            showPopUpMessage ("Arama Eklenecek, " + firmaAraLineEdit->text ().toUTF8 ());
+
+            SerikBLDCore::Firma::FirmaItem filter;
+
+            if( aramaTipiComboBox->currentIndex () == 0 )
+            {
+                filter.append(SerikBLDCore::Firma::Key::firmaAdi,make_document(kvp("$regex",firmaAraLineEdit->text ().toUTF8 ()),kvp("$options","i")));
+            }
+            if( aramaTipiComboBox->currentIndex () == 1 )
+            {
+                filter.append(SerikBLDCore::Firma::Key::telefon,make_document(kvp("$regex",firmaAraLineEdit->text ().toUTF8 ()),kvp("$options","i")));
+            }
+            if( aramaTipiComboBox->currentIndex () == 2 )
+            {
+                filter.append(SerikBLDCore::Firma::Key::email,make_document(kvp("$regex",firmaAraLineEdit->text ().toUTF8 ()),kvp("$options","i")));
+            }
+            if( aramaTipiComboBox->currentIndex () == 3 )
+            {
+                filter.append(SerikBLDCore::Firma::Key::vergiNo,make_document(kvp("$regex",firmaAraLineEdit->text ().toUTF8 ()),kvp("$options","i")));
+            }
+
+            this->UpdateList (filter);
+
         });
 
     }
@@ -69,6 +90,7 @@ void v2::FirmaManagerPage::onList(const QVector<SerikBLDCore::Firma::FirmaItem> 
                                    " boxShadow");
         rContainer->setMargin (10,Side::Top|Side::Bottom);
         rContainer->setPadding (5,Side::Top|Side::Bottom);
+        rContainer->setHeight (44);
 
 
         {
@@ -82,10 +104,10 @@ void v2::FirmaManagerPage::onList(const QVector<SerikBLDCore::Firma::FirmaItem> 
 
         {
             auto container = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
-                                      Bootstrap::Grid::Medium::col_md_3+
-                                      Bootstrap::Grid::Small::col_sm_6+
-                                      Bootstrap::Grid::ExtraSmall::col_xs_6);
+            container->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                                      Bootstrap::Grid::Medium::col_md_2+
+                                      Bootstrap::Grid::Small::col_sm_5+
+                                      Bootstrap::Grid::ExtraSmall::col_xs_5);
             auto firmaText = container->addWidget (cpp14::make_unique<WText>("<b>#Telefon</b>"));
         }
 
@@ -106,6 +128,8 @@ void v2::FirmaManagerPage::onList(const QVector<SerikBLDCore::Firma::FirmaItem> 
                                       Bootstrap::Grid::Hidden::hidden_xs);
             auto firmaText = container->addWidget (cpp14::make_unique<WText>("<b>#VergiNo</b>"));
         }
+
+
     }
 
 
@@ -119,7 +143,8 @@ void v2::FirmaManagerPage::onList(const QVector<SerikBLDCore::Firma::FirmaItem> 
         rContainer->setAttributeValue (Style::style,Style::background::color::rgb (this->getRandom (210,240),
                                                                                      this->getRandom (215,245),
                                                                                      this->getRandom (225,255)));
-
+        rContainer->setHeight (45);
+        rContainer->setAttributeValue (Style::dataoid,item.oid ().value ().to_string ());
         {
             auto container = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
             container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
@@ -131,10 +156,10 @@ void v2::FirmaManagerPage::onList(const QVector<SerikBLDCore::Firma::FirmaItem> 
 
         {
             auto container = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
-                                      Bootstrap::Grid::Medium::col_md_3+
-                                      Bootstrap::Grid::Small::col_sm_6+
-                                      Bootstrap::Grid::ExtraSmall::col_xs_6);
+            container->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                                      Bootstrap::Grid::Medium::col_md_2+
+                                      Bootstrap::Grid::Small::col_sm_5+
+                                      Bootstrap::Grid::ExtraSmall::col_xs_5);
             auto firmaText = container->addWidget (cpp14::make_unique<WText>(item.telefon ()));
         }
 
@@ -156,8 +181,77 @@ void v2::FirmaManagerPage::onList(const QVector<SerikBLDCore::Firma::FirmaItem> 
             auto firmaText = container->addWidget (cpp14::make_unique<WText>(item.vergiNo ()));
         }
 
+        {
+            auto container = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+            container->addStyleClass (Bootstrap::Grid::Large::col_lg_1+
+                                      Bootstrap::Grid::Medium::col_md_1+
+                                      Bootstrap::Grid::Small::col_sm_1+
+                                      Bootstrap::Grid::ExtraSmall::col_xs_1);
+            auto popmenu =  (cpp14::make_unique<WPopupMenu>());
+
+            auto silmenu = popmenu->addItem("Sil");
+            silmenu->decorationStyle ().setCursor (Cursor::PointingHand);
+            silmenu->triggered().connect([=] {
+                auto btn = askConfirm ("Silmek İstediğinize Eminmisiniz");
+                btn->clicked ().connect ([=](){
+
+                    SerikBLDCore::Firma::FirmaItem filter;
+                    filter.setOid (rContainer->attributeValue (Style::dataoid).toUTF8 ());
+
+                    if( this->DeleteItem (filter) ){
+                        this->showPopUpMessage ("Silindi");
+                        this->UpdateList ();
+                    }else{
+                        this->showPopUpMessage ("Bir Hata Oluştu Firma Silinmedi","err");
+                    }
+                });
+            });
+
+            auto degistirmenu = popmenu->addItem("Bilgileri Değiştir");
+            degistirmenu->decorationStyle ().setCursor (Cursor::PointingHand);
+            degistirmenu->triggered().connect([=] {
+                showPopUpMessage ("Degistirmenu");
+            });
+
+            auto yetkiliAtaMenu = popmenu->addItem("Yetkili Ata");
+            yetkiliAtaMenu->decorationStyle ().setCursor (Cursor::PointingHand);
+            yetkiliAtaMenu->triggered().connect([=] {
+                showPopUpMessage ("<p>YetkiliAtaMenu...</p>");
+            });
+
+            auto yetkiliKisiMenu = popmenu->addItem("Yetkili Kişi");
+            yetkiliKisiMenu->decorationStyle ().setCursor (Cursor::PointingHand);
+            yetkiliKisiMenu->triggered().connect([=] {
+                showPopUpMessage ("<p>YetkiliKisiMenu...</p>");
+            });
+
+            auto projelerMenu = popmenu->addItem("Projeleri");
+            projelerMenu->decorationStyle ().setCursor (Cursor::PointingHand);
+            projelerMenu->triggered().connect([=] {
+                showPopUpMessage ("<p>ProjelerMenu...</p>");
+            });
+
+            auto kaydedenMenu = popmenu->addItem("Kaydeden Personel");
+            kaydedenMenu->decorationStyle ().setCursor (Cursor::PointingHand);
+            kaydedenMenu->triggered().connect([=] {
+                showPopUpMessage ("<p>KaydedenMenu...</p>");
+            });
+
+            auto kayitTarihi = popmenu->addItem("Kayıt Tarihi");
+            kayitTarihi->decorationStyle ().setCursor (Cursor::PointingHand);
+            kayitTarihi->triggered().connect([=] {
+                showPopUpMessage ("<p>KayitTarihi...</p>");
+            });
+
+            Wt::WPushButton *button = container->addNew<Wt::WPushButton>();
+            button->setMenu(std::move(popmenu));
+            button->addStyleClass (Bootstrap::Button::Primary);
+        }
+
 
     }
+
+    showPopUpMessage ("Liste Güncellendi");
 
 }
 
