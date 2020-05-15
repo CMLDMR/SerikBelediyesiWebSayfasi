@@ -32,6 +32,20 @@ void v2::BirimIsleriContainer::initImar()
         Header ()->addWidget (std::move(menuFirma));
     }
 
+    //2 Başvurular
+    {
+        auto menuFirma = createMenu ( "Başvurular" , Cursor::PointingHand );
+//        menuFirma->clicked ().connect ( this , &v2::BirimIsleriContainer::initFirmaYonetimi );
+        Header ()->addWidget (std::move(menuFirma));
+    }
+
+    //3 Mimari Proje
+    {
+        auto menuFirma = createMenu ( "Mimari Projeler" , Cursor::PointingHand );
+//        menuFirma->clicked ().connect ( this , &v2::BirimIsleriContainer::initFirmaYonetimi );
+        Header ()->addWidget (std::move(menuFirma));
+    }
+
 
 }
 

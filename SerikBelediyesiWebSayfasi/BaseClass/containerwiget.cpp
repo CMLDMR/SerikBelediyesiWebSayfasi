@@ -320,6 +320,9 @@ void FileUploaderWidget::setType(FileUploaderWidget::FilterType type)
     case Image:
         mFileUploader->setFilters ("image/*");
         break;
+    case DWG:
+        mFileUploader->setFilters ("application/acad");
+        break;
     default:
         break;
     }

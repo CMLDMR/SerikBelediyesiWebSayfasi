@@ -4,6 +4,7 @@
 #include "SerikBelediyesiWebSayfasi/BaseClass/containerwiget.h"
 #include "firma/firmamanager.h"
 #include "user.h"
+#include "tcmanager.h"
 
 namespace v2{
 
@@ -18,8 +19,14 @@ public:
 
     void yeniFirmaKayitDialog();
 
+    void yetkiliAtaDialog(const std::string& firmaOid );
+
+    void yetkiliGoster( const std::string& vatandasOid );
+
 private:
     SerikBLDCore::User* mUser;
+
+    SerikBLDCore::TCManagerV2* mTCManager;
 };
 
 }

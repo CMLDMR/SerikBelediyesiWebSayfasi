@@ -314,6 +314,7 @@ MainPageController::MainPageController(mongocxx::database *_db)
 
             btn->decorationStyle().setCursor(Cursor::PointingHand);
             btn->clicked().connect([=](){
+//                std::cout << "Giriş Butonu Clicked" << std::endl;
               _Giris.emit(NoClass());
             });
 

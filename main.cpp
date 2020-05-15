@@ -1,4 +1,4 @@
-#include "mainapplication.h"
+﻿#include "mainapplication.h"
 #include <mongocxx/instance.hpp>
 
 #include <QApplication>
@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    WString::setDefaultEncoding(Wt::CharEncoding::UTF8);
+//    WString::setDefaultEncoding(Wt::CharEncoding::UTF8);
 
     mongocxx::instance ins{};
 

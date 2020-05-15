@@ -10,6 +10,7 @@
 #include "user.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/sms/smsmanager.h"
 
+#include "firma/firmamanager.h"
 
 
 namespace Giris {
@@ -65,6 +66,22 @@ private:
 };
 
 
+class FirmaMenuWidget : public ContainerWidget , public SerikBLDCore::DB {
+public:
+    explicit FirmaMenuWidget( SerikBLDCore::DB* _db , SerikBLDCore::TC* _tcuser );
+
+private:
+    SerikBLDCore::TC* mTCUser;
+    SerikBLDCore::Firma::FirmaManager* mFirmaManager;
+    SerikBLDCore::Firma::FirmaItem* mFirma;
+
+    void initMenu();
+    void initHeader();
+    void Basvurular();
+    void initYeniBasvuru();
+};
+
+
 
 class Basvurularim : public WContainerWidget
 {
@@ -112,103 +129,11 @@ private:
 
 };
 
-class Taleplerim : public WContainerWidget
-{
-public:
-    Taleplerim(mongocxx::database* _db, bsoncxx::document::value* _user);
-
-private:
-    mongocxx::database* db;
-    bsoncxx::document::value* user;
-
-    WContainerWidget* mMainContainer;
-    WContainerWidget* toolBarContainer;
-
-    WContainerWidget* mContentContainer;
-
-    WContainerWidget* mAsamaContainer;
-
-    void initTalepler(std::string filterKey = "Hepsi");
-    void setDetail(bsoncxx::oid oid);
-
-
-    struct oidListitem
-    {
-        std::string oid;
-        std::string durum;
-        std::string mahalle;
-        std::string birim;
-        std::string saat;
-        std::string tarih;
-    };
-    std::vector<oidListitem> oidList;
-
-public:
-    class TalepHeader : public WContainerWidget
-    {
-    public:
-        TalepHeader(std::string konu,std::string tarih,std::string saat,std::string mahalle,std::string adres,std::string durum,std::string birim,std::string cagriMerkeziPersoneli);
-    };
-
-
-
-    class DegisimWidget : public WContainerWidget
-    {
-    public:
-        DegisimWidget(bsoncxx::document::view view);
-    };
-
-    class AciklamaWidget : public WContainerWidget
-    {
-    public:
-        AciklamaWidget(bsoncxx::document::view view);
-        AciklamaWidget(std::string aciklama);
-
-
-    };
-
-    class AciklamaEkle : public WContainerWidget
-    {
-    public:
-        AciklamaEkle(mongocxx::database* _db , std::string _oid, WContainerWidget *widget, bsoncxx::document::value *user, bool isVatandas = true);
-        AciklamaEkle(mongocxx::database* _db , std::string _oid, WContainerWidget *widget, const bsoncxx::document::value &user, bool isVatandas = true);
-
-    private:
-        mongocxx::database* db;
-        std::string oid;
-        void showMessage( std::string title , std::string msg );
-
-        WTextEdit* textEdit;
-    };
-
-    class GorselWidget : public WContainerWidget
-    {
-    public:
-        GorselWidget(mongocxx::database* db ,bsoncxx::document::view view);
-    };
 
 
 
 
-private:
-    std::unique_ptr<Wt::WPushButton> createColorButton(const char *className,
-                                                       const Wt::WString& text)
-    {
-        auto button = Wt::cpp14::make_unique<Wt::WPushButton>();
-        button->setTextFormat(Wt::TextFormat::XHTML);
-        button->setText(text);
-        button->addStyleClass(className);
-        return button;
-    }
 
-
-    void showMessage( std::string title , std::string msg );
-    void showMessage(std::string title , std::string msg , bsoncxx::exception &e);
-    void showMessage(std::string title , std::string msg , mongocxx::exception &e);
-
-
-    Signal<bsoncxx::oid> _clickTalep;
-};
 
 
 
@@ -381,50 +306,8 @@ private:
 
 
 
-class Taleplerim : public BaseWidget
-{
-public:
-    Taleplerim(mongocxx::database* _db , bsoncxx::document::value _user);
-
-    WContainerWidget* toolBarContainer;
-
-    WContainerWidget* mContentContainer;
-
-    WContainerWidget* mAsamaContainer;
-
-    void toolbarReFresh();
 
 
-    void initTalepler(std::string filterKey = "Hepsi");
-    const int limit = 15;
-    int skip;
-    std::int64_t TotalTalep;
-    std::int64_t countTalepler(std::string filterKey = "Hepsi");
-
-
-    void setDetail(bsoncxx::oid oid);
-
-    std::unique_ptr<WContainerWidget> addControlPanel(bsoncxx::document::value &value);
-
-    void setNewDurum( std::string oid , std::string oldPos , std::string newPos);
-    void setPersonel( std::string oid );
-
-private:
-
-    struct oidListitem
-    {
-        std::string oid;
-        std::string durum;
-        std::string mahalle;
-        std::string birim;
-        std::string saat;
-        std::string tarih;
-    };
-    std::vector<oidListitem> oidList;
-
-
-    Signal<bsoncxx::oid> _clickTalep;
-};
 
 class PersonelGorevlendirWidget : public BaseWidget
 {

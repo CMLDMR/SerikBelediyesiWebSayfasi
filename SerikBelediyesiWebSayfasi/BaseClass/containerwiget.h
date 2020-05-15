@@ -126,7 +126,8 @@ public:
      */
     enum FilterType{
         Pdf,
-        Image
+        Image,
+        DWG
     };
 
 

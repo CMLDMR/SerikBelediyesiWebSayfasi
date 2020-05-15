@@ -7,6 +7,8 @@ v2::FirmaManagerPage::FirmaManagerPage(SerikBLDCore::User *_user)
       mUser(_user)
 {
 
+    mTCManager = new SerikBLDCore::TCManagerV2(mUser->getDB ());
+
     {
         auto yeniKayitBtn = Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
         yeniKayitBtn->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
@@ -21,9 +23,9 @@ v2::FirmaManagerPage::FirmaManagerPage(SerikBLDCore::User *_user)
     {
         auto aramaTipiContainer = Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
         aramaTipiContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
-                                     Bootstrap::Grid::Medium::col_md_4+
-                                     Bootstrap::Grid::Small::col_sm_3+
-                                     Bootstrap::Grid::ExtraSmall::col_xs_3);
+                                           Bootstrap::Grid::Medium::col_md_4+
+                                           Bootstrap::Grid::Small::col_sm_3+
+                                           Bootstrap::Grid::ExtraSmall::col_xs_3);
         auto aramaTipiComboBox = aramaTipiContainer->addWidget (cpp14::make_unique<WComboBox>());
         aramaTipiComboBox->addItem ("Firma Adına Göre");
         aramaTipiComboBox->addItem ("Telefona Göre");
@@ -41,9 +43,9 @@ v2::FirmaManagerPage::FirmaManagerPage(SerikBLDCore::User *_user)
 
         auto araBtn = Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
         araBtn->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
-                                     Bootstrap::Grid::Medium::col_md_2+
-                                     Bootstrap::Grid::Small::col_sm_3+
-                                     Bootstrap::Grid::ExtraSmall::col_xs_3);
+                               Bootstrap::Grid::Medium::col_md_2+
+                               Bootstrap::Grid::Small::col_sm_3+
+                               Bootstrap::Grid::ExtraSmall::col_xs_3);
         auto yeniBtn = araBtn->addWidget (cpp14::make_unique<WPushButton>("Ara"));
         yeniBtn->addStyleClass (Bootstrap::Button::Primary);
         yeniBtn->clicked ().connect ([=](){
@@ -137,12 +139,12 @@ void v2::FirmaManagerPage::onList(const QVector<SerikBLDCore::Firma::FirmaItem> 
 
         auto rContainer = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
         rContainer->addStyleClass (Bootstrap::Grid::row+
-                                  " boxShadow");
+                                   " boxShadow");
         rContainer->setMargin (10,Side::Top|Side::Bottom);
         rContainer->setPadding (5,Side::Top|Side::Bottom);
         rContainer->setAttributeValue (Style::style,Style::background::color::rgb (this->getRandom (210,240),
-                                                                                     this->getRandom (215,245),
-                                                                                     this->getRandom (225,255)));
+                                                                                   this->getRandom (215,245),
+                                                                                   this->getRandom (225,255)));
         rContainer->setHeight (45);
         rContainer->setAttributeValue (Style::dataoid,item.oid ().value ().to_string ());
         {
@@ -207,7 +209,7 @@ void v2::FirmaManagerPage::onList(const QVector<SerikBLDCore::Firma::FirmaItem> 
                 });
             });
 
-            auto degistirmenu = popmenu->addItem("Bilgileri Değiştir");
+            auto degistirmenu = popmenu->addItem("**Bilgileri Değiştir");
             degistirmenu->decorationStyle ().setCursor (Cursor::PointingHand);
             degistirmenu->triggered().connect([=] {
                 showPopUpMessage ("Degistirmenu");
@@ -215,29 +217,31 @@ void v2::FirmaManagerPage::onList(const QVector<SerikBLDCore::Firma::FirmaItem> 
 
             auto yetkiliAtaMenu = popmenu->addItem("Yetkili Ata");
             yetkiliAtaMenu->decorationStyle ().setCursor (Cursor::PointingHand);
-            yetkiliAtaMenu->triggered().connect([=] {
-                showPopUpMessage ("<p>YetkiliAtaMenu...</p>");
+            yetkiliAtaMenu->triggered().connect([=](){
+                this->yetkiliAtaDialog (rContainer->attributeValue (Style::dataoid).toUTF8 ());
             });
+
 
             auto yetkiliKisiMenu = popmenu->addItem("Yetkili Kişi");
             yetkiliKisiMenu->decorationStyle ().setCursor (Cursor::PointingHand);
+            yetkiliKisiMenu->setAttributeValue (Style::dataoid,item.yetkiliOid ());
             yetkiliKisiMenu->triggered().connect([=] {
-                showPopUpMessage ("<p>YetkiliKisiMenu...</p>");
+                this->yetkiliGoster (yetkiliKisiMenu->attributeValue (Style::dataoid).toUTF8 ());
             });
 
-            auto projelerMenu = popmenu->addItem("Projeleri");
+            auto projelerMenu = popmenu->addItem("**Projeleri");
             projelerMenu->decorationStyle ().setCursor (Cursor::PointingHand);
             projelerMenu->triggered().connect([=] {
                 showPopUpMessage ("<p>ProjelerMenu...</p>");
             });
 
-            auto kaydedenMenu = popmenu->addItem("Kaydeden Personel");
+            auto kaydedenMenu = popmenu->addItem("**Kaydeden Personel");
             kaydedenMenu->decorationStyle ().setCursor (Cursor::PointingHand);
             kaydedenMenu->triggered().connect([=] {
                 showPopUpMessage ("<p>KaydedenMenu...</p>");
             });
 
-            auto kayitTarihi = popmenu->addItem("Kayıt Tarihi");
+            auto kayitTarihi = popmenu->addItem("**Kayıt Tarihi");
             kayitTarihi->decorationStyle ().setCursor (Cursor::PointingHand);
             kayitTarihi->triggered().connect([=] {
                 showPopUpMessage ("<p>KayitTarihi...</p>");
@@ -342,5 +346,161 @@ void v2::FirmaManagerPage::yeniFirmaKayitDialog()
         }
     });
     mDialog->show ();
+
+}
+
+void v2::FirmaManagerPage::yetkiliAtaDialog(const std::string &firmaOid)
+{
+    auto mDialog = createDialog ("Yeni Kişi Ata");
+
+    mDialog->contents ()->setOverflow (Overflow::Auto);
+    mDialog->setHeight (400);
+
+    auto Searchcontainer = mDialog->contents ()->addWidget (cpp14::make_unique<WContainerWidget>());
+    Searchcontainer->addStyleClass (Bootstrap::Grid::row);
+
+    auto tcadsoyadContainer = Searchcontainer->addWidget (cpp14::make_unique<WContainerWidget>());
+    tcadsoyadContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_8+
+                                       Bootstrap::Grid::Medium::col_md_8+
+                                       Bootstrap::Grid::Small::col_sm_7+
+                                       Bootstrap::Grid::ExtraSmall::col_xs_6);
+    auto tcadsoyadLineEdit = tcadsoyadContainer->addWidget (cpp14::make_unique<WLineEdit>());
+    tcadsoyadLineEdit->setPlaceholderText ("En Az 3 Harf Giriniz");
+
+    auto araContainer = Searchcontainer->addWidget (cpp14::make_unique<WContainerWidget>());
+    araContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
+                                 Bootstrap::Grid::Medium::col_md_4+
+                                 Bootstrap::Grid::Small::col_sm_5+
+                                 Bootstrap::Grid::ExtraSmall::col_xs_6);
+
+    auto araBtn = araContainer->addWidget (cpp14::make_unique<WPushButton>("Ara"));
+    araBtn->addStyleClass (Bootstrap::Button::Primary);
+
+
+    auto listContainer = mDialog->contents ()->addWidget (cpp14::make_unique<WContainerWidget>());
+    listContainer->addStyleClass (Bootstrap::Grid::row);
+    listContainer->setMaximumSize (500,WLength::Auto);
+
+
+
+    auto infoContainer = mDialog->contents ()->addWidget (cpp14::make_unique<WContainerWidget>());
+    infoContainer->addStyleClass (Bootstrap::Grid::row);
+
+    auto infoText = infoContainer->addWidget (cpp14::make_unique<WText>(""));
+
+    araBtn->clicked ().connect ([=](){
+
+        if( tcadsoyadLineEdit->text ().toUTF8 ().size () < 3 )
+        {
+            infoText->setText ("<b>En Az 3 Harf Giriniz</b>");
+            infoText->setAttributeValue (Style::style,Style::color::color (Style::color::Red::Red));
+            return;
+        }
+        infoText->setText ("");
+
+        SerikBLDCore::TC filter;
+
+        filter.append(SerikBLDCore::TC::KeyAdSoyad,
+                      make_document(kvp("$regex",tcadsoyadLineEdit->text ().toUTF8 ()),
+                                    kvp("$options","i")));
+
+
+        auto cursor = mTCManager->UpdateList (filter);
+
+        listContainer->clear ();
+
+
+        for( auto item : cursor )
+        {
+            auto container = listContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+            container->addStyleClass (Bootstrap::Grid::row+" boxShadow");
+            container->setMargin (10,Side::Top|Side::Bottom);
+
+
+
+            auto adSoyadContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
+            adSoyadContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
+                                             Bootstrap::Grid::Medium::col_md_6+
+                                             Bootstrap::Grid::Small::col_sm_6+
+                                             Bootstrap::Grid::ExtraSmall::col_xs_6);
+            adSoyadContainer->addWidget (cpp14::make_unique<WText>(item.AdSoyad ().toStdString ()));
+
+
+            auto telefonContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
+            telefonContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_5+
+                                             Bootstrap::Grid::Medium::col_md_5+
+                                             Bootstrap::Grid::Small::col_sm_4+
+                                             Bootstrap::Grid::ExtraSmall::col_xs_4);
+            auto telefonText = item.CepTelefonu ();
+
+            if( telefonText.count () > 8 )
+            {
+                telefonText.replace (4,3,"***");
+            }
+
+            telefonContainer->addWidget (cpp14::make_unique<WText>(telefonText.toStdString ()));
+
+            auto secContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
+            secContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_1+
+                                         Bootstrap::Grid::Medium::col_md_1+
+                                         Bootstrap::Grid::Small::col_sm_2+
+                                         Bootstrap::Grid::ExtraSmall::col_xs_2);
+
+            secContainer->setAttributeValue (Style::dataoid,item.oid ().value ().to_string ());
+
+            auto secBtn = secContainer->addWidget (cpp14::make_unique<WPushButton>("Seç"));
+            secBtn->addStyleClass (Bootstrap::Button::Primary);
+            secBtn->clicked ().connect ([=](){
+
+                SerikBLDCore::Firma::FirmaItem filter;
+                filter.setOid (firmaOid);
+                filter.setYetkiliOid (bsoncxx::oid{secContainer->attributeValue (Style::dataoid).toUTF8 ()});
+
+                if( this->UpdateItem (filter) ){
+                    this->remogeDialog (mDialog);
+                }else{
+                    infoText->setText ("<b>Atama Yapılamadı. Daha Sonra Tekrar Deneyin</b>");
+                    infoText->setAttributeValue (Style::style,Style::color::color (Style::color::Red::Red));
+                }
+
+            });
+        }
+
+
+
+    });
+
+
+    mDialog->show ();
+}
+
+void v2::FirmaManagerPage::yetkiliGoster(const std::string &vatandasOid)
+{
+
+
+    auto tcItem = mTCManager->Load_byOID (vatandasOid);
+
+    if( tcItem )
+    {
+        auto mDialog = createDialog ("Yetkili Kişi");
+
+        mDialog->contents ()->addWidget (cpp14::make_unique<WText>(tcItem.value ()->AdSoyad ().toStdString ()));
+        mDialog->contents ()->addWidget (cpp14::make_unique<WBreak>());
+
+        auto telefonText = tcItem.value ()->CepTelefonu ();
+        if( telefonText.count () > 8 )
+        {
+            telefonText.replace (4,3,"***");
+        }
+        mDialog->contents ()->addWidget (cpp14::make_unique<WText>(telefonText.toStdString ()));
+        mDialog->contents ()->addWidget (cpp14::make_unique<WBreak>());
+
+        mDialog->show ();
+    }else{
+        this->showPopUpMessage ("Bir Hata Oluştu. Yetkili Kişi Yüklenemiyor");
+    }
+
+
+
 
 }
