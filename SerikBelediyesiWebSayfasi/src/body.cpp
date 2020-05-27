@@ -10326,7 +10326,7 @@ void Body::Calisma::initMenu()
         container->decorationStyle().setCursor(Cursor::PointingHand);
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
         vLayout->addStretch(1);
-        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Tamamlanan: {1}").arg(this->count(SBLDKeys::Calismalar::collection,filter))),0,AlignmentFlag::Middle);
+        vLayout->addWidget(cpp14::make_unique<WText>(WString("Tamamlanan: {1}").arg(this->count(SBLDKeys::Calismalar::collection,filter))),0,AlignmentFlag::Middle);
         vLayout->addStretch(1);
         container->clicked().connect([=](){
             skip = 0;
@@ -10364,7 +10364,7 @@ void Body::Calisma::initMenu()
         container->decorationStyle().setCursor(Cursor::PointingHand);
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
         vLayout->addStretch(1);
-        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Bugün: {1}").arg(this->count(SBLDKeys::Calismalar::collection,filter))),0,AlignmentFlag::Middle);
+        vLayout->addWidget(cpp14::make_unique<WText>(WString("Bugün: {1}").arg(this->count(SBLDKeys::Calismalar::collection,filter))),0,AlignmentFlag::Middle);
         vLayout->addStretch(1);
 
         container->clicked().connect([=](){
@@ -10401,7 +10401,7 @@ void Body::Calisma::initMenu()
         container->decorationStyle().setCursor(Cursor::PointingHand);
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
         vLayout->addStretch(1);
-        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Son 1 Hafta: {1}").arg(this->count(SBLDKeys::Calismalar::collection,filter))),0,AlignmentFlag::Middle);
+        vLayout->addWidget(cpp14::make_unique<WText>(WString("Son 1 Hafta: {1}").arg(this->count(SBLDKeys::Calismalar::collection,filter))),0,AlignmentFlag::Middle);
         vLayout->addStretch(1);
 
         container->clicked().connect([=](){
@@ -10439,7 +10439,7 @@ void Body::Calisma::initMenu()
         container->decorationStyle().setCursor(Cursor::PointingHand);
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
         vLayout->addStretch(1);
-        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Son 1 Ay: {1}").arg(this->count(SBLDKeys::Calismalar::collection,filter))),0,AlignmentFlag::Middle);
+        vLayout->addWidget(cpp14::make_unique<WText>(WString("Son 1 Ay: {1}").arg(this->count(SBLDKeys::Calismalar::collection,filter))),0,AlignmentFlag::Middle);
         vLayout->addStretch(1);
         container->clicked().connect([=](){
             skip = 0;
@@ -10476,7 +10476,7 @@ void Body::Calisma::initMenu()
         container->decorationStyle().setCursor(Cursor::PointingHand);
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
         vLayout->addStretch(1);
-        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Son 3 Ay: {1}").arg(this->count(SBLDKeys::Calismalar::collection,filter))),0,AlignmentFlag::Middle);
+        vLayout->addWidget(cpp14::make_unique<WText>(WString("Son 3 Ay: {1}").arg(this->count(SBLDKeys::Calismalar::collection,filter))),0,AlignmentFlag::Middle);
         vLayout->addStretch(1);
         container->clicked().connect([=](){
             skip = 0;
@@ -10515,7 +10515,7 @@ void Body::Calisma::initMenu()
         container->decorationStyle().setCursor(Cursor::PointingHand);
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
         vLayout->addStretch(1);
-        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Bu Yıl: {1}").arg(this->count(SBLDKeys::Calismalar::collection,filter))),0,AlignmentFlag::Middle);
+        vLayout->addWidget(cpp14::make_unique<WText>(WString("Bu Yıl: {1}").arg(this->count(SBLDKeys::Calismalar::collection,filter))),0,AlignmentFlag::Middle);
         vLayout->addStretch(1);
         container->clicked().connect([=](){
             skip = 0;
@@ -10569,7 +10569,7 @@ void Body::Calisma::initMenu()
         container->decorationStyle().setCursor(Cursor::PointingHand);
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
         vLayout->addStretch(1);
-        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("{1} Yılı: {2}").arg(yil-1).arg(this->count(SBLDKeys::Calismalar::collection,filter))),0,AlignmentFlag::Middle);
+        vLayout->addWidget(cpp14::make_unique<WText>(WString("{1} Yılı: {2}").arg(yil-1).arg(this->count(SBLDKeys::Calismalar::collection,filter))),0,AlignmentFlag::Middle);
         vLayout->addStretch(1);
         container->clicked().connect([=](){
             skip = 0;

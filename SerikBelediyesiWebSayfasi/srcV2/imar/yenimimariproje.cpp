@@ -80,6 +80,7 @@ v2::YeniMimariProje::YeniMimariProje(SerikBLDCore::DB* _db , const SerikBLDCore:
         this->setMahalle (projeMahalleComboBox->currentText ().toUTF8 ());
         auto val = this->getDB ()->uploadfile (projeMimariDosyaContainer->fileLocation ());
         this->setDWGFileOid (val.get_oid ().value);
+        this->setProjectAktif (false);
 
         auto ins = this->getDB ()->insertItem (*this);
 

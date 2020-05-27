@@ -4152,7 +4152,7 @@ void Giris::FirmaMenuWidget::initHeader()
 void Giris::FirmaMenuWidget::Basvurular()
 {
     Content ()->clear ();
-    auto mimariProjeManager = Content ()->addWidget (cpp14::make_unique<v2::MimariProjeManagerPage>(this->getDB()));
+    auto mimariProjeManager = Content ()->addWidget (cpp14::make_unique<v2::MimariProjeManagerPage>(this->getDB(),mTCUser));
     mimariProjeManager->setFirmaOid (mFirma->oid ().value ().to_string ());
 }
 

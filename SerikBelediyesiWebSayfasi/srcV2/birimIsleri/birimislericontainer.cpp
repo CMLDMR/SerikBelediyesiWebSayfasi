@@ -2,7 +2,7 @@
 
 
 #include "SerikBelediyesiWebSayfasi/srcV2/firma/firmamanagerpage.h"
-
+#include "SerikBelediyesiWebSayfasi/srcV2/imar/mimariprojemanagerpage.h"
 
 v2::BirimIsleriContainer::BirimIsleriContainer(SerikBLDCore::User *_user)
     :mUser(_user),ContainerWidget ("Birim İşleri")
@@ -32,17 +32,18 @@ void v2::BirimIsleriContainer::initImar()
         Header ()->addWidget (std::move(menuFirma));
     }
 
-    //2 Başvurular
-    {
-        auto menuFirma = createMenu ( "Başvurular" , Cursor::PointingHand );
-//        menuFirma->clicked ().connect ( this , &v2::BirimIsleriContainer::initFirmaYonetimi );
-        Header ()->addWidget (std::move(menuFirma));
-    }
-
-    //3 Mimari Proje
+    //2 Mimari Proje
     {
         auto menuFirma = createMenu ( "Mimari Projeler" , Cursor::PointingHand );
-//        menuFirma->clicked ().connect ( this , &v2::BirimIsleriContainer::initFirmaYonetimi );
+        menuFirma->clicked ().connect ( [=](){
+            Content ()->clear ();
+            auto mimariPrjeler = Content ()->addWidget (cpp14::make_unique<Kurumsal::v2::MimariProjeManagerPage>(this->mUser));
+
+            SerikBLDCore::Imar::MimariProje::MimariProje filter;
+//            filter.setProjectAktif (true);
+            mimariPrjeler->SerikBLDCore::Imar::MimariProjeManager::UpdateList (filter);
+
+        } );
         Header ()->addWidget (std::move(menuFirma));
     }
 

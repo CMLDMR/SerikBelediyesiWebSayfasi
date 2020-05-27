@@ -161,49 +161,49 @@ void BilgiEdinmeWidget::initWidget()
     {
         auto container = rContainer->addWidget(cpp14::make_unique<ContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
-        auto text = container->addWidget(cpp14::make_unique<WText>(mItem->Tarih()));
+        container->addWidget(cpp14::make_unique<WText>(mItem->Tarih()));
         container->setContentAlignment(AlignmentFlag::Center);
     }
 
     {
         auto container = rContainer->addWidget(cpp14::make_unique<ContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
-        auto text = container->addWidget(cpp14::make_unique<WText>("<b><u>"+mItem->Konu()+"</u></b>"));
+        container->addWidget(cpp14::make_unique<WText>("<b><u>"+mItem->Konu()+"</u></b>"));
         container->setContentAlignment(AlignmentFlag::Center);
     }
 
     {
         auto container = rContainer->addWidget(cpp14::make_unique<ContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
-        auto text = container->addWidget(cpp14::make_unique<WText>("TCNO: <b>"+mItem->TCNO()+"</b>"));
+        container->addWidget(cpp14::make_unique<WText>("TCNO: <b>"+mItem->TCNO()+"</b>"));
         container->setContentAlignment(AlignmentFlag::Center);
     }
 
     {
         auto container = rContainer->addWidget(cpp14::make_unique<ContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
-        auto text = container->addWidget(cpp14::make_unique<WText>("Ad Soyad: <b>"+mItem->AdSoyad()+"</b>"));
+        container->addWidget(cpp14::make_unique<WText>("Ad Soyad: <b>"+mItem->AdSoyad()+"</b>"));
         container->setContentAlignment(AlignmentFlag::Center);
     }
 
     {
         auto container = rContainer->addWidget(cpp14::make_unique<ContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
-        auto text = container->addWidget(cpp14::make_unique<WText>("ePosta: "+mItem->ePosta()));
+        container->addWidget(cpp14::make_unique<WText>("ePosta: "+mItem->ePosta()));
         container->setContentAlignment(AlignmentFlag::Center);
     }
 
     {
         auto container = rContainer->addWidget(cpp14::make_unique<ContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
-        auto text = container->addWidget(cpp14::make_unique<WText>("Telefon: <b>"+mItem->telefon()+"</b>"));
+        container->addWidget(cpp14::make_unique<WText>("Telefon: <b>"+mItem->telefon()+"</b>"));
         container->setContentAlignment(AlignmentFlag::Center);
     }
 
     {
         auto container = rContainer->addWidget(cpp14::make_unique<ContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
-        auto text = container->addWidget(cpp14::make_unique<WText>("Adres: "+mItem->adres()));
+        container->addWidget(cpp14::make_unique<WText>("Adres: "+mItem->adres()));
         container->setContentAlignment(AlignmentFlag::Center);
     }
 

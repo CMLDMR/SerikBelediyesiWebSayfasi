@@ -27,16 +27,16 @@ DilekceView::DilekceView(Dilekce *_dilekce, mongocxx::database* _db ,  User *_us
         container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
         container->setWidth (WLength("100%"));
         {
-            auto text = container->addWidget (cpp14::make_unique<WText>("<b>!Dikkat!</b>"));
+            container->addWidget (cpp14::make_unique<WText>("<b>!Dikkat!</b>"));
             container->addWidget (cpp14::make_unique<WBreak>());
         }
 
         {
-            auto text = container->addWidget (cpp14::make_unique<WText>("Bu Evrak Sadece Bilgilendirme Amaçlıdır"));
+            container->addWidget (cpp14::make_unique<WText>("Bu Evrak Sadece Bilgilendirme Amaçlıdır"));
             container->addWidget (cpp14::make_unique<WBreak>());
         }
         {
-            auto text = container->addWidget (cpp14::make_unique<WText>("Resmi Evrak Yerine Kullanılamaz"));
+            container->addWidget (cpp14::make_unique<WText>("Resmi Evrak Yerine Kullanılamaz"));
             container->addWidget (cpp14::make_unique<WBreak>());
         }
 

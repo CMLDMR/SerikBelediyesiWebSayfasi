@@ -331,7 +331,7 @@ BasinItem::BasinItem(mongocxx::database *_db, const bsoncxx::document::view &vie
 //        auto text_ = hLayout->addWidget(cpp14::make_unique<WContainerWidget>());
 //        auto text = logo_->addWidget(cpp14::make_unique<WText>(WString::fromUTF8(view["gazete"].get_utf8().value.to_string().c_str())));
 
-        auto text = hLayout->addWidget(cpp14::make_unique<WText>(WString::fromUTF8(view["gazete"].get_utf8().value.to_string().c_str())),0,
+        hLayout->addWidget(cpp14::make_unique<WText>(WString::fromUTF8(view["gazete"].get_utf8().value.to_string().c_str())),0,
                 AlignmentFlag::Center|AlignmentFlag::Left|AlignmentFlag::Middle);
     }
 
@@ -351,7 +351,7 @@ BasinItem::BasinItem(mongocxx::database *_db, const bsoncxx::document::view &vie
 
     // Tarih
     {
-        auto text = vlayout->addWidget(cpp14::make_unique<WText>(QDate::fromJulianDay(view["julianDate"].get_int64().value).toString("dd/MM/yyyy").toStdString().c_str()),0,AlignmentFlag::Center);
+        vlayout->addWidget(cpp14::make_unique<WText>(QDate::fromJulianDay(view["julianDate"].get_int64().value).toString("dd/MM/yyyy").toStdString().c_str()),0,AlignmentFlag::Center);
 //        text->addStyleClass(Bootstrap::ContextualBackGround::bg_info);
 
     }
