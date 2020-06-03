@@ -10,7 +10,7 @@
 namespace v2 {
 
 
-class YeniMimariProje : public ContainerWidget, public SerikBLDCore::Imar::MimariProje::MimariProje , public SerikBLDCore::DB
+class YeniMimariProje : public ContainerWidget, public SerikBLDCore::Imar::MimariProje::MainProje , public SerikBLDCore::DB
 {
 public:
     YeniMimariProje(SerikBLDCore::DB* _db ,const SerikBLDCore::TC* mTCUser , const SerikBLDCore::Firma::FirmaItem* mFirma);

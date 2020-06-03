@@ -334,6 +334,7 @@ void Giris::GirisWidget::initSivil()
 
     auto val = firmaManager->FindOneItem (filter);
 
+
     if( !val.view ().empty () ){
 
 

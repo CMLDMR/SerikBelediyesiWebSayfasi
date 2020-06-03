@@ -37,11 +37,11 @@ void v2::BirimIsleriContainer::initImar()
         auto menuFirma = createMenu ( "Mimari Projeler" , Cursor::PointingHand );
         menuFirma->clicked ().connect ( [=](){
             Content ()->clear ();
-            auto mimariPrjeler = Content ()->addWidget (cpp14::make_unique<Kurumsal::v2::MimariProjeManagerPage>(this->mUser));
+            auto mimariPrjeler = Content ()->addWidget (cpp14::make_unique<v2::KurumsalMimariProjeManagerPage>(this->mUser));
 
-            SerikBLDCore::Imar::MimariProje::MimariProje filter;
+            SerikBLDCore::Imar::MimariProje::MainProje filter;
 //            filter.setProjectAktif (true);
-            mimariPrjeler->SerikBLDCore::Imar::MimariProjeManager::UpdateList (filter);
+            mimariPrjeler->UpdateList (filter);
 
         } );
         Header ()->addWidget (std::move(menuFirma));

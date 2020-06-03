@@ -3,7 +3,7 @@
 
 v2::YeniMimariProje::YeniMimariProje(SerikBLDCore::DB* _db , const SerikBLDCore::TC *mTCUser, const SerikBLDCore::Firma::FirmaItem *mFirma)
     :ContainerWidget("Yeni Mimari Proje Başvurusu"),
-      SerikBLDCore::Imar::MimariProje::MimariProje (mFirma->oid ().value (),WDate::currentDate ().toJulianDay ()),
+      SerikBLDCore::Imar::MimariProje::MainProje (mFirma->oid ().value (),WDate::currentDate ().toJulianDay ()),
       SerikBLDCore::DB(_db)
 {
 
@@ -58,14 +58,6 @@ v2::YeniMimariProje::YeniMimariProje(SerikBLDCore::DB* _db , const SerikBLDCore:
     }
 
 
-    auto projeMimariDosyaContainer = Header ()->addWidget (cpp14::make_unique<FileUploaderWidget>("DWG Yükle"));
-    projeMimariDosyaContainer->setType (FileUploaderWidget::FilterType::DWG);
-    projeMimariDosyaContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
-                                      Bootstrap::Grid::Medium::col_md_6+
-                                      Bootstrap::Grid::Small::col_sm_4+
-                                      Bootstrap::Grid::ExtraSmall::col_xs_12);
-    projeMimariDosyaContainer->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
-
 
     auto projeKaydetContainer = Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
     projeKaydetContainer->addStyleClass (Bootstrap::Grid::col_full_12);
@@ -78,9 +70,6 @@ v2::YeniMimariProje::YeniMimariProje(SerikBLDCore::DB* _db , const SerikBLDCore:
         this->setAda (adaSpinBox->value ());
         this->setParsel (parselSpinBox->value ());
         this->setMahalle (projeMahalleComboBox->currentText ().toUTF8 ());
-        auto val = this->getDB ()->uploadfile (projeMimariDosyaContainer->fileLocation ());
-        this->setDWGFileOid (val.get_oid ().value);
-        this->setProjectAktif (false);
 
         auto ins = this->getDB ()->insertItem (*this);
 

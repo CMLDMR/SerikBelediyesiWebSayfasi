@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.12.0, 2020-05-15T08:47:34. -->
+<!-- Written by QtCreator 4.12.1, 2020-05-28T17:09:34. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -84,7 +84,7 @@
     <value type="bool">true</value>
     <value type="int" key="EnableQmlDebugging">2</value>
     <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">D:\project\Yonetim-yazilimi\SerikBelediyesiWebSayfasi\build-SerikBelediyesiWebSayfasi-MSVC2017X64_Qt_5_13_1-Release</value>
-    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory.shadowDir">D:\project\Yonetim-yazilimi\SerikBelediyesiWebSayfasi\build-SerikBelediyesiWebSayfasi-MSVC2017X64_Qt_5_13_1-Release</value>
+    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory.shadowDir">D:/project/Yonetim-yazilimi/SerikBelediyesiWebSayfasi/build-SerikBelediyesiWebSayfasi-MSVC2017X64_Qt_5_13_1-Release</value>
     <valuemap type="QVariantMap" key="ProjectExplorer.BuildConfiguration.BuildStepList.0">
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.0">
       <value type="bool" key="ProjectExplorer.BuildStep.Enabled">true</value>

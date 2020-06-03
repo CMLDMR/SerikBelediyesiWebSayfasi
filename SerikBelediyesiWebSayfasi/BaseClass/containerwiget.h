@@ -77,7 +77,7 @@ public:
 
 
     /**
-     * @brief showPopUpMessage : Mesaj Gönder
+     * @brief showPopUpMessage : Mesaj Gönder infoType info,msg ve ""
      * @param msg
      * @param infoType info,msg ve boşluk
      */
