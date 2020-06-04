@@ -263,7 +263,20 @@ void MainApplication::init()
         container->setWidth(WLength("100%"));
         container->setHeight(WLength("100%"));
         container->setPositionScheme(PositionScheme::Fixed);
+
         container->addStyleClass("backanimation");
+
+        {
+            std::random_device rd;
+            std::mt19937 mt(rd());
+            std::uniform_int_distribution<int> dist(1,6);
+            auto index = dist(mt);
+            std::string photoUrl = "v2/slide/"+std::to_string (index)+".jpg";
+            container->setAttributeValue (Style::style,Style::background::url (photoUrl)+
+                                          Style::background::size::cover+
+                                          Style::background::repeat::norepeat);
+        }
+
         container->setZIndex(-100);
 
 
@@ -283,43 +296,6 @@ void MainApplication::init()
     }else{
         std::cout << "DATABASE is Not Valid" << std::endl;
     }
-
-
-
-
-
-
-
-
-    //    Header::Header* header = root()->addWidget(cpp14::make_unique<Header::Header>());
-    //    Body::Body* body = root()->addWidget(cpp14::make_unique<Body::Body>(&db,&Bucket));
-    //    Footer::Footer* footer = root()->addWidget(cpp14::make_unique<Footer::Footer>());
-    //    _signal.connect([=](int _width,int _height){
-
-    //       double _w = static_cast<double>(_width);
-    //       double _h = static_cast<double>(_height);
-
-    //       std::cout << " - VALUE: " << _width << " - " << _height <<  "R: " << _w / _h << std::endl;
-
-    //       if( _w / _h > 1.433 ){
-    //           footer->setPositionScheme(PositionScheme::Fixed);
-    //           footer->setOffsets(0,Side::Bottom);
-    //           footer->setWidth(WLength("100%"));
-    //       }
-
-
-    //    });
-
-    //    root()->doJavaScript("var w = window.innerWidth;"
-    //                         "var h = window.innerHeight;"
-    //                         "console.log(w);console.log(h);" + _signal.createCall({"w,h"}) + ";");
-
-
-
-
-
-
-
 
 }
 

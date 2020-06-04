@@ -170,8 +170,8 @@ void Giris::GirisWidget::initPersonelMenu(bsoncxx::document::value vatandas)
     mContentContainer->clear();
     this->User = vatandas;
 
-    mPageTitle->setText("http://www.serik.bel.tr");
-    mPageTitle->setAttributeValue (Style::style,Style::font::family::dosis);
+//    mPageTitle->setText("http://www.serik.bel.tr");
+//    mPageTitle->setAttributeValue (Style::style,Style::font::family::dosis);
 
     mUser = new SerikBLDCore::User(this->db,this->User);
 
@@ -1724,10 +1724,10 @@ void Giris::SivilWidget::initMenu()
     });
 
 
-    menu->addItem("Dilekçelerim")->clicked ().connect ([=](){
-        this->Content ()->clear();
-        this->Content ()->addWidget (Wt::cpp14::make_unique<DilekceTCYonetim>(db,UserValue));
-    });
+//    menu->addItem("Dilekçelerim")->clicked ().connect ([=](){
+//        this->Content ()->clear();
+//        this->Content ()->addWidget (Wt::cpp14::make_unique<DilekceTCYonetim>(db,UserValue));
+//    });
 
 
     menu->addItem("Yeni Talep")->clicked ().connect ([=](){
@@ -2330,10 +2330,10 @@ void Giris::Personel::PersonelWidget::initMenu()
         this->Content ()->addWidget (Wt::cpp14::make_unique<PersonelPage>( std::move(personel) , new SerikBLDCore::DB(mUser->db ()) , mUser )  );
     });
 
-    menu->addItem(WString::fromUTF8("Dilekçeler"))->clicked ().connect ([&]{
-        this->Content ()->clear ();
-        this->Content ()->addWidget (Wt::cpp14::make_unique<DilekceYonetim>(mUser->db (),mUser->Value ()));
-    });
+//    menu->addItem(WString::fromUTF8("Dilekçeler"))->clicked ().connect ([&]{
+//        this->Content ()->clear ();
+//        this->Content ()->addWidget (Wt::cpp14::make_unique<DilekceYonetim>(mUser->db (),mUser->Value ()));
+//    });
 
 
 
@@ -2376,6 +2376,7 @@ void Giris::Personel::PersonelWidget::initMenu()
             this->Content ()->addWidget (Wt::cpp14::make_unique<KadinAileStock>(mUser->db (),mUser->Value ()));
         });
     }
+
 
 
 
@@ -2462,10 +2463,10 @@ void Giris::Personel::PersonelWidget::initMobilMenu()
         this->Content ()->addWidget (Wt::cpp14::make_unique<PersonelPage>( std::move(personel) , new SerikBLDCore::DB(mUser->db ()) , mUser )  );
     });
 
-    menu->addItem(WString::fromUTF8("Dilekçeler"))->clicked ().connect ([&]{
-        this->Content ()->clear ();
-        this->Content ()->addWidget (Wt::cpp14::make_unique<DilekceYonetim>(mUser->db (),mUser->Value ()));
-    });
+//    menu->addItem(WString::fromUTF8("Dilekçeler"))->clicked ().connect ([&]{
+//        this->Content ()->clear ();
+//        this->Content ()->addWidget (Wt::cpp14::make_unique<DilekceYonetim>(mUser->db (),mUser->Value ()));
+//    });
 
 
 

@@ -76,14 +76,14 @@ MainPageController::MainPageController(mongocxx::database *_db)
 
 
             auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
-            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,50),
-                                                                               this->getRandom(25,50),
-                                                                               this->getRandom(25,50)));
+            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,100),
+                                                                               this->getRandom(25,100),
+                                                                               this->getRandom(25,100)));
 
             btn->setHeight(100);
             btn->setWidth(100);
             btn->setMargin(15,AllSides);
-            btn->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+            btn->addStyleClass(Bootstrap::ImageShape::img_thumbnail+CSSStyle::Shadows::shadow8px);
 
             btn->decorationStyle().setCursor(Cursor::PointingHand);
 
@@ -148,9 +148,9 @@ MainPageController::MainPageController(mongocxx::database *_db)
             container->addStyleClass(bootsrapString);
             container->setContentAlignment(AlignmentFlag::Center);
             auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
-            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,50),
-                                                                               this->getRandom(25,50),
-                                                                               this->getRandom(25,50)));
+            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,100),
+                                                                               this->getRandom(25,100),
+                                                                               this->getRandom(25,100)));
             btn->setHeight(100);
             btn->setWidth(100);
             btn->setMargin(15,AllSides);
@@ -171,9 +171,9 @@ MainPageController::MainPageController(mongocxx::database *_db)
             container->addStyleClass(bootsrapString);
             container->setContentAlignment(AlignmentFlag::Center);
             auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
-            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,50),
-                                                                               this->getRandom(25,50),
-                                                                               this->getRandom(25,50)));
+            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,100),
+                                                                               this->getRandom(25,100),
+                                                                               this->getRandom(25,100)));
             btn->setHeight(100);
             btn->setWidth(100);
             btn->setMargin(15,AllSides);
@@ -194,9 +194,9 @@ MainPageController::MainPageController(mongocxx::database *_db)
             container->addStyleClass(bootsrapString);
             container->setContentAlignment(AlignmentFlag::Center);
             auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
-            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,50),
-                                                                               this->getRandom(25,50),
-                                                                               this->getRandom(25,50)));
+            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,100),
+                                                                               this->getRandom(25,100),
+                                                                               this->getRandom(25,100)));
             btn->setHeight(100);
             btn->setWidth(100);
             btn->setMargin(15,AllSides);
@@ -254,9 +254,9 @@ MainPageController::MainPageController(mongocxx::database *_db)
             container->addStyleClass(bootsrapString);
             container->setContentAlignment(AlignmentFlag::Center);
             auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
-            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,50),
-                                                                               this->getRandom(25,50),
-                                                                               this->getRandom(25,50)));
+            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,100),
+                                                                               this->getRandom(25,100),
+                                                                               this->getRandom(25,100)));
             btn->setHeight(100);
             btn->setWidth(100);
             btn->setMargin(15,AllSides);
@@ -278,9 +278,9 @@ MainPageController::MainPageController(mongocxx::database *_db)
             container->addStyleClass(bootsrapString);
             container->setContentAlignment(AlignmentFlag::Center);
             auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
-            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,50),
-                                                                               this->getRandom(25,50),
-                                                                               this->getRandom(25,50)));
+            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,100),
+                                                                               this->getRandom(25,100),
+                                                                               this->getRandom(25,100)));
             btn->setHeight(100);
             btn->setWidth(100);
             btn->setMargin(15,AllSides);
@@ -304,9 +304,9 @@ MainPageController::MainPageController(mongocxx::database *_db)
             container->addStyleClass(bootsrapString);
             container->setContentAlignment(AlignmentFlag::Center);
             auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
-            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,50),
-                                                                               this->getRandom(25,50),
-                                                                               this->getRandom(25,50)));
+            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,100),
+                                                                               this->getRandom(25,100),
+                                                                               this->getRandom(25,100)));
             btn->setHeight(100);
             btn->setWidth(100);
             btn->setMargin(15,AllSides);
@@ -355,9 +355,9 @@ MainPageController::MainPageController(mongocxx::database *_db)
             container->addStyleClass(bootsrapString);
             container->setContentAlignment(AlignmentFlag::Center);
             auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
-            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,50),
-                                                                               this->getRandom(25,50),
-                                                                               this->getRandom(25,50)));
+            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,100),
+                                                                               this->getRandom(25,100),
+                                                                               this->getRandom(25,100)));
             btn->setHeight(100);
             btn->setWidth(100);
             btn->setMargin(15,AllSides);
@@ -380,9 +380,9 @@ MainPageController::MainPageController(mongocxx::database *_db)
             container->addStyleClass(bootsrapString);
             container->setContentAlignment(AlignmentFlag::Center);
             auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
-            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,50),
-                                                                               this->getRandom(25,50),
-                                                                               this->getRandom(25,50)));
+            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,100),
+                                                                               this->getRandom(25,100),
+                                                                               this->getRandom(25,100)));
             btn->setHeight(100);
             btn->setWidth(100);
             btn->setMargin(15,AllSides);

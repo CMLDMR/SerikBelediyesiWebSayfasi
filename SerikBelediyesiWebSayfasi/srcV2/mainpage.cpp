@@ -345,12 +345,12 @@ void MainPage::initIletisim()
     }
 
 
-    {
-        auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
-        _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-        _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                      Style::background::color::color(Style::color::Grey::Gainsboro));
-    }
+//    {
+//        auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
+//        _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+//        _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
+//                                      Style::background::color::color(Style::color::Grey::Gainsboro));
+//    }
 
 
 
