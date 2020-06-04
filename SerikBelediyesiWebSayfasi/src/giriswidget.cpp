@@ -109,7 +109,7 @@ void Giris::GirisWidget::initHeader()
     auto layout = gradientContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
     layout->addStretch(1);
     mPageTitle = layout->addWidget(cpp14::make_unique<WText>("Giriş"),0,AlignmentFlag::Bottom|AlignmentFlag::Center);
-    mPageTitle->setAttributeValue(Style::style,Style::font::size::s36px+Style::color::color(Style::color::White::AliceBlue));
+    mPageTitle->setAttributeValue(Style::style,Style::font::size::s36px+Style::color::color(Style::color::White::AliceBlue)+Style::font::family::dosis);
 }
 
 void Giris::GirisWidget::initLoginScreen()
@@ -128,7 +128,7 @@ void Giris::GirisWidget::initMenu(bsoncxx::document::value vatandas)
 
     mContentContainer->clear();
     this->User = vatandas;
-    mPageTitle->setText("www.serik.bel.tr");
+    mPageTitle->setText("http://www.serik.bel.tr");
 
 
     auto filter = document{};
@@ -170,7 +170,8 @@ void Giris::GirisWidget::initPersonelMenu(bsoncxx::document::value vatandas)
     mContentContainer->clear();
     this->User = vatandas;
 
-    mPageTitle->setText("www.serik.bel.tr");
+    mPageTitle->setText("http://www.serik.bel.tr");
+    mPageTitle->setAttributeValue (Style::style,Style::font::family::dosis);
 
     mUser = new SerikBLDCore::User(this->db,this->User);
 
@@ -272,13 +273,6 @@ void Giris::GirisWidget::initOption()
     mRow->addStyleClass(Bootstrap::Grid::row);
 
     {
-        auto text = mRow->addWidget(cpp14::make_unique<WText>("Belediye Personeli Oluduğunuz Tespit Edildi. Ne Olarak Devam Etmek istersiniz?"));
-        text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold);
-        text->setMargin(50,Side::Top);
-        text->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
-    }
-
-    {
         auto SivilContainer = mRow->addWidget(cpp14::make_unique<WContainerWidget>());
         SivilContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_12);
         SivilContainer->setPadding(20,AllSides);
@@ -290,7 +284,7 @@ void Giris::GirisWidget::initOption()
         container->setWidth(200);
         container->decorationStyle().setCursor(Cursor::PointingHand);
         auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        container->setAttributeValue(Style::style,Style::background::color::color(Style::color::Purple::Fuchsia));
+        container->addStyleClass (Bootstrap::Button::info);
         container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
         layout->addStretch(1);
         auto text = layout->addWidget(cpp14::make_unique<WText>("Sivil Olarak Devam Et!"));
@@ -311,7 +305,7 @@ void Giris::GirisWidget::initOption()
         container->setWidth(200);
         container->decorationStyle().setCursor(Cursor::PointingHand);
         auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        container->setAttributeValue(Style::style,Style::background::color::color(Style::color::Purple::Indigo));
+        container->addStyleClass (Bootstrap::Button::Primary);
         container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
         layout->addStretch(1);
         auto text = layout->addWidget(cpp14::make_unique<WText>("Personel Olarak Devam Et!"));
@@ -354,7 +348,7 @@ void Giris::GirisWidget::initSivil()
                 container->setWidth(200);
                 container->decorationStyle().setCursor(Cursor::PointingHand);
                 auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-                container->setAttributeValue(Style::style,Style::background::color::color(Style::color::Purple::Fuchsia));
+                container->addStyleClass (Bootstrap::Button::info);
                 container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
                 layout->addStretch(1);
                 auto text = layout->addWidget(cpp14::make_unique<WText>("Sivil Olarak Devam Et!"));
@@ -379,7 +373,7 @@ void Giris::GirisWidget::initSivil()
             container->setWidth(200);
             container->decorationStyle().setCursor(Cursor::PointingHand);
             auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-            container->setAttributeValue(Style::style,Style::background::color::color(Style::color::Purple::RoyalBlue));
+            container->addStyleClass (Bootstrap::Button::Primary);
             container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
             layout->addStretch(1);
             auto text = layout->addWidget(cpp14::make_unique<WText>(val.name () + " Yetkilisi Olarak Devam Et!"));
@@ -522,8 +516,7 @@ void Giris::GirisWidget::initPersonel()
 }
 
 Giris::LoginWidget::LoginWidget(mongocxx::database *_db)
-    :WContainerWidget(),
-      db(_db)
+    :db(_db)
 {
 
     setUserisVatandas(false);
@@ -775,17 +768,11 @@ void Giris::LoginWidget::sendtempPasswordSMS()
 
     httpclient->post("http://processor.smsorigin.com/xml/process.aspx",msg);
 
-    mUnuttumButton->setEnabled(false);
+    mUnuttumButton->setHidden (true);
 }
 
 void Giris::LoginWidget::sendSMS(std::string numara, std::string sms)
 {
-
-    //    std::uniform_int_distribution<int> d(10000, 99999);
-    //    std::random_device rd1;
-    //    verificationCODE = std::to_string(d(rd1));
-
-    //    sms = "Doğrulama Kodu: " + verificationCODE + " . Bu İsteği Siz Bulunmadıysanız Dikkate Almayınız!";
 
     QByteArray ar;
 
@@ -1664,16 +1651,28 @@ void Giris::LoginWidget::initLoginScreen()
 
         auto layout = btnWidget->setLayout(cpp14::make_unique<WVBoxLayout>());
 
-        mGirisButton = layout->addWidget(cpp14::make_unique<WPushButton>("Giriş"),0,AlignmentFlag::Center);
+        mGirisButton = layout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Center);
+        mGirisButton->addWidget (cpp14::make_unique<WText>("Giriş"));
+        mGirisButton->setPadding (10,Side::Top|Side::Bottom);
+        mGirisButton->setPadding (20,Side::Right|Side::Left);
         mGirisButton->addStyleClass(Bootstrap::Button::Primary);
+        mGirisButton->decorationStyle ().setCursor (Cursor::PointingHand);
         mGirisButton->clicked().connect(this,&Giris::LoginWidget::ConfirmLogin);
 
-        mUnuttumButton = layout->addWidget(cpp14::make_unique<WPushButton>("Şifremi Unuttum"),0,AlignmentFlag::Center);
+        mUnuttumButton = layout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Center);
+        mUnuttumButton->addWidget (cpp14::make_unique<WText>("Şifremi Unuttum"));
+        mUnuttumButton->setPadding (10,Side::Top|Side::Bottom);
+        mUnuttumButton->setPadding (20,Side::Right|Side::Left);
         mUnuttumButton->addStyleClass(Bootstrap::Button::Warning);
+        mUnuttumButton->decorationStyle ().setCursor (Cursor::PointingHand);
         mUnuttumButton->clicked().connect(this,&Giris::LoginWidget::sendtempPasswordSMS);
 
-        mkayitOlButton = layout->addWidget(cpp14::make_unique<WPushButton>("Kayıt Ol"),0,AlignmentFlag::Center);
+        mkayitOlButton = layout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Center);
+        mkayitOlButton->addWidget (cpp14::make_unique<WText>("Kayıt Ol"));
+        mkayitOlButton->setPadding (10,Side::Top|Side::Bottom);
+        mkayitOlButton->setPadding (20,Side::Right|Side::Left);
         mkayitOlButton->addStyleClass(Bootstrap::Button::info);
+        mkayitOlButton->decorationStyle ().setCursor (Cursor::PointingHand);
         mkayitOlButton->clicked().connect(this,&Giris::LoginWidget::kayitOld);
     }
 

@@ -212,9 +212,9 @@ private:
     QString sms;
     WLineEdit* mSifre;
 
-    WPushButton* mGirisButton;
-    WPushButton* mUnuttumButton;
-    WPushButton* mkayitOlButton;
+    WContainerWidget* mGirisButton;
+    WContainerWidget* mUnuttumButton;
+    WContainerWidget* mkayitOlButton;
 
     WDialog* dialog;
     void removeDialog();
