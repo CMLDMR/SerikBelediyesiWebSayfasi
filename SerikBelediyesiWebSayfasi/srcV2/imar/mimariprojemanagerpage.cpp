@@ -6,10 +6,10 @@
 v2::MimariProjeManagerPage::MimariProjeManagerPage(SerikBLDCore::DB* _db , SerikBLDCore::TC *_tcUser)
     :ContainerWidget ("Başvurulan Projeler"),
       SerikBLDCore::Imar::MainProjeManager (_db),
-      mFirmaYetkilisi(_tcUser)
+      mFirmaYetkilisi(_tcUser),
+      mFirmaOid("")
 {
 
-    SerikBLDCore::Imar::MainProjeManager::setLimit (10000);
 }
 
 void v2::MimariProjeManagerPage::onList(const QVector<SerikBLDCore::Imar::MimariProje::MainProje> *mlist)
@@ -32,17 +32,17 @@ void v2::MimariProjeManagerPage::onList(const QVector<SerikBLDCore::Imar::Mimari
 
         auto adaContainer = fContainer->addWidget (cpp14::make_unique<WContainerWidget>());
         adaContainer->addWidget (cpp14::make_unique<WText>("<b>#Ada</b>"));
-        adaContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
-                                     Bootstrap::Grid::Medium::col_md_3+
-                                     Bootstrap::Grid::Small::col_sm_3+
-                                     Bootstrap::Grid::ExtraSmall::col_xs_3);
+        adaContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                                     Bootstrap::Grid::Medium::col_md_2+
+                                     Bootstrap::Grid::Small::col_sm_2+
+                                     Bootstrap::Grid::ExtraSmall::col_xs_2);
 
         auto parselContainer = fContainer->addWidget (cpp14::make_unique<WContainerWidget>());
         parselContainer->addWidget (cpp14::make_unique<WText>("<b>#Parsel</b>"));
-        parselContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
-                                        Bootstrap::Grid::Medium::col_md_3+
-                                        Bootstrap::Grid::Small::col_sm_3+
-                                        Bootstrap::Grid::ExtraSmall::col_xs_3);
+        parselContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                                        Bootstrap::Grid::Medium::col_md_2+
+                                        Bootstrap::Grid::Small::col_sm_2+
+                                        Bootstrap::Grid::ExtraSmall::col_xs_2);
 
         auto mahalleContainer = fContainer->addWidget (cpp14::make_unique<WContainerWidget>());
         mahalleContainer->addWidget (cpp14::make_unique<WText>("<b>#Mahalle</b>"));
@@ -50,6 +50,13 @@ void v2::MimariProjeManagerPage::onList(const QVector<SerikBLDCore::Imar::Mimari
                                          Bootstrap::Grid::Medium::col_md_3+
                                          Bootstrap::Grid::Small::col_sm_3+
                                          Bootstrap::Grid::ExtraSmall::col_xs_3);
+
+        auto onayContainer = fContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+        onayContainer->addWidget (cpp14::make_unique<WText>("<b>#Onay</b>"));
+        onayContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                                      Bootstrap::Grid::Medium::col_md_2+
+                                      Bootstrap::Grid::Small::col_sm_2+
+                                      Bootstrap::Grid::ExtraSmall::col_xs_2);
 
     }
 
@@ -72,17 +79,17 @@ void v2::MimariProjeManagerPage::onList(const QVector<SerikBLDCore::Imar::Mimari
 
         auto adaContainer = fContainer->addWidget (cpp14::make_unique<WContainerWidget>());
         adaContainer->addWidget (cpp14::make_unique<WText>(std::to_string (item.ada ())));
-        adaContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
-                                     Bootstrap::Grid::Medium::col_md_3+
-                                     Bootstrap::Grid::Small::col_sm_3+
-                                     Bootstrap::Grid::ExtraSmall::col_xs_3);
+        adaContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                                     Bootstrap::Grid::Medium::col_md_2+
+                                     Bootstrap::Grid::Small::col_sm_2+
+                                     Bootstrap::Grid::ExtraSmall::col_xs_2);
 
         auto parselContainer = fContainer->addWidget (cpp14::make_unique<WContainerWidget>());
         parselContainer->addWidget (cpp14::make_unique<WText>(std::to_string (item.parsel ())));
-        parselContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
-                                        Bootstrap::Grid::Medium::col_md_3+
-                                        Bootstrap::Grid::Small::col_sm_3+
-                                        Bootstrap::Grid::ExtraSmall::col_xs_3);
+        parselContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                                        Bootstrap::Grid::Medium::col_md_2+
+                                        Bootstrap::Grid::Small::col_sm_2+
+                                        Bootstrap::Grid::ExtraSmall::col_xs_2);
 
         auto mahalleContainer = fContainer->addWidget (cpp14::make_unique<WContainerWidget>());
         mahalleContainer->addWidget (cpp14::make_unique<WText>(item.mahalle ()));
@@ -92,11 +99,53 @@ void v2::MimariProjeManagerPage::onList(const QVector<SerikBLDCore::Imar::Mimari
                                          Bootstrap::Grid::ExtraSmall::col_xs_3);
 
 
+        auto onayContainer = fContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+        onayContainer->addWidget (cpp14::make_unique<WText>(item.onay () ? "<b>Onaylı</b>" : "<b>Onaylanmamış</b>"));
+        onayContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                                      Bootstrap::Grid::Medium::col_md_2+
+                                      Bootstrap::Grid::Small::col_sm_2+
+                                      Bootstrap::Grid::ExtraSmall::col_xs_2+
+                                      CSSStyle::Shadows::shadow8px);
+        onayContainer->addStyleClass (item.onay () ? CSSStyle::Gradient::greenGradient : CSSStyle::Gradient::redGradient);
+//        onayContainer->setAttributeValue (Style::style,Style::background::color::rgb (this->getRandom (),
+//                                                                                      this->getRandom (),
+//                                                                                      this->getRandom ()));
+
         fContainer->clicked ().connect ([=](){
             this->loadProject (item.oid ().value ().to_string ());
         });
 
     }
+
+    auto controllerListContainer = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+    controllerListContainer->setMargin (5,AllSides);
+    controllerListContainer->setWidth (WLength("100%"));
+    auto hLayout = controllerListContainer->setLayout (cpp14::make_unique<WHBoxLayout>());
+    auto backContainer = hLayout->addWidget (cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Left);
+    backContainer->setPadding (10,Side::Top|Side::Bottom);
+    backContainer->setPadding (20,Side::Right|Side::Left);
+    backContainer->addWidget (cpp14::make_unique<WText>("Geri"));
+    backContainer->addStyleClass (CSSStyle::Button::blueButton+CSSStyle::Radius::radius3px+CSSStyle::Shadows::shadow8px);
+    backContainer->clicked ().connect ([=](){
+        if( mFirmaOid.empty () ){
+            SerikBLDCore::Imar::MainProjeManager::next (SerikBLDCore::Imar::MimariProje::MainProje());
+        }else{
+            SerikBLDCore::Imar::MainProjeManager::next (SerikBLDCore::Imar::MimariProje::MainProje().setFirmaOid (bsoncxx::oid{mFirmaOid}));
+        }
+    });
+
+    auto nextContainer = hLayout->addWidget (cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Right);
+    nextContainer->setPadding (10,Side::Top|Side::Bottom);
+    nextContainer->setPadding (20,Side::Right|Side::Left);
+    nextContainer->addWidget (cpp14::make_unique<WText>("İleri"));
+    nextContainer->addStyleClass (CSSStyle::Button::blueButton+CSSStyle::Radius::radius3px+CSSStyle::Shadows::shadow8px);
+    nextContainer->clicked ().connect ([=](){
+        if( mFirmaOid.empty () ){
+            SerikBLDCore::Imar::MainProjeManager::next (SerikBLDCore::Imar::MimariProje::MainProje());
+        }else{
+            SerikBLDCore::Imar::MainProjeManager::next (SerikBLDCore::Imar::MimariProje::MainProje().setFirmaOid (bsoncxx::oid{mFirmaOid}));
+        }
+    });
 
     this->showPopUpMessage ("Proje Listesi Güncellendi");
 

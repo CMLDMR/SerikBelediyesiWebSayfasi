@@ -14,6 +14,7 @@
 
 namespace v2 {
 
+// TODO: Sadece Bir Proje Görecek Şekilde Gösterilecek Bir Sınıf Daha Gösterilecek.
 class MainProjeView :
         public ContainerWidget,
         public SerikBLDCore::Imar::MimariProje::MainProje,
