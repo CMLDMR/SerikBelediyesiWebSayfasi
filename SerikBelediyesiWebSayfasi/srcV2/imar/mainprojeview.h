@@ -41,7 +41,7 @@ public:
 
     int currentLogFilterIndex() const;
 
-    virtual void addIslemLog( const std::string log , const bsoncxx::oid& projeOid );
+    virtual void addIslemLog( const std::string& log , const bsoncxx::oid& projeOid );
 
     void setSelectedProjectOid(const std::string &selectedProjectOid);
 
@@ -71,7 +71,7 @@ public:
 
     void onList(const QVector<SerikBLDCore::Imar::MimariLog> *mlist) override;
 
-    virtual void addIslemLog( const std::string log , const bsoncxx::oid& projeOid ) override;
+    virtual void addIslemLog(const std::string &log , const bsoncxx::oid& projeOid ) override;
 
 
 private:

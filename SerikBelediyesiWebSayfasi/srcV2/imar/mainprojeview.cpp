@@ -1214,6 +1214,31 @@ void v2::MainProjeView::onList(const QVector<SerikBLDCore::Imar::MimariLog> *mli
             break;
         }
     }
+
+
+
+    auto controllerListContainer = Footer ()->addWidget (cpp14::make_unique<WContainerWidget>());
+    controllerListContainer->setMargin (5,AllSides);
+    controllerListContainer->setWidth (WLength("100%"));
+    auto hLayout = controllerListContainer->setLayout (cpp14::make_unique<WHBoxLayout>());
+    auto backContainer = hLayout->addWidget (cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Left);
+    backContainer->setPadding (10,Side::Top|Side::Bottom);
+    backContainer->setPadding (20,Side::Right|Side::Left);
+    backContainer->addWidget (cpp14::make_unique<WText>("Geri"));
+    backContainer->addStyleClass (CSSStyle::Button::blueButton+CSSStyle::Radius::radius3px+CSSStyle::Shadows::shadow8px);
+    backContainer->clicked ().connect ([=](){
+       SerikBLDCore::Imar::MimariLogManager::back (SerikBLDCore::Imar::MimariLog().setProjeOid (bsoncxx::oid{this->selectedProjectOid ()}));
+    });
+
+    auto nextContainer = hLayout->addWidget (cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Right);
+    nextContainer->setPadding (10,Side::Top|Side::Bottom);
+    nextContainer->setPadding (20,Side::Right|Side::Left);
+    nextContainer->addWidget (cpp14::make_unique<WText>("İleri"));
+    nextContainer->addStyleClass (CSSStyle::Button::blueButton+CSSStyle::Radius::radius3px+CSSStyle::Shadows::shadow8px);
+    nextContainer->clicked ().connect ([=](){
+       SerikBLDCore::Imar::MimariLogManager::next (SerikBLDCore::Imar::MimariLog().setProjeOid (bsoncxx::oid{this->selectedProjectOid ()}));
+    });
+
 }
 
 void v2::MainProjeView::errorOccured(const std::string &errorText)
@@ -1231,7 +1256,7 @@ int v2::MainProjeView::currentLogFilterIndex() const
     return mCurrentLogFilterIndex;
 }
 
-void v2::MainProjeView::addIslemLog(const std::string log , const bsoncxx::oid& projeOid )
+void v2::MainProjeView::addIslemLog(const std::string& log , const bsoncxx::oid& projeOid )
 {
     SerikBLDCore::Imar::IslemLog islemlog;
     islemlog.setLog (log);
@@ -1929,15 +1954,13 @@ void v2::KurumsalProjeView::loadProject(const bsoncxx::oid &projectOid)
                                         Style::color::color (Style::color::White::Snow));
     onaylaContainer->setHeight (140);
     if( mProje.onay () ){
-        onaylaContainer->addWidget (cpp14::make_unique<WBreak>());
-        onaylaContainer->addWidget (cpp14::make_unique<WText>("Onaylandı"));
 
         if( this->mUser->oid ().value ().to_string () == mProje.assignedPersonelOid () ){
-            onaylaContainer->addWidget (cpp14::make_unique<WBreak>());
             auto onaykaldirText = onaylaContainer->addWidget (cpp14::make_unique<WText>("<b>Onayı Kaldır</b>"));
             onaykaldirText->setAttributeValue (Style::style,Style::background::color::color (Style::color::Red::DarkRed)+
                                                Style::font::family::dosis+Style::font::size::s18px+
                                                Style::color::color (Style::color::White::Snow));
+            onaykaldirText->addStyleClass (CSSStyle::Shadows::shadow8px+CSSStyle::Radius::radius3px);
             onaykaldirText->setPadding (10,AllSides);
             onaykaldirText->decorationStyle ().setCursor (Cursor::PointingHand);
 
@@ -1950,6 +1973,7 @@ void v2::KurumsalProjeView::loadProject(const bsoncxx::oid &projectOid)
                 auto upt = SerikBLDCore::Imar::BaseProjeManager::UpdateItem (filter);
 
                 if( upt ){
+                    this->addIslemLog (mProje.title () + " Onayı Kaldırıldı",mProje.oid ().value ());
                     this->loadProject (mProje.oid ().value ());
                 }else{
                     this->showPopUpMessage ("Projeyi Onayı Kaldırılamadı!. Daha Sonra Tekrar Deneyiniz","err");
@@ -1960,11 +1984,11 @@ void v2::KurumsalProjeView::loadProject(const bsoncxx::oid &projectOid)
 
     }else{
         if( this->mUser->oid ().value ().to_string () == mProje.assignedPersonelOid () ){
-            onaylaContainer->addWidget (cpp14::make_unique<WBreak>());
             auto onaykaldirText = onaylaContainer->addWidget (cpp14::make_unique<WText>("<b>ONAYLA</b>"));
             onaykaldirText->setAttributeValue (Style::style,Style::background::color::color (Style::color::Green::DarkGreen)+
                                                Style::font::family::dosis+Style::font::size::s18px+
                                                Style::color::color (Style::color::White::Snow));
+            onaykaldirText->addStyleClass (CSSStyle::Shadows::shadow8px+CSSStyle::Radius::radius3px);
             onaykaldirText->setPadding (10,AllSides);
             onaykaldirText->decorationStyle ().setCursor (Cursor::PointingHand);
 
@@ -1979,6 +2003,7 @@ void v2::KurumsalProjeView::loadProject(const bsoncxx::oid &projectOid)
                     auto upt = SerikBLDCore::Imar::BaseProjeManager::UpdateItem (filter);
 
                     if( upt ){
+                        this->addIslemLog (mProje.title () + " Onaylandı" , mProje.oid ().value ());
                         this->loadProject (mProje.oid ().value ());
                     }else{
                         this->showPopUpMessage ("Projeyi Onaylanamadı!. Daha Sonra Tekrar Deneyiniz","err");
@@ -2799,9 +2824,34 @@ void v2::KurumsalProjeView::onList(const QVector<SerikBLDCore::Imar::MimariLog> 
             break;
         }
     }
+
+
+
+
+    auto controllerListContainer = Footer ()->addWidget (cpp14::make_unique<WContainerWidget>());
+    controllerListContainer->setMargin (5,AllSides);
+    controllerListContainer->setWidth (WLength("100%"));
+    auto hLayout = controllerListContainer->setLayout (cpp14::make_unique<WHBoxLayout>());
+    auto backContainer = hLayout->addWidget (cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Left);
+    backContainer->setPadding (10,Side::Top|Side::Bottom);
+    backContainer->setPadding (20,Side::Right|Side::Left);
+    backContainer->addWidget (cpp14::make_unique<WText>("Geri"));
+    backContainer->addStyleClass (CSSStyle::Button::blueButton+CSSStyle::Radius::radius3px+CSSStyle::Shadows::shadow8px);
+    backContainer->clicked ().connect ([=](){
+       SerikBLDCore::Imar::MimariLogManager::back (SerikBLDCore::Imar::MimariLog().setProjeOid (bsoncxx::oid{this->selectedProjectOid ()}));
+    });
+
+    auto nextContainer = hLayout->addWidget (cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Right);
+    nextContainer->setPadding (10,Side::Top|Side::Bottom);
+    nextContainer->setPadding (20,Side::Right|Side::Left);
+    nextContainer->addWidget (cpp14::make_unique<WText>("İleri"));
+    nextContainer->addStyleClass (CSSStyle::Button::blueButton+CSSStyle::Radius::radius3px+CSSStyle::Shadows::shadow8px);
+    nextContainer->clicked ().connect ([=](){
+       SerikBLDCore::Imar::MimariLogManager::next (SerikBLDCore::Imar::MimariLog().setProjeOid (bsoncxx::oid{this->selectedProjectOid ()}));
+    });
 }
 
-void v2::KurumsalProjeView::addIslemLog(const std::string log, const bsoncxx::oid &projeOid)
+void v2::KurumsalProjeView::addIslemLog(const std::string& log, const bsoncxx::oid &projeOid)
 {
     SerikBLDCore::Imar::IslemLog islemlog;
     islemlog.setLog (log);
