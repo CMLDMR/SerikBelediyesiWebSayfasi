@@ -259,6 +259,7 @@ void MainApplication::init()
 
     {
         auto container = root()->addWidget(cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::Hidden::hidden_xs+Bootstrap::Grid::Hidden::hidden_sm);
 
         container->setWidth(WLength("100%"));
         container->setHeight(WLength("100%"));
