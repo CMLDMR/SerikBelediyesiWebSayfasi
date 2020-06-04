@@ -2210,174 +2210,89 @@ void v2::KurumsalProjeView::loadProject(const bsoncxx::oid &projectOid)
 
 
 
-            auto projeDosyaDegistirBtn = mDialog->contents ()->addWidget (cpp14::make_unique<WPushButton>("Dosyayı Değiştir"));
-            projeDosyaDegistirBtn->setMargin (5,Side::Right|Side::Left);
-            projeDosyaDegistirBtn->clicked ().connect ([=](){
+            if( this->mUser->oid ().value ().to_string () == mProje.assignedPersonelOid () ){
 
-                mDialog->contents ()->clear ();
+                auto projeDosyaDegistirBtn = mDialog->contents ()->addWidget (cpp14::make_unique<WPushButton>("Dosyayı Değiştir"));
+                projeDosyaDegistirBtn->setMargin (5,Side::Right|Side::Left);
+                projeDosyaDegistirBtn->clicked ().connect ([=](){
 
-
-                mDialog->contents ()->addWidget (cpp14::make_unique<WText>("Proje Dosyasını Değiştir"));
-
-                auto fileuploader = mDialog->contents ()->addWidget (cpp14::make_unique<FileUploaderWidget>("Yeni Proje Dosyası"));
+                    mDialog->contents ()->clear ();
 
 
-                auto svBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet"));
-                svBtn->clicked ().connect ([=](){
+                    mDialog->contents ()->addWidget (cpp14::make_unique<WText>("Proje Dosyasını Değiştir"));
+
+                    auto fileuploader = mDialog->contents ()->addWidget (cpp14::make_unique<FileUploaderWidget>("Yeni Proje Dosyası"));
 
 
-
-                    if( !fileuploader->isUploaded () ){
-                        this->showPopUpMessage ("Yeni Dosya Yüklemediniz!");
-                        return;
-                    }
-                    if( !SerikBLDCore::Imar::BaseProjeManager::getDB ()->deleteGridFS (fileoidText->text ().toUTF8 ().c_str ()) ){
-                        this->showPopUpMessage ("<p>Eski Dosya Silinemedi!</p>"
-                                                "<p>Tekrar Deneyiniz</p>");
-                        return;
-                    }
-                    SerikBLDCore::Imar::MimariProje::BaseProject filter;
-                    filter.setOid (mProje.oid ().value ());
-
-                    for( auto i = 0 ; i < mProje.projeCount () ; i++ ){
-                        filter.addProje (mProje[i].value ());
-                    }
-                    filter.removeProje (bsoncxx::oid{fileoidText->text ().toUTF8 ()});
-                    SerikBLDCore::Imar::MimariProje::FileProject newFileProject;
-                    newFileProject.setOnay (false);
-                    newFileProject.setProjeAdi (mProje[i].value ().projeAdi ());
-                    auto newFileOid = SerikBLDCore::Imar::BaseProjeManager::getDB ()->uploadfile (fileuploader->fileLocation ().toStdString ().c_str ());
-                    newFileProject.setFileOid (newFileOid.get_oid ().value);
-                    filter.addProje (newFileProject);
-                    auto upt = SerikBLDCore::Imar::BaseProjeManager::UpdateItem (filter);
-                    if( !upt ){
-                        this->showPopUpMessage ("<p>Dosya Güncellenemedi</p><p>Sürekli Aynı Hatayı Alıyorsanız Lütfen İlgili Kişi ile İrtibata Geçiniz</p>");
-                        return;
-                    }
-                    this->addIslemLog ("<u><b>"+mProje[i].value ().projeAdi () + "</b></u> Dosyası Değiştirildi",mProje.oid ().value ());
-
-                    this->remogeDialog (mDialog);
-                    this->loadProject (mProje.oid ().value ());
-                });
-            });
-
-
-            auto projeAdiniDegistirBtn = mDialog->contents ()->addWidget (cpp14::make_unique<WPushButton>("Adını Değiştir"));
-            projeAdiniDegistirBtn->setMargin (5,Side::Left|Side::Right);
-            projeAdiniDegistirBtn->clicked ().connect ([=](){
-
-                mDialog->contents ()->clear ();
-
-
-                mDialog->contents ()->addWidget (cpp14::make_unique<WText>("Proje Adını Değiştir"));
-
-                auto projeYeniAdiLineEdit = mDialog->contents ()->addWidget (cpp14::make_unique<WLineEdit>());
-                projeYeniAdiLineEdit->setPlaceholderText ("Proje Dosyasının Yeni Adını Giriniz");
-
-
-                auto svBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet"));
-                svBtn->clicked ().connect ([=](){
-
-                    SerikBLDCore::Imar::MimariProje::BaseProject filter;
-                    filter.setOid (mProje.oid ().value ());
-
-                    for( auto i = 0 ; i < mProje.projeCount () ; i++ ){
-                        filter.addProje (mProje[i].value ());
-                    }
-                    filter.removeProje (bsoncxx::oid{fileoidText->text ().toUTF8 ()});
-                    SerikBLDCore::Imar::MimariProje::FileProject newFileProject;
-                    newFileProject.setOnay (false);
-                    newFileProject.setProjeAdi (projeYeniAdiLineEdit->text ().toUTF8 ());
-                    newFileProject.setFileOid (bsoncxx::oid{fileoidText->text ().toUTF8 ()});
-
-                    filter.addProje (newFileProject);
-
-                    auto upt = SerikBLDCore::Imar::BaseProjeManager::UpdateItem (filter);
-                    if( !upt ){
-                        this->showPopUpMessage ("<p>Dosya Güncellenemedi</p>"
-                                                "<p>Sürekli Aynı Hatayı Alıyorsanız Lütfen İlgili Kişi ile İrtibata Geçiniz</p>");
-                        return;
-                    }
-                    this->addIslemLog (mProje[i].value ().projeAdi () + " Adı Değiştirildi. Yeni Adı: " + projeYeniAdiLineEdit->text ().toUTF8 () ,mProje.oid ().value ());
-
-                    this->remogeDialog (mDialog);
-                    this->loadProject (mProje.oid ().value ());
-                });
-            });
+                    auto svBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet"));
+                    svBtn->clicked ().connect ([=](){
 
 
 
-            auto projeOnaylaBtn = mDialog->contents ()->addWidget (cpp14::make_unique<WPushButton>("Onayla"));
-            projeOnaylaBtn->setMargin (5,Side::Left|Side::Right);
-            projeOnaylaBtn->addStyleClass (Bootstrap::Button::Success);
-            projeOnaylaBtn->clicked ().connect ([=](){
-
-                mDialog->contents ()->clear ();
-
-                auto svBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Onayla"));
-                svBtn->addStyleClass (Bootstrap::Button::Success);
-                svBtn->clicked ().connect ([=](){
-
-                    SerikBLDCore::Imar::MimariProje::BaseProject filter;
-                    filter.setOid (mProje.oid ().value ());
-
-                    for( auto i = 0 ; i < mProje.projeCount () ; i++ ){
-                        filter.addProje (mProje[i].value ());
-                    }
-                    filter.removeProje (bsoncxx::oid{fileoidText->text ().toUTF8 ()});
-                    SerikBLDCore::Imar::MimariProje::FileProject newFileProject;
-                    newFileProject.setOnay (true);
-                    newFileProject.setProjeAdi (mProje[i].value ().projeAdi ());
-                    newFileProject.setFileOid (bsoncxx::oid{fileoidText->text ().toUTF8 ()});
-
-                    filter.addProje (newFileProject);
-
-                    auto upt = SerikBLDCore::Imar::BaseProjeManager::UpdateItem (filter);
-                    if( !upt ){
-                        this->showPopUpMessage ("<p>Dosya Güncellenemedi</p>"
-                                                "<p>Sürekli Aynı Hatayı Alıyorsanız Lütfen İlgili Kişi ile İrtibata Geçiniz</p>");
-                        return;
-                    }
-                    this->addIslemLog ("<b><u>"+mProje[i].value ().projeAdi () + "</u></b> Proje Onaylandı." ,mProje.oid ().value ());
-
-                    this->remogeDialog (mDialog);
-                    this->loadProject (mProje.oid ().value ());
-                });
-            });
-
-
-
-            auto projeSilBtn = mDialog->contents ()->addWidget (cpp14::make_unique<WPushButton>("Sil"));
-            projeSilBtn->setMargin (5,Side::Left|Side::Right);
-            projeSilBtn->addStyleClass (Bootstrap::Button::Danger);
-            projeSilBtn->clicked ().connect ([=](){
-
-                mDialog->contents ()->clear ();
-
-
-                mDialog->contents ()->addWidget (cpp14::make_unique<WText>("Proje Sil"));
-
-
-                auto svBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Sil"));
-                svBtn->clicked ().connect ([=](){
-
-                    SerikBLDCore::Imar::MimariProje::BaseProject filter;
-                    filter.setOid (mProje.oid ().value ());
-
-                    if( mProje.projeCount () == 1 ){
-
-                        if( SerikBLDCore::Imar::BaseProjeManager::getDB ()->removeField (filter,SerikBLDCore::Imar::MimariProje::BaseProject::keyProje) ){
-                            this->addIslemLog (mProje[i].value ().projeAdi () + " Dosyası Silindi",mProje.oid ().value ());
-                            this->loadProject (mProje.oid ().value ());
-                            this->showPopUpMessage ("<p>Proje Dosyası Silindi</p>");
-                            this->remogeDialog (mDialog);
+                        if( !fileuploader->isUploaded () ){
+                            this->showPopUpMessage ("Yeni Dosya Yüklemediniz!");
+                            return;
                         }
+                        if( !SerikBLDCore::Imar::BaseProjeManager::getDB ()->deleteGridFS (fileoidText->text ().toUTF8 ().c_str ()) ){
+                            this->showPopUpMessage ("<p>Eski Dosya Silinemedi!</p>"
+                                                    "<p>Tekrar Deneyiniz</p>");
+                            return;
+                        }
+                        SerikBLDCore::Imar::MimariProje::BaseProject filter;
+                        filter.setOid (mProje.oid ().value ());
 
-                    }else{
                         for( auto i = 0 ; i < mProje.projeCount () ; i++ ){
                             filter.addProje (mProje[i].value ());
                         }
                         filter.removeProje (bsoncxx::oid{fileoidText->text ().toUTF8 ()});
+                        SerikBLDCore::Imar::MimariProje::FileProject newFileProject;
+                        newFileProject.setOnay (false);
+                        newFileProject.setProjeAdi (mProje[i].value ().projeAdi ());
+                        auto newFileOid = SerikBLDCore::Imar::BaseProjeManager::getDB ()->uploadfile (fileuploader->fileLocation ().toStdString ().c_str ());
+                        newFileProject.setFileOid (newFileOid.get_oid ().value);
+                        filter.addProje (newFileProject);
+                        auto upt = SerikBLDCore::Imar::BaseProjeManager::UpdateItem (filter);
+                        if( !upt ){
+                            this->showPopUpMessage ("<p>Dosya Güncellenemedi</p><p>Sürekli Aynı Hatayı Alıyorsanız Lütfen İlgili Kişi ile İrtibata Geçiniz</p>");
+                            return;
+                        }
+                        this->addIslemLog ("<u><b>"+mProje[i].value ().projeAdi () + "</b></u> Dosyası Değiştirildi",mProje.oid ().value ());
+
+                        this->remogeDialog (mDialog);
+                        this->loadProject (mProje.oid ().value ());
+                    });
+                });
+
+
+                auto projeAdiniDegistirBtn = mDialog->contents ()->addWidget (cpp14::make_unique<WPushButton>("Adını Değiştir"));
+                projeAdiniDegistirBtn->setMargin (5,Side::Left|Side::Right);
+                projeAdiniDegistirBtn->clicked ().connect ([=](){
+
+                    mDialog->contents ()->clear ();
+
+
+                    mDialog->contents ()->addWidget (cpp14::make_unique<WText>("Proje Adını Değiştir"));
+
+                    auto projeYeniAdiLineEdit = mDialog->contents ()->addWidget (cpp14::make_unique<WLineEdit>());
+                    projeYeniAdiLineEdit->setPlaceholderText ("Proje Dosyasının Yeni Adını Giriniz");
+
+
+                    auto svBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet"));
+                    svBtn->clicked ().connect ([=](){
+
+                        SerikBLDCore::Imar::MimariProje::BaseProject filter;
+                        filter.setOid (mProje.oid ().value ());
+
+                        for( auto i = 0 ; i < mProje.projeCount () ; i++ ){
+                            filter.addProje (mProje[i].value ());
+                        }
+                        filter.removeProje (bsoncxx::oid{fileoidText->text ().toUTF8 ()});
+                        SerikBLDCore::Imar::MimariProje::FileProject newFileProject;
+                        newFileProject.setOnay (false);
+                        newFileProject.setProjeAdi (projeYeniAdiLineEdit->text ().toUTF8 ());
+                        newFileProject.setFileOid (bsoncxx::oid{fileoidText->text ().toUTF8 ()});
+
+                        filter.addProje (newFileProject);
 
                         auto upt = SerikBLDCore::Imar::BaseProjeManager::UpdateItem (filter);
                         if( !upt ){
@@ -2385,15 +2300,105 @@ void v2::KurumsalProjeView::loadProject(const bsoncxx::oid &projectOid)
                                                     "<p>Sürekli Aynı Hatayı Alıyorsanız Lütfen İlgili Kişi ile İrtibata Geçiniz</p>");
                             return;
                         }
-                        this->addIslemLog (mProje[i].value ().projeAdi () + " Dosyası Silindi",mProje.oid ().value ());
+                        this->addIslemLog (mProje[i].value ().projeAdi () + " Adı Değiştirildi. Yeni Adı: " + projeYeniAdiLineEdit->text ().toUTF8 () ,mProje.oid ().value ());
 
                         this->remogeDialog (mDialog);
                         this->loadProject (mProje.oid ().value ());
-                    }
-
-
+                    });
                 });
-            });
+
+
+
+                auto projeOnaylaBtn = mDialog->contents ()->addWidget (cpp14::make_unique<WPushButton>("Onayla"));
+                projeOnaylaBtn->setMargin (5,Side::Left|Side::Right);
+                projeOnaylaBtn->addStyleClass (Bootstrap::Button::Success);
+                projeOnaylaBtn->clicked ().connect ([=](){
+
+                    mDialog->contents ()->clear ();
+
+                    auto svBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Onayla"));
+                    svBtn->addStyleClass (Bootstrap::Button::Success);
+                    svBtn->clicked ().connect ([=](){
+
+                        SerikBLDCore::Imar::MimariProje::BaseProject filter;
+                        filter.setOid (mProje.oid ().value ());
+
+                        for( auto i = 0 ; i < mProje.projeCount () ; i++ ){
+                            filter.addProje (mProje[i].value ());
+                        }
+                        filter.removeProje (bsoncxx::oid{fileoidText->text ().toUTF8 ()});
+                        SerikBLDCore::Imar::MimariProje::FileProject newFileProject;
+                        newFileProject.setOnay (true);
+                        newFileProject.setProjeAdi (mProje[i].value ().projeAdi ());
+                        newFileProject.setFileOid (bsoncxx::oid{fileoidText->text ().toUTF8 ()});
+
+                        filter.addProje (newFileProject);
+
+                        auto upt = SerikBLDCore::Imar::BaseProjeManager::UpdateItem (filter);
+                        if( !upt ){
+                            this->showPopUpMessage ("<p>Dosya Güncellenemedi</p>"
+                                                    "<p>Sürekli Aynı Hatayı Alıyorsanız Lütfen İlgili Kişi ile İrtibata Geçiniz</p>");
+                            return;
+                        }
+                        this->addIslemLog ("<b><u>"+mProje[i].value ().projeAdi () + "</u></b> Proje Onaylandı." ,mProje.oid ().value ());
+
+                        this->remogeDialog (mDialog);
+                        this->loadProject (mProje.oid ().value ());
+                    });
+                });
+
+
+
+                auto projeSilBtn = mDialog->contents ()->addWidget (cpp14::make_unique<WPushButton>("Sil"));
+                projeSilBtn->setMargin (5,Side::Left|Side::Right);
+                projeSilBtn->addStyleClass (Bootstrap::Button::Danger);
+                projeSilBtn->clicked ().connect ([=](){
+
+                    mDialog->contents ()->clear ();
+
+
+                    mDialog->contents ()->addWidget (cpp14::make_unique<WText>("Proje Sil"));
+
+
+                    auto svBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Sil"));
+                    svBtn->clicked ().connect ([=](){
+
+                        SerikBLDCore::Imar::MimariProje::BaseProject filter;
+                        filter.setOid (mProje.oid ().value ());
+
+                        if( mProje.projeCount () == 1 ){
+
+                            if( SerikBLDCore::Imar::BaseProjeManager::getDB ()->removeField (filter,SerikBLDCore::Imar::MimariProje::BaseProject::keyProje) ){
+                                this->addIslemLog (mProje[i].value ().projeAdi () + " Dosyası Silindi",mProje.oid ().value ());
+                                this->loadProject (mProje.oid ().value ());
+                                this->showPopUpMessage ("<p>Proje Dosyası Silindi</p>");
+                                this->remogeDialog (mDialog);
+                            }
+
+                        }else{
+                            for( auto i = 0 ; i < mProje.projeCount () ; i++ ){
+                                filter.addProje (mProje[i].value ());
+                            }
+                            filter.removeProje (bsoncxx::oid{fileoidText->text ().toUTF8 ()});
+
+                            auto upt = SerikBLDCore::Imar::BaseProjeManager::UpdateItem (filter);
+                            if( !upt ){
+                                this->showPopUpMessage ("<p>Dosya Güncellenemedi</p>"
+                                                        "<p>Sürekli Aynı Hatayı Alıyorsanız Lütfen İlgili Kişi ile İrtibata Geçiniz</p>");
+                                return;
+                            }
+                            this->addIslemLog (mProje[i].value ().projeAdi () + " Dosyası Silindi",mProje.oid ().value ());
+
+                            this->remogeDialog (mDialog);
+                            this->loadProject (mProje.oid ().value ());
+                        }
+
+
+                    });
+                });
+
+            }
+
 
             auto projeDosyaIndirlBtn = mDialog->contents ()->addWidget (cpp14::make_unique<WPushButton>("Dosyayı İndir"));
             projeDosyaIndirlBtn->setMargin (5,Side::Left|Side::Right);
