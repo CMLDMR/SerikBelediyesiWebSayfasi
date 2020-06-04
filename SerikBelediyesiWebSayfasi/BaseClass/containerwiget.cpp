@@ -189,7 +189,7 @@ void ContainerWidget::showPopUpMessage(const std::string &msg, const std::string
 
     auto container = wApp->root ()->addWidget (cpp14::make_unique<WContainerWidget>());
     container->setPositionScheme (PositionScheme::Fixed);
-    container->addStyleClass ("boxShadow");
+    container->addStyleClass ("boxShadow boxRadius");
     container->setZIndex (10000);
     if( infoType == "info" )
     {
@@ -197,7 +197,7 @@ void ContainerWidget::showPopUpMessage(const std::string &msg, const std::string
         container->setOffsets (WLength(0),Side::Right);
         container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Green::ForestGreen)+
                                       Style::color::color (Style::color::White::Snow)+
-                                      Style::font::weight::lighter+Style::font::size::s12px);
+                                      Style::font::weight::lighter+Style::font::size::s16px);
 
         container->addWidget (cpp14::make_unique<WText>("  "+msg+"  ",TextFormat::UnsafeXHTML))->setPadding (10,Side::Left|Side::Right);
         container->addStyleClass ("popMessage");

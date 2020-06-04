@@ -96,6 +96,7 @@ INCLUDEPATH += $$PWD/../../Comman
 DEPENDPATH += $$PWD/../../Comman
 
 HEADERS += \
+    ../../Comman/CSSCustom.h \
     SerikBelediyesiWebSayfasi/BaseClass/containerwiget.h \
     SerikBelediyesiWebSayfasi/BaseClass/dbclass.h \
     SerikBelediyesiWebSayfasi/BaseClass/dialog.h \

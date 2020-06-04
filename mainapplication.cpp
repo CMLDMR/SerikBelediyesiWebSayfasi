@@ -61,6 +61,7 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
     WApplication::useStyleSheet(WLink("css/slider.css"));
     WApplication::useStyleSheet(WLink("css/eventWidget.css"));
     WApplication::useStyleSheet(WLink("css/header.css"));
+    WApplication::useStyleSheet(WLink("css/style.css"));
 
     //    WApplication::useStyleSheet(WLink("css/test.css"));
 

@@ -64,5 +64,7 @@ std::unique_ptr<WContainerWidget>  v2::BirimIsleriContainer::createMenu(const st
     auto btnText = container->addWidget (cpp14::make_unique<WText>("<b>"+menuName+"</b>"));
     btnText->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
     container->decorationStyle ().setCursor (cursor);
+    container->addStyleClass (CSSStyle::Button::blueButton);
+    container->setHeight (50);
     return container;
 }

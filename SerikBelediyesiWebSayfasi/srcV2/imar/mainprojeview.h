@@ -31,26 +31,32 @@ public:
 
     virtual void loadProject(const bsoncxx::oid& projectOid );
 
-
-
-
-
-
-
-
     void onList(const QVector<SerikBLDCore::Imar::MimariProje::BaseProject> *mlist) override;
 
-    void onList(const QVector<SerikBLDCore::Imar::MimariLog> *mlist) override;
+    virtual void onList(const QVector<SerikBLDCore::Imar::MimariLog> *mlist) override;
 
     void errorOccured(const std::string &errorText) override;
 
+    std::string selectedProjectOid() const;
+
+    int currentLogFilterIndex() const;
+
+    virtual void addIslemLog( const std::string log , const bsoncxx::oid& projeOid );
+
+    void setSelectedProjectOid(const std::string &selectedProjectOid);
+
 private:
     int mCurrentLogFilterIndex;
+    std::string mSelectedProjectOid;
 
     std::map<std::string,std::string> mfilePathTitleMap;
 
     SerikBLDCore::TC* mTCUser;
 };
+
+
+
+
 
 
 class KurumsalProjeView : public MainProjeView
@@ -62,6 +68,10 @@ public:
     virtual void initHeader() override;
 
     virtual void loadProject(const bsoncxx::oid &projectOid) override;
+
+    void onList(const QVector<SerikBLDCore::Imar::MimariLog> *mlist) override;
+
+    virtual void addIslemLog( const std::string log , const bsoncxx::oid& projeOid ) override;
 
 
 private:

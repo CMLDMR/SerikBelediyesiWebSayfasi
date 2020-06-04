@@ -8,12 +8,12 @@ v2::MainProjeView::MainProjeView(MainProje &mainProje, SerikBLDCore::DB *_db, Se
       SerikBLDCore::Imar::BaseProjeManager (_db),
       SerikBLDCore::Imar::MimariLogManager (_db),
       mCurrentLogFilterIndex(0),
-      mTCUser(_mtcUser)
+      mTCUser(_mtcUser),
+      mSelectedProjectOid(this->oid ().value ().to_string ())
 {
     Header ()->setMargin (15,Side::Top|Side::Bottom);
 
-    SerikBLDCore::Imar::MimariLogManager::UpdateList (SerikBLDCore::Imar::MimariLog().setProjeOid (this->oid ().value ()));
-    SerikBLDCore::Imar::BaseProjeManager::UpdateList (SerikBLDCore::Imar::MimariProje::BaseProject().setMainProjeOid (this->oid ().value ()));
+
 
 }
 
@@ -96,6 +96,8 @@ void v2::MainProjeView::initHeader()
 
     gridLayout->addWidget (cpp14::make_unique<WContainerWidget>(),1,4,AlignmentFlag::Justify);
 
+    SerikBLDCore::Imar::MimariLogManager::UpdateList (SerikBLDCore::Imar::MimariLog().setProjeOid (this->oid ().value ()));
+    SerikBLDCore::Imar::BaseProjeManager::UpdateList (SerikBLDCore::Imar::MimariProje::BaseProject().setMainProjeOid (this->oid ().value ()));
 }
 
 void v2::MainProjeView::addNewProje(const int &projeType)
@@ -700,7 +702,6 @@ void v2::MainProjeView::onList(const QVector<SerikBLDCore::Imar::MimariProje::Ba
         container->addStyleClass ("boxShadow");
         container->setAttributeValue (Style::dataoid,item.oid ().value ().to_string ());
         container->clicked ().connect ([=](){
-            //           std::cout << "ItemOID: "<<item.oid ().value ().to_string () << std::endl;
             this->loadProject (item.oid ().value ());
         });
 
@@ -819,6 +820,45 @@ void v2::MainProjeView::onList(const QVector<SerikBLDCore::Imar::MimariLog> *mli
     aciklamaEkleContainer->decorationStyle ().setCursor (Cursor::PointingHand);
     auto aciklamaEkleText = aciklamaEkleContainer->addWidget (cpp14::make_unique<WText>("Açıklama Ekle"));
     aciklamaEkleText->setAttributeValue (Style::style,Style::font::size::s14px+Style::font::family::dosis);
+    aciklamaEkleContainer->clicked ().connect ([=](){
+       auto mDialog = createDialog ("Açıklama Ekle");
+
+       auto textEdit = mDialog->contents ()->addWidget (cpp14::make_unique<WTextEdit>());
+       textEdit->setWidth (WLength("100%"));
+       textEdit->setHeight (300);
+
+
+       auto saveBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet"));
+       saveBtn->addStyleClass (Bootstrap::Button::Primary);
+       saveBtn->clicked ().connect ([=](){
+
+           if( textEdit->text ().toUTF8 ().size () < 50 ){
+               this->showPopUpMessage ("Açıklamanız Yeterli Değil!.");
+               return;
+           }
+
+           SerikBLDCore::Imar::AciklamaLog aciklama;
+           aciklama.setAciklama (textEdit->text ().toUTF8 ());
+           aciklama.setProjeOid (bsoncxx::oid{this->selectedProjectOid ()});
+           aciklama.setEkleyen (mTCUser->AdSoyad ().toStdString ());
+           aciklama.setCurrentDateTime ();
+
+           auto ins = SerikBLDCore::Imar::MimariLogManager::InsertItem (aciklama);
+           if( !ins.empty () ){
+
+               SerikBLDCore::Imar::MimariLogManager::UpdateList (SerikBLDCore::Imar::MimariLog().setProjeOid (bsoncxx::oid{this->selectedProjectOid ()}));
+
+
+           }else{
+               this->showPopUpMessage ("Açıklama Eklenemedi");
+           }
+
+           remogeDialog (mDialog);
+
+       });
+
+       mDialog->show ();
+    });
 
     auto dosyaEkleContainer = Footer ()->addWidget (cpp14::make_unique<WContainerWidget>());
     dosyaEkleContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
@@ -831,6 +871,54 @@ void v2::MainProjeView::onList(const QVector<SerikBLDCore::Imar::MimariLog> *mli
     dosyaEkleContainer->decorationStyle ().setCursor (Cursor::PointingHand);
     auto dosyaaEkleText = dosyaEkleContainer->addWidget (cpp14::make_unique<WText>("Dosya Ekle"));
     dosyaaEkleText->setAttributeValue (Style::style,Style::font::size::s14px+Style::font::family::dosis);
+    dosyaEkleContainer->clicked ().connect ([=](){
+       auto mDialog = createDialog ("Dosya Ekle");
+
+       auto fileNameTextEdit = mDialog->contents ()->addWidget (cpp14::make_unique<WLineEdit>());
+       fileNameTextEdit->setPlaceholderText ("Dosya Adı/Tanımı Giriniz");
+
+       auto fileUploader = mDialog->contents ()->addWidget (cpp14::make_unique<FileUploaderWidget>("Dosya Yükle"));
+
+
+
+       auto saveBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet"));
+       saveBtn->addStyleClass (Bootstrap::Button::Primary);
+       saveBtn->clicked ().connect ([=](){
+
+           if( fileNameTextEdit->text ().toUTF8 ().size () < 10 ){
+               this->showPopUpMessage ("Dosya Adı Yeterli Uzunlukta Değil");
+               return;
+           }
+
+           if( !fileUploader->isUploaded () ){
+               this->showPopUpMessage ("Dosya Yüklemediniz!","err");
+               return;
+           }
+
+           auto val = SerikBLDCore::Imar::BaseProjeManager::uploadfile (fileUploader->fileLocation ());
+
+
+           SerikBLDCore::Imar::DosyaLog dosyaLog;
+           dosyaLog.setFileOid (val.get_oid ().value);
+           dosyaLog.setProjeOid (bsoncxx::oid{this->selectedProjectOid ()});
+           dosyaLog.setEkleyen (mTCUser->AdSoyad ().toStdString ());
+           dosyaLog.setFileName (fileNameTextEdit->text ().toUTF8 ());
+           dosyaLog.setCurrentDateTime ();
+           auto ins = SerikBLDCore::Imar::MimariLogManager::InsertItem (dosyaLog);
+
+           if( !ins.empty () ){
+               SerikBLDCore::Imar::MimariLogManager::UpdateList (SerikBLDCore::Imar::MimariLog().setProjeOid (bsoncxx::oid{this->selectedProjectOid ()}));
+           }else{
+               this->showPopUpMessage ("Dosya Eklenemedi");
+           }
+
+           remogeDialog (mDialog);
+
+       });
+
+       mDialog->show ();
+    });
+
 
 
     auto duzeltmeEkleContainer = Footer ()->addWidget (cpp14::make_unique<WContainerWidget>());
@@ -844,7 +932,43 @@ void v2::MainProjeView::onList(const QVector<SerikBLDCore::Imar::MimariLog> *mli
     duzeltmeEkleContainer->decorationStyle ().setCursor (Cursor::PointingHand);
     auto duzeltmeEkleText = duzeltmeEkleContainer->addWidget (cpp14::make_unique<WText>("Düzeltme Ekle"));
     duzeltmeEkleText->setAttributeValue (Style::style,Style::font::size::s14px+Style::font::family::dosis);
+    duzeltmeEkleContainer->clicked ().connect ([=](){
+       auto mDialog = createDialog ("Düzeltme Ekle");
 
+       auto fileNameTextEdit = mDialog->contents ()->addWidget (cpp14::make_unique<WLineEdit>());
+       fileNameTextEdit->setPlaceholderText ("Düzeltme Adı/Tanımı Giriniz");
+
+
+       auto saveBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet"));
+       saveBtn->addStyleClass (Bootstrap::Button::Primary);
+       saveBtn->clicked ().connect ([=](){
+
+           if( fileNameTextEdit->text ().toUTF8 ().size () < 10 ){
+               this->showPopUpMessage ("Düzeltme Adı Yeterli Uzunlukta Değil");
+               return;
+           }
+
+
+           SerikBLDCore::Imar::DuzeltmeLog duzeltmeLog;
+           duzeltmeLog.setDuzeltme (fileNameTextEdit->text ().toUTF8 ());
+           duzeltmeLog.setProjeOid (bsoncxx::oid{this->selectedProjectOid ()});
+           duzeltmeLog.setEkleyen (mTCUser->AdSoyad ().toStdString ());
+           duzeltmeLog.setCurrentDateTime ();
+
+           auto ins = SerikBLDCore::Imar::MimariLogManager::InsertItem (duzeltmeLog);
+
+           if( !ins.empty () ){
+               SerikBLDCore::Imar::MimariLogManager::UpdateList (SerikBLDCore::Imar::MimariLog().setProjeOid (bsoncxx::oid{this->selectedProjectOid ()}));
+           }else{
+               this->showPopUpMessage ("Düzeltme Eklenemedi");
+           }
+
+           remogeDialog (mDialog);
+
+       });
+
+       mDialog->show ();
+    });
 
 
     for( auto item : *mlist ){
@@ -926,7 +1050,7 @@ void v2::MainProjeView::onList(const QVector<SerikBLDCore::Imar::MimariLog> *mli
                     loggerText->setAttributeValue (Style::style,Style::font::size::s11px+Style::font::weight::bold+Style::font::family::dosis);
 
                 }
-                auto text = container->addWidget (cpp14::make_unique<WText>(sItem.fileOid ()));
+                auto text = container->addWidget (cpp14::make_unique<WText>(sItem.fileName ()));
                 text->setAttributeValue (Style::style,Style::font::family::dosis);
                 text->setPadding (5,Side::Left|Side::Right);
                 container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Grey::SlateGray)
@@ -1025,12 +1149,44 @@ void v2::MainProjeView::onList(const QVector<SerikBLDCore::Imar::MimariLog> *mli
                 text->setAttributeValue (Style::style,Style::font::family::dosis);
                 text->setPadding (5,Side::Left|Side::Right);
                 if( sItem.duzeltildi () ){
-                    container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Green::LawnGreen)
+                    container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Green::DarkCyan)
                                                   +Style::color::color (Style::color::White::Snow));
                 }else{
                     container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Red::DarkRed)
                                                   +Style::color::color (Style::color::White::Snow));
                 }
+
+                if( !sItem.duzeltildi () ){
+                    container->decorationStyle ().setCursor (Cursor::PointingHand);
+                    container->clicked ().connect ([=](){
+                       auto mDialog = createDialog ("Düzeltmeyi Onayla!");
+
+                       auto saveBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Onayla"));
+                       saveBtn->addStyleClass (Bootstrap::Button::Primary);
+
+                       saveBtn->clicked ().connect ([=](){
+
+                           SerikBLDCore::Imar::DuzeltmeLog filter;
+                           filter.setOid (sItem.oid ().value ().to_string ());
+
+                           filter.setDuzeltildi (true);
+
+                           auto upt = SerikBLDCore::Imar::MimariLogManager::UpdateItem (filter);
+                           if( upt ){
+                               SerikBLDCore::Imar::MimariLogManager::UpdateList (SerikBLDCore::Imar::MimariLog().setProjeOid (this->oid ().value ()));
+                               this->showPopUpMessage ("<p>Düzeltme <u>Onaylandı</u></p>");
+                           }else{
+                               this->showPopUpMessage ("<p>Bir Hata Oluştu</p>"
+                                                       "<p>Düzeltme <u>Onaylanamadı/Yapılamadı</u><p>");
+                           }
+
+                           remogeDialog (mDialog);
+
+                       });
+
+                    });
+                }
+
 
             }
             break;
@@ -1065,9 +1221,42 @@ void v2::MainProjeView::errorOccured(const std::string &errorText)
     this->showPopUpMessage ("Hata: " + errorText , "err");
 }
 
+std::string v2::MainProjeView::selectedProjectOid() const
+{
+    return mSelectedProjectOid;
+}
+
+int v2::MainProjeView::currentLogFilterIndex() const
+{
+    return mCurrentLogFilterIndex;
+}
+
+void v2::MainProjeView::addIslemLog(const std::string log , const bsoncxx::oid& projeOid )
+{
+    SerikBLDCore::Imar::IslemLog islemlog;
+    islemlog.setLog (log);
+    islemlog.setCurrentDateTime ();
+    islemlog.setEkleyen (mTCUser->AdSoyad ().toStdString ());
+    islemlog.setProjeOid (projeOid);
+
+    auto ins = SerikBLDCore::Imar::MimariLogManager::InsertItem (islemlog);
+    if( !ins.empty () ){
+//        SerikBLDCore::Imar::MimariLogManager::UpdateList (SerikBLDCore::Imar::MimariLog().setProjeOid (projeOid));
+        this->showPopUpMessage ("Log Güncellendi");
+    }else{
+        this->showPopUpMessage ("Log Eklenemedi","err");
+    }
+}
+
+void v2::MainProjeView::setSelectedProjectOid(const std::string &selectedProjectOid)
+{
+    mSelectedProjectOid = selectedProjectOid;
+}
+
 
 void v2::MainProjeView::loadProject(const bsoncxx::oid &projectOid )
 {
+    mSelectedProjectOid = projectOid.to_string ();
     SerikBLDCore::Imar::MimariProje::BaseProject filter;
     filter.setOid (projectOid);
 
@@ -1092,9 +1281,11 @@ void v2::MainProjeView::loadProject(const bsoncxx::oid &projectOid )
     backText->setAttributeValue (Style::style,Style::font::family::dosis+Style::font::size::s14px+Style::color::color (Style::color::White::Snow));
     backContainer->decorationStyle ().setCursor (Cursor::PointingHand);
     backContainer->clicked ().connect ([=](){
+        mSelectedProjectOid = this->oid ().value ().to_string ();
         SerikBLDCore::Imar::MimariProje::BaseProject filter;
         filter.setMainProjeOid (this->oid ().value ());
         SerikBLDCore::Imar::BaseProjeManager::UpdateList(filter);
+        SerikBLDCore::Imar::MimariLogManager::UpdateList (SerikBLDCore::Imar::MimariLog().setProjeOid (this->oid ().value ()));
     });
 
 
@@ -1301,6 +1492,10 @@ void v2::MainProjeView::loadProject(const bsoncxx::oid &projectOid )
                                           Style::background::repeat::norepeat+
                                           Style::background::position::center_center);
         iconContainer->setHeight (80);
+
+
+
+
         projectFileContainer->addWidget (cpp14::make_unique<WBreak>());
         auto fileoidText = projectFileContainer->addWidget (cpp14::make_unique<WText>(mProje[i].value ().fileOid ()));
         fileoidText->setAttributeValue (Style::style,Style::font::family::dosis+ Style::font::size::s12px);
@@ -1318,13 +1513,36 @@ void v2::MainProjeView::loadProject(const bsoncxx::oid &projectOid )
 
             auto mDialog = createDialog ("Proje Detayları");
 
-
-            if( mProje.onay () ){
+            if( mProje[i].value ().onay () ){
 
                 auto text = mDialog->contents ()->addWidget (cpp14::make_unique<WText>("<b>Bu Proje Onaylanmış.Değişiklik Yapamazsınız!</b>"));
                 text->setPadding (5,AllSides);
                 text->setAttributeValue (Style::style,Style::background::color::color (Style::color::Red::DarkRed)+Style::color::color (Style::color::White::Snow)+Style::font::family::dosis);
-            }else{
+
+                mDialog->contents ()->addWidget (cpp14::make_unique<WBreak>());
+                mDialog->contents ()->addWidget (cpp14::make_unique<WContainerWidget>())->setHeight (15);
+                auto indirText = mDialog->contents ()->addWidget (cpp14::make_unique<WText>("<u>Dosyayı İndir</u>"));
+                indirText->setPadding (10,AllSides);
+                indirText->decorationStyle ().setCursor (Cursor::PointingHand);
+                indirText->setAttributeValue (Style::style,Style::background::color::color (Style::color::Grey::LightGray)+
+                                              Style::font::family::dosis+Style::font::size::s14px);
+                indirText->clicked ().connect ([=](){
+                    auto fileUrl = SerikBLDCore::Imar::BaseProjeManager::downloadFileWeb (mProje[i].value ().fileOid ().c_str ());
+                    this->doJavaScript ("window.open('"+fileUrl+"','_blank');");
+                    remogeDialog (mDialog);
+                });
+                return;
+            }
+
+
+
+            auto projeDosyaDegistirBtn = mDialog->contents ()->addWidget (cpp14::make_unique<WPushButton>("Proje Dosyasını Değiştir"));
+            projeDosyaDegistirBtn->setMargin (5,Side::Right|Side::Left);
+            projeDosyaDegistirBtn->clicked ().connect ([=](){
+
+                mDialog->contents ()->clear ();
+
+
                 mDialog->contents ()->addWidget (cpp14::make_unique<WText>("Proje Dosyasını Değiştir"));
 
                 auto fileuploader = mDialog->contents ()->addWidget (cpp14::make_unique<FileUploaderWidget>("Yeni Proje Dosyası"));
@@ -1333,15 +1551,58 @@ void v2::MainProjeView::loadProject(const bsoncxx::oid &projectOid )
                 auto svBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet"));
                 svBtn->clicked ().connect ([=](){
 
+
+
                     if( !fileuploader->isUploaded () ){
                         this->showPopUpMessage ("Yeni Dosya Yüklemediniz!");
                         return;
                     }
-
                     if( !SerikBLDCore::Imar::BaseProjeManager::getDB ()->deleteGridFS (fileoidText->text ().toUTF8 ().c_str ()) ){
-                        this->showPopUpMessage ("<p>Eski Dosya Silinemedi!</p><p>Tekrar Deneyiniz</p>");
+                        this->showPopUpMessage ("<p>Eski Dosya Silinemedi!</p>"
+                                                "<p>Tekrar Deneyiniz</p>");
                         return;
                     }
+                    SerikBLDCore::Imar::MimariProje::BaseProject filter;
+                    filter.setOid (mProje.oid ().value ());
+
+                    for( auto i = 0 ; i < mProje.projeCount () ; i++ ){
+                        filter.addProje (mProje[i].value ());
+                    }
+                    filter.removeProje (bsoncxx::oid{fileoidText->text ().toUTF8 ()});
+                    SerikBLDCore::Imar::MimariProje::FileProject newFileProject;
+                    newFileProject.setOnay (false);
+                    newFileProject.setProjeAdi (mProje[i].value ().projeAdi ());
+                    auto newFileOid = SerikBLDCore::Imar::BaseProjeManager::getDB ()->uploadfile (fileuploader->fileLocation ().toStdString ().c_str ());
+                    newFileProject.setFileOid (newFileOid.get_oid ().value);
+                    filter.addProje (newFileProject);
+                    auto upt = SerikBLDCore::Imar::BaseProjeManager::UpdateItem (filter);
+                    if( !upt ){
+                        this->showPopUpMessage ("<p>Dosya Güncellenemedi</p><p>Sürekli Aynı Hatayı Alıyorsanız Lütfen İlgili Kişi ile İrtibata Geçiniz</p>");
+                        return;
+                    }
+                    this->addIslemLog ("<u><b>"+mProje[i].value ().projeAdi () + "</b></u> Dosyası Değiştirildi",mProje.oid ().value ());
+
+                    this->remogeDialog (mDialog);
+                    this->loadProject (mProje.oid ().value ());
+                });
+            });
+
+
+            auto projeAdiniDegistirBtn = mDialog->contents ()->addWidget (cpp14::make_unique<WPushButton>("Proje Adını Değiştir"));
+            projeAdiniDegistirBtn->setMargin (5,Side::Left|Side::Right);
+            projeAdiniDegistirBtn->clicked ().connect ([=](){
+
+                mDialog->contents ()->clear ();
+
+
+                mDialog->contents ()->addWidget (cpp14::make_unique<WText>("Proje Adını Değiştir"));
+
+                auto projeYeniAdiLineEdit = mDialog->contents ()->addWidget (cpp14::make_unique<WLineEdit>());
+                projeYeniAdiLineEdit->setPlaceholderText ("Proje Dosyasının Yeni Adını Giriniz");
+
+
+                auto svBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet"));
+                svBtn->clicked ().connect ([=](){
 
                     SerikBLDCore::Imar::MimariProje::BaseProject filter;
                     filter.setOid (mProje.oid ().value ());
@@ -1349,40 +1610,166 @@ void v2::MainProjeView::loadProject(const bsoncxx::oid &projectOid )
                     for( auto i = 0 ; i < mProje.projeCount () ; i++ ){
                         filter.addProje (mProje[i].value ());
                     }
-
                     filter.removeProje (bsoncxx::oid{fileoidText->text ().toUTF8 ()});
-
                     SerikBLDCore::Imar::MimariProje::FileProject newFileProject;
                     newFileProject.setOnay (false);
-                    newFileProject.setProjeAdi (mProje[i].value ().projeAdi ());
-
-                    auto newFileOid = SerikBLDCore::Imar::BaseProjeManager::getDB ()->uploadfile (fileuploader->fileLocation ().toStdString ().c_str ());
-                    newFileProject.setFileOid (newFileOid.get_oid ().value);
+                    newFileProject.setProjeAdi (projeYeniAdiLineEdit->text ().toUTF8 ());
+                    newFileProject.setFileOid (bsoncxx::oid{fileoidText->text ().toUTF8 ()});
 
                     filter.addProje (newFileProject);
 
-
                     auto upt = SerikBLDCore::Imar::BaseProjeManager::UpdateItem (filter);
-
                     if( !upt ){
-                        this->showPopUpMessage ("<p>Dosya Güncellenemedi</p><p>Sürekli Aynı Hatayı Alıyorsanız Lütfen İlgili Kişi ile İrtibata Geçiniz</p>");
+                        this->showPopUpMessage ("<p>Dosya Güncellenemedi</p>"
+                                                "<p>Sürekli Aynı Hatayı Alıyorsanız Lütfen İlgili Kişi ile İrtibata Geçiniz</p>");
                         return;
                     }
+                    this->addIslemLog (mProje[i].value ().projeAdi () + " Adı Değiştirildi. Yeni Adı: " + projeYeniAdiLineEdit->text ().toUTF8 () ,mProje.oid ().value ());
 
                     this->remogeDialog (mDialog);
-
                     this->loadProject (mProje.oid ().value ());
+                });
+            });
+
+
+
+            auto projeSilBtn = mDialog->contents ()->addWidget (cpp14::make_unique<WPushButton>("Projeyi Sil"));
+            projeSilBtn->setMargin (5,Side::Left|Side::Right);
+            projeSilBtn->addStyleClass (Bootstrap::Button::Danger);
+            projeSilBtn->clicked ().connect ([=](){
+
+                mDialog->contents ()->clear ();
+
+
+                mDialog->contents ()->addWidget (cpp14::make_unique<WText>("Proje Sil"));
+
+
+                auto svBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Sil"));
+                svBtn->clicked ().connect ([=](){
+
+                    SerikBLDCore::Imar::MimariProje::BaseProject filter;
+                    filter.setOid (mProje.oid ().value ());
+
+                    if( mProje.projeCount () == 1 ){
+
+                        if( SerikBLDCore::Imar::BaseProjeManager::getDB ()->removeField (filter,SerikBLDCore::Imar::MimariProje::BaseProject::keyProje) ){
+                            this->addIslemLog (mProje[i].value ().projeAdi () + " Dosyası Silindi",mProje.oid ().value ());
+                            this->loadProject (mProje.oid ().value ());
+                            this->showPopUpMessage ("<p>Proje Dosyası Silindi</p>");
+                            this->remogeDialog (mDialog);
+                        }
+
+                    }else{
+                        for( auto i = 0 ; i < mProje.projeCount () ; i++ ){
+                            filter.addProje (mProje[i].value ());
+                        }
+                        filter.removeProje (bsoncxx::oid{fileoidText->text ().toUTF8 ()});
+
+                        auto upt = SerikBLDCore::Imar::BaseProjeManager::UpdateItem (filter);
+                        if( !upt ){
+                            this->showPopUpMessage ("<p>Dosya Güncellenemedi</p>"
+                                                    "<p>Sürekli Aynı Hatayı Alıyorsanız Lütfen İlgili Kişi ile İrtibata Geçiniz</p>");
+                            return;
+                        }
+                        this->addIslemLog (mProje[i].value ().projeAdi () + " Dosyası Silindi",mProje.oid ().value ());
+
+                        this->remogeDialog (mDialog);
+                        this->loadProject (mProje.oid ().value ());
+                    }
+
 
                 });
-            }
+            });
+
+            auto projeDosyaIndirlBtn = mDialog->contents ()->addWidget (cpp14::make_unique<WPushButton>("Dosyayı İndir"));
+            projeDosyaIndirlBtn->setMargin (5,Side::Left|Side::Right);
+            projeDosyaIndirlBtn->addStyleClass (Bootstrap::Button::Link);
+            projeDosyaIndirlBtn->clicked ().connect ([=](){
+                auto fileUrl = SerikBLDCore::Imar::BaseProjeManager::downloadFileWeb (mProje[i].value ().fileOid ().c_str ());
+                this->doJavaScript ("window.open('"+fileUrl+"','_blank');");
+                remogeDialog (mDialog);
+            });
+
 
 
             mDialog->show ();
 
-
         });
 
+
+
+
     }
+
+
+    {
+        auto projectFileContainer = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        projectFileContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                                             Bootstrap::Grid::Medium::col_md_2+
+                                             Bootstrap::Grid::Small::col_sm_3+
+                                             Bootstrap::Grid::ExtraSmall::col_xs_4+
+                                             Bootstrap::ImageShape::img_thumbnail);
+        projectFileContainer->addStyleClass (Bootstrap::Button::info);
+        projectFileContainer->setMargin (5,Side::Top);
+        projectFileContainer->setHeight (200);
+        auto yeniEkleText = projectFileContainer->addWidget (cpp14::make_unique<WText>("<b>Yeni Proje Dosyası Ekle</b>"));
+        yeniEkleText->setAttributeValue (Style::style,Style::font::family::dosis+
+                                         Style::color::color (Style::color::White::Snow));
+        projectFileContainer->decorationStyle ().setCursor (Cursor::PointingHand);
+
+
+        // TODO: yeni Proje Dosyası Ekleme
+        projectFileContainer->clicked ().connect ([=](){
+
+            auto mDialog = createDialog ("Yeni Dosya Ekle");
+
+            mDialog->contents ()->clear ();
+
+
+            mDialog->contents ()->addWidget (cpp14::make_unique<WText>("Proje Dosyasını Ekle"));
+            auto fileNameLineEdit = mDialog->contents ()->addWidget (cpp14::make_unique<WLineEdit>());
+            fileNameLineEdit->setPlaceholderText ("Proje Adını Giriniz");
+
+            auto fileuploader = mDialog->contents ()->addWidget (cpp14::make_unique<FileUploaderWidget>("Yeni Proje Dosyası"));
+
+
+            auto svBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet"));
+            svBtn->clicked ().connect ([=](){
+                if( !fileuploader->isUploaded () ){
+                    this->showPopUpMessage ("Yeni Dosya Yüklemediniz!");
+                    return;
+                }
+
+
+                SerikBLDCore::Imar::MimariProje::BaseProject filter;
+                filter.setOid (mProje.oid ().value ());
+
+                for( auto i = 0 ; i < mProje.projeCount () ; i++ ){
+                    filter.addProje (mProje[i].value ());
+                }
+
+                SerikBLDCore::Imar::MimariProje::FileProject newFileProject;
+                newFileProject.setOnay (false);
+                auto newFileOid = SerikBLDCore::Imar::BaseProjeManager::getDB ()->uploadfile (fileuploader->fileLocation ().toStdString ().c_str ());
+                newFileProject.setFileOid (newFileOid.get_oid ().value);
+                newFileProject.setProjeAdi (fileNameLineEdit->text ().toUTF8 ());
+                filter.addProje (newFileProject);
+                auto upt = SerikBLDCore::Imar::BaseProjeManager::UpdateItem (filter);
+                if( !upt ){
+                    this->showPopUpMessage ("<p>Dosya Güncellenemedi</p><p>Sürekli Aynı Hatayı Alıyorsanız Lütfen İlgili Kişi ile İrtibata Geçiniz</p>");
+                    return;
+                }else{
+                    this->addIslemLog (fileNameLineEdit->text ().toUTF8 () + " Dosyası Eklendi",mProje.oid ().value ());
+                }
+                this->remogeDialog (mDialog);
+                this->loadProject (mProje.oid ().value ());
+            });
+
+            mDialog->show ();
+
+        });
+    }
+
 
 }
 
@@ -1447,10 +1834,13 @@ void v2::KurumsalProjeView::initHeader()
             ->addWidget (cpp14::make_unique<WText>(WString("{1}").arg (WDate::fromJulianDay (this->basvuruJulianDay ()).toString ("dd/MMMM/yyyy"))))
             ->setAttributeValue (Style::style,Style::font::family::dosis+Style::font::size::s14px);
 
+    SerikBLDCore::Imar::MimariLogManager::UpdateList (SerikBLDCore::Imar::MimariLog().setProjeOid (this->oid ().value ()));
+    SerikBLDCore::Imar::BaseProjeManager::UpdateList (SerikBLDCore::Imar::MimariProje::BaseProject().setMainProjeOid (this->oid ().value ()));
 }
 
 void v2::KurumsalProjeView::loadProject(const bsoncxx::oid &projectOid)
 {
+    this->setSelectedProjectOid (projectOid.to_string ());
     SerikBLDCore::Imar::MimariProje::BaseProject filter;
     filter.setOid (projectOid);
 
@@ -1475,6 +1865,7 @@ void v2::KurumsalProjeView::loadProject(const bsoncxx::oid &projectOid)
     backText->setAttributeValue (Style::style,Style::font::family::dosis+Style::font::size::s14px+Style::color::color (Style::color::White::Snow));
     backContainer->decorationStyle ().setCursor (Cursor::PointingHand);
     backContainer->clicked ().connect ([=](){
+        this->setSelectedProjectOid ( this->oid ().value ().to_string () );
         SerikBLDCore::Imar::MimariProje::BaseProject filter;
         filter.setMainProjeOid (this->oid ().value ());
         SerikBLDCore::Imar::BaseProjeManager::UpdateList(filter);
@@ -1726,13 +2117,81 @@ void v2::KurumsalProjeView::loadProject(const bsoncxx::oid &projectOid)
 
             auto mDialog = createDialog ("Proje Detayları");
 
-
-            if( mProje.onay () ){
+            if( mProje[i].value ().onay () ){
 
                 auto text = mDialog->contents ()->addWidget (cpp14::make_unique<WText>("<b>Bu Proje Onaylanmış.Değişiklik Yapamazsınız!</b>"));
                 text->setPadding (5,AllSides);
                 text->setAttributeValue (Style::style,Style::background::color::color (Style::color::Red::DarkRed)+Style::color::color (Style::color::White::Snow)+Style::font::family::dosis);
-            }else{
+
+                mDialog->contents ()->addWidget (cpp14::make_unique<WBreak>());
+                mDialog->contents ()->addWidget (cpp14::make_unique<WContainerWidget>())->setHeight (15);
+                auto indirText = mDialog->contents ()->addWidget (cpp14::make_unique<WText>("<u>Dosyayı İndir</u>"));
+                indirText->setPadding (10,AllSides);
+                indirText->decorationStyle ().setCursor (Cursor::PointingHand);
+                indirText->setAttributeValue (Style::style,Style::background::color::color (Style::color::Grey::LightGray)+
+                                              Style::font::family::dosis+Style::font::size::s14px);
+                indirText->clicked ().connect ([=](){
+                    auto fileUrl = SerikBLDCore::Imar::BaseProjeManager::downloadFileWeb (mProje[i].value ().fileOid ().c_str ());
+                    this->doJavaScript ("window.open('"+fileUrl+"','_blank');");
+                    remogeDialog (mDialog);
+                });
+
+
+                auto projeOnaylaBtn = mDialog->contents ()->addWidget (cpp14::make_unique<WPushButton>("Onayı Kaldır"));
+                projeOnaylaBtn->setMargin (5,Side::Left|Side::Right);
+                projeOnaylaBtn->addStyleClass (Bootstrap::Button::Danger);
+                projeOnaylaBtn->clicked ().connect ([=](){
+
+                    if( mProje.onay () ){
+                        this->showPopUpMessage ("İlk Önce Ana Projenin Onayını Kaldırınız","err");
+                        return;
+                    }
+
+                    mDialog->contents ()->clear ();
+
+                    auto svBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Onayı Kaldır"));
+                    svBtn->addStyleClass (Bootstrap::Button::Danger);
+                    svBtn->clicked ().connect ([=](){
+
+                        SerikBLDCore::Imar::MimariProje::BaseProject filter;
+                        filter.setOid (mProje.oid ().value ());
+
+                        for( auto i = 0 ; i < mProje.projeCount () ; i++ ){
+                            filter.addProje (mProje[i].value ());
+                        }
+                        filter.removeProje (bsoncxx::oid{fileoidText->text ().toUTF8 ()});
+                        SerikBLDCore::Imar::MimariProje::FileProject newFileProject;
+                        newFileProject.setOnay (false);
+                        newFileProject.setProjeAdi (mProje[i].value ().projeAdi ());
+                        newFileProject.setFileOid (bsoncxx::oid{fileoidText->text ().toUTF8 ()});
+
+                        filter.addProje (newFileProject);
+
+                        auto upt = SerikBLDCore::Imar::BaseProjeManager::UpdateItem (filter);
+                        if( !upt ){
+                            this->showPopUpMessage ("<p>Dosya Güncellenemedi</p>"
+                                                    "<p>Sürekli Aynı Hatayı Alıyorsanız Lütfen İlgili Kişi ile İrtibata Geçiniz</p>");
+                            return;
+                        }
+                        this->addIslemLog ("<b><u>"+mProje[i].value ().projeAdi () + "</u></b> Proje Onayı Kaldırıldı." ,mProje.oid ().value ());
+
+                        this->remogeDialog (mDialog);
+                        this->loadProject (mProje.oid ().value ());
+                    });
+                });
+
+                return;
+            }
+
+
+
+            auto projeDosyaDegistirBtn = mDialog->contents ()->addWidget (cpp14::make_unique<WPushButton>("Dosyayı Değiştir"));
+            projeDosyaDegistirBtn->setMargin (5,Side::Right|Side::Left);
+            projeDosyaDegistirBtn->clicked ().connect ([=](){
+
+                mDialog->contents ()->clear ();
+
+
                 mDialog->contents ()->addWidget (cpp14::make_unique<WText>("Proje Dosyasını Değiştir"));
 
                 auto fileuploader = mDialog->contents ()->addWidget (cpp14::make_unique<FileUploaderWidget>("Yeni Proje Dosyası"));
@@ -1741,15 +2200,58 @@ void v2::KurumsalProjeView::loadProject(const bsoncxx::oid &projectOid)
                 auto svBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet"));
                 svBtn->clicked ().connect ([=](){
 
+
+
                     if( !fileuploader->isUploaded () ){
                         this->showPopUpMessage ("Yeni Dosya Yüklemediniz!");
                         return;
                     }
-
                     if( !SerikBLDCore::Imar::BaseProjeManager::getDB ()->deleteGridFS (fileoidText->text ().toUTF8 ().c_str ()) ){
-                        this->showPopUpMessage ("<p>Eski Dosya Silinemedi!</p><p>Tekrar Deneyiniz</p>");
+                        this->showPopUpMessage ("<p>Eski Dosya Silinemedi!</p>"
+                                                "<p>Tekrar Deneyiniz</p>");
                         return;
                     }
+                    SerikBLDCore::Imar::MimariProje::BaseProject filter;
+                    filter.setOid (mProje.oid ().value ());
+
+                    for( auto i = 0 ; i < mProje.projeCount () ; i++ ){
+                        filter.addProje (mProje[i].value ());
+                    }
+                    filter.removeProje (bsoncxx::oid{fileoidText->text ().toUTF8 ()});
+                    SerikBLDCore::Imar::MimariProje::FileProject newFileProject;
+                    newFileProject.setOnay (false);
+                    newFileProject.setProjeAdi (mProje[i].value ().projeAdi ());
+                    auto newFileOid = SerikBLDCore::Imar::BaseProjeManager::getDB ()->uploadfile (fileuploader->fileLocation ().toStdString ().c_str ());
+                    newFileProject.setFileOid (newFileOid.get_oid ().value);
+                    filter.addProje (newFileProject);
+                    auto upt = SerikBLDCore::Imar::BaseProjeManager::UpdateItem (filter);
+                    if( !upt ){
+                        this->showPopUpMessage ("<p>Dosya Güncellenemedi</p><p>Sürekli Aynı Hatayı Alıyorsanız Lütfen İlgili Kişi ile İrtibata Geçiniz</p>");
+                        return;
+                    }
+                    this->addIslemLog ("<u><b>"+mProje[i].value ().projeAdi () + "</b></u> Dosyası Değiştirildi",mProje.oid ().value ());
+
+                    this->remogeDialog (mDialog);
+                    this->loadProject (mProje.oid ().value ());
+                });
+            });
+
+
+            auto projeAdiniDegistirBtn = mDialog->contents ()->addWidget (cpp14::make_unique<WPushButton>("Adını Değiştir"));
+            projeAdiniDegistirBtn->setMargin (5,Side::Left|Side::Right);
+            projeAdiniDegistirBtn->clicked ().connect ([=](){
+
+                mDialog->contents ()->clear ();
+
+
+                mDialog->contents ()->addWidget (cpp14::make_unique<WText>("Proje Adını Değiştir"));
+
+                auto projeYeniAdiLineEdit = mDialog->contents ()->addWidget (cpp14::make_unique<WLineEdit>());
+                projeYeniAdiLineEdit->setPlaceholderText ("Proje Dosyasının Yeni Adını Giriniz");
+
+
+                auto svBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet"));
+                svBtn->clicked ().connect ([=](){
 
                     SerikBLDCore::Imar::MimariProje::BaseProject filter;
                     filter.setOid (mProje.oid ().value ());
@@ -1757,38 +2259,561 @@ void v2::KurumsalProjeView::loadProject(const bsoncxx::oid &projectOid)
                     for( auto i = 0 ; i < mProje.projeCount () ; i++ ){
                         filter.addProje (mProje[i].value ());
                     }
-
                     filter.removeProje (bsoncxx::oid{fileoidText->text ().toUTF8 ()});
-
                     SerikBLDCore::Imar::MimariProje::FileProject newFileProject;
                     newFileProject.setOnay (false);
-                    newFileProject.setProjeAdi (mProje[i].value ().projeAdi ());
-
-                    auto newFileOid = SerikBLDCore::Imar::BaseProjeManager::getDB ()->uploadfile (fileuploader->fileLocation ().toStdString ().c_str ());
-                    newFileProject.setFileOid (newFileOid.get_oid ().value);
+                    newFileProject.setProjeAdi (projeYeniAdiLineEdit->text ().toUTF8 ());
+                    newFileProject.setFileOid (bsoncxx::oid{fileoidText->text ().toUTF8 ()});
 
                     filter.addProje (newFileProject);
 
-
                     auto upt = SerikBLDCore::Imar::BaseProjeManager::UpdateItem (filter);
-
                     if( !upt ){
-                        this->showPopUpMessage ("<p>Dosya Güncellenemedi</p><p>Sürekli Aynı Hatayı Alıyorsanız Lütfen İlgili Kişi ile İrtibata Geçiniz</p>");
+                        this->showPopUpMessage ("<p>Dosya Güncellenemedi</p>"
+                                                "<p>Sürekli Aynı Hatayı Alıyorsanız Lütfen İlgili Kişi ile İrtibata Geçiniz</p>");
                         return;
                     }
+                    this->addIslemLog (mProje[i].value ().projeAdi () + " Adı Değiştirildi. Yeni Adı: " + projeYeniAdiLineEdit->text ().toUTF8 () ,mProje.oid ().value ());
 
                     this->remogeDialog (mDialog);
-
                     this->loadProject (mProje.oid ().value ());
+                });
+            });
+
+
+
+            auto projeOnaylaBtn = mDialog->contents ()->addWidget (cpp14::make_unique<WPushButton>("Onayla"));
+            projeOnaylaBtn->setMargin (5,Side::Left|Side::Right);
+            projeOnaylaBtn->addStyleClass (Bootstrap::Button::Success);
+            projeOnaylaBtn->clicked ().connect ([=](){
+
+                mDialog->contents ()->clear ();
+
+                auto svBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Onayla"));
+                svBtn->addStyleClass (Bootstrap::Button::Success);
+                svBtn->clicked ().connect ([=](){
+
+                    SerikBLDCore::Imar::MimariProje::BaseProject filter;
+                    filter.setOid (mProje.oid ().value ());
+
+                    for( auto i = 0 ; i < mProje.projeCount () ; i++ ){
+                        filter.addProje (mProje[i].value ());
+                    }
+                    filter.removeProje (bsoncxx::oid{fileoidText->text ().toUTF8 ()});
+                    SerikBLDCore::Imar::MimariProje::FileProject newFileProject;
+                    newFileProject.setOnay (true);
+                    newFileProject.setProjeAdi (mProje[i].value ().projeAdi ());
+                    newFileProject.setFileOid (bsoncxx::oid{fileoidText->text ().toUTF8 ()});
+
+                    filter.addProje (newFileProject);
+
+                    auto upt = SerikBLDCore::Imar::BaseProjeManager::UpdateItem (filter);
+                    if( !upt ){
+                        this->showPopUpMessage ("<p>Dosya Güncellenemedi</p>"
+                                                "<p>Sürekli Aynı Hatayı Alıyorsanız Lütfen İlgili Kişi ile İrtibata Geçiniz</p>");
+                        return;
+                    }
+                    this->addIslemLog ("<b><u>"+mProje[i].value ().projeAdi () + "</u></b> Proje Onaylandı." ,mProje.oid ().value ());
+
+                    this->remogeDialog (mDialog);
+                    this->loadProject (mProje.oid ().value ());
+                });
+            });
+
+
+
+            auto projeSilBtn = mDialog->contents ()->addWidget (cpp14::make_unique<WPushButton>("Sil"));
+            projeSilBtn->setMargin (5,Side::Left|Side::Right);
+            projeSilBtn->addStyleClass (Bootstrap::Button::Danger);
+            projeSilBtn->clicked ().connect ([=](){
+
+                mDialog->contents ()->clear ();
+
+
+                mDialog->contents ()->addWidget (cpp14::make_unique<WText>("Proje Sil"));
+
+
+                auto svBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Sil"));
+                svBtn->clicked ().connect ([=](){
+
+                    SerikBLDCore::Imar::MimariProje::BaseProject filter;
+                    filter.setOid (mProje.oid ().value ());
+
+                    if( mProje.projeCount () == 1 ){
+
+                        if( SerikBLDCore::Imar::BaseProjeManager::getDB ()->removeField (filter,SerikBLDCore::Imar::MimariProje::BaseProject::keyProje) ){
+                            this->addIslemLog (mProje[i].value ().projeAdi () + " Dosyası Silindi",mProje.oid ().value ());
+                            this->loadProject (mProje.oid ().value ());
+                            this->showPopUpMessage ("<p>Proje Dosyası Silindi</p>");
+                            this->remogeDialog (mDialog);
+                        }
+
+                    }else{
+                        for( auto i = 0 ; i < mProje.projeCount () ; i++ ){
+                            filter.addProje (mProje[i].value ());
+                        }
+                        filter.removeProje (bsoncxx::oid{fileoidText->text ().toUTF8 ()});
+
+                        auto upt = SerikBLDCore::Imar::BaseProjeManager::UpdateItem (filter);
+                        if( !upt ){
+                            this->showPopUpMessage ("<p>Dosya Güncellenemedi</p>"
+                                                    "<p>Sürekli Aynı Hatayı Alıyorsanız Lütfen İlgili Kişi ile İrtibata Geçiniz</p>");
+                            return;
+                        }
+                        this->addIslemLog (mProje[i].value ().projeAdi () + " Dosyası Silindi",mProje.oid ().value ());
+
+                        this->remogeDialog (mDialog);
+                        this->loadProject (mProje.oid ().value ());
+                    }
+
 
                 });
-            }
+            });
+
+            auto projeDosyaIndirlBtn = mDialog->contents ()->addWidget (cpp14::make_unique<WPushButton>("Dosyayı İndir"));
+            projeDosyaIndirlBtn->setMargin (5,Side::Left|Side::Right);
+            projeDosyaIndirlBtn->addStyleClass (Bootstrap::Button::Link);
+            projeDosyaIndirlBtn->clicked ().connect ([=](){
+                auto fileUrl = SerikBLDCore::Imar::BaseProjeManager::downloadFileWeb (mProje[i].value ().fileOid ().c_str ());
+                this->doJavaScript ("window.open('"+fileUrl+"','_blank');");
+                remogeDialog (mDialog);
+            });
+
 
 
             mDialog->show ();
 
-
         });
 
+
+    }
+}
+
+void v2::KurumsalProjeView::onList(const QVector<SerikBLDCore::Imar::MimariLog> *mlist)
+{
+    Footer ()->clear ();
+    Footer ()->setMargin (20,Side::Top);
+    Footer ()->addStyleClass ("boxShadow");
+
+    auto aciklamaEkleContainer = Footer ()->addWidget (cpp14::make_unique<WContainerWidget>());
+    aciklamaEkleContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
+                                          Bootstrap::Grid::Medium::col_md_4+
+                                          Bootstrap::Grid::Small::col_sm_4+
+                                          Bootstrap::Grid::ExtraSmall::col_xs_4+
+                                          Bootstrap::Button::Primary);
+    aciklamaEkleContainer->setMargin (10,Side::Bottom);
+    aciklamaEkleContainer->setPadding (10,AllSides);
+    aciklamaEkleContainer->decorationStyle ().setCursor (Cursor::PointingHand);
+    auto aciklamaEkleText = aciklamaEkleContainer->addWidget (cpp14::make_unique<WText>("Açıklama Ekle"));
+    aciklamaEkleText->setAttributeValue (Style::style,Style::font::size::s14px+Style::font::family::dosis);
+    aciklamaEkleContainer->clicked ().connect ([=](){
+       auto mDialog = createDialog ("Açıklama Ekle");
+
+       auto textEdit = mDialog->contents ()->addWidget (cpp14::make_unique<WTextEdit>());
+       textEdit->setWidth (WLength("100%"));
+       textEdit->setHeight (300);
+
+
+       auto saveBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet"));
+       saveBtn->addStyleClass (Bootstrap::Button::Primary);
+       saveBtn->clicked ().connect ([=](){
+
+           if( textEdit->text ().toUTF8 ().size () < 50 ){
+               this->showPopUpMessage ("Açıklamanız Yeterli Değil!.");
+               return;
+           }
+
+           SerikBLDCore::Imar::AciklamaLog aciklama;
+           aciklama.setAciklama (textEdit->text ().toUTF8 ());
+           aciklama.setProjeOid (bsoncxx::oid{this->selectedProjectOid ()});
+           aciklama.setEkleyen (mUser->AdSoyad ());
+           aciklama.setCurrentDateTime ();
+
+           auto ins = SerikBLDCore::Imar::MimariLogManager::InsertItem (aciklama);
+           if( !ins.empty () ){
+
+               SerikBLDCore::Imar::MimariLogManager::UpdateList (SerikBLDCore::Imar::MimariLog().setProjeOid (bsoncxx::oid{this->selectedProjectOid ()}));
+
+
+           }else{
+               this->showPopUpMessage ("Açıklama Eklenemedi");
+           }
+
+           remogeDialog (mDialog);
+
+       });
+
+       mDialog->show ();
+    });
+
+    auto dosyaEkleContainer = Footer ()->addWidget (cpp14::make_unique<WContainerWidget>());
+    dosyaEkleContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
+                                          Bootstrap::Grid::Medium::col_md_4+
+                                          Bootstrap::Grid::Small::col_sm_4+
+                                          Bootstrap::Grid::ExtraSmall::col_xs_4+
+                                          Bootstrap::Button::info);
+    dosyaEkleContainer->setMargin (10,Side::Bottom);
+    dosyaEkleContainer->setPadding (10,AllSides);
+    dosyaEkleContainer->decorationStyle ().setCursor (Cursor::PointingHand);
+    auto dosyaaEkleText = dosyaEkleContainer->addWidget (cpp14::make_unique<WText>("Dosya Ekle"));
+    dosyaaEkleText->setAttributeValue (Style::style,Style::font::size::s14px+Style::font::family::dosis);
+    dosyaEkleContainer->clicked ().connect ([=](){
+       auto mDialog = createDialog ("Dosya Ekle");
+
+       auto fileNameTextEdit = mDialog->contents ()->addWidget (cpp14::make_unique<WLineEdit>());
+       fileNameTextEdit->setPlaceholderText ("Dosya Adı/Tanımı Giriniz");
+
+       auto fileUploader = mDialog->contents ()->addWidget (cpp14::make_unique<FileUploaderWidget>("Dosya Yükle"));
+
+
+
+       auto saveBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet"));
+       saveBtn->addStyleClass (Bootstrap::Button::Primary);
+       saveBtn->clicked ().connect ([=](){
+
+           if( fileNameTextEdit->text ().toUTF8 ().size () < 10 ){
+               this->showPopUpMessage ("Dosya Adı Yeterli Uzunlukta Değil");
+               return;
+           }
+
+           if( !fileUploader->isUploaded () ){
+               this->showPopUpMessage ("Dosya Yüklemediniz!","err");
+               return;
+           }
+
+           auto val = SerikBLDCore::Imar::BaseProjeManager::uploadfile (fileUploader->fileLocation ());
+
+
+           SerikBLDCore::Imar::DosyaLog dosyaLog;
+           dosyaLog.setFileOid (val.get_oid ().value);
+           dosyaLog.setProjeOid (bsoncxx::oid{this->selectedProjectOid ()});
+           dosyaLog.setEkleyen (mUser->AdSoyad ());
+           dosyaLog.setFileName (fileNameTextEdit->text ().toUTF8 ());
+           dosyaLog.setCurrentDateTime ();
+
+           auto ins = SerikBLDCore::Imar::MimariLogManager::InsertItem (dosyaLog);
+
+           if( !ins.empty () ){
+               SerikBLDCore::Imar::MimariLogManager::UpdateList (SerikBLDCore::Imar::MimariLog().setProjeOid (bsoncxx::oid{this->selectedProjectOid ()}));
+           }else{
+               this->showPopUpMessage ("Dosya Eklenemedi");
+           }
+
+           remogeDialog (mDialog);
+
+       });
+
+       mDialog->show ();
+    });
+
+
+
+    auto duzeltmeEkleContainer = Footer ()->addWidget (cpp14::make_unique<WContainerWidget>());
+    duzeltmeEkleContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
+                                          Bootstrap::Grid::Medium::col_md_4+
+                                          Bootstrap::Grid::Small::col_sm_4+
+                                          Bootstrap::Grid::ExtraSmall::col_xs_4+
+                                          Bootstrap::Button::Danger);
+    duzeltmeEkleContainer->setMargin (10,Side::Bottom);
+    duzeltmeEkleContainer->setPadding (10,AllSides);
+    duzeltmeEkleContainer->decorationStyle ().setCursor (Cursor::PointingHand);
+    auto duzeltmeEkleText = duzeltmeEkleContainer->addWidget (cpp14::make_unique<WText>("Düzeltme Ekle"));
+    duzeltmeEkleText->setAttributeValue (Style::style,Style::font::size::s14px+Style::font::family::dosis);
+    duzeltmeEkleContainer->clicked ().connect ([=](){
+       auto mDialog = createDialog ("Düzeltme Ekle");
+
+       auto fileNameTextEdit = mDialog->contents ()->addWidget (cpp14::make_unique<WLineEdit>());
+       fileNameTextEdit->setPlaceholderText ("Düzeltme Adı/Tanımı Giriniz");
+
+
+       auto saveBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet"));
+       saveBtn->addStyleClass (Bootstrap::Button::Primary);
+       saveBtn->clicked ().connect ([=](){
+
+           if( fileNameTextEdit->text ().toUTF8 ().size () < 10 ){
+               this->showPopUpMessage ("Düzeltme Adı Yeterli Uzunlukta Değil");
+               return;
+           }
+
+
+           SerikBLDCore::Imar::DuzeltmeLog duzeltmeLog;
+           duzeltmeLog.setDuzeltme (fileNameTextEdit->text ().toUTF8 ());
+           duzeltmeLog.setProjeOid (bsoncxx::oid{this->selectedProjectOid ()});
+           duzeltmeLog.setEkleyen (mUser->AdSoyad ());
+           duzeltmeLog.setCurrentDateTime ();
+
+           auto ins = SerikBLDCore::Imar::MimariLogManager::InsertItem (duzeltmeLog);
+
+           if( !ins.empty () ){
+               SerikBLDCore::Imar::MimariLogManager::UpdateList (SerikBLDCore::Imar::MimariLog().setProjeOid (bsoncxx::oid{this->selectedProjectOid ()}));
+           }else{
+               this->showPopUpMessage ("Düzeltme Eklenemedi");
+           }
+
+           remogeDialog (mDialog);
+
+       });
+
+       mDialog->show ();
+    });
+
+
+    for( auto item : *mlist ){
+        switch (item.LogType ()) {
+        case SerikBLDCore::Imar::MimariLog::Type::Log:
+            if( currentLogFilterIndex () == 0 || currentLogFilterIndex () == 4){
+                auto container = Footer ()->addWidget (cpp14::make_unique<WContainerWidget>());
+                container->addStyleClass (Bootstrap::Grid::col_full_12+Bootstrap::ImageShape::img_thumbnail+CSSStyle::Gradient::blueGradient);
+                container->setPadding (20,Side::Top);
+                container->setPadding (10,Side::Bottom);
+                container->setMargin (5,Side::Top|Side::Bottom);
+                container->setContentAlignment (AlignmentFlag::Left);
+
+                auto sItem = item.toIslemLog ();
+                container->setPositionScheme (PositionScheme::Relative);
+                {
+                    auto absoluteContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
+                    absoluteContainer->setPositionScheme (PositionScheme::Absolute);
+                    absoluteContainer->setOffsets (0,Side::Top);
+                    absoluteContainer->setOffsets (3,Side::Right);
+
+                    auto loggerText = absoluteContainer->addWidget (cpp14::make_unique<WText>(sItem.ekleyen () + " - " +
+                                                                                              WDate::fromJulianDay (sItem.julianDay ()).toString ("dd/MM/yyyy").toUTF8 () + " / " +
+                                                                                              QDateTime::fromSecsSinceEpoch (sItem.mSecEpoch ()).time ().toString ("hh:mm").toStdString ()));
+                    loggerText->setAttributeValue (Style::style,Style::font::size::s11px+Style::font::family::dosis);
+                }
+                {
+                    auto absoluteContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
+                    absoluteContainer->setPositionScheme (PositionScheme::Absolute);
+                    absoluteContainer->setOffsets (0,Side::Top);
+                    absoluteContainer->setOffsets (3,Side::Left);
+
+                    auto loggerText = absoluteContainer->addWidget (cpp14::make_unique<WText>("<u>İşlem</u>"));
+                    loggerText->setAttributeValue (Style::style,Style::font::size::s11px+Style::font::weight::bold+Style::font::family::dosis);
+                }
+                auto text = container->addWidget (cpp14::make_unique<WText>(sItem.log ()));
+                text->setAttributeValue (Style::style,Style::font::family::dosis);
+                text->setPadding (5,Side::Left|Side::Right);
+                container->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::Ivory));
+
+
+            }
+
+            break;
+
+        case SerikBLDCore::Imar::MimariLog::Type::Dosya:
+            if( currentLogFilterIndex () == 0 || currentLogFilterIndex () == 3){
+
+                auto container = Footer ()->addWidget (cpp14::make_unique<WContainerWidget>());
+                container->addStyleClass (Bootstrap::Grid::col_full_12+Bootstrap::ImageShape::img_thumbnail);
+                container->setPadding (20,Side::Top);
+                container->setPadding (10,Side::Bottom);
+                container->setMargin (5,Side::Top|Side::Bottom);
+                container->setContentAlignment (AlignmentFlag::Left);
+
+                auto sItem = item.toDosyaLog ();
+                container->setPositionScheme (PositionScheme::Relative);
+                {
+                    auto absoluteContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
+                    absoluteContainer->setPositionScheme (PositionScheme::Absolute);
+                    absoluteContainer->setOffsets (0,Side::Top);
+                    absoluteContainer->setOffsets (3,Side::Right);
+
+                    auto loggerText = absoluteContainer->addWidget (cpp14::make_unique<WText>(sItem.ekleyen () + " - " +
+                                                                                              WDate::fromJulianDay (sItem.julianDay ()).toString ("dd/MM/yyyy").toUTF8 () + " / " +
+                                                                                              QDateTime::fromSecsSinceEpoch (sItem.mSecEpoch ()).time ().toString ("hh:mm").toStdString ()));
+                    loggerText->setAttributeValue (Style::style,Style::font::size::s11px+Style::font::weight::bold+Style::font::family::dosis);
+                }
+                {
+                    auto absoluteContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
+                    absoluteContainer->setPositionScheme (PositionScheme::Absolute);
+                    absoluteContainer->setOffsets (0,Side::Top);
+                    absoluteContainer->setOffsets (3,Side::Left);
+
+                    //            absoluteContainer->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+                    auto loggerText = absoluteContainer->addWidget (cpp14::make_unique<WText>("<u>Dosya</u>"));
+                    loggerText->setAttributeValue (Style::style,Style::font::size::s11px+Style::font::weight::bold+Style::font::family::dosis);
+
+                }
+                auto text = container->addWidget (cpp14::make_unique<WText>(sItem.fileName ()));
+                text->setAttributeValue (Style::style,Style::font::family::dosis);
+                text->setPadding (5,Side::Left|Side::Right);
+                container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Grey::SlateGray)
+                                              +Style::color::color (Style::color::White::Snow));
+                container->decorationStyle ().setCursor (Cursor::PointingHand);
+
+                container->clicked ().connect ([=](){
+                    auto fileUrl = SerikBLDCore::Imar::MimariLogManager::downloadFileWeb (sItem.fileOid ().c_str ());
+                    this->doJavaScript ("window.open('"+fileUrl+"','_blank');");
+                });
+
+            }
+            break;
+
+        case SerikBLDCore::Imar::MimariLog::Type::Aciklama:
+            if( currentLogFilterIndex ()== 0 || currentLogFilterIndex () == 2){
+
+                auto container = Footer ()->addWidget (cpp14::make_unique<WContainerWidget>());
+                container->addStyleClass (Bootstrap::Grid::col_full_12+Bootstrap::ImageShape::img_thumbnail);
+                container->setPadding (20,Side::Top);
+                container->setPadding (10,Side::Bottom);
+                container->setMargin (5,Side::Top|Side::Bottom);
+                container->setContentAlignment (AlignmentFlag::Left);
+
+
+                auto sItem = item.toAciklamaLog ();
+                container->setPositionScheme (PositionScheme::Relative);
+                {
+                    auto absoluteContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
+                    absoluteContainer->setPositionScheme (PositionScheme::Absolute);
+                    absoluteContainer->setOffsets (0,Side::Top);
+                    absoluteContainer->setOffsets (3,Side::Right);
+
+                    auto loggerText = absoluteContainer->addWidget (cpp14::make_unique<WText>(sItem.ekleyen () + " - " +
+                                                                                              WDate::fromJulianDay (sItem.julianDay ()).toString ("dd/MM/yyyy").toUTF8 () + " / " +
+                                                                                              QDateTime::fromSecsSinceEpoch (sItem.mSecEpoch ()).time ().toString ("hh:mm").toStdString ()));
+                    loggerText->setAttributeValue (Style::style,Style::font::size::s11px+Style::font::weight::bold+Style::font::family::dosis);
+                }
+                {
+                    auto absoluteContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
+                    absoluteContainer->setPositionScheme (PositionScheme::Absolute);
+                    absoluteContainer->setOffsets (0,Side::Top);
+                    absoluteContainer->setOffsets (3,Side::Left);
+
+                    auto loggerText = absoluteContainer->addWidget (cpp14::make_unique<WText>("<u>Açıklama</u>"));
+                    loggerText->setAttributeValue (Style::style,Style::font::size::s11px+Style::font::weight::bold+Style::font::family::dosis);
+                }
+                auto text = container->addWidget (cpp14::make_unique<WText>(sItem.aciklama ()));
+                text->setAttributeValue (Style::style,Style::font::family::dosis);
+                text->setPadding (5,Side::Left|Side::Right);
+                container->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::GhostWhite)
+                                              +Style::color::color (Style::color::Grey::DimGray));
+
+
+            }
+
+            break;
+
+        case SerikBLDCore::Imar::MimariLog::Type::Duzeltme:
+            if( currentLogFilterIndex () == 0 || currentLogFilterIndex () == 1 ){
+
+                auto container = Footer ()->addWidget (cpp14::make_unique<WContainerWidget>());
+                container->addStyleClass (Bootstrap::Grid::col_full_12+Bootstrap::ImageShape::img_thumbnail);
+                container->setPadding (20,Side::Top);
+                container->setPadding (10,Side::Bottom);
+                container->setMargin (5,Side::Top|Side::Bottom);
+                container->setContentAlignment (AlignmentFlag::Left);
+                container->decorationStyle ().setCursor (Cursor::PointingHand);
+
+
+                auto sItem = item.toDuzeltmeLog ();
+                container->setPositionScheme (PositionScheme::Relative);
+                {
+                    auto absoluteContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
+                    absoluteContainer->setPositionScheme (PositionScheme::Absolute);
+                    absoluteContainer->setOffsets (0,Side::Top);
+                    absoluteContainer->setOffsets (3,Side::Right);
+
+                    //            absoluteContainer->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+                    auto loggerText = absoluteContainer->addWidget (cpp14::make_unique<WText>(sItem.ekleyen () + " - " +
+                                                                                              WDate::fromJulianDay (sItem.julianDay ()).toString ("dd/MM/yyyy").toUTF8 () + " / " +
+                                                                                              QDateTime::fromSecsSinceEpoch (sItem.mSecEpoch ()).time ().toString ("hh:mm").toStdString ()));
+                    loggerText->setAttributeValue (Style::style,Style::font::size::s11px+Style::font::weight::bold+Style::font::family::dosis);
+                }
+                {
+                    auto absoluteContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
+                    absoluteContainer->setPositionScheme (PositionScheme::Absolute);
+                    absoluteContainer->setOffsets (0,Side::Top);
+                    absoluteContainer->setOffsets (3,Side::Left);
+
+                    //            absoluteContainer->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+                    auto loggerText = absoluteContainer->addWidget (cpp14::make_unique<WText>(sItem.duzeltildi () ? "<u>Düzeltme Tamamlandı</u>" : "<u>Düzeltme Devam Ediyor</u>"));
+                    loggerText->setAttributeValue (Style::style,Style::font::size::s11px+Style::font::weight::bold+Style::font::family::dosis);
+
+                }
+                auto text = container->addWidget (cpp14::make_unique<WText>(sItem.duzeltme ()));
+                text->setAttributeValue (Style::style,Style::font::family::dosis);
+                text->setPadding (5,Side::Left|Side::Right);
+                if( sItem.duzeltildi () ){
+                    container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Green::DarkCyan)
+                                                  +Style::color::color (Style::color::White::Snow));
+                }else{
+                    container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Red::DarkRed)
+                                                  +Style::color::color (Style::color::White::Snow));
+                }
+
+                container->clicked ().connect ([=](){
+                   auto mDialog = createDialog ("Düzeltmeyi Onayla!");
+
+                   auto duzeltmeLineEdit = mDialog->contents ()->addWidget (cpp14::make_unique<WLineEdit>());
+                   duzeltmeLineEdit->setPlaceholderText ("Yapılan Düzeltme Tanımını Giriniz!");
+
+                   auto saveBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Onayla"));
+                   saveBtn->addStyleClass (Bootstrap::Button::Primary);
+
+                   saveBtn->clicked ().connect ([=](){
+
+                       SerikBLDCore::Imar::DuzeltmeLog filter;
+                       filter.setOid (sItem.oid ().value ().to_string ());
+
+                       filter.setDuzeltildi (true);
+
+                       auto upt = SerikBLDCore::Imar::MimariLogManager::UpdateItem (filter);
+                       if( upt ){
+                           SerikBLDCore::Imar::MimariLogManager::UpdateList (SerikBLDCore::Imar::MimariLog().setProjeOid (this->oid ().value ()));
+
+                       }else{
+                           this->showPopUpMessage ("<p>Bir Hata Oluştu</p>"
+                                                   "<p>Düzeltme <u>Onaylanamadı/Yapılamadı</u><p>");
+                       }
+
+                       remogeDialog (mDialog);
+
+                   });
+
+                });
+
+            }
+            break;
+
+        case SerikBLDCore::Imar::MimariLog::Type::bilinmeyen:
+        {
+
+            auto container = Footer ()->addWidget (cpp14::make_unique<WContainerWidget>());
+            container->addStyleClass (Bootstrap::Grid::col_full_12+Bootstrap::ImageShape::img_thumbnail);
+            container->setPadding (20,Side::Top);
+            container->setPadding (10,Side::Bottom);
+            container->setMargin (5,Side::Top|Side::Bottom);
+            container->setContentAlignment (AlignmentFlag::Left);
+
+            container->setPositionScheme (PositionScheme::Relative);
+            auto text = container->addWidget (cpp14::make_unique<WText>("Hatalı Log"));
+            text->setAttributeValue (Style::style,Style::font::family::dosis);
+            text->setPadding (5,Side::Left|Side::Right);
+            container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Grey::Black)
+                                          +Style::color::color (Style::color::White::Snow));
+
+        }
+            break;
+        default:
+            break;
+        }
+    }
+}
+
+void v2::KurumsalProjeView::addIslemLog(const std::string log, const bsoncxx::oid &projeOid)
+{
+    SerikBLDCore::Imar::IslemLog islemlog;
+    islemlog.setLog (log);
+    islemlog.setCurrentDateTime ();
+    islemlog.setEkleyen (mUser->AdSoyad ());
+    islemlog.setProjeOid (projeOid);
+
+    auto ins = SerikBLDCore::Imar::MimariLogManager::InsertItem (islemlog);
+    if( !ins.empty () ){
+//        SerikBLDCore::Imar::MimariLogManager::UpdateList (SerikBLDCore::Imar::MimariLog().setProjeOid (projeOid));
+        this->showPopUpMessage ("Log Güncellendi");
+    }else{
+        this->showPopUpMessage ("Log Eklenemedi","err");
     }
 }
