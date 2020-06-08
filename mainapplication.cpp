@@ -87,30 +87,6 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
                                            "gtag('config', 'UA-56529726-1');");
 
 
-    //    <!-- Global site tag (gtag.js) - Google Analytics -->
-    //    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-56529726-1"></script>
-    //    <script>
-    //      window.dataLayer = window.dataLayer || [];
-    //      function gtag(){dataLayer.push(arguments);}
-    //      gtag('js', new Date());
-
-    //      gtag('config', 'UA-56529726-1');
-    //    </script>
-
-
-
-
-    //    Wt::WApplication::require("ViewerJS/compatibility.js");
-    //    Wt::WApplication::require("ViewerJS/pdf.js");
-    //    Wt::WApplication::require("ViewerJS/pdf.worker.js");
-    //    Wt::WApplication::require("ViewerJS/pdfjsversion.js");
-    //    Wt::WApplication::require("ViewerJS/text_layer_builder.js");
-    //    Wt::WApplication::require("ViewerJS/ui_utils.js");
-    //    Wt::WApplication::require("ViewerJS/webodf.js");
-
-
-
-    //    Wt::WApplication::instance()->setBodyClass("introMain");
 
     WApplication::instance()->addMetaHeader("viewport","width=device-width, initial-scale=1.0");
     wApp->require("http://www.openlayers.org/api/OpenLayers.js");
@@ -152,6 +128,7 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
             auto oid = mapList["_id"];
             showSpecLink = this->loadGundem (oid.toStdString ());
         }
+
     }
 
 
