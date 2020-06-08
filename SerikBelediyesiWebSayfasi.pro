@@ -172,8 +172,11 @@ DISTFILES +=
 
     MSVC_VER = $$(VisualStudioVersion)
 
+    message("MSVC_VER : " + $$MSVC_VER)
+
+
     equals(MSVC_VER, 14.0){
-        message("msvc 2015 x64")
+        message("msvc 2015 x6400")
 
         win32:CONFIG(release, debug|release): LIBS += -L$$PWD/lib/ -lbsoncxx
         else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/lib/ -lbsoncxxd

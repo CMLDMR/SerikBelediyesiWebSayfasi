@@ -682,7 +682,7 @@ void GirisCikisWidget::addNinRow( QString PersonelName , QString BirimName )
     sabahinContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_3);
     auto sabahinimgContainer = sabahinContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     sabahinimgContainer->setHeight(65);
-    auto sabahintext = sabahinContainer->addWidget(cpp14::make_unique<WText>("Yok"));
+    sabahinContainer->addWidget(cpp14::make_unique<WText>("Yok"));
 
     auto sabahoutContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     sabahoutContainer->setHeight(80);
@@ -690,7 +690,7 @@ void GirisCikisWidget::addNinRow( QString PersonelName , QString BirimName )
     sabahoutContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_3);
     auto sabahoutimgContainer = sabahoutContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     sabahoutimgContainer->setHeight(65);
-    auto sabahouttext = sabahoutContainer->addWidget(cpp14::make_unique<WText>("Yok"));
+    sabahoutContainer->addWidget(cpp14::make_unique<WText>("Yok"));
 
 
     auto aksaminContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -699,7 +699,7 @@ void GirisCikisWidget::addNinRow( QString PersonelName , QString BirimName )
     aksaminContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_3);
     auto aksaminimgContainer = aksaminContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     aksaminimgContainer->setHeight(65);
-    auto aksamintext = aksaminContainer->addWidget(cpp14::make_unique<WText>("Yok"));
+    aksaminContainer->addWidget(cpp14::make_unique<WText>("Yok"));
 
     auto aksamoutContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     aksamoutContainer->setHeight(80);
@@ -707,7 +707,7 @@ void GirisCikisWidget::addNinRow( QString PersonelName , QString BirimName )
     aksamoutContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_3);
     auto aksamoutimgContainer = aksamoutContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     aksamoutimgContainer->setHeight(65);
-    auto aksamouttext = aksamoutContainer->addWidget(cpp14::make_unique<WText>("Yok"));
+    aksamoutContainer->addWidget(cpp14::make_unique<WText>("Yok"));
 
 
 

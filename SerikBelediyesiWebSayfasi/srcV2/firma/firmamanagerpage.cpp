@@ -110,7 +110,7 @@ void v2::FirmaManagerPage::onList(const QVector<SerikBLDCore::Firma::FirmaItem> 
                                       Bootstrap::Grid::Medium::col_md_2+
                                       Bootstrap::Grid::Small::col_sm_5+
                                       Bootstrap::Grid::ExtraSmall::col_xs_5);
-            auto firmaText = container->addWidget (cpp14::make_unique<WText>("<b>#Telefon</b>"));
+            container->addWidget (cpp14::make_unique<WText>("<b>#Telefon</b>"));
         }
 
         {
@@ -119,7 +119,7 @@ void v2::FirmaManagerPage::onList(const QVector<SerikBLDCore::Firma::FirmaItem> 
                                       Bootstrap::Grid::Medium::col_md_3+
                                       Bootstrap::Grid::Hidden::hidden_sm+
                                       Bootstrap::Grid::Hidden::hidden_xs);
-            auto firmaText = container->addWidget (cpp14::make_unique<WText>("<b>#eMail</b>"));
+            container->addWidget (cpp14::make_unique<WText>("<b>#eMail</b>"));
         }
 
         {
@@ -128,7 +128,7 @@ void v2::FirmaManagerPage::onList(const QVector<SerikBLDCore::Firma::FirmaItem> 
                                       Bootstrap::Grid::Medium::col_md_3+
                                       Bootstrap::Grid::Hidden::hidden_sm+
                                       Bootstrap::Grid::Hidden::hidden_xs);
-            auto firmaText = container->addWidget (cpp14::make_unique<WText>("<b>#VergiNo</b>"));
+            container->addWidget (cpp14::make_unique<WText>("<b>#VergiNo</b>"));
         }
 
 
@@ -153,7 +153,7 @@ void v2::FirmaManagerPage::onList(const QVector<SerikBLDCore::Firma::FirmaItem> 
                                       Bootstrap::Grid::Medium::col_md_3+
                                       Bootstrap::Grid::Small::col_sm_6+
                                       Bootstrap::Grid::ExtraSmall::col_xs_6);
-            auto firmaText = container->addWidget (cpp14::make_unique<WText>(item.name ()));
+            container->addWidget (cpp14::make_unique<WText>(item.name ()));
         }
 
         {
@@ -162,7 +162,7 @@ void v2::FirmaManagerPage::onList(const QVector<SerikBLDCore::Firma::FirmaItem> 
                                       Bootstrap::Grid::Medium::col_md_2+
                                       Bootstrap::Grid::Small::col_sm_5+
                                       Bootstrap::Grid::ExtraSmall::col_xs_5);
-            auto firmaText = container->addWidget (cpp14::make_unique<WText>(item.telefon ()));
+            container->addWidget (cpp14::make_unique<WText>(item.telefon ()));
         }
 
         {
@@ -171,7 +171,7 @@ void v2::FirmaManagerPage::onList(const QVector<SerikBLDCore::Firma::FirmaItem> 
                                       Bootstrap::Grid::Medium::col_md_3+
                                       Bootstrap::Grid::Hidden::hidden_sm+
                                       Bootstrap::Grid::Hidden::hidden_xs);
-            auto firmaText = container->addWidget (cpp14::make_unique<WText>(item.mail ()));
+            container->addWidget (cpp14::make_unique<WText>(item.mail ()));
         }
 
         {
@@ -180,7 +180,7 @@ void v2::FirmaManagerPage::onList(const QVector<SerikBLDCore::Firma::FirmaItem> 
                                       Bootstrap::Grid::Medium::col_md_3+
                                       Bootstrap::Grid::Hidden::hidden_sm+
                                       Bootstrap::Grid::Hidden::hidden_xs);
-            auto firmaText = container->addWidget (cpp14::make_unique<WText>(item.vergiNo ()));
+            container->addWidget (cpp14::make_unique<WText>(item.vergiNo ()));
         }
 
         {

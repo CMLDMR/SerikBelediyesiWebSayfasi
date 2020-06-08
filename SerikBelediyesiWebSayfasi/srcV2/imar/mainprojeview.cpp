@@ -8,13 +8,10 @@ v2::MainProjeView::MainProjeView(MainProje &mainProje, SerikBLDCore::DB *_db, Se
       SerikBLDCore::Imar::BaseProjeManager (_db),
       SerikBLDCore::Imar::MimariLogManager (_db),
       mCurrentLogFilterIndex(0),
-      mTCUser(_mtcUser),
-      mSelectedProjectOid(this->oid ().value ().to_string ())
+      mSelectedProjectOid(this->oid ().value ().to_string ()),
+      mTCUser(_mtcUser)
 {
     Header ()->setMargin (15,Side::Top|Side::Bottom);
-
-
-
 }
 
 void v2::MainProjeView::initHeader()
@@ -1278,6 +1275,10 @@ void v2::MainProjeView::setSelectedProjectOid(const std::string &selectedProject
     mSelectedProjectOid = selectedProjectOid;
 }
 
+SerikBLDCore::TC *v2::MainProjeView::User() const
+{
+    return mTCUser;
+}
 
 void v2::MainProjeView::loadProject(const bsoncxx::oid &projectOid )
 {
@@ -2037,78 +2038,78 @@ void v2::KurumsalProjeView::loadProject(const bsoncxx::oid &projectOid)
                                         Style::color::color (Style::color::White::Snow));
     onaylaContainer->setHeight (140);
 
-        if( mProje.onay () ){
+    if( mProje.onay () ){
 
-            if( this->mUser->oid ().value ().to_string () == mProje.assignedPersonelOid () ){
-                auto onaykaldirText = onaylaContainer->addWidget (cpp14::make_unique<WText>("<b>Onayı Kaldır</b>"));
-                onaykaldirText->setAttributeValue (Style::style,Style::background::color::color (Style::color::Red::DarkRed)+
-                                                   Style::font::family::dosis+Style::font::size::s18px+
-                                                   Style::color::color (Style::color::White::Snow));
-                onaykaldirText->addStyleClass (CSSStyle::Shadows::shadow8px+CSSStyle::Radius::radius3px);
-                onaykaldirText->setPadding (10,AllSides);
-                onaykaldirText->decorationStyle ().setCursor (Cursor::PointingHand);
+        if( this->mUser->oid ().value ().to_string () == mProje.assignedPersonelOid () ){
+            auto onaykaldirText = onaylaContainer->addWidget (cpp14::make_unique<WText>("<b>Onayı Kaldır</b>"));
+            onaykaldirText->setAttributeValue (Style::style,Style::background::color::color (Style::color::Red::DarkRed)+
+                                               Style::font::family::dosis+Style::font::size::s18px+
+                                               Style::color::color (Style::color::White::Snow));
+            onaykaldirText->addStyleClass (CSSStyle::Shadows::shadow8px+CSSStyle::Radius::radius3px);
+            onaykaldirText->setPadding (10,AllSides);
+            onaykaldirText->decorationStyle ().setCursor (Cursor::PointingHand);
 
-                onaykaldirText->clicked ().connect ([=](){
+            onaykaldirText->clicked ().connect ([=](){
 
-                    if( this->onay () ){
-                        this->showPopUpMessage ("İLk Önce Ana Projenin Onayını Kaldırınız","err");
+                if( this->onay () ){
+                    this->showPopUpMessage ("İLk Önce Ana Projenin Onayını Kaldırınız","err");
+                }else{
+                    SerikBLDCore::Imar::MimariProje::BaseProject filter;
+                    filter.setOid (mProje.oid ().value ());
+
+                    filter.setOnay (false);
+
+                    auto upt = SerikBLDCore::Imar::BaseProjeManager::UpdateItem (filter);
+
+                    if( upt ){
+                        this->addIslemLog (mProje.title () + " Onayı Kaldırıldı",mProje.oid ().value ());
+                        this->loadProject (mProje.oid ().value ());
                     }else{
-                        SerikBLDCore::Imar::MimariProje::BaseProject filter;
-                        filter.setOid (mProje.oid ().value ());
-
-                        filter.setOnay (false);
-
-                        auto upt = SerikBLDCore::Imar::BaseProjeManager::UpdateItem (filter);
-
-                        if( upt ){
-                            this->addIslemLog (mProje.title () + " Onayı Kaldırıldı",mProje.oid ().value ());
-                            this->loadProject (mProje.oid ().value ());
-                        }else{
-                            this->showPopUpMessage ("Projeyi Onayı Kaldırılamadı!. Daha Sonra Tekrar Deneyiniz","err");
-                        }
+                        this->showPopUpMessage ("Projeyi Onayı Kaldırılamadı!. Daha Sonra Tekrar Deneyiniz","err");
                     }
+                }
 
 
-                });
-            }
-
-
-        }else{
-            if( this->mUser->oid ().value ().to_string () == mProje.assignedPersonelOid () ){
-                auto onaykaldirText = onaylaContainer->addWidget (cpp14::make_unique<WText>("<b>ONAYLA</b>"));
-                onaykaldirText->setAttributeValue (Style::style,Style::background::color::color (Style::color::Green::DarkGreen)+
-                                                   Style::font::family::dosis+Style::font::size::s18px+
-                                                   Style::color::color (Style::color::White::Snow));
-                onaykaldirText->addStyleClass (CSSStyle::Shadows::shadow8px+CSSStyle::Radius::radius3px);
-                onaykaldirText->setPadding (10,AllSides);
-                onaykaldirText->decorationStyle ().setCursor (Cursor::PointingHand);
-
-                onaykaldirText->clicked ().connect ([=](){
-
-                    if( mProje.onaylanabilir () ){
-                        SerikBLDCore::Imar::MimariProje::BaseProject filter;
-                        filter.setOid (mProje.oid ().value ());
-
-                        filter.setOnay (true);
-
-                        auto upt = SerikBLDCore::Imar::BaseProjeManager::UpdateItem (filter);
-
-                        if( upt ){
-                            this->addIslemLog (mProje.title () + " Onaylandı" , mProje.oid ().value ());
-                            this->loadProject (mProje.oid ().value ());
-                        }else{
-                            this->showPopUpMessage ("Projeyi Onaylanamadı!. Daha Sonra Tekrar Deneyiniz","err");
-                        }
-                    }else{
-                        this->showPopUpMessage ("<p>Bazı Çizim Dosyaları Onaylanmamış!</p>"
-                                                "<p>Önce Onaylanmayan Çizim Dosyalarını Onaylayınız</p>","msg");
-                    }
-
-
-                });
-
-            }
+            });
         }
+
+
+    }else{
+        if( this->mUser->oid ().value ().to_string () == mProje.assignedPersonelOid () ){
+            auto onaykaldirText = onaylaContainer->addWidget (cpp14::make_unique<WText>("<b>ONAYLA</b>"));
+            onaykaldirText->setAttributeValue (Style::style,Style::background::color::color (Style::color::Green::DarkGreen)+
+                                               Style::font::family::dosis+Style::font::size::s18px+
+                                               Style::color::color (Style::color::White::Snow));
+            onaykaldirText->addStyleClass (CSSStyle::Shadows::shadow8px+CSSStyle::Radius::radius3px);
+            onaykaldirText->setPadding (10,AllSides);
+            onaykaldirText->decorationStyle ().setCursor (Cursor::PointingHand);
+
+            onaykaldirText->clicked ().connect ([=](){
+
+                if( mProje.onaylanabilir () ){
+                    SerikBLDCore::Imar::MimariProje::BaseProject filter;
+                    filter.setOid (mProje.oid ().value ());
+
+                    filter.setOnay (true);
+
+                    auto upt = SerikBLDCore::Imar::BaseProjeManager::UpdateItem (filter);
+
+                    if( upt ){
+                        this->addIslemLog (mProje.title () + " Onaylandı" , mProje.oid ().value ());
+                        this->loadProject (mProje.oid ().value ());
+                    }else{
+                        this->showPopUpMessage ("Projeyi Onaylanamadı!. Daha Sonra Tekrar Deneyiniz","err");
+                    }
+                }else{
+                    this->showPopUpMessage ("<p>Bazı Çizim Dosyaları Onaylanmamış!</p>"
+                                            "<p>Önce Onaylanmayan Çizim Dosyalarını Onaylayınız</p>","msg");
+                }
+
+
+            });
+
+        }
+    }
 
 
 
@@ -2964,4 +2965,504 @@ void v2::KurumsalProjeView::addIslemLog(const std::string& log, const bsoncxx::o
     }else{
         this->showPopUpMessage ("Log Eklenemedi","err");
     }
+}
+
+
+
+
+
+
+
+v2::BireyselProjeView::BireyselProjeView(SerikBLDCore::Imar::MimariProje::MainProje &mainProje, DB *_db, SerikBLDCore::TC *_tcUser)
+    :MainProjeView (mainProje,_db,_tcUser)
+{
+
+}
+
+void v2::BireyselProjeView::initHeader()
+{
+    Header ()->clear ();
+    auto container = Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
+    container->addStyleClass (Bootstrap::Grid::col_full_12+"boxShadow");
+
+    auto gridLayout = container->setLayout (cpp14::make_unique<WGridLayout>());
+
+
+    gridLayout->addWidget (cpp14::make_unique<WContainerWidget>(),0,0,AlignmentFlag::Justify)
+            ->addWidget (cpp14::make_unique<WText>(WString("<b>Ada</b>")))
+            ->setAttributeValue (Style::style,Style::font::family::dosis+
+                                 Style::font::size::s14px);
+
+    gridLayout->addWidget (cpp14::make_unique<WContainerWidget>(),0,1,AlignmentFlag::Justify)
+            ->addWidget (cpp14::make_unique<WText>(WString("<b>Parsel</b>")))
+            ->setAttributeValue (Style::style,Style::font::family::dosis+
+                                 Style::font::size::s14px);
+
+    gridLayout->addWidget (cpp14::make_unique<WContainerWidget>(),0,2,AlignmentFlag::Justify)
+            ->addWidget (cpp14::make_unique<WText>(WString("<b>Mahalle</b>")))
+            ->setAttributeValue (Style::style,Style::font::family::dosis+
+                                 Style::font::size::s14px);
+
+    gridLayout->addWidget (cpp14::make_unique<WContainerWidget>(),0,3,AlignmentFlag::Justify)
+            ->addWidget (cpp14::make_unique<WText>(WString("<b>Başvuru Tarihi</b>")))
+            ->setAttributeValue (Style::style,Style::font::family::dosis+
+                                 Style::font::size::s14px);
+
+
+    gridLayout->addWidget (cpp14::make_unique<WContainerWidget>(),1,0,AlignmentFlag::Justify)
+            ->addWidget (cpp14::make_unique<WText>(WString("{1}").arg (this->ada ())))
+            ->setAttributeValue (Style::style,Style::font::family::dosis+Style::font::size::s14px);
+
+    gridLayout->addWidget (cpp14::make_unique<WContainerWidget>(),1,1,AlignmentFlag::Justify)
+            ->addWidget (cpp14::make_unique<WText>(WString("{1}").arg (this->parsel ())))
+            ->setAttributeValue (Style::style,Style::font::family::dosis+Style::font::size::s14px);
+
+    gridLayout->addWidget (cpp14::make_unique<WContainerWidget>(),1,2,AlignmentFlag::Justify)
+            ->addWidget (cpp14::make_unique<WText>(WString("{1}").arg (this->mahalle ())))
+            ->setAttributeValue (Style::style,Style::font::family::dosis+Style::font::size::s14px);
+
+    gridLayout->addWidget (cpp14::make_unique<WContainerWidget>(),1,3,AlignmentFlag::Justify)
+            ->addWidget (cpp14::make_unique<WText>(WString("{1}").arg (WDate::fromJulianDay (this->basvuruJulianDay ()).toString ("dd/MMMM/yyyy"))))
+            ->setAttributeValue (Style::style,Style::font::family::dosis+Style::font::size::s14px);
+
+    SerikBLDCore::Imar::MimariLogManager::UpdateList (SerikBLDCore::Imar::MimariLog().setProjeOid (this->oid ().value ()));
+    SerikBLDCore::Imar::BaseProjeManager::UpdateList (SerikBLDCore::Imar::MimariProje::BaseProject().setMainProjeOid (this->oid ().value ()));
+}
+
+void v2::BireyselProjeView::loadProject(const bsoncxx::oid &projectOid)
+{
+    setSelectedProjectOid (projectOid.to_string ());
+    SerikBLDCore::Imar::MimariProje::BaseProject filter;
+    filter.setOid (projectOid);
+
+    auto mProje = SerikBLDCore::Imar::BaseProjeManager::FindOneItem (filter);
+
+    if( mProje.view ().empty () ){
+        this->showPopUpMessage ("Proje Yüklenemedi","err");
+        return;
+    }
+
+    Content ()->clear ();
+
+    SerikBLDCore::Imar::MimariLogManager::UpdateList (SerikBLDCore::Imar::MimariLog().setProjeOid (mProje.oid ().value ()));
+
+    auto backContainer = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+    backContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_1+
+                                  Bootstrap::Grid::Medium::col_md_1+
+                                  Bootstrap::Grid::Small::col_sm_2+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_2+
+                                  Bootstrap::Button::info);
+    auto backText = backContainer->addWidget (cpp14::make_unique<WText>("<b>Diğer Projeler</b>"));
+    backText->setAttributeValue (Style::style,Style::font::family::dosis+Style::font::size::s14px+Style::color::color (Style::color::White::Snow));
+    backContainer->decorationStyle ().setCursor (Cursor::PointingHand);
+    backContainer->clicked ().connect ([=](){
+        setSelectedProjectOid( this->oid ().value ().to_string ());
+        SerikBLDCore::Imar::MimariProje::BaseProject filter;
+        filter.setMainProjeOid (this->oid ().value ());
+        SerikBLDCore::Imar::BaseProjeManager::UpdateList(filter);
+        SerikBLDCore::Imar::MimariLogManager::UpdateList (SerikBLDCore::Imar::MimariLog().setProjeOid (this->oid ().value ()));
+    });
+
+
+    // Proje Başlığı
+    auto titleContainer = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+    titleContainer->addStyleClass (Bootstrap::Grid::col_full_12+
+                                   Bootstrap::ImageShape::img_thumbnail);
+
+    auto titleText = titleContainer->addWidget (cpp14::make_unique<WText>("<b>Proje Detayları</b>"));
+    titleContainer->setMargin (20,Side::Top|Side::Bottom);
+    titleText->setAttributeValue (Style::style,Style::font::family::dosis+Style::font::size::s16px);
+
+
+    // Proje Çizim Saihibi
+    auto ownerContainer = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+    ownerContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
+                                   Bootstrap::Grid::Medium::col_md_3+
+                                   Bootstrap::Grid::Small::col_sm_4+
+                                   Bootstrap::Grid::ExtraSmall::col_xs_5+
+                                   Bootstrap::ImageShape::img_thumbnail);
+    ownerContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::Grey::DimGray)+
+                                       Style::font::family::dosis+
+                                       Style::font::size::s14px+
+                                       Style::color::color (Style::color::White::Snow));
+    ownerContainer->setHeight (140);
+    ownerContainer->addWidget (cpp14::make_unique<WText>("<i><u>Proje Sahibi</u></i>"));
+
+
+    ownerContainer->addWidget (cpp14::make_unique<WBreak>());
+
+    if( mProje.ownerOid ().empty () ){
+        ownerContainer->addWidget (cpp14::make_unique<WText>("Bu Proje ile İlgili Bir Atama Yapılmamış"));
+        ownerContainer->addWidget (cpp14::make_unique<WBreak>());
+    }else{
+        ownerContainer->addWidget (cpp14::make_unique<WText>("AdSoyad: " + mProje.ownerAdSoyad ()));
+        ownerContainer->addWidget (cpp14::make_unique<WBreak>());
+
+        ownerContainer->addWidget (cpp14::make_unique<WText>("Telefon: " + mProje.ownerTelefon ()));
+        ownerContainer->addWidget (cpp14::make_unique<WBreak>());
+
+        ownerContainer->addWidget (cpp14::make_unique<WText>(mProje.ownerOid ()));
+        ownerContainer->addWidget (cpp14::make_unique<WBreak>());
+
+    }
+
+
+
+
+    // Proje Belediye Yetkili Kişisi
+    auto assignedContainer = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+    assignedContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
+                                      Bootstrap::Grid::Medium::col_md_3+
+                                      Bootstrap::Grid::Small::col_sm_4+
+                                      Bootstrap::Grid::ExtraSmall::col_xs_5+
+                                      Bootstrap::ImageShape::img_thumbnail+
+                                      Bootstrap::Grid::Offset::Large::col_lg_6+
+                                      Bootstrap::Grid::Offset::Medium::col_md_6+
+                                      Bootstrap::Grid::Offset::Small::col_sm_4+
+                                      Bootstrap::Grid::Offset::ExtraSmall::col_xs_2);
+    assignedContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::Grey::Gainsboro)+
+                                          Style::font::family::dosis+
+                                          Style::font::size::s14px+
+                                          Style::color::color (Style::color::Grey::Black));
+    assignedContainer->setHeight (140);
+    assignedContainer->addWidget (cpp14::make_unique<WText>("<i><u>Yetkili Kişi</u></i>"));
+
+    if( mProje.assignedPersonelName ().empty () ){
+        assignedContainer->addWidget (cpp14::make_unique<WBreak>());
+        auto nameText = assignedContainer->addWidget (cpp14::make_unique<WText>("<b>Yetkili Personel Henüz Yok</b>"));
+        nameText->setAttributeValue (Style::style,Style::background::color::color (Style::color::Red::Red)+Style::color::color (Style::color::White::Snow));
+        nameText->setPadding (5,AllSides);
+    }else{
+        assignedContainer->addWidget (cpp14::make_unique<WBreak>());
+
+        assignedContainer->addWidget (cpp14::make_unique<WText>(mProje.assignedPersonelName ()));
+        assignedContainer->addWidget (cpp14::make_unique<WBreak>());
+
+        assignedContainer->addWidget (cpp14::make_unique<WText>(mProje.assignedPersonelOid ()));
+        assignedContainer->addWidget (cpp14::make_unique<WBreak>());
+    }
+
+
+
+    for( auto i = 0 ; i < mProje.projeCount () ; i++ ){
+        auto projectFileContainer = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        projectFileContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                                             Bootstrap::Grid::Medium::col_md_2+
+                                             Bootstrap::Grid::Small::col_sm_3+
+                                             Bootstrap::Grid::ExtraSmall::col_xs_4+
+                                             Bootstrap::ImageShape::img_thumbnail);
+        projectFileContainer->addStyleClass (Bootstrap::Button::Primary);
+        projectFileContainer->setMargin (10,Side::Top);
+        projectFileContainer->setHeight (200);
+
+
+        projectFileContainer->addWidget (cpp14::make_unique<WText>(mProje[i].value ().projeAdi ()));
+        projectFileContainer->addWidget (cpp14::make_unique<WBreak>());
+
+        auto iconContainer = projectFileContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+        iconContainer->setAttributeValue (Style::style,Style::background::url ("icon/fileicon.png")+
+                                          Style::background::size::contain+
+                                          Style::background::repeat::norepeat+
+                                          Style::background::position::center_center);
+        iconContainer->setHeight (80);
+
+
+
+
+        projectFileContainer->addWidget (cpp14::make_unique<WBreak>());
+        auto fileoidText = projectFileContainer->addWidget (cpp14::make_unique<WText>(mProje[i].value ().fileOid ()));
+        fileoidText->setAttributeValue (Style::style,Style::font::family::dosis+ Style::font::size::s12px);
+        projectFileContainer->addWidget (cpp14::make_unique<WBreak>());
+        auto onayText = projectFileContainer->addWidget (cpp14::make_unique<WText>(mProje[i]->onay () ? "Onaylanmış" : "Onaylanmamış"));
+        auto backColor = !mProje[i]->onay () ? Style::background::color::color (Style::color::Red::FireBrick) : Style::background::color::color (Style::color::Green::DarkCyan);
+        onayText->setAttributeValue (Style::style,Style::font::family::dosis + backColor +Style::font::size::s16px);
+        onayText->setPadding (3,AllSides);
+        onayText->setMargin (5,Side::Top|Side::Bottom);
+
+        projectFileContainer->setMargin (5,Side::Top|Side::Bottom);
+        projectFileContainer->decorationStyle ().setCursor (Cursor::PointingHand);
+
+        projectFileContainer->clicked ().connect ([=](){
+
+            auto mDialog = createDialog ("Proje Detayları");
+
+            if( mProje[i].value ().onay () ){
+
+                auto text = mDialog->contents ()->addWidget (cpp14::make_unique<WText>("<b>Bu Proje Onaylanmış.Değişiklik Yapamazsınız!</b>"));
+                text->setPadding (5,AllSides);
+                text->setAttributeValue (Style::style,Style::background::color::color (Style::color::Red::DarkRed)+Style::color::color (Style::color::White::Snow)+Style::font::family::dosis);
+
+                mDialog->contents ()->addWidget (cpp14::make_unique<WBreak>());
+                mDialog->contents ()->addWidget (cpp14::make_unique<WContainerWidget>())->setHeight (15);
+                auto indirText = mDialog->contents ()->addWidget (cpp14::make_unique<WText>("<u>Dosyayı İndir</u>"));
+                indirText->setPadding (10,AllSides);
+                indirText->decorationStyle ().setCursor (Cursor::PointingHand);
+                indirText->setAttributeValue (Style::style,Style::background::color::color (Style::color::Grey::LightGray)+
+                                              Style::font::family::dosis+Style::font::size::s14px);
+                indirText->clicked ().connect ([=](){
+                    auto fileUrl = SerikBLDCore::Imar::BaseProjeManager::downloadFileWeb (mProje[i].value ().fileOid ().c_str ());
+                    this->doJavaScript ("window.open('"+fileUrl+"','_blank');");
+                    remogeDialog (mDialog);
+                });
+                return;
+            }
+
+
+            if( this->User ()->oid ().value ().to_string () != mProje.ownerOid () ){
+
+                auto text = mDialog->contents ()->addWidget (cpp14::make_unique<WText>("<b>Bu Proje de Yetkili Değilsiniz!</b>"));
+                text->setPadding (5,AllSides);
+                text->setAttributeValue (Style::style,Style::background::color::color (Style::color::Red::DarkRed)+Style::color::color (Style::color::White::Snow)+Style::font::family::dosis);
+
+                mDialog->contents ()->addWidget (cpp14::make_unique<WBreak>());
+                mDialog->contents ()->addWidget (cpp14::make_unique<WContainerWidget>())->setHeight (15);
+                auto indirText = mDialog->contents ()->addWidget (cpp14::make_unique<WText>("<u>Dosyayı İndir</u>"));
+                indirText->setPadding (10,AllSides);
+                indirText->decorationStyle ().setCursor (Cursor::PointingHand);
+                indirText->setAttributeValue (Style::style,Style::background::color::color (Style::color::Grey::LightGray)+
+                                              Style::font::family::dosis+Style::font::size::s14px);
+                indirText->clicked ().connect ([=](){
+                    auto fileUrl = SerikBLDCore::Imar::BaseProjeManager::downloadFileWeb (mProje[i].value ().fileOid ().c_str ());
+                    this->doJavaScript ("window.open('"+fileUrl+"','_blank');");
+                    remogeDialog (mDialog);
+                });
+                return;
+            }
+
+
+
+            auto projeDosyaDegistirBtn = mDialog->contents ()->addWidget (cpp14::make_unique<WPushButton>("Proje Dosyasını Değiştir"));
+            projeDosyaDegistirBtn->setMargin (5,Side::Right|Side::Left);
+            projeDosyaDegistirBtn->clicked ().connect ([=](){
+
+                mDialog->contents ()->clear ();
+
+
+                mDialog->contents ()->addWidget (cpp14::make_unique<WText>("Proje Dosyasını Değiştir"));
+
+                auto fileuploader = mDialog->contents ()->addWidget (cpp14::make_unique<FileUploaderWidget>("Yeni Proje Dosyası"));
+
+
+                auto svBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet"));
+                svBtn->clicked ().connect ([=](){
+
+
+
+                    if( !fileuploader->isUploaded () ){
+                        this->showPopUpMessage ("Yeni Dosya Yüklemediniz!");
+                        return;
+                    }
+                    if( !SerikBLDCore::Imar::BaseProjeManager::getDB ()->deleteGridFS (fileoidText->text ().toUTF8 ().c_str ()) ){
+                        this->showPopUpMessage ("<p>Eski Dosya Silinemedi!</p>"
+                                                "<p>Tekrar Deneyiniz</p>");
+                        return;
+                    }
+                    SerikBLDCore::Imar::MimariProje::BaseProject filter;
+                    filter.setOid (mProje.oid ().value ());
+
+                    for( auto i = 0 ; i < mProje.projeCount () ; i++ ){
+                        filter.addProje (mProje[i].value ());
+                    }
+                    filter.removeProje (bsoncxx::oid{fileoidText->text ().toUTF8 ()});
+                    SerikBLDCore::Imar::MimariProje::FileProject newFileProject;
+                    newFileProject.setOnay (false);
+                    newFileProject.setProjeAdi (mProje[i].value ().projeAdi ());
+                    auto newFileOid = SerikBLDCore::Imar::BaseProjeManager::getDB ()->uploadfile (fileuploader->fileLocation ().toStdString ().c_str ());
+                    newFileProject.setFileOid (newFileOid.get_oid ().value);
+                    filter.addProje (newFileProject);
+                    auto upt = SerikBLDCore::Imar::BaseProjeManager::UpdateItem (filter);
+                    if( !upt ){
+                        this->showPopUpMessage ("<p>Dosya Güncellenemedi</p><p>Sürekli Aynı Hatayı Alıyorsanız Lütfen İlgili Kişi ile İrtibata Geçiniz</p>");
+                        return;
+                    }
+                    this->addIslemLog ("<u><b>"+mProje[i].value ().projeAdi () + "</b></u> Dosyası Değiştirildi",mProje.oid ().value ());
+
+                    this->remogeDialog (mDialog);
+                    this->loadProject (mProje.oid ().value ());
+                });
+            });
+
+
+            auto projeAdiniDegistirBtn = mDialog->contents ()->addWidget (cpp14::make_unique<WPushButton>("Proje Adını Değiştir"));
+            projeAdiniDegistirBtn->setMargin (5,Side::Left|Side::Right);
+            projeAdiniDegistirBtn->clicked ().connect ([=](){
+
+                mDialog->contents ()->clear ();
+
+
+                mDialog->contents ()->addWidget (cpp14::make_unique<WText>("Proje Adını Değiştir"));
+
+                auto projeYeniAdiLineEdit = mDialog->contents ()->addWidget (cpp14::make_unique<WLineEdit>());
+                projeYeniAdiLineEdit->setPlaceholderText ("Proje Dosyasının Yeni Adını Giriniz");
+
+
+                auto svBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet"));
+                svBtn->clicked ().connect ([=](){
+
+                    SerikBLDCore::Imar::MimariProje::BaseProject filter;
+                    filter.setOid (mProje.oid ().value ());
+
+                    for( auto i = 0 ; i < mProje.projeCount () ; i++ ){
+                        filter.addProje (mProje[i].value ());
+                    }
+                    filter.removeProje (bsoncxx::oid{fileoidText->text ().toUTF8 ()});
+                    SerikBLDCore::Imar::MimariProje::FileProject newFileProject;
+                    newFileProject.setOnay (false);
+                    newFileProject.setProjeAdi (projeYeniAdiLineEdit->text ().toUTF8 ());
+                    newFileProject.setFileOid (bsoncxx::oid{fileoidText->text ().toUTF8 ()});
+
+                    filter.addProje (newFileProject);
+
+                    auto upt = SerikBLDCore::Imar::BaseProjeManager::UpdateItem (filter);
+                    if( !upt ){
+                        this->showPopUpMessage ("<p>Dosya Güncellenemedi</p>"
+                                                "<p>Sürekli Aynı Hatayı Alıyorsanız Lütfen İlgili Kişi ile İrtibata Geçiniz</p>");
+                        return;
+                    }
+                    this->addIslemLog (mProje[i].value ().projeAdi () + " Adı Değiştirildi. Yeni Adı: " + projeYeniAdiLineEdit->text ().toUTF8 () ,mProje.oid ().value ());
+
+                    this->remogeDialog (mDialog);
+                    this->loadProject (mProje.oid ().value ());
+                });
+            });
+
+
+
+            auto projeSilBtn = mDialog->contents ()->addWidget (cpp14::make_unique<WPushButton>("Projeyi Sil"));
+            projeSilBtn->setMargin (5,Side::Left|Side::Right);
+            projeSilBtn->addStyleClass (Bootstrap::Button::Danger);
+            projeSilBtn->clicked ().connect ([=](){
+
+                mDialog->contents ()->clear ();
+
+
+                mDialog->contents ()->addWidget (cpp14::make_unique<WText>("Proje Sil"));
+
+
+                auto svBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Sil"));
+                svBtn->clicked ().connect ([=](){
+
+                    SerikBLDCore::Imar::MimariProje::BaseProject filter;
+                    filter.setOid (mProje.oid ().value ());
+
+                    if( mProje.projeCount () == 1 ){
+
+                        if( SerikBLDCore::Imar::BaseProjeManager::getDB ()->removeField (filter,SerikBLDCore::Imar::MimariProje::BaseProject::keyProje) ){
+                            this->addIslemLog (mProje[i].value ().projeAdi () + " Dosyası Silindi",mProje.oid ().value ());
+                            this->loadProject (mProje.oid ().value ());
+                            this->showPopUpMessage ("<p>Proje Dosyası Silindi</p>");
+                            this->remogeDialog (mDialog);
+                        }
+
+                    }else{
+                        for( auto i = 0 ; i < mProje.projeCount () ; i++ ){
+                            filter.addProje (mProje[i].value ());
+                        }
+                        filter.removeProje (bsoncxx::oid{fileoidText->text ().toUTF8 ()});
+
+                        auto upt = SerikBLDCore::Imar::BaseProjeManager::UpdateItem (filter);
+                        if( !upt ){
+                            this->showPopUpMessage ("<p>Dosya Güncellenemedi</p>"
+                                                    "<p>Sürekli Aynı Hatayı Alıyorsanız Lütfen İlgili Kişi ile İrtibata Geçiniz</p>");
+                            return;
+                        }
+                        this->addIslemLog (mProje[i].value ().projeAdi () + " Dosyası Silindi",mProje.oid ().value ());
+
+                        this->remogeDialog (mDialog);
+                        this->loadProject (mProje.oid ().value ());
+                    }
+
+
+                });
+            });
+
+            auto projeDosyaIndirlBtn = mDialog->contents ()->addWidget (cpp14::make_unique<WPushButton>("Dosyayı İndir"));
+            projeDosyaIndirlBtn->setMargin (5,Side::Left|Side::Right);
+            projeDosyaIndirlBtn->addStyleClass (Bootstrap::Button::Link);
+            projeDosyaIndirlBtn->clicked ().connect ([=](){
+                auto fileUrl = SerikBLDCore::Imar::BaseProjeManager::downloadFileWeb (mProje[i].value ().fileOid ().c_str ());
+                this->doJavaScript ("window.open('"+fileUrl+"','_blank');");
+                remogeDialog (mDialog);
+            });
+
+
+
+            mDialog->show ();
+
+        });
+
+
+
+
+    }
+
+
+    {
+        auto projectFileContainer = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        projectFileContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                                             Bootstrap::Grid::Medium::col_md_2+
+                                             Bootstrap::Grid::Small::col_sm_3+
+                                             Bootstrap::Grid::ExtraSmall::col_xs_4+
+                                             Bootstrap::ImageShape::img_thumbnail);
+        projectFileContainer->addStyleClass (Bootstrap::Button::info);
+        projectFileContainer->setMargin (5,Side::Top);
+        projectFileContainer->setHeight (200);
+        auto yeniEkleText = projectFileContainer->addWidget (cpp14::make_unique<WText>("<b>Yeni Proje Dosyası Ekle</b>"));
+        yeniEkleText->setAttributeValue (Style::style,Style::font::family::dosis+
+                                         Style::color::color (Style::color::White::Snow));
+        projectFileContainer->decorationStyle ().setCursor (Cursor::PointingHand);
+
+
+        // TODO: yeni Proje Dosyası Ekleme
+        projectFileContainer->clicked ().connect ([=](){
+
+            auto mDialog = createDialog ("Yeni Dosya Ekle");
+
+            mDialog->contents ()->clear ();
+
+
+            mDialog->contents ()->addWidget (cpp14::make_unique<WText>("Proje Dosyasını Ekle"));
+            auto fileNameLineEdit = mDialog->contents ()->addWidget (cpp14::make_unique<WLineEdit>());
+            fileNameLineEdit->setPlaceholderText ("Proje Adını Giriniz");
+
+            auto fileuploader = mDialog->contents ()->addWidget (cpp14::make_unique<FileUploaderWidget>("Yeni Proje Dosyası"));
+
+
+            auto svBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet"));
+            svBtn->clicked ().connect ([=](){
+                if( !fileuploader->isUploaded () ){
+                    this->showPopUpMessage ("Yeni Dosya Yüklemediniz!");
+                    return;
+                }
+
+
+                SerikBLDCore::Imar::MimariProje::BaseProject filter;
+                filter.setOid (mProje.oid ().value ());
+
+                for( auto i = 0 ; i < mProje.projeCount () ; i++ ){
+                    filter.addProje (mProje[i].value ());
+                }
+
+                SerikBLDCore::Imar::MimariProje::FileProject newFileProject;
+                newFileProject.setOnay (false);
+                auto newFileOid = SerikBLDCore::Imar::BaseProjeManager::getDB ()->uploadfile (fileuploader->fileLocation ().toStdString ().c_str ());
+                newFileProject.setFileOid (newFileOid.get_oid ().value);
+                newFileProject.setProjeAdi (fileNameLineEdit->text ().toUTF8 ());
+                filter.addProje (newFileProject);
+                auto upt = SerikBLDCore::Imar::BaseProjeManager::UpdateItem (filter);
+                if( !upt ){
+                    this->showPopUpMessage ("<p>Dosya Güncellenemedi</p><p>Sürekli Aynı Hatayı Alıyorsanız Lütfen İlgili Kişi ile İrtibata Geçiniz</p>");
+                    return;
+                }else{
+                    this->addIslemLog (fileNameLineEdit->text ().toUTF8 () + " Dosyası Eklendi",mProje.oid ().value ());
+                }
+                this->remogeDialog (mDialog);
+                this->loadProject (mProje.oid ().value ());
+            });
+
+            mDialog->show ();
+
+        });
+    }
+
 }

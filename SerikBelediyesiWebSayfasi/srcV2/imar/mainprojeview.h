@@ -46,6 +46,8 @@ public:
 
     void setSelectedProjectOid(const std::string &selectedProjectOid);
 
+    SerikBLDCore::TC* User() const;
+
 private:
     int mCurrentLogFilterIndex;
     std::string mSelectedProjectOid;
@@ -77,6 +79,22 @@ public:
 
 private:
     SerikBLDCore::User* mUser;
+};
+
+
+
+class BireyselProjeView : public MainProjeView
+{
+public:
+    explicit BireyselProjeView( SerikBLDCore::Imar::MimariProje::MainProje& mainProje,
+                                SerikBLDCore::DB* _db,
+                                SerikBLDCore::TC* _tcUser );
+
+    virtual void initHeader();
+
+    virtual void loadProject(const bsoncxx::oid& projectOid );
+
+
 };
 
 }

@@ -70,6 +70,7 @@ v2::YeniMimariProje::YeniMimariProje(SerikBLDCore::DB* _db , const SerikBLDCore:
         this->setAda (adaSpinBox->value ());
         this->setParsel (parselSpinBox->value ());
         this->setMahalle (projeMahalleComboBox->currentText ().toUTF8 ());
+        this->setOnay (false);
 
         auto ins = this->getDB ()->insertItem (*this);
 

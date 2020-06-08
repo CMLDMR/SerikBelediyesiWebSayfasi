@@ -354,7 +354,6 @@ void Giris::GirisWidget::initSivil()
                 auto text = layout->addWidget(cpp14::make_unique<WText>("Sivil Olarak Devam Et!"));
                 text->setAttributeValue(Style::style,Style::font::size::s20px+Style::color::color(Style::color::White::AliceBlue)+Style::font::weight::bold);
                 layout->addStretch(1);
-
             }
 
 
@@ -379,11 +378,43 @@ void Giris::GirisWidget::initSivil()
             auto text = layout->addWidget(cpp14::make_unique<WText>(val.name () + " Yetkilisi Olarak Devam Et!"));
             text->setAttributeValue(Style::style,Style::font::size::s20px+Style::color::color(Style::color::White::AliceBlue)+Style::font::weight::bold);
             layout->addStretch(1);
-
         }
 
     }else{
-        mContentContainer->addWidget(cpp14::make_unique<SivilWidget>(db,&User));
+
+        SerikBLDCore::Imar::MimariProje::BaseProject filter;
+        filter.append(SerikBLDCore::Imar::MimariProje::BaseProject::keyOwnerOid,User.view ()["_id"].get_oid ().value);
+
+        auto count = firmaManager->find (filter);
+        if( count ){
+
+
+            auto messageBox = this->addChild(
+                        Wt::cpp14::make_unique<Wt::WMessageBox>
+                        ("Uyarı",
+                         "Sorumlu Olduğunuz Projeler var. Projelere Göz Atmak İstemisiniz?",
+                         Wt::Icon::Question, Wt::StandardButton::Yes|Wt::StandardButton::No));
+
+            messageBox->buttonClicked().connect([=]( const Wt::StandardButton btn ){
+
+                if( btn == Wt::StandardButton::Yes ){
+                    mContentContainer->addWidget(cpp14::make_unique<v2::BireyselMimariProjeManagerPage>(new SerikBLDCore::DB(this->db),new SerikBLDCore::TC(&User)));
+                }else{
+                    mContentContainer->addWidget(cpp14::make_unique<SivilWidget>(db,&User));
+                }
+
+                this->removeChild(messageBox);
+            });
+
+            messageBox->show();
+
+
+
+        }else{
+            mContentContainer->addWidget(cpp14::make_unique<SivilWidget>(db,&User));
+
+        }
+
     }
 
 

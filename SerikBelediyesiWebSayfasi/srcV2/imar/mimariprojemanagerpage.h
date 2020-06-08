@@ -25,6 +25,8 @@ public:
 
     virtual void loadProject( const std::string &projectOid );
 
+    SerikBLDCore::TC* User();
+
 private:
     SerikBLDCore::TC* mFirmaYetkilisi;
     std::string mFirmaOid;
@@ -41,6 +43,27 @@ public:
 
 private:
     SerikBLDCore::User* mUser;
+};
+
+
+class BireyselMimariProjeManagerPage : public MimariProjeManagerPage
+{
+public:
+    explicit BireyselMimariProjeManagerPage(SerikBLDCore::DB *_db , SerikBLDCore::TC* _tcUser);
+
+    void loadList();
+
+    void loadYapiList();
+
+    void loadProject(const std::string &projectOid) override;
+
+
+
+private:
+
+    const int limit = 20;
+    int skip = 0;
+    int mTotalItemCount;
 };
 
 

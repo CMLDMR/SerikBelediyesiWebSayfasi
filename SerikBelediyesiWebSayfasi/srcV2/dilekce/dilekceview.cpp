@@ -96,7 +96,7 @@ void DilekceView::initTCView()
                 auto tContainer = rContainer->addWidget (cpp14::make_unique<ContainerWidget>());
                 tContainer->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
                 tContainer->setContentAlignment (AlignmentFlag::Center);
-                auto text = tContainer->addWidget (cpp14::make_unique<WText>(tcItem.value ()->CepTelefonu ().toStdString ()));
+                tContainer->addWidget (cpp14::make_unique<WText>(tcItem.value ()->CepTelefonu ().toStdString ()));
                 tContainer->setAttributeValue (Style::style,Style::font::size::s12px
                                          +Style::color::color (Style::color::White::Snow)
                                          +Style::background::color::color (Style::color::Green::DarkGreen));
@@ -105,7 +105,7 @@ void DilekceView::initTCView()
                 auto tContainer = rContainer->addWidget (cpp14::make_unique<ContainerWidget>());
                 tContainer->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
                 tContainer->setContentAlignment (AlignmentFlag::Center);
-                auto text = tContainer->addWidget (cpp14::make_unique<WText>(tcItem.value ()->Mahalle ().toStdString ()));
+                tContainer->addWidget (cpp14::make_unique<WText>(tcItem.value ()->Mahalle ().toStdString ()));
                 tContainer->setAttributeValue (Style::style,Style::font::size::s12px
                                          +Style::color::color (Style::color::White::Snow)
                                          +Style::background::color::color (Style::color::Purple::Indigo));
@@ -156,7 +156,7 @@ void DilekceView::initDilekceView()
                                   +Bootstrap::Grid::Medium::col_md_6
                                   +Bootstrap::Grid::Small::col_sm_6
                                   +Bootstrap::Grid::ExtraSmall::col_xs_12);
-        auto text = container->addWidget (cpp14::make_unique<WText>(this->konu ().toStdString ()));
+        container->addWidget (cpp14::make_unique<WText>(this->konu ().toStdString ()));
         container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
     }
 
@@ -167,7 +167,7 @@ void DilekceView::initDilekceView()
                                   +Bootstrap::Grid::Medium::col_md_1
                                   +Bootstrap::Grid::Small::col_sm_1
                                   +Bootstrap::Grid::ExtraSmall::col_xs_6);
-        auto text = container->addWidget (cpp14::make_unique<WText>(std::to_string (this->sayi ())));
+        container->addWidget (cpp14::make_unique<WText>(std::to_string (this->sayi ())));
         container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
     }
 
@@ -180,7 +180,7 @@ void DilekceView::initDilekceView()
                                   +Bootstrap::Grid::ExtraSmall::col_xs_6);
         QDateTime _time;
         _time.setTime_t (this->oid ().value ().get_time_t ());
-        auto text = container->addWidget (cpp14::make_unique<WText>(_time.date ().toString ("dd/MM/yyyy").toStdString ()
+         container->addWidget (cpp14::make_unique<WText>(_time.date ().toString ("dd/MM/yyyy").toStdString ()
                                                                     +" - " + _time.time ().toString ("hh:mm").toStdString ()));
         container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
     }
@@ -192,7 +192,7 @@ void DilekceView::initDilekceView()
                                   +Bootstrap::Grid::Medium::col_md_3
                                   +Bootstrap::Grid::Small::col_sm_3
                                   +Bootstrap::Grid::ExtraSmall::col_xs_6);
-        auto text = container->addWidget (cpp14::make_unique<WText>(this->icerikTipi ().toStdString ()));
+        container->addWidget (cpp14::make_unique<WText>(this->icerikTipi ().toStdString ()));
         container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
     }
 
@@ -200,7 +200,7 @@ void DilekceView::initDilekceView()
     {
         auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
         container->addStyleClass (Bootstrap::Grid::col_full_12);
-        auto text = container->addWidget (cpp14::make_unique<WText>(this->icerik ().toStdString ()));
+        container->addWidget (cpp14::make_unique<WText>(this->icerik ().toStdString ()));
         container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
         container->setMargin (20,Side::Top|Side::Bottom);
         container->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::OldLace));
@@ -461,7 +461,7 @@ void DilekceView::initCevapView()
                 container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
                 container->setWidth (WLength("100%"));
                 {
-                    auto text = container->addWidget (cpp14::make_unique<WText>("<b>Dilekçenize Ait Cevabın Aslını Belediyemizden TC Numaranız ile Birlikte Alabilirsiniz</b>"));
+                    container->addWidget (cpp14::make_unique<WText>("<b>Dilekçenize Ait Cevabın Aslını Belediyemizden TC Numaranız ile Birlikte Alabilirsiniz</b>"));
                     container->addWidget (cpp14::make_unique<WBreak>());
                 }
             }
@@ -499,7 +499,7 @@ void DilekceView::initCevapView()
             container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
             container->setWidth (WLength("100%"));
             {
-                auto text = container->addWidget (cpp14::make_unique<WText>("<b>Bu Dilekçe Henüz Cevaplanmamış</b>"));
+                container->addWidget (cpp14::make_unique<WText>("<b>Bu Dilekçe Henüz Cevaplanmamış</b>"));
                 container->addWidget (cpp14::make_unique<WBreak>());
             }
         }
