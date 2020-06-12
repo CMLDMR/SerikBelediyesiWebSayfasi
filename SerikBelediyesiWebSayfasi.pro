@@ -3,7 +3,7 @@ QT += gui core xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++14 console
+CONFIG += c++17 console
 CONFIG -= app_bundle
 #TEMPLATE += app
 
@@ -233,14 +233,14 @@ DISTFILES +=
         DEPENDPATH += $$PWD/include/mongocxx/v_noabi
 
 
-        win32: LIBS += -LC:/Wt_4.2.1_msvs2017_x64/lib/ -lwt
+        win32: LIBS += -LC:/Wt_4.3.1_msvc2017_x64/lib/ -lwt
 
-        INCLUDEPATH += C:/Wt_4.2.1_msvs2017_x64/include
-        DEPENDPATH += C:/Wt_4.2.1_msvs2017_x64/include
+        INCLUDEPATH += C:/Wt_4.3.1_msvc2017_x64/include
+        DEPENDPATH += C:/Wt_4.3.1_msvc2017_x64/include
 
-        win32: LIBS += -LC:/Wt_4.2.1_msvs2017_x64/lib/ -lwthttp
+        win32: LIBS += -LC:/Wt_4.3.1_msvc2017_x64/lib/ -lwthttp
 
-        win32: LIBS += -LC:/Wt_4.2.1_msvs2017_x64/lib/ -llibhpdf
+        win32: LIBS += -LC:/Wt_4.3.1_msvc2017_x64/lib/ -llibhpdf
 
 
         win32: LIBS += -LC:/SerikBLDCoreRelease/MSVC2017X64/lib/ -lSerikBLDCore
