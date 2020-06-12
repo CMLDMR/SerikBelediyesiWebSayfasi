@@ -536,10 +536,10 @@ void v2::BireyselMimariProjeManagerPage::loadProject(const std::string &projectO
     SerikBLDCore::Imar::MimariProje::MainProje filter;
     filter.setOid (projectOid);
 
+
     auto val = this->FindOneItem (filter);
     if( !val.view ().empty () ){
         Content ()->clear ();
-
         auto proje = Content ()->addWidget (cpp14::make_unique<v2::BireyselProjeView>(val,this->getDB (),this->User ()));
         proje->addStyleClass (Bootstrap::Grid::col_full_12);
         proje->initHeader ();

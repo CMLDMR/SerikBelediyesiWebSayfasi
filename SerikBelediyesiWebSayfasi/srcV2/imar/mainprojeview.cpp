@@ -8,7 +8,7 @@ v2::MainProjeView::MainProjeView(MainProje &mainProje, SerikBLDCore::DB *_db, Se
       SerikBLDCore::Imar::BaseProjeManager (_db),
       SerikBLDCore::Imar::MimariLogManager (_db),
       mCurrentLogFilterIndex(0),
-      mSelectedProjectOid(this->oid ().value ().to_string ()),
+      mSelectedProjectOid(mainProje.oid ().value ().to_string ()),
       mTCUser(_mtcUser)
 {
     Header ()->setMargin (15,Side::Top|Side::Bottom);
@@ -2981,6 +2981,8 @@ v2::BireyselProjeView::BireyselProjeView(SerikBLDCore::Imar::MimariProje::MainPr
 
 void v2::BireyselProjeView::initHeader()
 {
+
+
     Header ()->clear ();
     auto container = Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
     container->addStyleClass (Bootstrap::Grid::col_full_12+"boxShadow");
