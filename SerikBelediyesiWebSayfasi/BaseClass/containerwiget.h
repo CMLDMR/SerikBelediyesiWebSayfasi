@@ -9,9 +9,9 @@
 
 
 constexpr int MAJOR = 3;
-constexpr int MINOR = 2;
-constexpr int REV = 30;
-constexpr int COM = 463;
+constexpr int MINOR = 3;
+constexpr int REV = 31;
+constexpr int COM = 477;
 
 
 
