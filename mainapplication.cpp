@@ -247,7 +247,7 @@ void MainApplication::init()
         {
             std::random_device rd;
             std::mt19937 mt(rd());
-            std::uniform_int_distribution<int> dist(1,6);
+            std::uniform_int_distribution<int> dist(1,35);
             auto index = dist(mt);
             std::string photoUrl = "v2/slide/"+std::to_string (index)+".jpg";
             container->setAttributeValue (Style::style,Style::background::url (photoUrl)+
