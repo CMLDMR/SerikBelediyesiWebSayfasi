@@ -175,63 +175,63 @@ void MainApplication::init()
     root()->addStyleClass("rootBody");
 
 //     Afis Ön Görsel
-        if( true ){
+//        if( true ){
 
-            auto container = root()->addWidget(cpp14::make_unique<WContainerWidget>());
+//            auto container = root()->addWidget(cpp14::make_unique<WContainerWidget>());
 
-            container->setWidth(WLength("100%"));
-            container->setHeight(WLength("100%"));
-            container->setPositionScheme(PositionScheme::Fixed);
-            container->setAttributeValue(Style::style,Style::background::color::rgba(255,255,255,0.75));
-            container->setZIndex(1000);
+//            container->setWidth(WLength("100%"));
+//            container->setHeight(WLength("100%"));
+//            container->setPositionScheme(PositionScheme::Fixed);
+//            container->setAttributeValue(Style::style,Style::background::color::rgba(255,255,255,0.75));
+//            container->setZIndex(1000);
 
-            auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
-            _container->setWidth(WLength("100%"));
-            _container->setHeight(WLength("100%"));
-            _container->setPositionScheme(PositionScheme::Fixed);
+//            auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
+//            _container->setWidth(WLength("100%"));
+//            _container->setHeight(WLength("100%"));
+//            _container->setPositionScheme(PositionScheme::Fixed);
 
-            _container->setZIndex(1000);
+//            _container->setZIndex(1000);
 
-            WTimer::singleShot(std::chrono::milliseconds(116000),[=](){
-                           root()->removeWidget(container);
-                        });
+//            WTimer::singleShot(std::chrono::milliseconds(116000),[=](){
+//                           root()->removeWidget(container);
+//                        });
 
-            {
-                _container->setContentAlignment (AlignmentFlag::Center);
-                _container->setPadding (50,Side::Top);
-                auto mContainer = _container->addWidget(cpp14::make_unique<WContainerWidget>());
-                mContainer->setPositionScheme (PositionScheme::Relative);
-                mContainer->setContentAlignment(AlignmentFlag::Center);
-                mContainer->setMaximumSize(1024,WLength::Auto);
-                mContainer->setHeight (512);
-                mContainer->addStyleClass ("boxShadow boxRadius");
-                {
-                    auto link = "<iframe src=\"https://www.youtube.com/embed/aVViU6SIkWE?autoplay=1&showinfo=0&controls=0\" style=\"border:0px #ffffff none;\" name=\"myiFrame\" scrolling=\"no\" frameborder=\"1\" marginheight=\"5px\" marginwidth=\"5px\" height=\"100%\" width=\"100%\" "
-                                                             "allow=\"accelerometer; autoplay=true; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>";
-                    auto text = mContainer->addWidget(cpp14::make_unique<WText>(link,TextFormat::UnsafeXHTML));
-                    text->setMaximumSize(1280,WLength::Auto);
-                }
+//            {
+//                _container->setContentAlignment (AlignmentFlag::Center);
+//                _container->setPadding (50,Side::Top);
+//                auto mContainer = _container->addWidget(cpp14::make_unique<WContainerWidget>());
+//                mContainer->setPositionScheme (PositionScheme::Relative);
+//                mContainer->setContentAlignment(AlignmentFlag::Center);
+//                mContainer->setMaximumSize(1024,WLength::Auto);
+//                mContainer->setHeight (512);
+//                mContainer->addStyleClass ("boxShadow boxRadius");
+//                {
+//                    auto link = "<iframe src=\"https://www.youtube.com/embed/aVViU6SIkWE?autoplay=1&showinfo=0&controls=0\" style=\"border:0px #ffffff none;\" name=\"myiFrame\" scrolling=\"no\" frameborder=\"1\" marginheight=\"5px\" marginwidth=\"5px\" height=\"100%\" width=\"100%\" "
+//                                                             "allow=\"accelerometer; autoplay=true; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>";
+//                    auto text = mContainer->addWidget(cpp14::make_unique<WText>(link,TextFormat::UnsafeXHTML));
+//                    text->setMaximumSize(1280,WLength::Auto);
+//                }
 
-                {
-                    auto skipContainer = mContainer->addWidget (cpp14::make_unique<WContainerWidget>());
-                    skipContainer->setPositionScheme (PositionScheme::Absolute);
-                    skipContainer->setOffsets (0,Side::Right|Side::Top);
-                    skipContainer->setWidth (170);
-                    skipContainer->setHeight (60);
-                    skipContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::White));
-                    skipContainer->decorationStyle ().setCursor (Cursor::PointingHand);
+//                {
+//                    auto skipContainer = mContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+//                    skipContainer->setPositionScheme (PositionScheme::Absolute);
+//                    skipContainer->setOffsets (0,Side::Right|Side::Top);
+//                    skipContainer->setWidth (170);
+//                    skipContainer->setHeight (60);
+//                    skipContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::White));
+//                    skipContainer->decorationStyle ().setCursor (Cursor::PointingHand);
 
-                    auto layout = skipContainer->setLayout (cpp14::make_unique<WVBoxLayout>());
-                    auto text = layout->addWidget (cpp14::make_unique<WText>("Ana SAYFA"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
-                    text->setAttributeValue (Style::style,Style::font::weight::lighter+Style::font::size::s14px+Style::color::color (Style::color::Grey::Black));
+//                    auto layout = skipContainer->setLayout (cpp14::make_unique<WVBoxLayout>());
+//                    auto text = layout->addWidget (cpp14::make_unique<WText>("Ana SAYFA"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+//                    text->setAttributeValue (Style::style,Style::font::weight::lighter+Style::font::size::s14px+Style::color::color (Style::color::Grey::Black));
 
-                    skipContainer->clicked ().connect ([=](){
-                        root()->removeWidget(container);
-                    });
+//                    skipContainer->clicked ().connect ([=](){
+//                        root()->removeWidget(container);
+//                    });
 
-                }
-            }
-        }
+//                }
+//            }
+//        }
 
 
     {

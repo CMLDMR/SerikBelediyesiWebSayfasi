@@ -74,16 +74,21 @@ int main(int argc, char *argv[])
     mongocxx::instance ins{};
 
     try {
-//      int argc = 6;
-//      auto argv1 = std::unique_ptr<char*[]>(new char*[argc]);
+      int argc = 6;
+      auto argv1 = std::unique_ptr<char*[]>(new char*[argc]);
 
 //      //--docroot docroot --http-address 192.168.0.31 --http-port 8080 --approot approot
-//      argv1[0] = (char *) "multiple";
-//      argv1[1] = (char *) "--http-address=192.168.0.31";
-//      argv1[2] = (char *) "--http-port=8080";
-//      argv1[3] = (char *) "--deploy-path=/";
-//      argv1[4] = (char *) "--docroot=docroot";
-//      argv1[5] = (char *) "--approot=approot";
+      argv1[0] = (char *) "multiple";
+      argv1[1] = (char *) "--http-address=192.168.0.31";
+      argv1[2] = (char *) "--http-port=8080";
+      argv1[3] = (char *) "--deploy-path=/";
+      argv1[4] = (char *) "--docroot=docroot";
+      argv1[5] = (char *) "--approot=approot";
+//      argv1[6] = (char *) "--https-address=192.168.0.31";
+//      argv1[7] = (char *) "--https-port=443";
+//      argv1[8] = (char *) "--ssl-cerificate = /docroot/cert/www_serik_bel.pem";
+//      argv1[9] = (char *) "--ssl-private-key = /docroot/cert/www_serik_bel.pem";
+//      argv1[10] = (char *) "--ssl-tmp-dh = /docroot/cert/www_serik_bel.pem";
 
       WServer server1(argc, argv, WTHTTP_CONFIGURATION);
 
