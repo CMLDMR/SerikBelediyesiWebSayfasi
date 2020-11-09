@@ -3,6 +3,8 @@
 
 #include "SerikBelediyesiWebSayfasi/srcV2/firma/firmamanagerpage.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/imar/mimariprojemanagerpage.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/calismalar/calismamanagercontainer.h"
+
 
 v2::BirimIsleriContainer::BirimIsleriContainer(SerikBLDCore::User *_user)
     :mUser(_user),ContainerWidget ("Birim İşleri")
@@ -13,6 +15,20 @@ v2::BirimIsleriContainer::BirimIsleriContainer(SerikBLDCore::User *_user)
     if( this->mUser->Birimi () == "İmar ve Şehircilik Müdürlüğü" ){
         this->initImar ();
     }
+
+    //Çalışma Yönetimi
+    {
+        auto menuFirma = createMenu ( "Çalışmalar" , Cursor::PointingHand );
+        menuFirma->clicked ().connect ( [=](){
+
+
+            this->initCalismalar ();
+
+
+        } );
+        Header ()->addWidget (std::move(menuFirma));
+    }
+
 
 }
 
@@ -71,6 +87,15 @@ void v2::BirimIsleriContainer::initImar()
 
 }
 
+void v2::BirimIsleriContainer::initCalismalar()
+{
+
+    Content ()->clear ();
+
+    Content ()->addWidget (cpp14::make_unique<v2::CalismaManagerContainer>(this->mUser));
+
+}
+
 std::unique_ptr<WContainerWidget>  v2::BirimIsleriContainer::createMenu(const std::string &menuName , Cursor cursor )
 {
     auto container = cpp14::make_unique<WContainerWidget>();
@@ -86,6 +111,6 @@ std::unique_ptr<WContainerWidget>  v2::BirimIsleriContainer::createMenu(const st
     btnText->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
     container->decorationStyle ().setCursor (cursor);
     container->addStyleClass (CSSStyle::Button::blueButton);
-    container->setHeight (50);
+    container->setHeight (40);
     return container;
 }

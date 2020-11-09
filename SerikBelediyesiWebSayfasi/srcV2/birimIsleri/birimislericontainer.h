@@ -19,6 +19,8 @@ public:
 public:
     void initImar();
 
+    void initCalismalar();
+
 private:
     SerikBLDCore::User* mUser;
 

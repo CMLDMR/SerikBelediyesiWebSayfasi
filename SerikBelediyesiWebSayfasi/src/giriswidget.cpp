@@ -2423,14 +2423,21 @@ void Giris::Personel::PersonelWidget::initMenu()
     }
 
 
+    menu->addItem(WString::fromUTF8("Evrak Arşivi"))->clicked ().connect ([&](){
+        this->Content ()->clear ();
+        this->Content ()->addWidget (Wt::cpp14::make_unique<EvrakArsiv>(mUser->db (),mUser->Value ()));
+    });
+
+
+
 
 
     if( this->mUser->Statu () == SerikBLDCore::User::Baskan || this->mUser->Statu () == SerikBLDCore::User::BaskanYardimcisi )
     {
-        menu->addItem(WString::fromUTF8("Giriş Çıkış"))->clicked ().connect ([&](){
-            this->Content ()->clear ();
-            this->Content ()->addWidget (Wt::cpp14::make_unique<GirisCikisWidget>(mUser->db (),mUser->Value ()));
-        });
+//        menu->addItem(WString::fromUTF8("Giriş Çıkış"))->clicked ().connect ([&](){
+//            this->Content ()->clear ();
+//            this->Content ()->addWidget (Wt::cpp14::make_unique<GirisCikisWidget>(mUser->db (),mUser->Value ()));
+//        });
 
     }else{
 
@@ -2440,10 +2447,7 @@ void Giris::Personel::PersonelWidget::initMenu()
         //        });
 
 
-        menu->addItem(WString::fromUTF8("Evrak Arşivi"))->clicked ().connect ([&](){
-            this->Content ()->clear ();
-            this->Content ()->addWidget (Wt::cpp14::make_unique<EvrakArsiv>(mUser->db (),mUser->Value ()));
-        });
+
 
 
         //        menu->addItem(WString::fromUTF8("Başvurularım"))->clicked ().connect ([&](){
@@ -2452,13 +2456,13 @@ void Giris::Personel::PersonelWidget::initMenu()
         //        });
 
 
-        //        menu->addItem(WString::fromUTF8("Giriş Çıkışlarım"))->clicked ().connect ([&](){
-        //            this->Content ()->clear ();
-        //            this->Content ()->addWidget (Wt::cpp14::make_unique<GirisCikisWidget>(mUser->db (),mUser->Value ()));
-        //        });
+//                menu->addItem(WString::fromUTF8("Giriş Çıkışlarım"))->clicked ().connect ([&](){
+//                    this->Content ()->clear ();
+//                    this->Content ()->addWidget (Wt::cpp14::make_unique<GirisCikisWidget>(mUser->db (),mUser->Value ()));
+//                });
     }
 
-    menu->addItem(WString::fromUTF8("Birim İşleri"))->clicked ().connect ([&](){
+    menu->addItem(WString::fromUTF8("İş Yönetimi"))->clicked ().connect ([&](){
         this->Content ()->clear ();
         this->Content ()->addWidget (Wt::cpp14::make_unique<v2::BirimIsleriContainer>(mUser));
     });

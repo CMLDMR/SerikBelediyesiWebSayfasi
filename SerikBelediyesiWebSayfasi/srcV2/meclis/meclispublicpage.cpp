@@ -51,7 +51,7 @@ void v2::MeclisPublicPage::onList(const QVector<SerikBLDCore::Meclis::MeclisItem
 
         container->setContentAlignment (AlignmentFlag::Center);
         WLink link = WLink(LinkType::Url,"?type=gundem&_id="+item.oid ().value ().to_string ());
-        link.setTarget(Wt::LinkTarget::ThisWindow);
+        link.setTarget(Wt::LinkTarget::NewWindow);
 
         std::unique_ptr<Wt::WAnchor> anchor =
                 Wt::cpp14::make_unique<Wt::WAnchor>(link,

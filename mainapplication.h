@@ -26,7 +26,7 @@ using namespace Wt;
 class MainApplication : public WApplication
 {
 public:
-    MainApplication(const WEnvironment& env);
+    explicit MainApplication(const WEnvironment& env);
     ~MainApplication();
 
 

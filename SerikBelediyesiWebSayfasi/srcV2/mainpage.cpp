@@ -337,6 +337,7 @@ void MainPage::initIletisim()
 
         layout->addWidget(cpp14::make_unique<WText>("<h2>Adres: Orta Mahalle, Kızderesi Cad No:25, 07500 Serik/Antalya</h2>",TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
         layout->addWidget(cpp14::make_unique<WText>("İletişim: 444 9 722",TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
+        layout->addWidget(cpp14::make_unique<WText>("+90 242 710 55 55",TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
 
         layout->addWidget(cpp14::make_unique<WText>("Fax: +90 242 722 19 68",TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
 

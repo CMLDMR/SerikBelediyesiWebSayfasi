@@ -50,7 +50,7 @@
 #include <Wt/WNavigationBar.h>
 #include <Wt/WServer.h>
 #include <Wt/WSuggestionPopup.h>
-
+#include <Wt/WDoubleSpinBox.h>
 #include <Wt/WResource.h>
 #include <Wt/Http/Request.h>
 #include <Wt/Http/Response.h>

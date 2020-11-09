@@ -33,6 +33,7 @@ SOURCES += main.cpp \
     SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/basvurularim.cpp \
     SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/bilgiedinmebasvuruwidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/birimIsleri/birimislericontainer.cpp \
+    SerikBelediyesiWebSayfasi/srcV2/calismalar/calismamanagercontainer.cpp \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekcelistwidgetitem.cpp \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekcetcyonetim.cpp \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekceview.cpp \
@@ -109,6 +110,7 @@ HEADERS += \
     SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/basvurularim.h \
     SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/bilgiedinmebasvuruwidget.h \
     SerikBelediyesiWebSayfasi/srcV2/birimIsleri/birimislericontainer.h \
+    SerikBelediyesiWebSayfasi/srcV2/calismalar/calismamanagercontainer.h \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekcelistwidgetitem.h \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekcetcyonetim.h \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekceview.h \
