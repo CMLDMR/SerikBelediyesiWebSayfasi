@@ -13,6 +13,8 @@ class CalismaManagerContainer : public ContainerWidget , public SerikBLDCore::Ca
 public:
     explicit CalismaManagerContainer(SerikBLDCore::User *_user );
 
+    void onList( const QVector<SerikBLDCore::Calisma> *mlist ) override;
+
 
 private:
     void initHeader();
@@ -21,6 +23,8 @@ private:
     WLineEdit* mCalismaAdiLineEdit;
     WComboBox* mMahalleComboBox;
     WComboBox* mBirimComboBox;
+    WComboBox* mTipComboBox;
+
     WDoubleSpinBox* mMiktar;
 
     WDateEdit* mDateEdit;

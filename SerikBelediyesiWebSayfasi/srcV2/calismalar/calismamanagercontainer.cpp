@@ -10,11 +10,49 @@ v2::CalismaManagerContainer::CalismaManagerContainer(SerikBLDCore::User *_user)
     initHeader ();
 }
 
+void v2::CalismaManagerContainer::onList(const QVector<SerikBLDCore::Calisma> *mlist)
+{
+
+    Content ()->clear ();
+
+
+    for( auto item : *mlist ){
+        auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::col_full_12);
+        container->addStyleClass (CSSStyle::Shadows::shadow8px);
+        container->setMargin (5,Side::Top);
+
+        auto rContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
+        rContainer->addStyleClass (Bootstrap::Grid::row);
+
+        auto baslikText = rContainer->addWidget (cpp14::make_unique<WText>(item.CalismaAdi ()));
+        baslikText->addStyleClass (Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_4);
+
+        auto mahalleText = rContainer->addWidget (cpp14::make_unique<WText>(item.Mahalle ()));
+        mahalleText->addStyleClass (Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_4);
+    }
+
+}
+
 void v2::CalismaManagerContainer::initHeader()
 {
 
     Header ()->clear ();
 
+    {
+        auto container = Header ()->addWidget (cpp14::make_unique<ContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
+                                  Bootstrap::Grid::Medium::col_md_3+
+                                  Bootstrap::Grid::Small::col_sm_4+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_5);
+        container->addWidget (cpp14::make_unique<WText>("Çalışmalar"));
+        container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+        container->decorationStyle ().setCursor (Cursor::PointingHand);
+        container->addStyleClass (CSSStyle::Button::blueButton);
+        container->clicked ().connect (this,[=](){
+            this->UpdateList (SerikBLDCore::Calisma().setBirim (mUser->Birimi ()));
+        });
+    }
 
     {
         auto container = Header ()->addWidget (cpp14::make_unique<ContainerWidget>());
@@ -22,10 +60,10 @@ void v2::CalismaManagerContainer::initHeader()
                                   Bootstrap::Grid::Medium::col_md_3+
                                   Bootstrap::Grid::Small::col_sm_4+
                                   Bootstrap::Grid::ExtraSmall::col_xs_5+
-                                  Bootstrap::Grid::Offset::Large::col_lg_9+
-                                  Bootstrap::Grid::Offset::Medium::col_md_9+
-                                  Bootstrap::Grid::Offset::Small::col_sm_8+
-                                  Bootstrap::Grid::Offset::ExtraSmall::col_xs_7);
+                                  Bootstrap::Grid::Offset::Large::col_lg_6+
+                                  Bootstrap::Grid::Offset::Medium::col_md_6+
+                                  Bootstrap::Grid::Offset::Small::col_sm_4+
+                                  Bootstrap::Grid::Offset::ExtraSmall::col_xs_2);
         container->addWidget (cpp14::make_unique<WText>("Yeni Ekle"));
         container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
         container->decorationStyle ().setCursor (Cursor::PointingHand);
@@ -68,20 +106,42 @@ void v2::CalismaManagerContainer::initYeniCalismaEkle()
 
     {
         auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
-                                  Bootstrap::Grid::Medium::col_md_6+
-                                  Bootstrap::Grid::Small::col_sm_6+
-                                  Bootstrap::Grid::ExtraSmall::col_xs_6);
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
+                                  Bootstrap::Grid::Medium::col_md_4+
+                                  Bootstrap::Grid::Small::col_sm_4+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_4);
         mMiktar = container->addWidget (cpp14::make_unique<WDoubleSpinBox>());
         mMiktar->setMaximum (999999);
     }
 
+
     {
         auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
-                                  Bootstrap::Grid::Medium::col_md_6+
-                                  Bootstrap::Grid::Small::col_sm_6+
-                                  Bootstrap::Grid::ExtraSmall::col_xs_6);
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
+                                  Bootstrap::Grid::Medium::col_md_4+
+                                  Bootstrap::Grid::Small::col_sm_4+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_4);
+        mTipComboBox = container->addWidget (cpp14::make_unique<WComboBox>());
+
+        mTipComboBox->addItem ("Sathi Asfalt Kaplama");
+        mTipComboBox->addItem ("Suçla Asfalt");
+        mTipComboBox->addItem ("Kaldırım");
+        mTipComboBox->addItem ("Yol Reglaj");
+        mTipComboBox->addItem ("Adet");
+        mTipComboBox->addItem ("İmar Yolu Açımı");
+        mTipComboBox->addItem ("Büz");
+        mTipComboBox->addItem ("Yama");
+        mTipComboBox->addItem ("Kilit Taşı Tamiratı");
+        mTipComboBox->addItem ("Sıcak Asfalt");
+
+    }
+
+    {
+        auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
+                                  Bootstrap::Grid::Medium::col_md_4+
+                                  Bootstrap::Grid::Small::col_sm_4+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_4);
         mBirimComboBox = container->addWidget (cpp14::make_unique<WComboBox>());
 
         mBirimComboBox->addItem ("Metre");
