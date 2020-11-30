@@ -4,6 +4,7 @@
 #include "user.h"
 #include "SerikBelediyesiWebSayfasi/BaseClass/containerwiget.h"
 #include "calisma/calismamanager.h"
+#include "calismacontainerwidget.h"
 
 namespace v2{
 
@@ -18,6 +19,8 @@ public:
 
 private:
     void initHeader();
+    void initFooter();
+    void initIstatistik();
 
     void initYeniCalismaEkle();
     WLineEdit* mCalismaAdiLineEdit;
@@ -35,6 +38,9 @@ private:
 
 
     SerikBLDCore::User* mUser;
+
+
+    void loadCalisma( const std::string &calismaOid );
 };
 
 }
