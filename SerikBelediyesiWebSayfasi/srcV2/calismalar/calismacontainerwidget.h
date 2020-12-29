@@ -7,7 +7,7 @@
 
 namespace v2{
 
-class CalismaContainerWidget : public ContainerWidget , public SerikBLDCore::Calisma
+class CalismaContainerWidget : public ContainerWidget , public SerikBLDCore::Calisma::Calisma
 {
 public:
     explicit CalismaContainerWidget(const std::vector<std::string> &imgLinkList = std::vector<std::string>() );
@@ -17,8 +17,12 @@ public:
 
     void errorOccured(const std::string &errorText) override;
 
+    Signal<std::string,std::vector<std::string>> &deleteClicked();
+
 private:
     std::vector<std::string> ImgLinkList;
+
+    Signal<std::string,std::vector<std::string>> _deleteClicked;
 };
 
 

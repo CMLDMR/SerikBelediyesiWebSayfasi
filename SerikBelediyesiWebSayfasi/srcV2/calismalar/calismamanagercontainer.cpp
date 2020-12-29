@@ -6,6 +6,9 @@ v2::CalismaManagerContainer::CalismaManagerContainer(SerikBLDCore::User *_user)
     :SerikBLDCore::CalismaManager ( _user->getDB () ),mUser(_user)
 {
 
+    mCalismaKategoriManager = new SerikBLDCore::CalismaKategoriManager(_user->getDB ());
+    mCalismaKategoriManager->setLimit (1000);
+
     Header ()->setMargin (15,Side::Bottom);
     initHeader ();
 
@@ -13,7 +16,7 @@ v2::CalismaManagerContainer::CalismaManagerContainer(SerikBLDCore::User *_user)
     this->initFooter ();
 }
 
-void v2::CalismaManagerContainer::onList(const QVector<SerikBLDCore::Calisma> *mlist)
+void v2::CalismaManagerContainer::onList(const QVector<SerikBLDCore::Calisma::Calisma> *mlist)
 {
 
     Content ()->clear ();
@@ -47,7 +50,7 @@ void v2::CalismaManagerContainer::onList(const QVector<SerikBLDCore::Calisma> *m
         tarih->addStyleClass (Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_2+Bootstrap::Grid::ExtraSmall::col_xs_2);
 
         container->clicked ().connect ([=](){
-           this->loadCalisma (container->attributeValue (Style::dataoid).toUTF8 ());
+            this->loadCalisma (container->attributeValue (Style::dataoid).toUTF8 ());
         });
     }
 
@@ -69,7 +72,9 @@ void v2::CalismaManagerContainer::initHeader()
         container->decorationStyle ().setCursor (Cursor::PointingHand);
         container->addStyleClass (CSSStyle::Button::blueButton);
         container->clicked ().connect (this,[=](){
-            this->UpdateList (SerikBLDCore::Calisma().setBirim (mUser->Birimi ()));
+            mCurrentPage = CurrentPage::Calismalar;
+            this->initFooter ();
+            this->UpdateList (SerikBLDCore::Calisma::Calisma().setBirim (mUser->Birimi ()));
         });
     }
 
@@ -91,21 +96,142 @@ void v2::CalismaManagerContainer::initHeader()
         container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
                                   Bootstrap::Grid::Medium::col_md_3+
                                   Bootstrap::Grid::Small::col_sm_4+
-                                  Bootstrap::Grid::ExtraSmall::col_xs_4+
-                                  Bootstrap::Grid::Offset::Large::col_lg_3+
-                                  Bootstrap::Grid::Offset::Medium::col_md_3);
-        container->addWidget (cpp14::make_unique<WText>("Yeni Ekle"));
+                                  Bootstrap::Grid::ExtraSmall::col_xs_4);
+        container->addWidget (cpp14::make_unique<WText>("Kategoriler"));
         container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
         container->decorationStyle ().setCursor (Cursor::PointingHand);
         container->addStyleClass (CSSStyle::Button::blueButton);
+        container->clicked ().connect (this,&v2::CalismaManagerContainer::initKategoriler );
+    }
+
+    {
+        auto container = Header ()->addWidget (cpp14::make_unique<ContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
+                                  Bootstrap::Grid::Medium::col_md_3+
+                                  Bootstrap::Grid::Small::col_sm_4+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_4);
+        container->addWidget (cpp14::make_unique<WText>("Yeni Ekle"));
+        container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+        container->decorationStyle ().setCursor (Cursor::PointingHand);
+        container->addStyleClass (CSSStyle::Button::redButton);
         container->clicked ().connect (this,&v2::CalismaManagerContainer::initYeniCalismaEkle);
+    }
+
+
+    {
+        auto container = Header ()->addWidget (cpp14::make_unique<ContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
+                                  Bootstrap::Grid::Medium::col_md_3+
+                                  Bootstrap::Grid::Small::col_sm_4+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_4);
+        auto filterComboBox = container->addWidget (cpp14::make_unique<WComboBox>());
+        filterComboBox->addItem ("Ekleme Tarihine Göre");
+        filterComboBox->addItem ("Çalışma Tarihine Göre");
+        filterComboBox->addItem ("Mahalleye Göre");
+        filterComboBox->addItem ("Çalışma Tipine Göre");
+
+        container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+        container->addStyleClass (CSSStyle::Button::blueButton);
+
+        filterComboBox->sactivated ().connect ([=](const WString &filterStr ){
+
+            mCurrentSortFilterStr = filterStr.toUTF8 ();
+
+            SerikBLDCore::FindOptions findOptions;
+
+            SerikBLDCore::Item sortDoc("sort");
+            if( filterStr.toUTF8 () == "Ekleme Tarihine Göre" ){
+                sortDoc.append("_id",-1);
+            }
+
+            if( filterStr.toUTF8 () == "Çalışma Tarihine Göre" ){
+                sortDoc.append(SerikBLDCore::Calisma::Key::julianDate,-1);
+            }
+
+            if( filterStr.toUTF8 () == "Mahalleye Göre" ){
+                sortDoc.append(SerikBLDCore::Calisma::Key::mahalle,1);
+            }
+
+            if( filterStr.toUTF8 () == "Çalışma Tipine Göre" ){
+                sortDoc.append(SerikBLDCore::Calisma::Key::isTipi,1);
+            }
+
+            findOptions.setSort (sortDoc);
+
+            if( mCurrentMahalleFilterStr != "NULL" ){
+                this->UpdateList (SerikBLDCore::Calisma::Calisma().setBirim (mUser->Birimi ()).setMahalle (mCurrentMahalleFilterStr),findOptions);
+            }else{
+                this->UpdateList (SerikBLDCore::Calisma::Calisma().setBirim (mUser->Birimi ()),findOptions);
+            }
+
+
+        });
+
+    }
+
+    {
+        auto container = Header ()->addWidget (cpp14::make_unique<ContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
+                                  Bootstrap::Grid::Medium::col_md_3+
+                                  Bootstrap::Grid::Small::col_sm_4+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_4);
+        auto filterComboBox = container->addWidget (cpp14::make_unique<WComboBox>());
+
+        for( const auto &mahalle : this->getMahalleler () ){
+            filterComboBox->addItem (mahalle.toStdString ());
+        }
+
+        container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+        container->addStyleClass (CSSStyle::Button::blueButton);
+
+        filterComboBox->sactivated ().connect ([=](const WString &filterStr ){
+
+            mCurrentMahalleFilterStr = filterStr.toUTF8 ();
+
+
+            SerikBLDCore::FindOptions findOptions;
+
+            SerikBLDCore::Item sortDoc("sort");
+            if( mCurrentSortFilterStr == "Ekleme Tarihine Göre" ){
+                sortDoc.append("_id",-1);
+            }
+
+            if( mCurrentSortFilterStr == "Çalışma Tarihine Göre" ){
+                sortDoc.append(SerikBLDCore::Calisma::Key::julianDate,-1);
+            }
+
+            if( mCurrentSortFilterStr == "Mahalleye Göre" ){
+                sortDoc.append(SerikBLDCore::Calisma::Key::mahalle,1);
+            }
+
+            if( mCurrentSortFilterStr == "Çalışma Tipine Göre" ){
+                sortDoc.append(SerikBLDCore::Calisma::Key::isTipi,1);
+            }
+
+            findOptions.setSort (sortDoc);
+
+
+
+            if( mCurrentMahalleFilterStr != "NULL" ){
+                this->UpdateList (SerikBLDCore::Calisma::Calisma().setBirim (mUser->Birimi ()).setMahalle (filterStr.toUTF8 ()),findOptions);
+            }else{
+                this->UpdateList (SerikBLDCore::Calisma::Calisma().setBirim (mUser->Birimi ()),findOptions);
+
+            }
+        });
+
     }
 
 }
 
 void v2::CalismaManagerContainer::initFooter()
 {
-    this->Footer ()->setMargin (25,Side::Top);
+    this->Footer ()->clear ();
+    this->Footer ()->setMargin (25,Side::Top|Side::Bottom);
+
+    if( mCurrentPage == CurrentPage::YeniEkle || mCurrentPage == CurrentPage::Kategoriler ){
+        return;
+    }
 
     {
         auto backBtn = this->Footer ()->addWidget (cpp14::make_unique<WContainerWidget>());
@@ -118,10 +244,27 @@ void v2::CalismaManagerContainer::initFooter()
         backBtn->decorationStyle ().setCursor (Cursor::PointingHand);
         backBtn->clicked ().connect ([=](){
 
-            auto filter = SerikBLDCore::Calisma();
-            filter.setBirim (mUser->Birimi ());
 
-            this->back (filter);
+
+            switch (mCurrentPage) {
+            case CurrentPage::Calismalar:
+            {
+                auto filter = SerikBLDCore::Calisma::Calisma();
+                filter.setBirim (mUser->Birimi ());
+                this->back (filter);
+
+            }
+
+            case CurrentPage::Istatistik:
+            {
+//                auto filter = SerikBLDCore::Calisma::Calisma();
+//                filter.setBirim (mUser->Birimi ());
+//                this->back (filter);
+            }
+                break;
+            default:
+                break;
+            }
 
         });
     }
@@ -141,10 +284,26 @@ void v2::CalismaManagerContainer::initFooter()
         backBtn->decorationStyle ().setCursor (Cursor::PointingHand);
         backBtn->clicked ().connect ([=](){
 
-            auto filter = SerikBLDCore::Calisma();
-            filter.setBirim (mUser->Birimi ());
 
-            this->next (filter);
+            switch (mCurrentPage) {
+            case CurrentPage::Calismalar:
+            {
+                auto filter = SerikBLDCore::Calisma::Calisma();
+                filter.setBirim (mUser->Birimi ());
+                this->next (filter);
+
+            }
+
+            case CurrentPage::Istatistik:
+            {
+//                auto filter = SerikBLDCore::Calisma::Calisma();
+//                filter.setBirim (mUser->Birimi ());
+//                this->next (filter);
+            }
+                break;
+            default:
+                break;
+            }
 
         });
     }
@@ -174,19 +333,13 @@ void v2::CalismaManagerContainer::initIstatistik()
                                   Bootstrap::Grid::ExtraSmall::col_xs_6);
         auto TipfilterComboBox = container->addWidget (cpp14::make_unique<WComboBox>());
 
-        if( mUser->Birimi () == "Fen İşleri Müdürlüğü" ){
-            TipfilterComboBox->addItem ("NULL");
-            TipfilterComboBox->addItem ("Sathi Asfalt Kaplama");
-            TipfilterComboBox->addItem ("Suçla Asfalt");
-            TipfilterComboBox->addItem ("Kaldırım");
-            TipfilterComboBox->addItem ("Yol Reglaj");
-            TipfilterComboBox->addItem ("Adet");
-            TipfilterComboBox->addItem ("İmar Yolu Açımı");
-            TipfilterComboBox->addItem ("Büz");
-            TipfilterComboBox->addItem ("Yama");
-            TipfilterComboBox->addItem ("Kilit Taşı Tamiratı");
-            TipfilterComboBox->addItem ("Sıcak Asfalt");
+
+        auto list = mCalismaKategoriManager->UpdateList (SerikBLDCore::Calisma::Kategori().setKategoriMudurluk (mUser->Birimi ()));
+
+        for( const auto &item : list ){
+            TipfilterComboBox->addItem (item.getKategoriAdi ()); //KM
         }
+
     }
 
     {
@@ -209,28 +362,198 @@ void v2::CalismaManagerContainer::initIstatistik()
 
     {
         auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
-                                  Bootstrap::Grid::Medium::col_md_6+
-                                  Bootstrap::Grid::Small::col_sm_6+
-                                  Bootstrap::Grid::ExtraSmall::col_xs_6);
-        auto ayrintiliBtn = container->addWidget (cpp14::make_unique<WPushButton>("Ayrıntılı Listele"));
-        ayrintiliBtn->addStyleClass (Bootstrap::Button::Primary);
+        container->addStyleClass (Bootstrap::Grid::col_full_12);
+        auto ListelemefilterComboBox = container->addWidget (cpp14::make_unique<WComboBox>());
+        ListelemefilterComboBox->addItem ("Ayrıntılı");
+        ListelemefilterComboBox->addItem ("Sayısal");
     }
+}
 
-    {
-        auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
+void v2::CalismaManagerContainer::initKategoriler()
+{
+    mCurrentPage = CurrentPage::Kategoriler;
+    this->initFooter ();
+    Content ()->clear ();
+
+
+        auto kateogoriAdicontainer = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        kateogoriAdicontainer->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
                                   Bootstrap::Grid::Medium::col_md_6+
-                                  Bootstrap::Grid::Small::col_sm_6+
-                                  Bootstrap::Grid::ExtraSmall::col_xs_6);
-        auto sayisalBtn = container->addWidget (cpp14::make_unique<WPushButton>("Sayısal Listele"));
-        sayisalBtn->addStyleClass (Bootstrap::Button::Primary);
-    }
+                                  Bootstrap::Grid::Small::col_sm_5+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_5);
+        auto kategoriAdiLineEdit = kateogoriAdicontainer->addWidget (cpp14::make_unique<WLineEdit>());
+        kategoriAdiLineEdit->setPlaceholderText ("Kategori Adını Giriniz");
+
+
+        auto kateogoriBirimcontainer = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        kateogoriBirimcontainer->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
+                                  Bootstrap::Grid::Medium::col_md_3+
+                                  Bootstrap::Grid::Small::col_sm_5+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_5);
+        auto kategoriBirimComboBox = kateogoriBirimcontainer->addWidget (cpp14::make_unique<WComboBox>());
+        kategoriBirimComboBox->addItem ("Metre");  //0
+        kategoriBirimComboBox->addItem ("KM");     //1
+        kategoriBirimComboBox->addItem ("TON");    //2
+        kategoriBirimComboBox->addItem ("KG");     //3
+        kategoriBirimComboBox->addItem ("Adet");   //4
+        kategoriBirimComboBox->addItem ("M2");     //5
+        kategoriBirimComboBox->addItem ("M3");     //6
+        kategoriBirimComboBox->addItem ("Dekar");  //7
+        kategoriBirimComboBox->addItem ("Tül");    //8
+
+        auto kateogoriEkleContainer = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        kateogoriEkleContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
+                                  Bootstrap::Grid::Medium::col_md_3+
+                                  Bootstrap::Grid::Small::col_sm_2+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_2);
+        auto kateogoriEkleBtn = kateogoriEkleContainer->addWidget (cpp14::make_unique<WPushButton>("Ekle"));
+
+
+        auto contentContainer = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        contentContainer->addStyleClass (Bootstrap::Grid::col_full_12);
+
+
+        kateogoriEkleBtn->clicked ().connect ([=](){
+
+            SerikBLDCore::Calisma::Kategori mKategori;
+            mKategori.setKategoriAdi (kategoriAdiLineEdit->text ().toUTF8 ());
+            mKategori.setKategoriBirim (kategoriBirimComboBox->currentText ().toUTF8 ());
+            mKategori.setKategoriMudurluk (mUser->Birimi ());
+
+            if( mCalismaKategoriManager->InsertItem (mKategori).empty () ){
+                this->showPopUpMessage ("Kategori Eklenemedi","err");
+                contentContainer->clear ();
+            }else{
+
+                auto list = mCalismaKategoriManager->UpdateList (SerikBLDCore::Calisma::Kategori().setKategoriMudurluk (mUser->Birimi ()));
+
+                contentContainer->clear ();
+
+                for( const auto &item : list ){
+
+                    auto rContentContainer = contentContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+                    rContentContainer->addStyleClass (Bootstrap::Grid::row);
+                    rContentContainer->addStyleClass (CSSStyle::Shadows::shadow8px);
+                    rContentContainer->setMargin (15,Side::Top|Side::Bottom);
+                    rContentContainer->setAttributeValue (Style::dataoid,item.oid ().value ().to_string ());
+                    {
+                        auto container = rContentContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+                        container->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
+                                                  Bootstrap::Grid::Medium::col_md_6+
+                                                  Bootstrap::Grid::Small::col_sm_6+
+                                                  Bootstrap::Grid::ExtraSmall::col_xs_6);
+                        auto text = container->addWidget (cpp14::make_unique<WText>(item.getKategoriAdi ()));
+                    }
+
+                    {
+                        auto container = rContentContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+                        container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
+                                                  Bootstrap::Grid::Medium::col_md_4+
+                                                  Bootstrap::Grid::Small::col_sm_4+
+                                                  Bootstrap::Grid::ExtraSmall::col_xs_4);
+                        auto text = container->addWidget (cpp14::make_unique<WText>(item.getKategoriBirimi ()));
+                    }
+
+                    {
+                        auto container = rContentContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+                        container->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                                                  Bootstrap::Grid::Medium::col_md_2+
+                                                  Bootstrap::Grid::Small::col_sm_2+
+                                                  Bootstrap::Grid::ExtraSmall::col_xs_2);
+                        auto delBtn = container->addWidget (cpp14::make_unique<WText>("<b>X</b>"));
+                        container->addStyleClass (CSSStyle::Button::redButton);
+                        container->clicked ().connect ([=](){
+                           auto btn = this->askConfirm ("Silmek İstediğinize Eminmisiniz?");
+                           btn->clicked ().connect ([=](){
+
+                               auto filter = SerikBLDCore::Calisma::Kategori();
+                               filter.setOid (rContentContainer->attributeValue (Style::dataoid).toUTF8 ());
+                               if( this->mCalismaKategoriManager->DeleteItem (filter) ){
+                                   this->showPopUpMessage ("Silindi");
+                                   contentContainer->removeWidget(rContentContainer);
+                               }else{
+                                   this->showPopUpMessage ("Bir Hata Oluştu. Kategori Silinemedi","err");
+                               }
+
+                           });
+                        });
+                    }
+
+
+                }
+
+            }
+
+
+        });
+
+        {
+            auto list = mCalismaKategoriManager->UpdateList (SerikBLDCore::Calisma::Kategori().setKategoriMudurluk (mUser->Birimi ()));
+
+            contentContainer->clear ();
+
+            for( const auto &item : list ){
+
+                auto rContentContainer = contentContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+                rContentContainer->addStyleClass (Bootstrap::Grid::row);
+                rContentContainer->addStyleClass (CSSStyle::Shadows::shadow8px);
+                rContentContainer->setMargin (15,Side::Top|Side::Bottom);
+                rContentContainer->setAttributeValue (Style::dataoid,item.oid ().value ().to_string ());
+                {
+                    auto container = rContentContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+                    container->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
+                                              Bootstrap::Grid::Medium::col_md_6+
+                                              Bootstrap::Grid::Small::col_sm_6+
+                                              Bootstrap::Grid::ExtraSmall::col_xs_6);
+                    auto text = container->addWidget (cpp14::make_unique<WText>(item.getKategoriAdi ()));
+                }
+
+                {
+                    auto container = rContentContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+                    container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
+                                              Bootstrap::Grid::Medium::col_md_4+
+                                              Bootstrap::Grid::Small::col_sm_4+
+                                              Bootstrap::Grid::ExtraSmall::col_xs_4);
+                    auto text = container->addWidget (cpp14::make_unique<WText>(item.getKategoriBirimi ()));
+                }
+
+                {
+                    auto container = rContentContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+                    container->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                                              Bootstrap::Grid::Medium::col_md_2+
+                                              Bootstrap::Grid::Small::col_sm_2+
+                                              Bootstrap::Grid::ExtraSmall::col_xs_2);
+                    auto delBtn = container->addWidget (cpp14::make_unique<WText>("<b>X</b>"));
+                    container->addStyleClass (CSSStyle::Button::redButton);
+                    container->clicked ().connect ([=](){
+                       auto btn = this->askConfirm ("Silmek İstediğinize Eminmisiniz?");
+                       btn->clicked ().connect ([=](){
+
+                           auto filter = SerikBLDCore::Calisma::Kategori();
+                           filter.setOid (rContentContainer->attributeValue (Style::dataoid).toUTF8 ());
+                           if( this->mCalismaKategoriManager->DeleteItem (filter) ){
+                               this->showPopUpMessage ("Silindi");
+                               contentContainer->removeWidget(rContentContainer);
+                           }else{
+                               this->showPopUpMessage ("Bir Hata Oluştu. Kategori Silinemedi","err");
+                           }
+
+                       });
+                    });
+                }
+
+
+            }
+        }
+
+
+
 }
 
 void v2::CalismaManagerContainer::initYeniCalismaEkle()
 {
-
+    mCurrentPage = CurrentPage::YeniEkle;
+    this->initFooter ();
 
     Content ()->clear ();
 
@@ -278,43 +601,30 @@ void v2::CalismaManagerContainer::initYeniCalismaEkle()
                                   Bootstrap::Grid::ExtraSmall::col_xs_4);
         mTipComboBox = container->addWidget (cpp14::make_unique<WComboBox>());
 
-        if( mUser->Birimi () == "Fen İşleri Müdürlüğü" ){
-            mTipComboBox->addItem ("Sathi Asfalt Kaplama");
-            mTipComboBox->addItem ("Suçla Asfalt");
-            mTipComboBox->addItem ("Kaldırım");
-            mTipComboBox->addItem ("Yol Reglaj");
-            mTipComboBox->addItem ("Adet");
-            mTipComboBox->addItem ("İmar Yolu Açımı");
-            mTipComboBox->addItem ("Büz");
-            mTipComboBox->addItem ("Yama");
-            mTipComboBox->addItem ("Kilit Taşı Tamiratı");
-            mTipComboBox->addItem ("Sıcak Asfalt");
-        }
-
-
-
-
-    }
-
-    {
-        auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
+        auto birimcontainer = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        birimcontainer->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
                                   Bootstrap::Grid::Medium::col_md_4+
                                   Bootstrap::Grid::Small::col_sm_4+
                                   Bootstrap::Grid::ExtraSmall::col_xs_4);
-        mBirimComboBox = container->addWidget (cpp14::make_unique<WComboBox>());
+        mBirimComboBox = birimcontainer->addWidget (cpp14::make_unique<WText>());
 
-        mBirimComboBox->addItem ("Metre");
-        mBirimComboBox->addItem ("KM");
-        mBirimComboBox->addItem ("TON");
-        mBirimComboBox->addItem ("KG");
-        mBirimComboBox->addItem ("Adet");
-        mBirimComboBox->addItem ("M2");
-        mBirimComboBox->addItem ("M3");
-        mBirimComboBox->addItem ("Dekar");
-        mBirimComboBox->addItem ("Tül");
+
+        auto list = mCalismaKategoriManager->UpdateList (SerikBLDCore::Calisma::Kategori().setKategoriMudurluk (mUser->Birimi ()));
+
+        for( const auto &item : list ){
+            mTipComboBox->addItem (item.getKategoriAdi ()); //KM
+            mBirimComboBox->setText (item.getKategoriBirimi ());
+        }
+
+        mTipComboBox->sactivated ().connect ([=]( const WString& tipStr){
+            auto item = mCalismaKategoriManager->FindOneItem (SerikBLDCore::Calisma::Kategori().setKategoriMudurluk (mUser->Birimi ()).setKategoriAdi (tipStr.toUTF8 ()));
+            mBirimComboBox->setText (item.getKategoriBirimi ());
+
+        });
+
 
     }
+
 
 
     {
@@ -330,7 +640,7 @@ void v2::CalismaManagerContainer::initYeniCalismaEkle()
         mAciklamaTextEdit->setHeight (250);
         auto aciklamaCharacterCountText = container->addWidget (cpp14::make_unique<WText>());
         mAciklamaTextEdit->changed ().connect ([=](){
-           aciklamaCharacterCountText->setText (WString("{1} Karakter").arg (mAciklamaTextEdit->text ().toUTF8 ().size ()));
+            aciklamaCharacterCountText->setText (WString("{1} Karakter").arg (mAciklamaTextEdit->text ().toUTF8 ().size ()));
         });
     }
 
@@ -415,10 +725,10 @@ void v2::CalismaManagerContainer::initYeniCalismaEkle()
                 return;
             }
 
-            if( mBirimComboBox->currentText () == "NULL" ){
-                this->showPopUpMessage ("Mahalle Seçmediniz!","msg");
-                return;
-            }
+//            if( mBirimComboBox->currentText () == "NULL" ){
+//                this->showPopUpMessage ("Mahalle Seçmediniz!","msg");
+//                return;
+//            }
 
             if( mCalismaAdiLineEdit->text ().toUTF8 ().size () < 6 ){
                 this->showPopUpMessage ("Çalışma Adı Min 7 Karakter Olmalı","msg");
@@ -442,14 +752,14 @@ void v2::CalismaManagerContainer::initYeniCalismaEkle()
             }
 
 
-            SerikBLDCore::Calisma calismaItem;
+            SerikBLDCore::Calisma::Calisma calismaItem;
 
             calismaItem.setAciklama (mAciklamaTextEdit->text ().toUTF8 ());
             calismaItem.setJulianDay (mDateEdit->date ().toJulianDay ());
             calismaItem.setMahalle (mMahalleComboBox->currentText ().toUTF8 ());
             calismaItem.setBirim (mUser->Birimi ());
             calismaItem.setCalimaAdi (mCalismaAdiLineEdit->text ().toUTF8 ());
-            calismaItem.setisBirimi (mBirimComboBox->currentText ().toUTF8 ());
+            calismaItem.setisBirimi (mBirimComboBox->text ().toUTF8 ());
             calismaItem.setMiktar( mMiktar->value () );
             calismaItem.setIsTipi (mTipComboBox->currentText ().toUTF8 ());
 
@@ -461,7 +771,7 @@ void v2::CalismaManagerContainer::initYeniCalismaEkle()
             if( this->InsertItem (calismaItem).size () ){
                 this->showPopUpMessage ("Çalışma Kayıt Edildi");
 
-                SerikBLDCore::Calisma calismaFilter;
+                SerikBLDCore::Calisma::Calisma calismaFilter;
                 calismaFilter.setBirim (mUser->Birimi ());
 
                 this->UpdateList (calismaFilter);
@@ -476,23 +786,52 @@ void v2::CalismaManagerContainer::initYeniCalismaEkle()
 
 void v2::CalismaManagerContainer::loadCalisma(const std::string &calismaOid)
 {
-      SerikBLDCore::Calisma filter;
-      filter.setOid (calismaOid);
+    SerikBLDCore::Calisma::Calisma filter;
+    filter.setOid (calismaOid);
 
-      auto calisma = this->FindOneItem (filter);
+    auto calisma = this->FindOneItem (filter);
 
-      std::vector<std::string> imgPath;
+    std::vector<std::string> imgPath;
 
-      auto imgOidlist = calisma.imgOidList ();
+    auto imgOidlist = calisma.imgOidList ();
 
-      for( auto item : imgOidlist ){
-          auto path = this->downloadFileWeb (item.to_string ().c_str ());
-          imgPath.push_back (path);
-      }
+    for( auto item : imgOidlist ){
+        auto path = this->downloadFileWeb (item.to_string ().c_str ());
+        imgPath.push_back (path);
+    }
 
-      Content ()->clear ();
+    Content ()->clear ();
 
-      auto calismaContainer = Content ()->addWidget (cpp14::make_unique<v2::CalismaContainerWidget>(imgPath));
-      calismaContainer->setDocumentView (calisma.view ());
-      calismaContainer->initCalismaWidget ();
+    auto calismaContainer = Content ()->addWidget (cpp14::make_unique<v2::CalismaContainerWidget>(imgPath));
+    calismaContainer->setDocumentView (calisma.view ());
+    calismaContainer->initCalismaWidget ();
+
+    calismaContainer->deleteClicked ().connect ([=](const std::string& calismaOid , const std::vector<std::string> imgListOid){
+
+        for( const auto &fileOid : imgListOid ){
+
+            for( const auto &item : imgOidlist ){
+                if( QString::fromStdString (fileOid).contains (QString::fromStdString (item.to_string ()))){
+                    this->deleteGridFS (item.to_string ().c_str ());
+                }
+            }
+        }
+
+        SerikBLDCore::Calisma::Calisma filter;
+        filter.setOid (calismaOid);
+        if( this->DeleteItem (filter) ){
+            this->UpdateList (SerikBLDCore::Calisma::Calisma().setBirim (mUser->Birimi ()));
+        }
+    });
+}
+
+v2::CalismaKategoriManager::CalismaKategoriManager(SerikBLDCore::User *_mUser)
+:SerikBLDCore::CalismaKategoriManager ( _mUser->getDB () ),mUser(_mUser)
+{
+
+}
+
+void v2::CalismaKategoriManager::onList(const QVector<SerikBLDCore::Calisma::Kategori> *mlist)
+{
+
 }

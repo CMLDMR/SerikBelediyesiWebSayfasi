@@ -18,9 +18,31 @@ v2::CalismaContainerWidget::CalismaContainerWidget(const std::vector<std::string
 
 void v2::CalismaContainerWidget::initCalismaWidget()
 {
-
     {
         auto container = Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::col_full_12);
+        auto _container = container->addWidget (cpp14::make_unique<WContainerWidget>());
+        _container->setPositionScheme (PositionScheme::Relative);
+//        _container->setAttributeValue (Style::style,Style::background::color::rgb (255,0,0));
+        _container->setHeight (25);
+
+        auto closeBtn = _container->addWidget (cpp14::make_unique<WContainerWidget>());
+        closeBtn->setPositionScheme (PositionScheme::Absolute);
+        closeBtn->setOffsets (0,Side::Top|Side::Right);
+        closeBtn->setAttributeValue (Style::style,Style::color::color (Style::color::White::AliceBlue)+ Style::background::color::color (Style::color::Red::Crimson));
+        closeBtn->addWidget (cpp14::make_unique<WText>("<b>X</b>"));
+        closeBtn->setPadding (15,AllSides);
+        closeBtn->decorationStyle ().setCursor (Cursor::PointingHand);
+        closeBtn->clicked ().connect ([=](){
+            auto btn = this->askConfirm ("Silmek İstediğinize Eminmisiniz?");
+            btn->clicked ().connect ([=](){
+                _deleteClicked.emit (this->oid ().value ().to_string (),ImgLinkList);
+            });
+        });
+    }
+
+    {
+        auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
         container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
                                   Bootstrap::Grid::Medium::col_md_3+
                                   Bootstrap::Grid::Small::col_sm_6+
@@ -29,7 +51,7 @@ void v2::CalismaContainerWidget::initCalismaWidget()
     }
 
     {
-        auto container = Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
         container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
                                   Bootstrap::Grid::Medium::col_md_3+
                                   Bootstrap::Grid::Small::col_sm_6+
@@ -38,7 +60,7 @@ void v2::CalismaContainerWidget::initCalismaWidget()
     }
 
     {
-        auto container = Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
         container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
                                   Bootstrap::Grid::Medium::col_md_3+
                                   Bootstrap::Grid::Small::col_sm_6+
@@ -47,7 +69,7 @@ void v2::CalismaContainerWidget::initCalismaWidget()
     }
 
     {
-        auto container = Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
         container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
                                   Bootstrap::Grid::Medium::col_md_3+
                                   Bootstrap::Grid::Small::col_sm_6+
@@ -56,7 +78,7 @@ void v2::CalismaContainerWidget::initCalismaWidget()
     }
 
     {
-        auto container = Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
         container->setMargin (15,Side::Top);
         container->addStyleClass (Bootstrap::Grid::col_full_12);
         container->addWidget (cpp14::make_unique<WText>(this->Aciklama()));
@@ -64,7 +86,7 @@ void v2::CalismaContainerWidget::initCalismaWidget()
 
 
     Footer ()->setMargin (25,Side::Top);
-    for( auto item : ImgLinkList ){
+    for( const auto &item : ImgLinkList ){
         auto imgContainer = Footer ()->addWidget (cpp14::make_unique<WContainerWidget>());
 
         imgContainer->setAttributeValue (Style::style,Style::background::url (item)+
@@ -90,5 +112,14 @@ void v2::CalismaContainerWidget::errorOccured(const std::string &errorText)
 {
 
     this->showPopUpMessage ("Hata: " + errorText,"err");
+
+}
+
+
+namespace v2 {
+Signal<std::string, std::vector<std::string> > &CalismaContainerWidget::deleteClicked()
+{
+    return _deleteClicked;
+}
 
 }
