@@ -559,20 +559,20 @@ void v2::CalismaManagerContainer::initYeniCalismaEkle()
 
     {
         auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
-                                  Bootstrap::Grid::Medium::col_md_6+
-                                  Bootstrap::Grid::Small::col_sm_6+
-                                  Bootstrap::Grid::ExtraSmall::col_xs_6);
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_5+
+                                  Bootstrap::Grid::Medium::col_md_5+
+                                  Bootstrap::Grid::Small::col_sm_5+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_5);
         mCalismaAdiLineEdit = container->addWidget (cpp14::make_unique<WLineEdit>());
         mCalismaAdiLineEdit->setPlaceholderText ("Çalışma Adını Giriniz");
     }
 
     {
         auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
-                                  Bootstrap::Grid::Medium::col_md_6+
-                                  Bootstrap::Grid::Small::col_sm_6+
-                                  Bootstrap::Grid::ExtraSmall::col_xs_6);
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_5+
+                                  Bootstrap::Grid::Medium::col_md_5+
+                                  Bootstrap::Grid::Small::col_sm_5+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_5);
         mMahalleComboBox = container->addWidget (cpp14::make_unique<WComboBox>());
 
         auto mahList = this->getMahalleler ();
@@ -580,6 +580,19 @@ void v2::CalismaManagerContainer::initYeniCalismaEkle()
         for( auto mah : mahList ){
             mMahalleComboBox->addItem (mah.toStdString ());
         }
+    }
+
+    {
+        auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                                  Bootstrap::Grid::Medium::col_md_2+
+                                  Bootstrap::Grid::Small::col_sm_2+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_2);
+        mIsKategoriComboBox = container->addWidget (cpp14::make_unique<WComboBox>());
+        mIsKategoriComboBox->addItem ("Genel");
+        mIsKategoriComboBox->addItem ("Kurum");
+        mIsKategoriComboBox->addItem ("Okul");
+        mIsKategoriComboBox->addItem ("Cami");
     }
 
     {
@@ -762,6 +775,7 @@ void v2::CalismaManagerContainer::initYeniCalismaEkle()
             calismaItem.setisBirimi (mBirimComboBox->text ().toUTF8 ());
             calismaItem.setMiktar( mMiktar->value () );
             calismaItem.setIsTipi (mTipComboBox->currentText ().toUTF8 ());
+            calismaItem.setIsKategorisi (mIsKategoriComboBox->currentText ().toUTF8 ());
 
             for( auto imgOid : mUploadedPictureList ){
                 auto fileOid = this->uploadfile (imgOid.c_str ());

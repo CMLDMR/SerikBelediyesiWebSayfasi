@@ -653,7 +653,7 @@ void v2::MeclisItemPage::addGundem()
             findOptions.setSort (SerikBLDCore::Item("none").append("_id",1));
             SerikBLDCore::Meclis::GundemManager::UpdateList (SerikBLDCore::Meclis::GundemItem().setMeclisOid (this->oid ().value ().to_string ()),findOptions);
         }
-        this->remogeDialog (mDialog);
+        this->removeDialog (mDialog);
     });
 
 
@@ -693,6 +693,8 @@ void v2::MeclisItemPage::addKarar()
     __SayiWidget->valueChanged ().connect ([=]( const int& sayi ){
         SerikBLDCore::Meclis::KararItem item;
         item.setSayi (sayi);
+        item.setMeclisOid (this->oid ().value ().to_string ());
+
 
         if( SerikBLDCore::Meclis::KararManager::countItem (item) )
         {
@@ -719,6 +721,8 @@ void v2::MeclisItemPage::addKarar()
 
         SerikBLDCore::Meclis::KararItem item;
         item.setSayi (__SayiWidget->value ());
+        item.setMeclisOid (this->oid ().value ().to_string ());
+
 
         if( SerikBLDCore::Meclis::KararManager::countItem (item) )
         {
@@ -730,7 +734,7 @@ void v2::MeclisItemPage::addKarar()
             item.setMeclisOid (this->oid ().value ().to_string ());
             SerikBLDCore::Meclis::KararManager::InsertItem (item);
             SerikBLDCore::Meclis::KararManager::UpdateList (SerikBLDCore::Meclis::KararItem().setMeclisOid (this->oid ().value ().to_string ()));
-            this->remogeDialog (mDialog);
+            this->removeDialog (mDialog);
         }
 
 
@@ -803,7 +807,7 @@ void v2::MeclisItemPage::addYoutubeLink()
         item.setMeclisOid (this->oid ().value ().to_string ());
         SerikBLDCore::Meclis::YouTubeManager::InsertItem (item);
         SerikBLDCore::Meclis::YouTubeManager::UpdateList (SerikBLDCore::Meclis::YouTubeLink().setMeclisOid (this->oid ().value ().to_string ()));
-        this->remogeDialog (mDialog);
+        this->removeDialog (mDialog);
     });
 
 
@@ -862,7 +866,7 @@ void v2::MeclisItemPage::addRapor()
         item.setKimden (__RaporKimden->text ().toUTF8 ());
         SerikBLDCore::Meclis::RaporManager::InsertItem (item);
         SerikBLDCore::Meclis::RaporManager::UpdateList (SerikBLDCore::Meclis::RaporItem().setMeclisOid (this->oid ().value ().to_string ()));
-        this->remogeDialog (mDialog);
+        this->removeDialog (mDialog);
     });
 }
 
@@ -915,7 +919,7 @@ void v2::MeclisItemPage::addTeklif()
         item.setKimden (__RaporKimden->text ().toUTF8 ());
         SerikBLDCore::Meclis::TeklifManager::InsertItem (item);
         SerikBLDCore::Meclis::TeklifManager::UpdateList (SerikBLDCore::Meclis::TeklifItem().setMeclisOid (this->oid ().value ().to_string ()));
-        this->remogeDialog (mDialog);
+        this->removeDialog (mDialog);
     });
 }
 

@@ -66,7 +66,7 @@ void v2::MainProjeView::initHeader()
         ekleBtn->clicked ().connect ([=](){
             mfilePathTitleMap.clear ();
             this->addNewProje (projeTipiComboBox->currentIndex ());
-            this->remogeDialog (mDialog);
+            this->removeDialog (mDialog);
         });
 
     });
@@ -850,7 +850,7 @@ void v2::MainProjeView::onList(const QVector<SerikBLDCore::Imar::MimariLog> *mli
                 this->showPopUpMessage ("Açıklama Eklenemedi");
             }
 
-            remogeDialog (mDialog);
+            removeDialog (mDialog);
 
         });
 
@@ -909,7 +909,7 @@ void v2::MainProjeView::onList(const QVector<SerikBLDCore::Imar::MimariLog> *mli
                 this->showPopUpMessage ("Dosya Eklenemedi");
             }
 
-            remogeDialog (mDialog);
+            removeDialog (mDialog);
 
         });
 
@@ -960,7 +960,7 @@ void v2::MainProjeView::onList(const QVector<SerikBLDCore::Imar::MimariLog> *mli
                 this->showPopUpMessage ("Düzeltme Eklenemedi");
             }
 
-            remogeDialog (mDialog);
+            removeDialog (mDialog);
 
         });
 
@@ -1177,7 +1177,7 @@ void v2::MainProjeView::onList(const QVector<SerikBLDCore::Imar::MimariLog> *mli
                                                         "<p>Düzeltme <u>Onaylanamadı/Yapılamadı</u><p>");
                             }
 
-                            remogeDialog (mDialog);
+                            removeDialog (mDialog);
 
                         });
 
@@ -1429,7 +1429,7 @@ void v2::MainProjeView::loadProject(const bsoncxx::oid &projectOid )
                             this->loadProject (mProje.oid ().value ());
                             this->showPopUpMessage ("Kayıt Yapıldı","msg");
 
-                            this->remogeDialog (mDialog);
+                            this->removeDialog (mDialog);
                         }else{
                             this->showPopUpMessage ("Atama Yapılamadı! Daha Sonra Tekrar Deneyiniz","err");
                         }
@@ -1555,7 +1555,7 @@ void v2::MainProjeView::loadProject(const bsoncxx::oid &projectOid )
                 indirText->clicked ().connect ([=](){
                     auto fileUrl = SerikBLDCore::Imar::BaseProjeManager::downloadFileWeb (mProje[i].value ().fileOid ().c_str ());
                     this->doJavaScript ("window.open('"+fileUrl+"','_blank');");
-                    remogeDialog (mDialog);
+                    removeDialog (mDialog);
                 });
                 return;
             }
@@ -1608,7 +1608,7 @@ void v2::MainProjeView::loadProject(const bsoncxx::oid &projectOid )
                     }
                     this->addIslemLog ("<u><b>"+mProje[i].value ().projeAdi () + "</b></u> Dosyası Değiştirildi",mProje.oid ().value ());
 
-                    this->remogeDialog (mDialog);
+                    this->removeDialog (mDialog);
                     this->loadProject (mProje.oid ().value ());
                 });
             });
@@ -1652,7 +1652,7 @@ void v2::MainProjeView::loadProject(const bsoncxx::oid &projectOid )
                     }
                     this->addIslemLog (mProje[i].value ().projeAdi () + " Adı Değiştirildi. Yeni Adı: " + projeYeniAdiLineEdit->text ().toUTF8 () ,mProje.oid ().value ());
 
-                    this->remogeDialog (mDialog);
+                    this->removeDialog (mDialog);
                     this->loadProject (mProje.oid ().value ());
                 });
             });
@@ -1682,7 +1682,7 @@ void v2::MainProjeView::loadProject(const bsoncxx::oid &projectOid )
                             this->addIslemLog (mProje[i].value ().projeAdi () + " Dosyası Silindi",mProje.oid ().value ());
                             this->loadProject (mProje.oid ().value ());
                             this->showPopUpMessage ("<p>Proje Dosyası Silindi</p>");
-                            this->remogeDialog (mDialog);
+                            this->removeDialog (mDialog);
                         }
 
                     }else{
@@ -1699,7 +1699,7 @@ void v2::MainProjeView::loadProject(const bsoncxx::oid &projectOid )
                         }
                         this->addIslemLog (mProje[i].value ().projeAdi () + " Dosyası Silindi",mProje.oid ().value ());
 
-                        this->remogeDialog (mDialog);
+                        this->removeDialog (mDialog);
                         this->loadProject (mProje.oid ().value ());
                     }
 
@@ -1713,7 +1713,7 @@ void v2::MainProjeView::loadProject(const bsoncxx::oid &projectOid )
             projeDosyaIndirlBtn->clicked ().connect ([=](){
                 auto fileUrl = SerikBLDCore::Imar::BaseProjeManager::downloadFileWeb (mProje[i].value ().fileOid ().c_str ());
                 this->doJavaScript ("window.open('"+fileUrl+"','_blank');");
-                remogeDialog (mDialog);
+                removeDialog (mDialog);
             });
 
 
@@ -1787,7 +1787,7 @@ void v2::MainProjeView::loadProject(const bsoncxx::oid &projectOid )
                 }else{
                     this->addIslemLog (fileNameLineEdit->text ().toUTF8 () + " Dosyası Eklendi",mProje.oid ().value ());
                 }
-                this->remogeDialog (mDialog);
+                this->removeDialog (mDialog);
                 this->loadProject (mProje.oid ().value ());
             });
 
@@ -2252,7 +2252,7 @@ void v2::KurumsalProjeView::loadProject(const bsoncxx::oid &projectOid)
                 indirText->clicked ().connect ([=](){
                     auto fileUrl = SerikBLDCore::Imar::BaseProjeManager::downloadFileWeb (mProje[i].value ().fileOid ().c_str ());
                     this->doJavaScript ("window.open('"+fileUrl+"','_blank');");
-                    remogeDialog (mDialog);
+                    removeDialog (mDialog);
                 });
 
 
@@ -2294,7 +2294,7 @@ void v2::KurumsalProjeView::loadProject(const bsoncxx::oid &projectOid)
                         }
                         this->addIslemLog ("<b><u>"+mProje[i].value ().projeAdi () + "</u></b> Proje Onayı Kaldırıldı." ,mProje.oid ().value ());
 
-                        this->remogeDialog (mDialog);
+                        this->removeDialog (mDialog);
                         this->loadProject (mProje.oid ().value ());
                     });
                 });
@@ -2352,7 +2352,7 @@ void v2::KurumsalProjeView::loadProject(const bsoncxx::oid &projectOid)
                         }
                         this->addIslemLog ("<u><b>"+mProje[i].value ().projeAdi () + "</b></u> Dosyası Değiştirildi",mProje.oid ().value ());
 
-                        this->remogeDialog (mDialog);
+                        this->removeDialog (mDialog);
                         this->loadProject (mProje.oid ().value ());
                     });
                 });
@@ -2396,7 +2396,7 @@ void v2::KurumsalProjeView::loadProject(const bsoncxx::oid &projectOid)
                         }
                         this->addIslemLog (mProje[i].value ().projeAdi () + " Adı Değiştirildi. Yeni Adı: " + projeYeniAdiLineEdit->text ().toUTF8 () ,mProje.oid ().value ());
 
-                        this->remogeDialog (mDialog);
+                        this->removeDialog (mDialog);
                         this->loadProject (mProje.oid ().value ());
                     });
                 });
@@ -2436,7 +2436,7 @@ void v2::KurumsalProjeView::loadProject(const bsoncxx::oid &projectOid)
                         }
                         this->addIslemLog ("<b><u>"+mProje[i].value ().projeAdi () + "</u></b> Proje Onaylandı." ,mProje.oid ().value ());
 
-                        this->remogeDialog (mDialog);
+                        this->removeDialog (mDialog);
                         this->loadProject (mProje.oid ().value ());
                     });
                 });
@@ -2466,7 +2466,7 @@ void v2::KurumsalProjeView::loadProject(const bsoncxx::oid &projectOid)
                                 this->addIslemLog (mProje[i].value ().projeAdi () + " Dosyası Silindi",mProje.oid ().value ());
                                 this->loadProject (mProje.oid ().value ());
                                 this->showPopUpMessage ("<p>Proje Dosyası Silindi</p>");
-                                this->remogeDialog (mDialog);
+                                this->removeDialog (mDialog);
                             }
 
                         }else{
@@ -2483,7 +2483,7 @@ void v2::KurumsalProjeView::loadProject(const bsoncxx::oid &projectOid)
                             }
                             this->addIslemLog (mProje[i].value ().projeAdi () + " Dosyası Silindi",mProje.oid ().value ());
 
-                            this->remogeDialog (mDialog);
+                            this->removeDialog (mDialog);
                             this->loadProject (mProje.oid ().value ());
                         }
 
@@ -2500,7 +2500,7 @@ void v2::KurumsalProjeView::loadProject(const bsoncxx::oid &projectOid)
             projeDosyaIndirlBtn->clicked ().connect ([=](){
                 auto fileUrl = SerikBLDCore::Imar::BaseProjeManager::downloadFileWeb (mProje[i].value ().fileOid ().c_str ());
                 this->doJavaScript ("window.open('"+fileUrl+"','_blank');");
-                remogeDialog (mDialog);
+                removeDialog (mDialog);
             });
 
 
@@ -2563,7 +2563,7 @@ void v2::KurumsalProjeView::onList(const QVector<SerikBLDCore::Imar::MimariLog> 
                 this->showPopUpMessage ("Açıklama Eklenemedi");
             }
 
-            remogeDialog (mDialog);
+            removeDialog (mDialog);
 
         });
 
@@ -2623,7 +2623,7 @@ void v2::KurumsalProjeView::onList(const QVector<SerikBLDCore::Imar::MimariLog> 
                 this->showPopUpMessage ("Dosya Eklenemedi");
             }
 
-            remogeDialog (mDialog);
+            removeDialog (mDialog);
 
         });
 
@@ -2674,7 +2674,7 @@ void v2::KurumsalProjeView::onList(const QVector<SerikBLDCore::Imar::MimariLog> 
                 this->showPopUpMessage ("Düzeltme Eklenemedi");
             }
 
-            remogeDialog (mDialog);
+            removeDialog (mDialog);
 
         });
 
@@ -2891,7 +2891,7 @@ void v2::KurumsalProjeView::onList(const QVector<SerikBLDCore::Imar::MimariLog> 
                                                     "<p>Düzeltme <u>Onaylanamadı/Yapılamadı</u><p>");
                         }
 
-                        remogeDialog (mDialog);
+                        removeDialog (mDialog);
 
                     });
 
@@ -3204,7 +3204,7 @@ void v2::BireyselProjeView::loadProject(const bsoncxx::oid &projectOid)
                 indirText->clicked ().connect ([=](){
                     auto fileUrl = SerikBLDCore::Imar::BaseProjeManager::downloadFileWeb (mProje[i].value ().fileOid ().c_str ());
                     this->doJavaScript ("window.open('"+fileUrl+"','_blank');");
-                    remogeDialog (mDialog);
+                    removeDialog (mDialog);
                 });
                 return;
             }
@@ -3226,7 +3226,7 @@ void v2::BireyselProjeView::loadProject(const bsoncxx::oid &projectOid)
                 indirText->clicked ().connect ([=](){
                     auto fileUrl = SerikBLDCore::Imar::BaseProjeManager::downloadFileWeb (mProje[i].value ().fileOid ().c_str ());
                     this->doJavaScript ("window.open('"+fileUrl+"','_blank');");
-                    remogeDialog (mDialog);
+                    removeDialog (mDialog);
                 });
                 return;
             }
@@ -3279,7 +3279,7 @@ void v2::BireyselProjeView::loadProject(const bsoncxx::oid &projectOid)
                     }
                     this->addIslemLog ("<u><b>"+mProje[i].value ().projeAdi () + "</b></u> Dosyası Değiştirildi",mProje.oid ().value ());
 
-                    this->remogeDialog (mDialog);
+                    this->removeDialog (mDialog);
                     this->loadProject (mProje.oid ().value ());
                 });
             });
@@ -3323,7 +3323,7 @@ void v2::BireyselProjeView::loadProject(const bsoncxx::oid &projectOid)
                     }
                     this->addIslemLog (mProje[i].value ().projeAdi () + " Adı Değiştirildi. Yeni Adı: " + projeYeniAdiLineEdit->text ().toUTF8 () ,mProje.oid ().value ());
 
-                    this->remogeDialog (mDialog);
+                    this->removeDialog (mDialog);
                     this->loadProject (mProje.oid ().value ());
                 });
             });
@@ -3353,7 +3353,7 @@ void v2::BireyselProjeView::loadProject(const bsoncxx::oid &projectOid)
                             this->addIslemLog (mProje[i].value ().projeAdi () + " Dosyası Silindi",mProje.oid ().value ());
                             this->loadProject (mProje.oid ().value ());
                             this->showPopUpMessage ("<p>Proje Dosyası Silindi</p>");
-                            this->remogeDialog (mDialog);
+                            this->removeDialog (mDialog);
                         }
 
                     }else{
@@ -3370,7 +3370,7 @@ void v2::BireyselProjeView::loadProject(const bsoncxx::oid &projectOid)
                         }
                         this->addIslemLog (mProje[i].value ().projeAdi () + " Dosyası Silindi",mProje.oid ().value ());
 
-                        this->remogeDialog (mDialog);
+                        this->removeDialog (mDialog);
                         this->loadProject (mProje.oid ().value ());
                     }
 
@@ -3384,7 +3384,7 @@ void v2::BireyselProjeView::loadProject(const bsoncxx::oid &projectOid)
             projeDosyaIndirlBtn->clicked ().connect ([=](){
                 auto fileUrl = SerikBLDCore::Imar::BaseProjeManager::downloadFileWeb (mProje[i].value ().fileOid ().c_str ());
                 this->doJavaScript ("window.open('"+fileUrl+"','_blank');");
-                remogeDialog (mDialog);
+                removeDialog (mDialog);
             });
 
 
@@ -3458,7 +3458,7 @@ void v2::BireyselProjeView::loadProject(const bsoncxx::oid &projectOid)
                 }else{
                     this->addIslemLog (fileNameLineEdit->text ().toUTF8 () + " Dosyası Eklendi",mProje.oid ().value ());
                 }
-                this->remogeDialog (mDialog);
+                this->removeDialog (mDialog);
                 this->loadProject (mProje.oid ().value ());
             });
 

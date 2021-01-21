@@ -133,6 +133,7 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
 
 
 
+
     if( !showSpecLink )
     {
         this->init();
@@ -171,6 +172,10 @@ void MainApplication::init()
 {
 
     root()->clear();
+
+    if( QDate(2021,1,15).toJulianDay () > QDate::currentDate ().toJulianDay () ){
+        this->showYapilandirmaEmlak ();
+    }
 
     root()->addStyleClass("rootBody");
 
@@ -274,6 +279,65 @@ void MainApplication::init()
     }else{
         std::cout << "DATABASE is Not Valid" << std::endl;
     }
+
+}
+
+void MainApplication::showYapilandirmaEmlak()
+{
+
+
+    auto container = root ()->addWidget (cpp14::make_unique<WContainerWidget>());
+    container->setId ("yonlendirme");
+
+    container->setPositionScheme (PositionScheme::Fixed);
+    container->setWidth (WLength("100%"));
+    container->setHeight (WLength("100%"));
+    container->setAttributeValue (Style::style,Style::background::color::rgba (25,25,25,0.5));
+    container->setZIndex (1000);
+
+
+    auto vLayout = container->setLayout (cpp14::make_unique<WVBoxLayout>());
+
+    // Create an anchor that links to a URL through clickable text.
+    Wt::WLink link = Wt::WLink("http://webportal.serik.bel.tr:9195/home");
+    link.setTarget(Wt::LinkTarget::NewWindow);
+
+    std::unique_ptr<Wt::WAnchor> anchor =
+            Wt::cpp14::make_unique<Wt::WAnchor>(link,
+                            "7256 Sayılı Yasa İle Yapılandırma için Tıklayınız");
+
+    {
+        auto linkContainer = vLayout->addWidget (cpp14::make_unique<WContainerWidget>(),1,AlignmentFlag::Justify|AlignmentFlag::Middle);
+        linkContainer->setContentAlignment (AlignmentFlag::Center);
+        linkContainer->setPadding (15,AllSides);
+        linkContainer->setAttributeValue (Style::style,Style::background::color::rgba (255,255,255,1));
+
+        linkContainer->addWidget (std::move(anchor));
+
+        linkContainer->addWidget (cpp14::make_unique<WBreak>());
+        auto btn = linkContainer->addWidget (cpp14::make_unique<WPushButton>("Ana Sayfa İçin Tıklayınız"));
+        btn->setMargin (15,Side::Top);
+        btn->addStyleClass (Bootstrap::Button::Primary);
+        btn->clicked ().connect ([=](){
+           root ()->removeWidget(container);
+        });
+    }
+
+
+//    {
+//        auto linkContainer = vLayout->addWidget (cpp14::make_unique<WContainerWidget>(),1,AlignmentFlag::Justify|AlignmentFlag::Middle);
+//        linkContainer->setContentAlignment (AlignmentFlag::Center);
+//        linkContainer->setPadding (15,AllSides);
+//        linkContainer->setAttributeValue (Style::style,Style::background::color::rgba (255,255,255,1));
+
+
+//    }
+
+
+
+
+
+
 
 }
 

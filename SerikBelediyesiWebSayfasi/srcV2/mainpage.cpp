@@ -561,6 +561,7 @@ bool MainPage::initMeclisCanliYayin()
     }
 
     std::string embedlink;
+    std::string CanliYayinTitle = "Canlı Yayın";
     bool online = false;
 
     try {
@@ -576,6 +577,12 @@ bool MainPage::initMeclisCanliYayin()
             {
                 try {
                     embedlink = val.value().view()["link"].get_utf8().value.to_string()+"?autoplay=1+";
+                } catch (bsoncxx::exception &e) {
+
+                }
+
+                try {
+                    CanliYayinTitle = val.value().view()["title"].get_utf8().value.to_string();
                 } catch (bsoncxx::exception &e) {
 
                 }
@@ -595,6 +602,8 @@ bool MainPage::initMeclisCanliYayin()
         auto rContaier = mContainer->addWidget(cpp14::make_unique<WContainerWidget>());
         rContaier->addStyleClass(Bootstrap::Grid::row);
         rContaier->setContentAlignment(AlignmentFlag::Center);
+
+
         {
             auto link = "<iframe src=\"" +embedlink+ "\" style=\"border:0px #ffffff none;\" name=\"myiFrame\" scrolling=\"no\" frameborder=\"1\" marginheight=\"5px\" marginwidth=\"5px\" height=\"100%\" width=\"100%\" "
                                                      "allow=\"accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>";
@@ -613,7 +622,7 @@ bool MainPage::initMeclisCanliYayin()
 //            container->setPadding(90,Side::Top);
             container->setContentAlignment(AlignmentFlag::Center);
             container->addStyleClass(Bootstrap::ImageShape::img_thumbnail+Bootstrap::Grid::col_full_12);
-            auto text = container->addWidget(cpp14::make_unique<WText>("<h6>Meclis Canlı Yayın</h6>",TextFormat::UnsafeXHTML));
+            auto text = container->addWidget(cpp14::make_unique<WText>("<h4>"+CanliYayinTitle+"</h4>",TextFormat::UnsafeXHTML));
             text->setAttributeValue(Style::style,Style::color::rgb("25,25,25"));
         }
 

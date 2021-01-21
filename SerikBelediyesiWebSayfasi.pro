@@ -62,6 +62,7 @@ SOURCES += main.cpp \
     SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetlistitemwidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetyonetimwidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/sms/smsmanager.cpp \
+    SerikBelediyesiWebSayfasi/srcV2/stok/stokcontainerwidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/stok/stokkategoripage.cpp \
     SerikBelediyesiWebSayfasi/srcV2/talepler/taleplistwidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/talepler/talepvatandasarayuz.cpp \
@@ -140,6 +141,7 @@ HEADERS += \
     SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetlistitemwidget.h \
     SerikBelediyesiWebSayfasi/srcV2/sikayetYonetim/sikayetyonetimwidget.h \
     SerikBelediyesiWebSayfasi/srcV2/sms/smsmanager.h \
+    SerikBelediyesiWebSayfasi/srcV2/stok/stokcontainerwidget.h \
     SerikBelediyesiWebSayfasi/srcV2/stok/stokkategoripage.h \
     SerikBelediyesiWebSayfasi/srcV2/talepler/taleplistwidget.h \
     SerikBelediyesiWebSayfasi/srcV2/talepler/talepvatandasarayuz.h \
@@ -179,43 +181,7 @@ DISTFILES +=
     message("MSVC_VER : " + $$MSVC_VER)
 
 
-    equals(MSVC_VER, 14.0){
-        message("msvc 2015 x6400")
 
-        win32:CONFIG(release, debug|release): LIBS += -L$$PWD/lib/ -lbsoncxx
-        else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/lib/ -lbsoncxxd
-        else:unix: LIBS += -L$$PWD/lib/ -lbsoncxx
-
-        INCLUDEPATH += $$PWD/include/bsoncxx/v_noabi
-        DEPENDPATH += $$PWD/include/bsoncxx/v_noabi
-
-
-
-        win32:CONFIG(release, debug|release): LIBS += -L$$PWD/lib/ -lmongocxx
-        else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/lib/ -lmongocxxd
-        else:unix: LIBS += -L$$PWD/lib/ -lmongocxx
-
-        INCLUDEPATH += $$PWD/include/mongocxx/v_noabi
-        DEPENDPATH += $$PWD/include/mongocxx/v_noabi
-
-        win32: LIBS += -LC:/Wt-4.1.2-msvs2015-x64/lib/ -lwt
-
-        INCLUDEPATH += C:/Wt-4.1.2-msvs2015-x64/include
-        DEPENDPATH += C:/Wt-4.1.2-msvs2015-x64/include
-
-        win32: LIBS += -LC:/Wt-4.1.2-msvs2015-x64/lib/ -lwthttp
-
-        win32: LIBS += -LC:/Wt-4.1.2-msvs2015-x64/lib/ -llibhpdf
-
-
-
-        win32: LIBS += -LC:/SerikBLDCoreRelease/MSVC2015X64/lib/ -lSerikBLDCore
-
-        INCLUDEPATH += C:/SerikBLDCoreRelease/MSVC2015X64/include
-        DEPENDPATH += C:/SerikBLDCoreRelease/MSVC2015X64/include
-
-
-    }
 
     equals(MSVC_VER, 15.0){
         message("msvc 2017 x64")

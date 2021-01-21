@@ -114,6 +114,70 @@ WPushButton* ContainerWidget::askConfirm(const std::string &question)
     return yesBtn;
 }
 
+void ContainerWidget::warnDialog(const std::string &warnMessage)
+{
+
+    auto mDialog = wApp->instance()->root()->addChild (cpp14::make_unique<WDialog>());
+
+
+    mDialog->titleBar ()->addWidget (cpp14::make_unique<WText>("<h3><b>! Uyarı</b></h3>"));
+    mDialog->titleBar ()->addStyleClass (Bootstrap::ContextualBackGround::bg_warning);
+
+
+    mDialog->contents ()->addWidget (cpp14::make_unique<WText>(warnMessage));
+    mDialog->contents ()->addStyleClass (Bootstrap::ContextualBackGround::bg_info);
+
+    auto closeBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Tamam"));
+    closeBtn->addStyleClass (Bootstrap::Button::Warning);
+
+    closeBtn->clicked ().connect ([=](){
+        wApp->instance()->root()->removeChild(mDialog);
+    });
+    mDialog->show ();
+}
+
+void ContainerWidget::criticDialog(const std::string &criticMessage)
+{
+    auto mDialog = wApp->instance()->root()->addChild (cpp14::make_unique<WDialog>());
+
+
+    mDialog->titleBar ()->addWidget (cpp14::make_unique<WText>("<h3><b>!Hata</b></h3>"));
+    mDialog->titleBar ()->addStyleClass (Bootstrap::ContextualBackGround::bg_danger);
+
+
+    mDialog->contents ()->addWidget (cpp14::make_unique<WText>(criticMessage));
+    mDialog->contents ()->addStyleClass (Bootstrap::ContextualBackGround::bg_warning);
+
+    auto closeBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Tamam"));
+    closeBtn->addStyleClass (Bootstrap::Button::Danger);
+
+    closeBtn->clicked ().connect ([=](){
+        wApp->instance()->root()->removeChild(mDialog);
+    });
+    mDialog->show ();
+}
+
+void ContainerWidget::informDialog(const std::string &informMessage)
+{
+    auto mDialog = wApp->instance()->root()->addChild (cpp14::make_unique<WDialog>());
+
+
+    mDialog->titleBar ()->addWidget (cpp14::make_unique<WText>("<h5><b>Bilgi</b></h5>"));
+    mDialog->titleBar ()->addStyleClass (Bootstrap::ContextualBackGround::bg_primary);
+
+
+    mDialog->contents ()->addWidget (cpp14::make_unique<WText>(informMessage));
+    mDialog->contents ()->addStyleClass (Bootstrap::ContextualBackGround::bg_info);
+
+    auto closeBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Tamam"));
+    closeBtn->addStyleClass (Bootstrap::Button::Primary);
+
+    closeBtn->clicked ().connect ([=](){
+        wApp->instance()->root()->removeChild(mDialog);
+    });
+    mDialog->show ();
+}
+
 WDialog *ContainerWidget::createDialog(const std::string &title)
 {
     auto mDialog = wApp->instance()->root()->addChild (cpp14::make_unique<WDialog>());
@@ -136,7 +200,7 @@ WDialog *ContainerWidget::createDialog(const std::string &title)
     return mDialog;
 }
 
-void ContainerWidget::remogeDialog(WDialog *mDialog)
+void ContainerWidget::removeDialog(WDialog *mDialog)
 {
     wApp->instance()->root()->removeChild(mDialog);
 }

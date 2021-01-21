@@ -43,6 +43,12 @@ void v2::CalismaContainerWidget::initCalismaWidget()
 
     {
         auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::col_full_12);
+        container->addWidget (cpp14::make_unique<WText>(this->isKategorisi ()));
+    }
+
+    {
+        auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
         container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
                                   Bootstrap::Grid::Medium::col_md_3+
                                   Bootstrap::Grid::Small::col_sm_6+

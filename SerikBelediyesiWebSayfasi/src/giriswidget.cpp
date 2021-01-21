@@ -33,6 +33,7 @@
 #include "firma/firmamanager.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/imar/yenimimariproje.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/imar/mimariprojemanagerpage.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/stok/stokcontainerwidget.h"
 
 
 
@@ -2407,6 +2408,13 @@ void Giris::Personel::PersonelWidget::initMenu()
             this->Content ()->addWidget (Wt::cpp14::make_unique<KadinAileStock>(mUser->db (),mUser->Value ()));
         });
     }
+
+
+    menu->addItem(WString::fromUTF8("Stok"))->clicked ().connect ([&](){
+        this->Content ()->clear ();
+        this->Content ()->addWidget (Wt::cpp14::make_unique<v2::StokWidget::StokContainerWidget>(mUser));
+    });
+
 
 
 

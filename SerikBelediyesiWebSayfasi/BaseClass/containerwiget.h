@@ -40,6 +40,10 @@ public:
 
     WPushButton *askConfirm( const std::string& question );
 
+    void warnDialog( const std::string &warnMessage );
+    void criticDialog( const std::string &criticMessage );
+    void informDialog( const std::string &informMessage );
+
 
     /**
      * @brief createDialog:  WDialog Oluşturur ve Geri ptr Geri Döndürür.
@@ -47,7 +51,7 @@ public:
      */
     WDialog* createDialog( const std::string& title = "" );
 
-    void remogeDialog( WDialog* mDialog );
+    void removeDialog( WDialog* mDialog );
 
     enum ContainerStyleType
     {

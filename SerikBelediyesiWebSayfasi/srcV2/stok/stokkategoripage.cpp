@@ -870,7 +870,7 @@ void v2::StokManagerCikisPage::onList(const QVector<SerikBLDCore::Stok::Stok> *m
                     if( SerikBLDCore::ListItem<SerikBLDCore::Stok::Stok>::UpdateItem ( _item ) )
                     {
                         this->showPopUpMessage ("Yardım Teslim Edildi","msg");
-                        this->remogeDialog (mDialog);
+                        this->removeDialog (mDialog);
                         teslimler ();
                         SerikBLDCore::Stok::Stok stokItem(SerikBLDCore::Stok::Stok::Giris::giris,this->user ()->Birimi ());
                         stokItem.setKodu (mStokKodList[mStokItemComboBox->currentText ().toUTF8 ()]);

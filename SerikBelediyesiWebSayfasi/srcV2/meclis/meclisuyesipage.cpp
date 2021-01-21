@@ -408,7 +408,7 @@ v2::MeclisDonemPage::MeclisDonemPage(DB *_db)
                                   .setDonem ( baslangicYili->value () , bitisYili->value ())).size () )
             {
                 SerikBLDCore::Meclis::DonemManager::UpdateList (SerikBLDCore::Meclis::MeclisDonemi());
-                remogeDialog (mDialog);
+                removeDialog (mDialog);
             }
         });
     });
@@ -517,7 +517,7 @@ v2::PartiManagerPage::PartiManagerPage(SerikBLDCore::DB *_db)
                                   .setParti ( lineEdit->text ().toUTF8 ())).size () )
             {
                 SerikBLDCore::Meclis::PartiManager::UpdateList (SerikBLDCore::Meclis::PartiItem());
-                remogeDialog (mDialog);
+                removeDialog (mDialog);
             }
         });
     });
@@ -620,7 +620,7 @@ v2::KomisyonManagerPage::KomisyonManagerPage(SerikBLDCore::DB *_db)
                                   .setKomisyonAdi ( lineEdit->text ().toUTF8 ())).size () )
             {
                 SerikBLDCore::Meclis::KomisyonManager::UpdateList (SerikBLDCore::Meclis::KomisyonItem());
-                remogeDialog (mDialog);
+                removeDialog (mDialog);
             }
         });
     });

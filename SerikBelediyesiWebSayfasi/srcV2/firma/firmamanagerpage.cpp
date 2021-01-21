@@ -457,7 +457,7 @@ void v2::FirmaManagerPage::yetkiliAtaDialog(const std::string &firmaOid)
                 filter.setYetkiliOid (bsoncxx::oid{secContainer->attributeValue (Style::dataoid).toUTF8 ()});
 
                 if( this->UpdateItem (filter) ){
-                    this->remogeDialog (mDialog);
+                    this->removeDialog (mDialog);
                 }else{
                     infoText->setText ("<b>Atama Yapılamadı. Daha Sonra Tekrar Deneyin</b>");
                     infoText->setAttributeValue (Style::style,Style::color::color (Style::color::Red::Red));

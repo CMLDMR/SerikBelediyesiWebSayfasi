@@ -31,6 +31,7 @@ private:
     WComboBox* mMahalleComboBox;
     WText* mBirimComboBox;
     WComboBox* mTipComboBox;
+    WComboBox* mIsKategoriComboBox;
 
     WDoubleSpinBox* mMiktar;
 

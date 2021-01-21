@@ -35,6 +35,8 @@ public:
     ///
     void init();
 
+    void showYapilandirmaEmlak();
+
 
     void ShowForeGround();
 
