@@ -178,6 +178,27 @@ void ContainerWidget::informDialog(const std::string &informMessage)
     mDialog->show ();
 }
 
+
+
+std::unique_ptr<WContainerWidget> ContainerWidget::createButton(const std::string &menuName, const Cursor cursor)
+{
+    auto container = cpp14::make_unique<WContainerWidget>();
+    container->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                              Bootstrap::Grid::Medium::col_md_2+
+                              Bootstrap::Grid::Small::col_sm_3+
+                              Bootstrap::Grid::ExtraSmall::col_xs_3+
+                              Bootstrap::ImageShape::img_thumbnail);
+    container->setAttributeValue (Style::style,Style::background::color::rgb (this->getRandom (),
+                                                                              this->getRandom (),
+                                                                              this->getRandom ()));
+    auto btnText = container->addWidget (cpp14::make_unique<WText>("<b>"+menuName+"</b>"));
+    btnText->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
+    container->decorationStyle ().setCursor (cursor);
+    container->addStyleClass (CSSStyle::Button::blueButton);
+    container->setHeight (40);
+    return container;
+}
+
 WDialog *ContainerWidget::createDialog(const std::string &title)
 {
     auto mDialog = wApp->instance()->root()->addChild (cpp14::make_unique<WDialog>());

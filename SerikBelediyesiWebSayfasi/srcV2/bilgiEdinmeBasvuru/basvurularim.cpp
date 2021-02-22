@@ -5,7 +5,7 @@
 
 
 V2::Basvurularim::Basvurularim(DB *_db, const SerikBLDCore::TC &_tcUser)
-    :ContainerWidget ("Başvurularım"),
+    :ContainerWidget (WString::tr ("Başvurularım").toUTF8 ()),
       SerikBLDCore::BilgiEdinmeManager (_db),
       mCurrentFilter(std::make_unique<SerikBLDCore::BilgiEdinmeItem>())
 {

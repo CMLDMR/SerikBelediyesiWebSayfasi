@@ -4,7 +4,7 @@
 #include "SerikBelediyesiWebSayfasi/srcV2/firma/firmamanagerpage.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/imar/mimariprojemanagerpage.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/calismalar/calismamanagercontainer.h"
-
+#include "SerikBelediyesiWebSayfasi/srcV2/faaliyet/faaliyetraporcontainer.h"
 
 v2::BirimIsleriContainer::BirimIsleriContainer(SerikBLDCore::User *_user)
     :mUser(_user),ContainerWidget ("Birim İşleri")
@@ -29,6 +29,19 @@ v2::BirimIsleriContainer::BirimIsleriContainer(SerikBLDCore::User *_user)
         Header ()->addWidget (std::move(menuFirma));
     }
 
+
+    //Çalışma Yönetimi
+    {
+        auto menuFirma = this->createButton ( "Faaliyet Raporu" , Cursor::PointingHand );
+        menuFirma->clicked ().connect ( [=](){
+
+
+            this->initFaaliyetRaporlari ();
+
+
+        } );
+        Header ()->addWidget (std::move(menuFirma));
+    }
 
 }
 
@@ -93,6 +106,18 @@ void v2::BirimIsleriContainer::initCalismalar()
     Content ()->clear ();
 
     Content ()->addWidget (cpp14::make_unique<v2::CalismaManagerContainer>(this->mUser));
+
+}
+
+void v2::BirimIsleriContainer::initFaaliyetRaporlari()
+{
+
+
+//    LOG << "\n";
+    Content ()->clear ();
+    Content ()->addWidget (cpp14::make_unique<v2::Faaliyet::FaaliyetRaporContainer>(this->mUser));
+
+//    LOG << "\n";
 
 }
 

@@ -11,6 +11,36 @@ namespace v2{
 namespace StokWidget {
 
 
+struct PipeLineStokItem{
+    std::string kategoriOid;
+    double miktarGiris;
+    double miktarCikis;
+    std::string metric;
+    std::string name;
+
+    bool operator==( const PipeLineStokItem& other ){
+        if( kategoriOid == other.kategoriOid ){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
+
+    void setValues( const PipeLineStokItem &other ){
+        this->kategoriOid = other.kategoriOid;
+        this->miktarCikis = other.miktarCikis;
+        this->miktarGiris = other.miktarGiris;
+        this->metric = other.metric;
+        this->name = other.name;
+    }
+};
+
+
+
+
+
 class StokContainerWidget : public ContainerWidget, public SerikBLDCore::Stokv2::Stokv2Manager
 {
 
@@ -43,18 +73,25 @@ public:
 
 private:
     SerikBLDCore::User* mUser;
+    SerikBLDCore::PersonelManager* mPersonelManager;
     ContainerWidget* mSubMenuBarContainer;
 
     void initAyarlar();
 
     void importMazeleme();
+    void exportMalzeme( const double &maxMiktar , const PipeLineStokItem &item);
 
+    void initlastState();
     void initimportMenu();
     void initexportMenu();
 
     void initViewMalzeme(const bsoncxx::oid &malzemeOid );
 
     CurrentPage mCurrentPage = CurrentPage::SonDurumPage;
+
+
+    std::vector<PipeLineStokItem> getGirisList();
+    std::vector<PipeLineStokItem> getCikisList();
 
 };
 
@@ -111,7 +148,6 @@ private:
 
 
 };
-
 
 
 

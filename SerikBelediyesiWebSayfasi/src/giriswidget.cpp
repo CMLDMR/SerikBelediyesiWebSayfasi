@@ -1777,13 +1777,13 @@ void Giris::SivilWidget::initMenu()
     });
 
 
-    menu->addItem("Başvurularım")->clicked ().connect ([=](){
+    menu->addItem( ("Başvurularım"))->clicked ().connect ([=](){
         this->Content ()->clear();
         this->Content ()->addWidget (Wt::cpp14::make_unique<V2::Basvurularim>(new SerikBLDCore::DB(db),mTCUser));
     });
 
 
-    menu->addItem("Yeni Başvuru")->clicked ().connect ([=](){
+    menu->addItem(WString::tr ("Yeni Başvuru"))->clicked ().connect ([=](){
         this->Content ()->clear();
         this->Content ()->addWidget (Wt::cpp14::make_unique<BilgiEdinmeBasvuruWidget>(new SerikBLDCore::DB(db),&mTCUser));
     });
@@ -1864,7 +1864,7 @@ Giris::Basvurularim::Basvurularim(mongocxx::database *_db, bsoncxx::document::va
 
 
 
-    auto title = row->addWidget(cpp14::make_unique<WText>("<h3>Başvurularım</h3>"));
+    auto title = row->addWidget(cpp14::make_unique<WText>(WString::tr ("<h3>Başvurularım</h3>")));
     title->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
 
 
@@ -2369,13 +2369,13 @@ void Giris::Personel::PersonelWidget::initMenu()
 
 
 
-    menu->addItem(WString::fromUTF8("Taleplerim"))->clicked ().connect ([&](){
+    menu->addItem(("Taleplerim"))->clicked ().connect ([&](){
         this->Content ()->clear();
         this->Content ()->addWidget (Wt::cpp14::make_unique<TalepYonetim>(mUser->db (),mUser->Value ()));
     });
 
 
-    menu->addItem(WString::fromUTF8("Başvurularım"))->clicked ().connect ([&](){
+    menu->addItem(("Başvurularım"))->clicked ().connect ([&](){
         this->Content ()->clear ();
         this->Content ()->addWidget (Wt::cpp14::make_unique<V2::GelenBasvurular>(new SerikBLDCore::DB(mUser->db ()) , mUser->Value ()));
     });
@@ -2431,8 +2431,11 @@ void Giris::Personel::PersonelWidget::initMenu()
     }
 
 
-    menu->addItem(WString::fromUTF8("Evrak Arşivi"))->clicked ().connect ([&](){
+    menu->addItem(("Evrak Arşivi"))->clicked ().connect ([&](){
         this->Content ()->clear ();
+        if( this->mUser->AdSoyad () == "Mehmet Yıldırım" ){
+            this->mUser->setWorkingBirim("Yazı İşleri Müdürlüğü");
+        }
         this->Content ()->addWidget (Wt::cpp14::make_unique<EvrakArsiv>(mUser->db (),mUser->Value ()));
     });
 
@@ -2470,7 +2473,7 @@ void Giris::Personel::PersonelWidget::initMenu()
 //                });
     }
 
-    menu->addItem(WString::fromUTF8("İş Yönetimi"))->clicked ().connect ([&](){
+    menu->addItem(("İş Yönetimi"))->clicked ().connect ([&](){
         this->Content ()->clear ();
         this->Content ()->addWidget (Wt::cpp14::make_unique<v2::BirimIsleriContainer>(mUser));
     });
@@ -2513,13 +2516,13 @@ void Giris::Personel::PersonelWidget::initMobilMenu()
 
 
 
-    menu->addItem(WString::fromUTF8("Taleplerim"))->clicked ().connect ([&](){
+    menu->addItem(("Taleplerim"))->clicked ().connect ([&](){
         this->Content ()->clear();
         this->Content ()->addWidget (Wt::cpp14::make_unique<TalepYonetim>(mUser->db (),mUser->Value ()));
     });
 
 
-    menu->addItem(WString::fromUTF8("Başvurularım"))->clicked ().connect ([&](){
+    menu->addItem(("Başvurularım"))->clicked ().connect ([&](){
         this->Content ()->clear ();
         this->Content ()->addWidget (Wt::cpp14::make_unique<V2::GelenBasvurular>(new SerikBLDCore::DB(mUser->db ()) , mUser->Value ()));
     });
@@ -2527,7 +2530,7 @@ void Giris::Personel::PersonelWidget::initMobilMenu()
 
     if( this->mUser->Birimi () == "Yazı İşleri Müdürlüğü" || this->mUser->Statu () == SerikBLDCore::User::Baskan || this->mUser->Statu () == SerikBLDCore::User::BaskanYardimcisi )
     {
-        menu->addItem(WString::fromUTF8("Meclis"))->clicked ().connect ([&](){
+        menu->addItem(WString::tr("Meclis"))->clicked ().connect ([&](){
             this->Content ()->clear ();
             this->Content ()->addWidget (Wt::cpp14::make_unique<v2::MeclisPageManager>(new SerikBLDCore::DB(mUser->db ())));
         });
@@ -2584,7 +2587,7 @@ void Giris::Personel::PersonelWidget::initMobilMenu()
 //        });
 
 
-        menu->addItem(WString::fromUTF8("Evrak Arşivi"))->clicked ().connect ([&](){
+        menu->addItem(("Evrak Arşivi"))->clicked ().connect ([&](){
             this->Content ()->clear ();
             this->Content ()->addWidget (Wt::cpp14::make_unique<EvrakArsiv>(mUser->db (),mUser->Value ()));
         });
@@ -2988,7 +2991,7 @@ Giris::Personel::EvrakArsiv::EvrakArsiv(mongocxx::database *_db, bsoncxx::docume
         {
             auto container = _layout->addWidget(cpp14::make_unique<WContainerWidget>());
             container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-            auto text = container->addWidget(cpp14::make_unique<WText>("Evrak Arşivi"));
+            auto text = container->addWidget(cpp14::make_unique<WText>( ("Evrak Arşivi")));
             text->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold);
         }
         _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
@@ -3059,7 +3062,7 @@ void Giris::Personel::EvrakArsiv::initMenu()
 
         auto imgContainer = layout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Center|AlignmentFlag::Top);
         imgContainer->setHeight(75);
-        imgContainer->setWidth(75);
+        imgContainer->setWidth(65);
         imgContainer->setAttributeValue(Style::style,Style::background::url("icon/3D-Logo.png")+Style::background::repeat::norepeat+
                                         Style::background::size::contain+
                                         Style::background::position::center_center);
@@ -3069,7 +3072,7 @@ void Giris::Personel::EvrakArsiv::initMenu()
 
         std::unique_ptr<Wt::WAnchor> anchor =
                 Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                                    "EArşiv v0.2");
+                                                    "EArşiv v0.2.3");
 
         //        container->addWidget(cpp14::make_unique<WAnchor>(link,"<b>● Kod Kütüphanesi</b>"));
 

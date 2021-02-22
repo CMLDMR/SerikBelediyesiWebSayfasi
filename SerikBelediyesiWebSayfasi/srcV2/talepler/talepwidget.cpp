@@ -439,6 +439,11 @@ TalepWidget::TalepItemWidget::TalepItemWidget(const DB &db )
 
     mBilgilerimiGizle = vLayout->addWidget (cpp14::make_unique<WCheckBox>("Kişisel Bilgilerimi Gizle"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
     mBilgilerimiGizle->setChecked (false);
+    mBilgilerimiGizle->checked ().connect ([=](){
+        if( mBilgilerimiGizle->isChecked () ){
+            this->informDialog ("Adınız Soyadınız, Telefon Numaranız ve Diğer Bilgilerinizi Personel Dahil Kimse Göremez.\nSadece Talebiniz ve Talep/Şikayet Adresi Görüntülenir");
+        }
+    });
 
     auto mahalleTitleText = vLayout->addWidget (cpp14::make_unique<WText>("Mahalle"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
 

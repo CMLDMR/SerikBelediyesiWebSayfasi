@@ -21,6 +21,8 @@ public:
 
     void initCalismalar();
 
+    void initFaaliyetRaporlari();
+
 private:
     SerikBLDCore::User* mUser;
 

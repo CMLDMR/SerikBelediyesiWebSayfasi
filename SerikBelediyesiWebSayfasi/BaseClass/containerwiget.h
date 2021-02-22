@@ -14,7 +14,8 @@ constexpr int REV = 31;
 constexpr int COM = 477;
 
 
-
+#define LOG std::cout <<"\n"<< __LINE__ << " " << __FUNCTION__ << " -> "
+#define LOGN std::cout << "\n"<<__LINE__ << " " << __FUNCTION__ << "\n"
 
 
 
@@ -43,6 +44,18 @@ public:
     void warnDialog( const std::string &warnMessage );
     void criticDialog( const std::string &criticMessage );
     void informDialog( const std::string &informMessage );
+
+
+
+    ContainerWidget& setDataOid( const std::string &oid ){
+        this->setAttributeValue (Style::dataoid,oid);
+        return *this;
+    }
+
+
+
+
+    std::unique_ptr<WContainerWidget> createButton( const std::string &menuName , const Cursor cursor = Cursor::Auto);
 
 
     /**

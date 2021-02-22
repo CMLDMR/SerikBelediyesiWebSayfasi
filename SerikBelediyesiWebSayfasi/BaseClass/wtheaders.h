@@ -55,6 +55,9 @@
 #include <Wt/Http/Request.h>
 #include <Wt/Http/Response.h>
 
+#include <Wt/WStandardItemModel.h>
+#include <Wt/WTableView.h>
+#include <Wt/WStandardItem.h>
 
 #include <Wt/WSplitButton.h>
 

@@ -62,6 +62,7 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
     WApplication::useStyleSheet(WLink("css/eventWidget.css"));
     WApplication::useStyleSheet(WLink("css/header.css"));
     WApplication::useStyleSheet(WLink("css/style.css"));
+//    WApplication::useStyleSheet (WLink("https://www.w3schools.com/w3css/4/w3.css"));
 
     //    WApplication::useStyleSheet(WLink("css/test.css"));
 
@@ -173,7 +174,7 @@ void MainApplication::init()
 
     root()->clear();
 
-    if( QDate(2021,1,15).toJulianDay () > QDate::currentDate ().toJulianDay () ){
+    if( QDate(2021,1,31).toJulianDay () > QDate::currentDate ().toJulianDay () ){
         this->showYapilandirmaEmlak ();
     }
 
