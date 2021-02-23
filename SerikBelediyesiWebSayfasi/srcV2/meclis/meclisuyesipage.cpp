@@ -124,19 +124,38 @@ v2::MeclisUyeleriPage::MeclisUyeleriPage(SerikBLDCore::DB *_db)
                                   Bootstrap::Grid::Medium::col_md_6+
                                   Bootstrap::Grid::Small::col_sm_6+
                                   Bootstrap::Grid::ExtraSmall::col_xs_6);
-        auto donemFilter = container->addWidget (cpp14::make_unique<WComboBox>());
+        mDonemFilter = container->addWidget (cpp14::make_unique<WComboBox>());
         for( auto item : this->getDonemList () )
         {
-            donemFilter->addItem (item.donem ().toStdString ());
+            mDonemFilter->addItem (item.donem ().toStdString ());
         }
-        donemFilter->sactivated ().connect ([=](const WString& str){
-            this->UpdateList (SerikBLDCore::Meclis::MeclisUyesi().setDonemAdi (str.toUTF8 ()));
+        mDonemFilter->sactivated ().connect ([=](const WString& str){
+
+            SerikBLDCore::Meclis::MeclisUyesi sort;
+            sort.append(SerikBLDCore::Meclis::UyeKey::partiAdi,1);
+
+            SerikBLDCore::FindOptions findOptions;
+            findOptions.setSort (sort);
+            findOptions.setLimit (100);
+
+
+            this->UpdateList (SerikBLDCore::Meclis::MeclisUyesi().setDonemAdi (str.toUTF8 ()),findOptions);
         });
     }
 
 
 
-    this->UpdateList (SerikBLDCore::Meclis::MeclisUyesi());
+    {
+
+        SerikBLDCore::Meclis::MeclisUyesi sort;
+        sort.append(SerikBLDCore::Meclis::UyeKey::partiAdi,1);
+
+        SerikBLDCore::FindOptions findOptions;
+        findOptions.setSort (sort);
+        findOptions.setLimit (100);
+
+        this->UpdateList (SerikBLDCore::Meclis::MeclisUyesi().setDonemAdi (mDonemFilter->currentText ().toUTF8 ()),findOptions);
+    }
 
 
 
@@ -154,8 +173,26 @@ void v2::MeclisUyeleriPage::onList(const QVector<SerikBLDCore::Meclis::MeclisUye
     }
 
 
+    std::string currentParti = "";
+
+    std::string currentBackColor = Style::background::color::rgb (this->getRandom (200,255),this->getRandom (200,255),this->getRandom (200,255));
+
     for( auto item : *mlist )
     {
+
+
+        if( currentParti != item.partiAdi ().toStdString () ){
+            currentParti = item.partiAdi ().toStdString ();
+            currentBackColor = Style::background::color::rgb (this->getRandom (200,255),this->getRandom (200,255),this->getRandom (200,255));
+            auto containerBreak = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+            containerBreak->addStyleClass (Bootstrap::Grid::col_full_12);
+            containerBreak->addWidget (cpp14::make_unique<WText>("<h4>"+item.partiAdi ().toStdString ()+"</h4>"));
+            containerBreak->setContentAlignment (AlignmentFlag::Center);
+            containerBreak->setAttributeValue (Style::style,currentBackColor);
+            containerBreak->setMargin(25,Side::Top);
+        }
+
+
 
         auto tcItem = tcManager->Load_byOID (item.tcOid ().toStdString ());
 
@@ -166,6 +203,11 @@ void v2::MeclisUyeleriPage::onList(const QVector<SerikBLDCore::Meclis::MeclisUye
                                   Bootstrap::Grid::Small::col_sm_6+
                                   Bootstrap::Grid::ExtraSmall::col_xs_6);
         container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+
+
+
+        container->setAttributeValue (Style::style,currentBackColor);
+
         container->clicked ().connect ([=](){
             Content ()->clear ();
             Content ()->addWidget (cpp14::make_unique<MeclisUyesiProfilPage>(item,this->getDB ()));
@@ -605,7 +647,9 @@ void v2::PartiManagerPage::onList(const QVector<SerikBLDCore::Meclis::PartiItem>
 
 v2::KomisyonManagerPage::KomisyonManagerPage(SerikBLDCore::DB *_db)
     :SerikBLDCore::Meclis::KomisyonManager (_db),
-      mUyeManager( new SerikBLDCore::Meclis::UyeManager(_db))
+      mUyeManager( new SerikBLDCore::Meclis::UyeManager(_db)),
+      tcManager( new SerikBLDCore::TCManager(_db)),
+      mDonemManager( new SerikBLDCore::Meclis::DonemManager(_db))
 {
     auto btn = Footer ()->addWidget (cpp14::make_unique<WPushButton>("Yeni Komisyon Ekle"));
     btn->addStyleClass (Bootstrap::Button::Primary);
@@ -642,16 +686,33 @@ void v2::KomisyonManagerPage::onList(const QVector<SerikBLDCore::Meclis::Komisyo
     Content ()->setMargin (15,Side::Top|Side::Bottom);
     for( auto item : *mlist )
     {
+
         auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
         container->addStyleClass (Bootstrap::Grid::col_full_12);
-        container->addStyleClass ("boxShadow");
-        container->addStyleClass (Bootstrap::Grid::row + Bootstrap::ContextualBackGround::bg_success);
-        container->setMargin (7,Side::Top);
-        auto text = container->addWidget (cpp14::make_unique<WText>(item.komisyonAdi ().toStdString ()));
-        text->addStyleClass (Bootstrap::Grid::Large::col_lg_11+
-                             Bootstrap::Grid::Medium::col_md_11+
-                             Bootstrap::Grid::Small::col_sm_11+
-                             Bootstrap::Grid::ExtraSmall::col_xs_10);
+//        container->addStyleClass ("boxShadow");
+        container->setAttributeValue (Style::dataoid,item.oid ().value ().to_string ());
+        container->addStyleClass (Bootstrap::Grid::row);
+        container->setMargin (25,Side::Top);
+
+        auto text = container->addWidget (cpp14::make_unique<WText>("■ " + item.komisyonAdi ().toStdString ()));
+        text->addStyleClass (Bootstrap::Grid::Large::col_lg_10+
+                             Bootstrap::Grid::Medium::col_md_10+
+                             Bootstrap::Grid::Small::col_sm_10+
+                             Bootstrap::Grid::ExtraSmall::col_xs_8);
+        text->setTextAlignment (AlignmentFlag::Left);
+
+        auto ekleText = container->addWidget (cpp14::make_unique<WText>("Üye Ekle",TextFormat::UnsafeXHTML));
+        ekleText->setAttributeValue (Style::style,Style::background::color::color (Style::color::Purple::DarkMagenta)+Style::color::color (Style::color::White::AliceBlue));
+        ekleText->setPadding (3,AllSides);
+        ekleText->decorationStyle ().setCursor (Cursor::PointingHand);
+        ekleText->addStyleClass (Bootstrap::Grid::Large::col_lg_1+
+                                 Bootstrap::Grid::Medium::col_md_1+
+                                 Bootstrap::Grid::Small::col_sm_1+
+                                 Bootstrap::Grid::ExtraSmall::col_xs_2);
+        ekleText->clicked ().connect ([=](){
+            this->uyeEkle (container->attributeValue (Style::dataoid).toUTF8 ());
+        });
+
 
         auto delText = container->addWidget (cpp14::make_unique<WText>("<b>X</b>",TextFormat::UnsafeXHTML));
         delText->addStyleClass (Bootstrap::Grid::Large::col_lg_1+
@@ -661,8 +722,10 @@ void v2::KomisyonManagerPage::onList(const QVector<SerikBLDCore::Meclis::Komisyo
 
         delText->decorationStyle ().setCursor (Cursor::PointingHand);
         delText->clicked ().connect ([=](){
-            SerikBLDCore::Item Checkitem(SerikBLDCore::Meclis::UyeKey::Collection);
-            Checkitem.append(SerikBLDCore::Meclis::UyeKey::komisyonAdi,text->text ().toUTF8 ());
+            SerikBLDCore::Meclis::MeclisUyesi Checkitem;
+            Checkitem.append(SerikBLDCore::Meclis::UyeKey::komisyonAdi,make_document(kvp("$elemMatch",make_document(kvp("$eq",item.komisyonAdi ().toStdString ())))));
+
+
             auto count = this->mUyeManager->countItem (Checkitem);
 
             if( count < 0 )
@@ -673,7 +736,7 @@ void v2::KomisyonManagerPage::onList(const QVector<SerikBLDCore::Meclis::Komisyo
 
             if( count > 0 )
             {
-                this->showPopUpMessage (WString("Bu Komisyona Seçilmiş {1} Adet Meclis Üyesi Var! İlk Önce Onlar Kaldırınız").arg (count).toUTF8 (),"msg");
+                this->showPopUpMessage (WString("Bu Komisyona Seçilmiş {1} Adet Meclis Üyesi Var! İlk Önce Onları Kaldırınız").arg (count).toUTF8 (),"msg");
                 return;
             }
 
@@ -698,13 +761,256 @@ void v2::KomisyonManagerPage::onList(const QVector<SerikBLDCore::Meclis::Komisyo
 
             });
 
-        });
+        }); // delText lambda END
+
+
+        SerikBLDCore::Meclis::MeclisUyesi filter;
+        filter.append(SerikBLDCore::Meclis::UyeKey::komisyonAdi,make_document(kvp("$elemMatch",make_document(kvp("$eq",item.komisyonAdi ().toStdString ())))));
+
+
+
+
+        auto cursor = this->mUyeManager->UpdateList (filter,100,0);
+
+
+
+        for( const auto &uyeItem : qAsConst(cursor) ){
+            auto blankContainer = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+
+            blankContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_1+
+                                         Bootstrap::Grid::Medium::col_md_1+
+                                         Bootstrap::Grid::Small::col_sm_1+
+                                         Bootstrap::Grid::ExtraSmall::col_xs_1);
+
+            auto uyeContainer = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+            uyeContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::Grey::DimGray)+Style::color::color (Style::color::White::AliceBlue));
+            uyeContainer->addStyleClass (CSSStyle::Shadows::shadow8px+CSSStyle::Radius::radius3px);
+            uyeContainer->setMargin (3,Side::Top|Side::Bottom);
+            uyeContainer->setContentAlignment (AlignmentFlag::Left);
+
+            uyeContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_10+
+                                         Bootstrap::Grid::Medium::col_md_10+
+                                         Bootstrap::Grid::Small::col_sm_10+
+                                         Bootstrap::Grid::ExtraSmall::col_xs_10);
+
+            auto tcItem = tcManager->Load_byOID (uyeItem.tcOid ().toStdString ());
+
+            uyeContainer->addWidget (cpp14::make_unique<WText>("● "+tcItem.value ()->AdSoyad ().toStdString () + " - " + uyeItem.partiAdi ().toStdString ()));
+
+            auto delKomisyonContainer = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+            delKomisyonContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::Red::DarkRed)+Style::color::color (Style::color::White::AliceBlue));
+            delKomisyonContainer->addStyleClass (CSSStyle::Shadows::shadow8px+CSSStyle::Radius::radius3px);
+            delKomisyonContainer->setMargin (3,Side::Top|Side::Bottom);
+
+            delKomisyonContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_1+
+                                         Bootstrap::Grid::Medium::col_md_1+
+                                         Bootstrap::Grid::Small::col_sm_1+
+                                         Bootstrap::Grid::ExtraSmall::col_xs_1);
+
+            delKomisyonContainer->addWidget (cpp14::make_unique<WText>("X"));
+
+            delKomisyonContainer->decorationStyle ().setCursor (Cursor::PointingHand);
+
+            delKomisyonContainer->clicked ().connect([=](){
+
+                auto yesBtn = askConfirm ("Silmek İstediğinize Eminmisiniz?");
+                yesBtn->clicked ().connect([=](){
+
+                    SerikBLDCore::Meclis::MeclisUyesi filter;
+                    filter.setDocumentView (uyeItem.view ());
+                    filter.delKomisyonAdi (item.komisyonAdi ().toStdString ());
+
+                    auto upt = this->mUyeManager->UpdateItem (filter);
+
+                    if( upt ){
+                        this->UpdateList ();
+                    }
+
+                });
+
+
+
+            });
+
+
+        }
+
+
+
 
     }
 }
 
 void v2::KomisyonManagerPage::yeniKayit()
 {
+
+}
+
+void v2::KomisyonManagerPage::uyeEkle(const std::string &komisyonOid)
+{
+
+    SerikBLDCore::Meclis::KomisyonItem filter;
+    filter.setOid(komisyonOid);
+    auto komisyonItem = this->FindOneItem (filter);
+
+    auto mDialog = this->createDialog (komisyonItem.komisyonAdi ().toStdString () + " - Üye Ata");
+
+
+
+
+    //    auto saveBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Ekle"));
+    //    saveBtn->addStyleClass (Bootstrap::Button::Primary);
+
+
+    mDialog->contents()->setHeight (550);
+    mDialog->contents ()->setOverflow (Overflow::Scroll);
+    auto _rContainer = mDialog->contents ()->addWidget (cpp14::make_unique<WContainerWidget>());
+    _rContainer->addStyleClass (Bootstrap::Grid::row);
+
+
+    auto donemContainer = _rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+    donemContainer->addStyleClass (Bootstrap::Grid::col_full_12);
+    donemContainer->setMargin (15,Side::Top|Side::Bottom);
+    auto donemSelect = donemContainer->addWidget (cpp14::make_unique<WComboBox>());
+
+    mDonemManager->UpdateList ();
+    auto donemList = mDonemManager->List ();
+    for( const auto &item : donemList ){
+        donemSelect->addItem (item.donem ().toStdString ());
+    }
+
+
+    auto rContainer = mDialog->contents ()->addWidget (cpp14::make_unique<WContainerWidget>());
+    rContainer->addStyleClass (Bootstrap::Grid::row);
+
+    donemSelect->sactivated ().connect ([=]( const WString &selected ){
+
+        rContainer->clear ();
+
+
+        SerikBLDCore::Meclis::MeclisUyesi filter;
+        filter.setDonemAdi (selected.toUTF8 ());
+
+        SerikBLDCore::FindOptions findOptions;
+
+        SerikBLDCore::Meclis::MeclisUyesi sort;
+        sort.append(SerikBLDCore::Meclis::UyeKey::partiAdi,1);
+
+        findOptions.setSort (sort);
+        findOptions.setLimit (100);
+
+        auto uyeList = mUyeManager->List (filter,findOptions);
+
+
+
+
+        std::function<void()> uyelistFuncton = [=](){
+
+            std::string currentParti = "";
+            std::string currentBackColor = "";
+
+            for( auto &item : uyeList ){
+
+
+
+
+                if( item.partiAdi ().toStdString () != currentParti ){
+                    currentParti = item.partiAdi ().toStdString ();
+                    currentBackColor = Style::background::color::rgb (this->getRandom (200,255),this->getRandom (200,255),this->getRandom (200,255));
+                }
+
+
+                auto container = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+                container->setAttributeValue (Style::style,currentBackColor);
+                container->addStyleClass (Bootstrap::Grid::col_full_12);
+                container->setMargin (5,Side::Top|Side::Bottom);
+
+                auto tcItem = tcManager->Load_byOID (item.tcOid ().toStdString ());
+
+
+
+                if( item.komisyonUyelikleri ().contains (komisyonItem.komisyonAdi ()) ){
+                    container->addWidget (cpp14::make_unique<WText>("<b>Üye! </b>" +  item.partiAdi ().toStdString () + " - " + tcItem.value ()->AdSoyad ().toStdString ()));
+
+                    container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Red::DarkRed)+Style::color::color(Style::color::White::AliceBlue));
+
+                }else{
+
+                    container->addWidget (cpp14::make_unique<WText>(item.partiAdi ().toStdString () + " - " + tcItem.value ()->AdSoyad ().toStdString ()));
+
+                    container->addStyleClass (CSSStyle::Shadows::shadow8px);
+                    container->decorationStyle ().setCursor (Cursor::PointingHand);
+                    container->clicked ().connect ([=](){
+
+
+                        SerikBLDCore::Meclis::MeclisUyesi meclisUyesiFilter;
+                        meclisUyesiFilter.setOid (item.oid ().value ().to_string ());
+//                        meclisUyesiFilter.addKomisyonAdi (komisyonItem.komisyonAdi ().toStdString ());
+
+
+                        auto pushValue = mUyeManager->pushValue(meclisUyesiFilter,SerikBLDCore::Meclis::UyeKey::komisyonAdi,komisyonItem.komisyonAdi ().toStdString ());
+
+                        if( pushValue ){
+                            if( pushValue.value ().modified_count () ){
+
+                                LOG << "pushValue: " << pushValue.value ().modified_count () << "\n";
+
+                                container->clear ();
+                                container->addWidget (cpp14::make_unique<WText>("<b>Üye! </b>" +  item.partiAdi ().toStdString () + " - " + tcItem.value ()->AdSoyad ().toStdString ()));
+                                container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Red::DarkRed)+Style::color::color(Style::color::White::AliceBlue));
+                                container->setDisabled (true);
+                                this->UpdateList ();
+                                this->showPopUpMessage ("Atama Yapıldı");
+
+                            }else{
+                                errorOccured ("Meclis Üyesi Atanamadı");
+                            }
+                        }else{
+                            errorOccured ("Meclis Üyesi Atanamadı");
+                        }
+
+
+
+                    });
+                }
+
+
+
+
+
+
+
+            }
+
+        }; // uyelistFuncton Lamda END
+
+
+        uyelistFuncton();
+
+
+
+
+    });
+
+
+
+
+
+
+
+
+    //    saveBtn->clicked ().connect ([=](){
+
+
+    //        this->removeDialog (mDialog);
+    //    });
+
+
+
+
+    mDialog->show ();
+
+
 
 }
 

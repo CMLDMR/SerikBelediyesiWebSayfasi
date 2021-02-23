@@ -42,6 +42,8 @@ public:
     SerikBLDCore::TCManager* tcManager;
 
     QStringList mSelectedKomisyon;
+
+    WComboBox* mDonemFilter;
 };
 
 class MeclisDonemPage : public SerikBLDCore::Meclis::DonemManager , public ContainerWidget
@@ -81,8 +83,14 @@ public:
 
     void yeniKayit();
 
+    void uyeEkle( const std::string &komisyonOid );
+
 private:
     SerikBLDCore::Meclis::UyeManager* mUyeManager;
+
+    SerikBLDCore::TCManager* tcManager;
+
+    SerikBLDCore::Meclis::DonemManager* mDonemManager;
 
 };
 
