@@ -867,9 +867,14 @@ void PersonelPage::initContent()
 
         mBirimManager->setLimit (100);
 
-        mBirimManager->UpdateList ();
+//        mBirimManager->UpdateList ();
 
-        for( auto item : mBirimManager->List () )
+        SerikBLDCore::FindOptions findOptions;
+        findOptions.setLimit (100);
+
+        auto birimList = mBirimManager->UpdateList (SerikBLDCore::IK::BirimItem(),findOptions);
+
+        for(const auto &item : birimList )
         {
 
             birimComboBox->addItem (item.birimAdi ().toStdString ());

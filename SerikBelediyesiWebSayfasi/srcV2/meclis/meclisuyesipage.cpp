@@ -670,7 +670,7 @@ v2::KomisyonManagerPage::KomisyonManagerPage(SerikBLDCore::DB *_db)
     });
 
 
-    auto guncelle = Header ()->addWidget (cpp14::make_unique<WPushButton>("Guncelle"));
+    auto guncelle = Header ()->addWidget (cpp14::make_unique<WPushButton>("Güncelle"));
     btn->addStyleClass (Bootstrap::Button::Primary);
     guncelle->clicked ().connect ([=](){
         SerikBLDCore::Meclis::KomisyonManager::UpdateList (SerikBLDCore::Meclis::KomisyonItem());
@@ -694,7 +694,7 @@ void v2::KomisyonManagerPage::onList(const QVector<SerikBLDCore::Meclis::Komisyo
         container->addStyleClass (Bootstrap::Grid::row);
         container->setMargin (25,Side::Top);
 
-        auto text = container->addWidget (cpp14::make_unique<WText>("■ " + item.komisyonAdi ().toStdString ()));
+        auto text = container->addWidget (cpp14::make_unique<WText>("<h4>■ " + item.komisyonAdi ().toStdString ()+"</h4>"));
         text->addStyleClass (Bootstrap::Grid::Large::col_lg_10+
                              Bootstrap::Grid::Medium::col_md_10+
                              Bootstrap::Grid::Small::col_sm_10+
