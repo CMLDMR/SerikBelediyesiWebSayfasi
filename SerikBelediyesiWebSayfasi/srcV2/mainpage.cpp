@@ -11,6 +11,10 @@
 #include "meclis/meclispage.h"
 #include "meclis/meclispublicpage.h"
 
+#include "personel/yonetimwidget.h"
+#include "meclis/meclisuyesipublicwidget.h"
+
+
 
 MainPage::MainPage(mongocxx::database *_db)
     :DataBaseWidget (_db),_signal(this,"_signal")
@@ -42,7 +46,8 @@ MainPage::MainPage(mongocxx::database *_db)
     header->ClickHakkinda().connect(this,&MainPage::initHakkinda);
     header->ClickIletisim().connect(this,&MainPage::initIletisim);
     header->ClickBaskan().connect(this,&MainPage::initBaskan);
-
+    header->ClickBaskanYrd ().connect(this,&MainPage::initBaskanYardimcilari);
+    header->ClickMeclisUyeleri ().connect(this,&MainPage::initMeclisUyeleri);
 
     footer = addWidget(cpp14::make_unique<Footer::Footer>());
 
@@ -646,6 +651,22 @@ void MainPage::initNobetciEczane()
 {
     mContentWidget->clear();
     auto widget = mContentWidget->addWidget(cpp14::make_unique<NobetciEczaneWidget>());
+    widget->setMaximumSize(1024,WLength::Auto);
+    footer->removeStyleClass("footerStickAbsolute");
+}
+
+void MainPage::initBaskanYardimcilari()
+{
+    mContentWidget->clear ();
+    auto widget = mContentWidget->addWidget(cpp14::make_unique<v2::YonetimWidget>(new SerikBLDCore::DB(this->getDB ())));
+    widget->setMaximumSize(1024,WLength::Auto);
+    footer->removeStyleClass("footerStickAbsolute");
+}
+
+void MainPage::initMeclisUyeleri()
+{
+    mContentWidget->clear ();
+    auto widget = mContentWidget->addWidget(cpp14::make_unique<v2::MeclisUyesiPublicWidget>(new SerikBLDCore::DB(this->getDB ())));
     widget->setMaximumSize(1024,WLength::Auto);
     footer->removeStyleClass("footerStickAbsolute");
 }

@@ -33,6 +33,13 @@ v2::Faaliyet::FaaliyetRaporContainer::FaaliyetRaporContainer( SerikBLDCore::User
         mYillar->addItem("2025");
         mYillar->addItem("2026");
         mYillar->addItem("2027");
+        mYillar->addItem("2028");
+        mYillar->addItem("2029");
+        mYillar->addItem("2030");
+        mYillar->addItem("2031");
+        mYillar->addItem("2032");
+
+
 
         mYillar->activated ().connect ([=](const int &value ){
             this->initFaaliyetRaporlari ();
@@ -1510,6 +1517,7 @@ void v2::Faaliyet::ItemContainer<T>::initWidgetType()
         this->setContentAlignment (AlignmentFlag::Justify);
         this->setText (this->getText ());
         auto text = addWidget (cpp14::make_unique<WText>(this->getText (),TextFormat::UnsafeXHTML));
+        text->setTextAlignment(AlignmentFlag::Left);
         setPadding (65,Side::Left);
         lineContainer->addStyleClass(CSSStyle::Button::Red::LightCoralButton);
         typeText->setText("P");

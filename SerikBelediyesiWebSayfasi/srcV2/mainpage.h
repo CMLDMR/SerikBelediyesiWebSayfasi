@@ -43,6 +43,10 @@ public:
 
     void initNobetciEczane();
 
+    void initBaskanYardimcilari();
+
+    void initMeclisUyeleri();
+
     std::string downloadifNotExist( bsoncxx::types::value oid , bool forceFilename = false );
     std::string downloadifNotExist( std::string oid , bool forceFilename = false );
 

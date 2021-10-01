@@ -14,58 +14,49 @@ MainPageController::MainPageController(mongocxx::database *_db)
     contentContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
 
 
-//    auto extraContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//    extraContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-//    extraContainer->setMargin(75,Side::Top);
-//    extraContainer->setAttributeValue(Style::style,Style::background::color::rgba(240,240,240,0.15));
-//    extraContainer->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
-//    extraContainer->setPadding(10,Side::Top|Side::Bottom);
-
-
-//    {
-//        auto bContainer = extraContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//        bContainer->addStyleClass(Bootstrap::Grid::row);
-
-//        auto bootsrapString = Bootstrap::Grid::Large::col_lg_1 + Bootstrap::Grid::Medium::col_md_1 + Bootstrap::Grid::Small::col_sm_2 + Bootstrap::Grid::ExtraSmall::col_xs_3;
-
-
-
-//        {   // HABERLER
-//            auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//            container->addStyleClass(bootsrapString);
-//            container->setContentAlignment(AlignmentFlag::Center);
-
-//            container->setAttributeValue(Style::style,Style::background::url("v2/img/eczane.png")+
-//                                   Style::background::size::contain+
-//                                   Style::background::repeat::norepeat+
-//                                   Style::background::position::center_center);
-////            container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
-
-
-//            auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
-
-//            btn->setHeight(50);
-//            btn->setWidth(50);
-
-//            btn->decorationStyle().setCursor(Cursor::PointingHand);
-
-//            btn->clicked().connect([=](){
-//              _NobetciEczane.emit(NoClass());
-//            });
-
-////            auto layout = btn->setLayout(cpp14::make_unique<WVBoxLayout>());
-////            auto text = layout->addWidget(cpp14::make_unique<WText>("NÖBETÇİ ECZANE"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
-////            text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
-//        }
-//    }
-
 
     {
 
         auto bContainer = contentContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-        bContainer->addStyleClass(Bootstrap::Grid::row);
+        bContainer->addStyleClass(Bootstrap::Grid::row+CSSStyle::Radius::radius3px+CSSStyle::Shadows::shadow8px);
+        bContainer->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(200,250),this->getRandom(200,250),this->getRandom(200,250),0.5));
 
         auto bootsrapString = Bootstrap::Grid::Large::col_lg_3 + Bootstrap::Grid::Medium::col_md_3 + Bootstrap::Grid::Small::col_sm_4 + Bootstrap::Grid::ExtraSmall::col_xs_4;
+
+        if(false){   // HABERLER
+            auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+            container->addStyleClass(bootsrapString);
+            container->setContentAlignment(AlignmentFlag::Center);
+
+
+            auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
+            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(225,250),
+                                                                               this->getRandom(225,250),
+                                                                               this->getRandom(225,250),0.95));
+
+            btn->setHeight(100);
+            btn->setWidth(100);
+            btn->setMargin(15,AllSides);
+            btn->addStyleClass(Bootstrap::ImageShape::img_thumbnail+CSSStyle::Shadows::shadow8px);
+
+            btn->decorationStyle().setCursor(Cursor::PointingHand);
+
+
+
+            auto layout = btn->setLayout(cpp14::make_unique<WVBoxLayout>());
+
+            // Create an anchor that links to a URL through clickable text.
+            Wt::WLink link = Wt::WLink("http://webportal.serik.bel.tr:9195/home");
+            link.setTarget(Wt::LinkTarget::NewWindow);
+
+            std::unique_ptr<Wt::WAnchor> anchor =
+                    Wt::cpp14::make_unique<Wt::WAnchor>(link,
+                                    "<b>7326 Yapılandırma Başvurusu</b>");
+
+
+            layout->addWidget(std::move(anchor),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+//            text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
+        }
 
 
 
@@ -143,28 +134,28 @@ MainPageController::MainPageController(mongocxx::database *_db)
 //            text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
 //        }
 
-        {   // ETKİNLİKLER
-            auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(bootsrapString);
-            container->setContentAlignment(AlignmentFlag::Center);
-            auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
-            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,100),
-                                                                               this->getRandom(25,100),
-                                                                               this->getRandom(25,100)));
-            btn->setHeight(100);
-            btn->setWidth(100);
-            btn->setMargin(15,AllSides);
-            btn->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+//        {   // ETKİNLİKLER
+//            auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//            container->addStyleClass(bootsrapString);
+//            container->setContentAlignment(AlignmentFlag::Center);
+//            auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
+//            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,100),
+//                                                                               this->getRandom(25,100),
+//                                                                               this->getRandom(25,100)));
+//            btn->setHeight(100);
+//            btn->setWidth(100);
+//            btn->setMargin(15,AllSides);
+//            btn->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
-            btn->decorationStyle().setCursor(Cursor::PointingHand);
-            btn->clicked().connect([=](){
-              _Etkinlikler.emit(NoClass());
-            });
+//            btn->decorationStyle().setCursor(Cursor::PointingHand);
+//            btn->clicked().connect([=](){
+//              _Etkinlikler.emit(NoClass());
+//            });
 
-            auto layout = btn->setLayout(cpp14::make_unique<WVBoxLayout>());
-            auto text = layout->addWidget(cpp14::make_unique<WText>("ETKİNLİKLER"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
-            text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
-        }
+//            auto layout = btn->setLayout(cpp14::make_unique<WVBoxLayout>());
+//            auto text = layout->addWidget(cpp14::make_unique<WText>("ETKİNLİKLER"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+//            text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
+//        }
 
         {   // MECLİS
             auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -406,124 +397,98 @@ MainPageController::MainPageController(mongocxx::database *_db)
     }
 
 
-    {
-        auto bContainer = contentContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-        bContainer->addStyleClass(Bootstrap::Grid::row);
+//    {
+//        auto bContainer = contentContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//        bContainer->addStyleClass(Bootstrap::Grid::row);
 
-        auto bootsrapString = Bootstrap::Grid::Large::col_lg_3 + Bootstrap::Grid::Medium::col_md_3 + Bootstrap::Grid::Small::col_sm_4 + Bootstrap::Grid::ExtraSmall::col_xs_4;
+//        auto bootsrapString = Bootstrap::Grid::Large::col_lg_3 + Bootstrap::Grid::Medium::col_md_3 + Bootstrap::Grid::Small::col_sm_4 + Bootstrap::Grid::ExtraSmall::col_xs_4;
 
-        {   // EL HİJYENİ
-            auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(bootsrapString);
-            container->setContentAlignment(AlignmentFlag::Center);
-            auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
-            btn->setAttributeValue(Style::style,Style::background::color::rgb (this->getRandom (50,75),
-                                                                               this->getRandom (150,175),
-                                                                               this->getRandom (170,210)));
-            btn->setHeight(100);
-            btn->setWidth(100);
-            btn->setMargin(15,AllSides);
-            btn->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
-    //            btn->decorationStyle().setCursor(Cursor::PointingHand);
-    //            btn->clicked().connect([=](){
-    //              _NobetciEczane.emit(NoClass());
-    //            });
+//        {   // EL HİJYENİ
+//            auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//            container->addStyleClass(bootsrapString);
+//            container->setContentAlignment(AlignmentFlag::Center);
+//            auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
+//            btn->setAttributeValue(Style::style,Style::background::color::rgb (this->getRandom (50,75),
+//                                                                               this->getRandom (150,175),
+//                                                                               this->getRandom (170,210)));
+//            btn->setHeight(100);
+//            btn->setWidth(100);
+//            btn->setMargin(15,AllSides);
+//            btn->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+//    //            btn->decorationStyle().setCursor(Cursor::PointingHand);
+//    //            btn->clicked().connect([=](){
+//    //              _NobetciEczane.emit(NoClass());
+//    //            });
 
-            auto layout = btn->setLayout(cpp14::make_unique<WVBoxLayout>());
+//            auto layout = btn->setLayout(cpp14::make_unique<WVBoxLayout>());
 
-            // Create an anchor that links to a URL through clickable text.
-            Wt::WLink link = Wt::WLink("https://dosyamerkez.saglik.gov.tr/Eklenti/18852,olimpiyat-saglik-el-brosuru-son-qrpdf.pdf?0");
-            link.setTarget(Wt::LinkTarget::NewWindow);
+//            // Create an anchor that links to a URL through clickable text.
+//            Wt::WLink link = Wt::WLink("https://dosyamerkez.saglik.gov.tr/Eklenti/18852,olimpiyat-saglik-el-brosuru-son-qrpdf.pdf?0");
+//            link.setTarget(Wt::LinkTarget::NewWindow);
 
-            std::unique_ptr<Wt::WAnchor> anchor =
-                    Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "EL HİJYENİ");
-            anchor->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
+//            std::unique_ptr<Wt::WAnchor> anchor =
+//                    Wt::cpp14::make_unique<Wt::WAnchor>(link,
+//                                    "EL HİJYENİ");
+//            anchor->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
 
-            layout->addWidget (std::move(anchor),0,AlignmentFlag::Center|AlignmentFlag::Middle);
-
-    //            auto text = layout->addWidget(cpp14::make_unique<WText>("EL HİJYENİ"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
-    //            text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
-        }
-
-
-//                {
-//                    auto mContainer = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//                    mContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6);
-//                    mContainer->setContentAlignment(AlignmentFlag::Center);
-//                    mContainer->setMaximumSize(1280,WLength::Auto);
-//                    mContainer->setHeight (480);
-
-//                    auto rContaier = mContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-//                    rContaier->addStyleClass(Bootstrap::Grid::row);
-//                    rContaier->setContentAlignment(AlignmentFlag::Center);
-//                    {
-//                        auto link = "<iframe src=\"https://www.youtube.com/embed/aVViU6SIkWE?autoplay=1\" style=\"border:0px #ffffff none;\" name=\"myiFrame\" scrolling=\"no\" frameborder=\"1\" marginheight=\"5px\" marginwidth=\"5px\" height=\"100%\" width=\"100%\" "
-//                                                                 "allow=\"accelerometer; autoplay=true; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>";
-
-//                        auto container = rContaier->addWidget(cpp14::make_unique<WContainerWidget>());
-//                        container->addStyleClass(Bootstrap::ImageShape::img_thumbnail+Bootstrap::Grid::col_full_12);
-//                        container->addStyleClass("CanliYayin");
-//                        container->setPadding(0,Side::Top);
-//                        container->setContentAlignment(AlignmentFlag::Center);
-//                        auto text = container->addWidget(cpp14::make_unique<WText>(link,TextFormat::UnsafeXHTML));
-//                        text->setMaximumSize(1280,WLength::Auto);
-//                    }
-//                }
+//            layout->addWidget (std::move(anchor),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+//        }
 
 
 
-        {   // EL HİJYENİ
-            auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(bootsrapString);
-            container->setContentAlignment(AlignmentFlag::Center);
-            auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
-            btn->setAttributeValue(Style::style,Style::background::color::rgb (this->getRandom (50,75),
-                                                                               this->getRandom (170,215),
-                                                                               this->getRandom (140,170)));
-            btn->setHeight(100);
-            btn->setWidth(100);
-            btn->setMargin(15,AllSides);
-            btn->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
-            auto layout = btn->setLayout(cpp14::make_unique<WVBoxLayout>());
 
-            // Create an anchor that links to a URL through clickable text.
-            Wt::WLink link = Wt::WLink("https://dosyamerkez.saglik.gov.tr/Eklenti/27596,saglik-elimizde-a-4-brosurpdf.pdf?0");
-            link.setTarget(Wt::LinkTarget::NewWindow);
 
-            std::unique_ptr<Wt::WAnchor> anchor =
-                    Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "SAĞLIK ELİMİZDE");
-            anchor->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
+//        {   // EL HİJYENİ
+//            auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//            container->addStyleClass(bootsrapString);
+//            container->setContentAlignment(AlignmentFlag::Center);
+//            auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
+//            btn->setAttributeValue(Style::style,Style::background::color::rgb (this->getRandom (50,75),
+//                                                                               this->getRandom (170,215),
+//                                                                               this->getRandom (140,170)));
+//            btn->setHeight(100);
+//            btn->setWidth(100);
+//            btn->setMargin(15,AllSides);
+//            btn->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+//            auto layout = btn->setLayout(cpp14::make_unique<WVBoxLayout>());
 
-            layout->addWidget (std::move(anchor),0,AlignmentFlag::Center|AlignmentFlag::Middle);
-        }
+//            // Create an anchor that links to a URL through clickable text.
+//            Wt::WLink link = Wt::WLink("https://dosyamerkez.saglik.gov.tr/Eklenti/27596,saglik-elimizde-a-4-brosurpdf.pdf?0");
+//            link.setTarget(Wt::LinkTarget::NewWindow);
 
-        {   // EL HİJYENİ
-            auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(bootsrapString);
-            container->setContentAlignment(AlignmentFlag::Center);
-            auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
-            btn->setAttributeValue(Style::style,Style::background::color::rgb (this->getRandom (170,220),
-                                                                               this->getRandom (50,115),
-                                                                               this->getRandom (140,170)));
-            btn->setHeight(100);
-            btn->setWidth(100);
-            btn->setMargin(15,AllSides);
-            btn->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
-            auto layout = btn->setLayout(cpp14::make_unique<WVBoxLayout>());
+//            std::unique_ptr<Wt::WAnchor> anchor =
+//                    Wt::cpp14::make_unique<Wt::WAnchor>(link,
+//                                    "SAĞLIK ELİMİZDE");
+//            anchor->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
 
-            // Create an anchor that links to a URL through clickable text.
-            Wt::WLink link = Wt::WLink("https://www.youtube.com/embed/aVViU6SIkWE?autoplay=1");
-            link.setTarget(Wt::LinkTarget::NewWindow);
+//            layout->addWidget (std::move(anchor),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+//        }
 
-            std::unique_ptr<Wt::WAnchor> anchor =
-                    Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "EL HİJYENİ Video");
-            anchor->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
+//        {   // EL HİJYENİ
+//            auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//            container->addStyleClass(bootsrapString);
+//            container->setContentAlignment(AlignmentFlag::Center);
+//            auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
+//            btn->setAttributeValue(Style::style,Style::background::color::rgb (this->getRandom (170,220),
+//                                                                               this->getRandom (50,115),
+//                                                                               this->getRandom (140,170)));
+//            btn->setHeight(100);
+//            btn->setWidth(100);
+//            btn->setMargin(15,AllSides);
+//            btn->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+//            auto layout = btn->setLayout(cpp14::make_unique<WVBoxLayout>());
 
-            layout->addWidget (std::move(anchor),0,AlignmentFlag::Center|AlignmentFlag::Middle);
-        }
+//            // Create an anchor that links to a URL through clickable text.
+//            Wt::WLink link = Wt::WLink("https://www.youtube.com/embed/aVViU6SIkWE?autoplay=1");
+//            link.setTarget(Wt::LinkTarget::NewWindow);
+
+//            std::unique_ptr<Wt::WAnchor> anchor =
+//                    Wt::cpp14::make_unique<Wt::WAnchor>(link,
+//                                    "EL HİJYENİ Video");
+//            anchor->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
+
+//            layout->addWidget (std::move(anchor),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+//        }
 
 
 
@@ -531,7 +496,7 @@ MainPageController::MainPageController(mongocxx::database *_db)
 
 
 
-    }
+//    }
 
 
 

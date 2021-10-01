@@ -229,7 +229,7 @@ void v2::MeclisItemPage::onList(const QVector<SerikBLDCore::Meclis::RaporItem> *
     mRaporContainer->clear ();
 
     mRaporContainer->setMargin (25,Side::Top);
-    mRaporContainer->addWidget (cpp14::make_unique<WText>("<b>Rapolar</b>",TextFormat::UnsafeXHTML))->addStyleClass (Bootstrap::Grid::col_full_12+Bootstrap::ContextualBackGround::bg_info);
+    mRaporContainer->addWidget (cpp14::make_unique<WText>("<b>Raporlar</b>",TextFormat::UnsafeXHTML))->addStyleClass (Bootstrap::Grid::col_full_12+Bootstrap::ContextualBackGround::bg_info);
 
     for( auto item : *mlist )
     {
@@ -1114,7 +1114,7 @@ void v2::MeclisItemPublicPage::onList(const QVector<SerikBLDCore::Meclis::RaporI
     mRaporContainer->clear ();
 
     mRaporContainer->setMargin (25,Side::Top);
-    mRaporContainer->addWidget (cpp14::make_unique<WText>("<b>Rapolar</b>",TextFormat::UnsafeXHTML))->addStyleClass (Bootstrap::Grid::col_full_12+Bootstrap::ContextualBackGround::bg_info);
+    mRaporContainer->addWidget (cpp14::make_unique<WText>("<b>Raporlar</b>",TextFormat::UnsafeXHTML))->addStyleClass (Bootstrap::Grid::col_full_12+Bootstrap::ContextualBackGround::bg_info);
 
     for( auto item : *mlist )
     {

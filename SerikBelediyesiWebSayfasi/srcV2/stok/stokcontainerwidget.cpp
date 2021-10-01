@@ -6,13 +6,15 @@ v2::StokWidget::StokContainerWidget::StokContainerWidget(SerikBLDCore::User *_mU
     :ContainerWidget ("Stok Yönetimi / "+_mUser->Birimi ()),
       SerikBLDCore::Stokv2::Stokv2Manager (_mUser->getDB ()),
       mUser(_mUser),
-      mPersonelManager(new SerikBLDCore::PersonelManager(_mUser->getDB ()))
+      mPersonelManager(new SerikBLDCore::PersonelManager(_mUser->getDB ())),
+      mYerManager(new SerikBLDCore::Stokv2::Stokv2YerManager(_mUser->getDB ()))
 {
     this->initMenuBar ();
 }
 
 void v2::StokWidget::StokContainerWidget::initMenuBar()
 {
+
     {
         auto container = this->Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
         container->addWidget (cpp14::make_unique<WText>("<b>Son Durum</b>"));
@@ -27,6 +29,9 @@ void v2::StokWidget::StokContainerWidget::initMenuBar()
             this->initlastState ();
         });
     }
+
+
+
     {
         auto container = this->Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
         container->addWidget (cpp14::make_unique<WText>("Malzeme Girişi"));
@@ -112,6 +117,8 @@ void v2::StokWidget::StokContainerWidget::initMenuBar()
 
         });
     }
+
+
 
     {
         auto container = this->Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
@@ -214,6 +221,8 @@ void v2::StokWidget::StokContainerWidget::initMenuBar()
     //        container->setPadding (10,Side::Top|Side::Bottom);
     //    }
 
+
+
     {
         auto container = this->Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
         container->addWidget (cpp14::make_unique<WText>("Ayarlar"));
@@ -225,6 +234,19 @@ void v2::StokWidget::StokContainerWidget::initMenuBar()
         container->setPadding (10,Side::Top|Side::Bottom);
         container->clicked ().connect (this,&v2::StokWidget::StokContainerWidget::initAyarlar);
     }
+
+    if( this->mUser->Birimi () == "Park ve Bahçeler Müdürlüğü"){
+        auto container = this->Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addWidget (cpp14::make_unique<WText>("Yerler"));
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                                  Bootstrap::Grid::Medium::col_md_2+
+                                  Bootstrap::Grid::Small::col_sm_3+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_3+
+                                  CSSStyle::Button::blueButton);
+        container->setPadding (10,Side::Top|Side::Bottom);
+        container->clicked ().connect (this,&v2::StokWidget::StokContainerWidget::initYerler);
+    }
+
 
 
     mSubMenuBarContainer = this->Header ()->addWidget (cpp14::make_unique<ContainerWidget>());
@@ -255,6 +277,9 @@ void v2::StokWidget::StokContainerWidget::onList(const QVector<SerikBLDCore::Sto
         break;
 
     case CurrentPage::Ayarlar:
+        break;
+
+    case CurrentPage::Yerler:
         break;
     default:
         break;
@@ -475,6 +500,141 @@ void v2::StokWidget::StokContainerWidget::initAyarlar()
 
 }
 
+void v2::StokWidget::StokContainerWidget::initYerler()
+{
+    mCurrentPage = CurrentPage::Yerler;
+
+    this->Content ()->clear ();
+    mSubMenuBarContainer->clear ();
+    this->Footer ()->clear ();
+
+
+    {
+        auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        auto titleText = container->addWidget (cpp14::make_unique<WText>("<b>Yerler</b>"));
+        container->setPadding (5,Side::Top|Side::Bottom);
+        container->setMargin (15,Side::Top|Side::Bottom);
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_11+
+                                  Bootstrap::Grid::Medium::col_md_11+
+                                  Bootstrap::Grid::Small::col_sm_11+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_10+
+                                  CSSStyle::Gradient::blueGradient+
+                                  CSSStyle::Shadows::shadow8px);
+    }
+
+
+
+    {
+        auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        auto titleText = container->addWidget (cpp14::make_unique<WText>("<b>+</b>"));
+        container->setPadding (5,Side::Top|Side::Bottom);
+        container->setMargin (15,Side::Top|Side::Bottom);
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_1+
+                                  Bootstrap::Grid::Medium::col_md_1+
+                                  Bootstrap::Grid::Small::col_sm_1+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_2+
+                                  CSSStyle::Button::redButton+
+                                  CSSStyle::Shadows::shadow8px);
+
+        container->decorationStyle ().setCursor (Cursor::PointingHand);
+
+        container->clicked ().connect ([=](){
+
+            auto mDialog = this->createDialog ("Yeni Yer Adı Ekle");
+
+            auto yeniLineEdit = mDialog->contents ()->addWidget (cpp14::make_unique<WLineEdit>());
+            yeniLineEdit->setPlaceholderText ("Yeni Yer Adını Giriniz!");
+
+
+            auto saveBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet"));
+            saveBtn->addStyleClass(Bootstrap::Button::Primary);
+
+            saveBtn->clicked().connect([=](){
+
+                if( yeniLineEdit->text ().toUTF8 ().size () < 3 ){
+                    this->showPopUpMessage ("Yer Adı Yeterli Değil!");
+                    return;
+                }
+
+                SerikBLDCore::Stokv2::Yer yerItem = SerikBLDCore::Stokv2::Yer().setBirim (this->mUser->Birimi()).setYerAdi (yeniLineEdit->text ().toUTF8 ());
+
+                auto count = mYerManager->countItem (yerItem);
+
+                if( count ){
+                    warnDialog ("Bu Yer Adı Kayıtlı");
+                }else{
+                    auto ins = mYerManager->InsertItem (yerItem);
+
+                    if( ins.size () ){
+                        showPopUpMessage ("Kayıt Edildi");
+                        this->initYerler ();
+                        this->removeDialog (mDialog);
+                    }else{
+                        criticDialog ("Kayıt Edilemedi");
+                    }
+                }
+
+            });
+
+        });
+    }
+
+
+
+    auto mlist = this->mYerManager->List (SerikBLDCore::Stokv2::Yer().setBirim (mUser->Birimi ()),SerikBLDCore::FindOptions().setLimit (9999));
+
+
+
+
+    for( auto item : mlist ){
+
+        auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        auto text = container->addWidget (cpp14::make_unique<WText>(item.getYerAdi ()));
+        container->setPadding (5,Side::Top|Side::Bottom);
+        container->setMargin (5,Side::Top|Side::Bottom);
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_11+
+                                  Bootstrap::Grid::Medium::col_md_11+
+                                  Bootstrap::Grid::Small::col_sm_11+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_11+
+                                  CSSStyle::Gradient::blueGradient+
+                                  CSSStyle::Shadows::shadow8px);
+
+
+        auto delcontainer = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        delcontainer->setAttributeValue (Style::dataoid,item.oid ().value ().to_string ());
+        auto deltext = delcontainer->addWidget (cpp14::make_unique<WText>("<b>X</b>"));
+        delcontainer->setPadding (5,Side::Top|Side::Bottom);
+        delcontainer->setMargin (5,Side::Top|Side::Bottom);
+        delcontainer->setAttributeValue (Style::dataoid,item.oid ().value ().to_string ());
+
+        delcontainer->addStyleClass (Bootstrap::Grid::Large::col_lg_1+
+                                     Bootstrap::Grid::Medium::col_md_1+
+                                     Bootstrap::Grid::Small::col_sm_1+
+                                     Bootstrap::Grid::ExtraSmall::col_xs_1+
+                                     CSSStyle::Gradient::redGradient+
+                                     CSSStyle::Shadows::shadow8px);
+        delcontainer->decorationStyle ().setCursor (Cursor::PointingHand);
+
+        delcontainer->clicked ().connect ([=](){
+
+            auto askDialog = this->askConfirm ("Silmek İstediğinize Eminmisiniz?");
+
+            askDialog->clicked ().connect ([=](){
+                SerikBLDCore::Stokv2::Yer filter;
+                filter.setOid (delcontainer->attributeValue (Style::dataoid).toUTF8 ());
+
+                if( mYerManager->DeleteItem (filter) ){
+                    this->showPopUpMessage ("Silindi");
+                    this->initYerler ();
+                }else{
+                    warnDialog ("Silinemedi: " + mYerManager->getLastError ().toStdString ());
+                }
+            });
+        });
+    }
+
+}
+
 void v2::StokWidget::StokContainerWidget::importMazeleme()
 {
 
@@ -492,12 +652,17 @@ void v2::StokWidget::StokContainerWidget::importMazeleme()
     saveBtn->clicked ().connect ([=](){
 
         if( girisObj->getCurrentGirenMiktar () <= 0 ){
-            warnDialog ("Giren Malzeme Miktarı <b>0</b> Altında Olamaz");
+            warnDialog ("Giren Malzeme Miktarı <b>0</b> veya  <b>Altında</b> Olamaz");
             return;
         }
 
         if( std::abs (girisObj->getJulianDay () - WDate::currentDate ().toJulianDay ()) > 999 ){
             criticDialog ("Teslim Alım Tarihi Çok Eski. En Fazla 30 Gün");
+            return;
+        }
+
+        if( girisObj->getCurrentGirenFiyat () <= 0 ){
+            warnDialog ("Giren Malzeme Fiyatı <b>0</b> veya <b>Altında</b> Olamaz");
             return;
         }
 
@@ -509,6 +674,7 @@ void v2::StokWidget::StokContainerWidget::importMazeleme()
         girisItem.setTeslimOid (girisObj->getCurrentMalzemeGirenOid ());
         girisItem.setMudurluk (mUser->Birimi ());
         girisItem.setTeslimAlimJulianDay (girisObj->getJulianDay ());
+        girisItem.setBirimFiyat (girisObj->getCurrentGirenFiyat ());
 
 
         auto ins = this->::SerikBLDCore::ListItem<SerikBLDCore::Stokv2::Stok>::InsertItem (girisItem);
@@ -532,7 +698,7 @@ void v2::StokWidget::StokContainerWidget::exportMalzeme(const double &maxMiktar,
 {
 
     auto mDialog = createDialog ("Yeni Malzeme Çıkışı");
-    mDialog->setWidth (WLength(500));
+    mDialog->setWidth (WLength(700));
 
     auto _kategoriList = this->::SerikBLDCore::ListItem<SerikBLDCore::Stokv2::Kategori>::List (SerikBLDCore::Stokv2::Kategori().setBirim (mUser->Birimi ()),SerikBLDCore::FindOptions ().setLimit (99999));
 
@@ -564,6 +730,19 @@ void v2::StokWidget::StokContainerWidget::exportMalzeme(const double &maxMiktar,
     dateContainer->setPadding (5,AllSides);
     auto dateEdit = dateContainer->addWidget (cpp14::make_unique<WDateEdit>());
 
+    auto yerContainer = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+    yerContainer->addStyleClass (Bootstrap::Grid::col_full_12);
+    yerContainer->setPadding (5,AllSides);
+    auto yerComboBox = yerContainer->addWidget (cpp14::make_unique<WComboBox>());
+
+    auto __yerlist = mYerManager->List (SerikBLDCore::Stokv2::Yer().setBirim (mUser->Birimi ()));
+
+    for( const auto &item : __yerlist ){
+        yerComboBox->addItem (item.getYerAdi ());
+    }
+
+
+
     auto personelContainer = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
     personelContainer->addStyleClass (Bootstrap::Grid::col_full_12);
     personelContainer->setPadding (5,AllSides);
@@ -585,7 +764,10 @@ void v2::StokWidget::StokContainerWidget::exportMalzeme(const double &maxMiktar,
         for( const auto &personelItem : list ){
 
             auto container = personelRContainer->addWidget (cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass (Bootstrap::Grid::col_full_12+CSSStyle::Shadows::shadow8px);
+            container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
+                                      Bootstrap::Grid::Medium::col_md_4+
+                                      Bootstrap::Grid::Small::col_sm_4+
+                                      Bootstrap::Grid::ExtraSmall::col_xs_4+CSSStyle::Shadows::shadow8px);
             container->setMargin (5,Side::Top|Side::Bottom);
             container->decorationStyle ().setCursor (Cursor::PointingHand);
             auto text = container->addWidget (cpp14::make_unique<WText>(personelItem.AdSoyad ().toStdString ()));
@@ -611,6 +793,7 @@ void v2::StokWidget::StokContainerWidget::exportMalzeme(const double &maxMiktar,
     aciklamaContainer->setHeight (150);
     auto aciklamaTextEdit = aciklamaContainer->addWidget(cpp14::make_unique<WTextArea>());
     aciklamaTextEdit->setHeight (150);
+
 
 
 
@@ -654,6 +837,7 @@ void v2::StokWidget::StokContainerWidget::exportMalzeme(const double &maxMiktar,
         cikisItem.setMudurluk (mUser->Birimi ());
         cikisItem.setTeslimEtJulianDay (dateEdit->date ().toJulianDay ());
         cikisItem.setAciklama (aciklamaTextEdit->text ().toUTF8 ());
+        cikisItem.setCikisYeri (yerComboBox->currentText ().toUTF8 ());
 
 
         auto ins = this->::SerikBLDCore::ListItem<SerikBLDCore::Stokv2::Stok>::InsertItem (cikisItem);
@@ -668,6 +852,7 @@ void v2::StokWidget::StokContainerWidget::exportMalzeme(const double &maxMiktar,
         }
 
 
+//        mDialog->setWidth (700);
     });
 
 }
@@ -1252,6 +1437,12 @@ void v2::StokWidget::MalzemeGirisDialog::initWidget()
 
     }
 
+    {
+        mGirenFiyatSpinBoxValue = this->Content ()->addWidget (cpp14::make_unique<WDoubleSpinBox>());
+        mGirenFiyatSpinBoxValue->addStyleClass (Bootstrap::Grid::col_full_12);
+        mGirenFiyatSpinBoxValue->setMaximum (9999999);
+    }
+
 
     {
         auto textContainer = this->Content ()->addWidget (cpp14::make_unique<WText>("Giren Personel"));
@@ -1276,6 +1467,11 @@ std::string v2::StokWidget::MalzemeGirisDialog::getCurrentMalzemeGirenOid() cons
 double v2::StokWidget::MalzemeGirisDialog::getCurrentGirenMiktar() const
 {
     return mGirenMiktarSpinBoxValue->value ();
+}
+
+double v2::StokWidget::MalzemeGirisDialog::getCurrentGirenFiyat() const
+{
+    return mGirenFiyatSpinBoxValue->value ();
 }
 
 std::string v2::StokWidget::MalzemeGirisDialog::getCurrentKategoriOid() const
@@ -1327,33 +1523,77 @@ void v2::StokWidget::MalzemeGirisWidget::asListItem()
 {
     this->Content ()->addStyleClass (CSSStyle::Shadows::shadow8px);
     this->Content ()->setMargin (5,Side::Top|Side::Bottom);
-//    this->Content ()->decorationStyle ().setCursor (Cursor::PointingHand);
-    {
-        auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        auto text = container->addWidget (cpp14::make_unique<WText>(this->getMalzemeAdi ()));
-        container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
-                                  Bootstrap::Grid::Medium::col_md_4+
-                                  Bootstrap::Grid::Small::col_sm_4+
-                                  Bootstrap::Grid::ExtraSmall::col_xs_6);
+    auto cikisObj = this->toCikis ();
+
+    if( cikisObj ){
+        {
+            auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+            auto text = container->addWidget (cpp14::make_unique<WText>(cikisObj->getMalzemeAdi ()));
+            container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
+                                      Bootstrap::Grid::Medium::col_md_3+
+                                      Bootstrap::Grid::Small::col_sm_3+
+                                      Bootstrap::Grid::ExtraSmall::col_xs_3);
+        }
+
+        {
+            auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+            auto text = container->addWidget (cpp14::make_unique<WText>(std::to_string (cikisObj->getMiktar ())+" "+this->getMetric () + " : " + std::to_string (this->getBirimFiyat ()*this->getMiktar ()) + " TL"));
+            container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
+                                      Bootstrap::Grid::Medium::col_md_3+
+                                      Bootstrap::Grid::Small::col_sm_3+
+                                      Bootstrap::Grid::ExtraSmall::col_xs_3);
+        }
+
+        {
+            auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+            auto text = container->addWidget (cpp14::make_unique<WText>(WDate::fromJulianDay (cikisObj->getTeslimEtJulianDay ()).toString ("dd/MM/yyyy")));
+            container->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                                      Bootstrap::Grid::Medium::col_md_2+
+                                      Bootstrap::Grid::Small::col_sm_2+
+                                      Bootstrap::Grid::ExtraSmall::col_xs_2);
+        }
+
+        {
+            auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+            container->setOverflow (Overflow::Hidden);
+            auto text = container->addWidget (cpp14::make_unique<WText>(cikisObj->getCikisYeri ()));
+            container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
+                                      Bootstrap::Grid::Medium::col_md_4+
+                                      Bootstrap::Grid::Small::col_sm_4+
+                                      Bootstrap::Grid::ExtraSmall::col_xs_4);
+        }
+
+    }else{
+        {
+            auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+            auto text = container->addWidget (cpp14::make_unique<WText>(this->getMalzemeAdi ()));
+            container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
+                                      Bootstrap::Grid::Medium::col_md_4+
+                                      Bootstrap::Grid::Small::col_sm_4+
+                                      Bootstrap::Grid::ExtraSmall::col_xs_4);
+        }
+
+        {
+            auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+            auto text = container->addWidget (cpp14::make_unique<WText>(std::to_string (this->getMiktar ())+" "+this->getMetric () + " : " + std::to_string (this->getBirimFiyat ()*this->getMiktar ()) + " TL"));
+            container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
+                                      Bootstrap::Grid::Medium::col_md_4+
+                                      Bootstrap::Grid::Small::col_sm_4+
+                                      Bootstrap::Grid::ExtraSmall::col_xs_4);
+        }
+
+        {
+            auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+            auto text = container->addWidget (cpp14::make_unique<WText>(WDate::fromJulianDay (this->getTeslimAlimJulianDay ()).toString ("dd/MM/yyyy")));
+            container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
+                                      Bootstrap::Grid::Medium::col_md_4+
+                                      Bootstrap::Grid::Small::col_sm_4+
+                                      Bootstrap::Grid::ExtraSmall::col_xs_4);
+        }
     }
 
-    {
-        auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        auto text = container->addWidget (cpp14::make_unique<WText>(std::to_string (this->getMiktar ())+" "+this->getMetric ()));
-        container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
-                                  Bootstrap::Grid::Medium::col_md_4+
-                                  Bootstrap::Grid::Small::col_sm_4+
-                                  Bootstrap::Grid::ExtraSmall::col_xs_6);
-    }
 
-    {
-        auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        auto text = container->addWidget (cpp14::make_unique<WText>(WDate::fromJulianDay (this->getTeslimAlimJulianDay ()).toString ("dd/MM/yyyy")));
-        container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
-                                  Bootstrap::Grid::Medium::col_md_4+
-                                  Bootstrap::Grid::Small::col_sm_4+
-                                  Bootstrap::Grid::ExtraSmall::col_xs_6);
-    }
+
 
 //    this->clicked ().connect ([=](){
 //        this->_clickWidget.emit (this->oid ().value ());

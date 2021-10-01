@@ -81,86 +81,94 @@ HeaderPage::HeaderPage(mongocxx::database *_db)
             auto rContainer = tContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             rContainer->addStyleClass(Bootstrap::Grid::row);
 
-            if( 0 ){
-                auto _container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-                _container->setHeight(65);
-                _container->addStyleClass(Bootstrap::Grid::Offset::Large::col_lg_4+Bootstrap::Grid::Offset::Medium::col_md_4);
-                _container->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Hidden::hidden_sm+Bootstrap::Grid::Hidden::hidden_xs);
-                auto layout = _container->setLayout(cpp14::make_unique<WVBoxLayout>());
-                auto text = layout->addWidget(cpp14::make_unique<WText>("Meclis"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
-                text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::size::s14px);
-                _container->clicked().connect([=](){
-                   _Meclis.emit(NoClass());
-                });
-                text->decorationStyle().setCursor(Cursor::PointingHand);
-            }
-
-            if( 0 ){
-                auto _container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-                _container->setHeight(65);
-                _container->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Hidden::hidden_sm+Bootstrap::Grid::Hidden::hidden_xs);
-                auto layout = _container->setLayout(cpp14::make_unique<WVBoxLayout>());
-                auto text = layout->addWidget(cpp14::make_unique<WText>("Projeler"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
-                text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::size::s14px);
-                _container->clicked().connect([=](){
-                   _Projeler.emit(NoClass());
-                });
-                text->decorationStyle().setCursor(Cursor::PointingHand);
-            }
-
-            if( 0 ){
-                auto _container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-                _container->setHeight(65);
-                _container->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Hidden::hidden_sm+Bootstrap::Grid::Hidden::hidden_xs);
-                auto layout = _container->setLayout(cpp14::make_unique<WVBoxLayout>());
-                auto text = layout->addWidget(cpp14::make_unique<WText>("Haberler"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
-                text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::size::s14px);
-                _container->clicked().connect([=](){
-                   _Haber.emit(NoClass());
-                });
-                text->decorationStyle().setCursor(Cursor::PointingHand);
-            }
-
-            if( 0 ){
-                auto _container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-                _container->setHeight(65);
-                _container->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Hidden::hidden_sm+Bootstrap::Grid::Hidden::hidden_xs);
-                auto layout = _container->setLayout(cpp14::make_unique<WVBoxLayout>());
-                auto text = layout->addWidget(cpp14::make_unique<WText>("Etkinlikler"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
-                text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::size::s14px);
-                _container->clicked().connect([=](){
-                   _Etkinlikler.emit(NoClass());
-                });
-                text->decorationStyle().setCursor(Cursor::PointingHand);
-            }
-
-            if( 0 ){
-                auto _container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-                _container->setHeight(65);
-                _container->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Hidden::hidden_sm+Bootstrap::Grid::Hidden::hidden_xs);
-                auto layout = _container->setLayout(cpp14::make_unique<WVBoxLayout>());
-                auto text = layout->addWidget(cpp14::make_unique<WText>("Bilgi Edinme"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
-                text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::size::s14px);
-                _container->clicked().connect([=](){
-                   _BilgiEdinme.emit(NoClass());
-                });
-                text->decorationStyle().setCursor(Cursor::PointingHand);
-            }
 
             {
                 auto _container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+                _container->addStyleClass ("headerDown");
+
                 _container->setHeight(65);
                 _container->addStyleClass(Bootstrap::Grid::Offset::Large::col_lg_8+Bootstrap::Grid::Offset::Medium::col_md_8+Bootstrap::Grid::Offset::Small::col_sm_10+Bootstrap::Grid::Offset::ExtraSmall::col_xs_9);
                 _container->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Small::col_sm_2+Bootstrap::Grid::ExtraSmall::col_xs_3);
                 auto layout = _container->setLayout(cpp14::make_unique<WVBoxLayout>());
                 auto text = layout->addWidget(cpp14::make_unique<WText>("Başkan"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
                 text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::size::s14px);
-                _container->clicked().connect([=](){
+                text->clicked().connect([=](){
                    _baskan.emit(NoClass());
                 });
+
+//                {
+//                    auto popContainer = layout->addWidget (cpp14::make_unique<WContainerWidget>());
+//                    popContainer->addStyleClass ("headerDown-content");
+
+//                    {
+//                        auto _pC = popContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+//                        _pC->addStyleClass ("headerItem");
+//                        _pC->addWidget (cpp14::make_unique<WText>("BAŞKAN'IN ÖZGEÇMİŞİ"));
+//                        _pC->clicked().connect([=](){
+//                           _baskan.emit(NoClass());
+//                        });
+//                    }
+
+//                    {
+//                        auto _pC = popContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+//                        _pC->addStyleClass ("headerItem");
+//                        _pC->addWidget (cpp14::make_unique<WText>("BAŞKAN'A MESAJ"));
+//                    }
+//                }
+
+
                 text->decorationStyle().setCursor(Cursor::PointingHand);
             }
 
+//            {
+//                auto _container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//                _container->addStyleClass ("headerDown");
+//                _container->setHeight(65);
+//                _container->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Hidden::hidden_sm+Bootstrap::Grid::Hidden::hidden_xs);
+//                auto layout = _container->setLayout(cpp14::make_unique<WVBoxLayout>());
+//                auto text = layout->addWidget(cpp14::make_unique<WText>("YÖNETİM"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+//                text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::size::s14px);
+
+//                {
+//                    auto popContainer = layout->addWidget (cpp14::make_unique<WContainerWidget>());
+//                    popContainer->addStyleClass ("headerDown-content");
+
+//                    {
+//                        auto _pC = popContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+//                        _pC->addStyleClass ("headerItem");
+//                        _pC->addWidget (cpp14::make_unique<WText>("YÖNETİM"));
+//                        _pC->clicked().connect([=](){
+//                           _baskanYrd.emit(NoClass());
+//                        });
+//                    }
+
+//                    {
+//                        auto _pC = popContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+//                        _pC->addStyleClass ("headerItem");
+//                        _pC->addWidget (cpp14::make_unique<WText>("MECLİS ÜYELERİ"));
+//                        _pC->clicked().connect([=](){
+//                           _MeclisUyeleriPage.emit(NoClass());
+//                        });
+
+
+//                    }
+//                }
+//                text->decorationStyle().setCursor(Cursor::PointingHand);
+//            }
+
+            {
+                auto _container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+                _container->setAttributeValue (Style::style,Style::background::color::rgba (50,50,50,0.75));
+                _container->setHeight(65);
+                _container->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Hidden::hidden_sm+Bootstrap::Grid::Hidden::hidden_xs);
+                auto layout = _container->setLayout(cpp14::make_unique<WVBoxLayout>());
+                auto text = layout->addWidget(cpp14::make_unique<WText>("<b>Serik</b>"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+                text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::size::s14px+Style::color::rgb ("236,236,236"));
+                _container->clicked().connect([=](){
+                   _Hakkinda.emit(NoClass());
+                });
+                text->decorationStyle().setCursor(Cursor::PointingHand);
+            }
             {
                 auto _container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
                 _container->setHeight(65);
@@ -175,19 +183,9 @@ HeaderPage::HeaderPage(mongocxx::database *_db)
                 text->decorationStyle().setCursor(Cursor::PointingHand);
             }
 
-            {
-                auto _container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-                _container->setHeight(65);
-                _container->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Hidden::hidden_sm+Bootstrap::Grid::Hidden::hidden_xs);
-                auto layout = _container->setLayout(cpp14::make_unique<WVBoxLayout>());
-                auto text = layout->addWidget(cpp14::make_unique<WText>("Hakkında"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
-                text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::size::s14px);
-                _container->clicked().connect([=](){
-                   _Hakkinda.emit(NoClass());
-                });
-                text->decorationStyle().setCursor(Cursor::PointingHand);
-            }
 
+
+            // e-Belediye
             {
                 auto _container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
                 _container->setHeight(65);
@@ -206,6 +204,7 @@ HeaderPage::HeaderPage(mongocxx::database *_db)
                 auto text = layout->addWidget(std::move(anchor),0,AlignmentFlag::Center|AlignmentFlag::Middle);
                 text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::size::s14px);
             }
+
         }
     }
 }
@@ -263,4 +262,14 @@ Signal<NoClass> &HeaderPage::ClickIletisim()
 Signal<NoClass> &HeaderPage::ClickBaskan()
 {
     return _baskan;
+}
+
+Signal<NoClass> &HeaderPage::ClickBaskanYrd()
+{
+    return _baskanYrd;
+}
+
+Signal<NoClass> &HeaderPage::ClickMeclisUyeleri()
+{
+    return _MeclisUyeleriPage;
 }

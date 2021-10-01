@@ -154,7 +154,7 @@ void TalepWidget::TalepWidget::init()
         auto text = layout->addWidget(cpp14::make_unique<WText>("<h5><p><b>Sinek ve İlaçlama İçin Lütfen</b></p>"
                                                                 "<p>Antalya Büyükşehir Belediyesi</p>"
                                                                 "<p>Çevre Koruma ve Kontrol Daire Başkanlığı Çevre Sağlığı Şube Müdürlüğünü (Vektörel Mücadele) Arayınız</p>"
-                                                                "<p>İletişim: 0 242 249 52 00 - 0 242 249 52 01</p>"
+                                                                "<p>İletişim: 0 242 871 74 45</p>"
                                                                 "<p>Arama Saatleri 09:00 - 16:00</p></h5>"));
     }
 

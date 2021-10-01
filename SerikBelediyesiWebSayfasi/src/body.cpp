@@ -7092,7 +7092,7 @@ Body::Talep::Talep(mongocxx::database *_db)
             auto text = layout->addWidget(cpp14::make_unique<WText>("<h5><p><b>Sinek ve İlaçlama İçin Lütfen</b></p>"
                                                                     "<p>Antalya Büyükşehir Belediyesi</p>"
                                                                     "<p>Çevre Koruma ve Kontrol Daire Başkanlığı Çevre Sağlığı Şube Müdürlüğünü (Vektörel Mücadele) Arayınız</p>"
-                                                                    "<p>İletişim: 0 242 712 66 67</p>"
+                                                                    "<p>İletişim: 0 242 871 74 45</p>"
                                                                     "<p>Arama Saatleri 09:00 - 16:00</p></h5>"));
         }
 
@@ -7809,8 +7809,28 @@ Body::BilgiEdin::DenetimRapor::DenetimRapor()
     {
         auto layout = controlWidget->setLayout(cpp14::make_unique<WVBoxLayout>());
 
-        //2019denetimkomisyonraporu.pdf
 
+        {
+            Wt::WLink link = Wt::WLink("http://www.serik.bel.tr/file/2021_mahalliidare_denetim.pdf");
+            link.setTarget(Wt::LinkTarget::NewWindow);
+
+            std::unique_ptr<Wt::WAnchor> anchor =
+                    Wt::cpp14::make_unique<Wt::WAnchor>(link,
+                                                        "2021 Mahalli İdareler Denetim Raporu");
+            anchor->setAttributeValue(Style::style,Style::font::size::s20px);
+            layout->addWidget(std::move(anchor));
+        }
+
+        {
+            Wt::WLink link = Wt::WLink("http://www.serik.bel.tr/file/2020denetimkomisyonuraporu.pdf");
+            link.setTarget(Wt::LinkTarget::NewWindow);
+
+            std::unique_ptr<Wt::WAnchor> anchor =
+                    Wt::cpp14::make_unique<Wt::WAnchor>(link,
+                                                        "2020 Denetim Komisyonu Raporu");
+            anchor->setAttributeValue(Style::style,Style::font::size::s20px);
+            layout->addWidget(std::move(anchor));
+        }
 
         {
             Wt::WLink link = Wt::WLink("http://www.serik.bel.tr/file/2019denetimkomisyonraporu.pdf");

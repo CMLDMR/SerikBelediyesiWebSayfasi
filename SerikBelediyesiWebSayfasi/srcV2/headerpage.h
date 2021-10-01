@@ -32,6 +32,10 @@ public:
 
     Signal<NoClass> &ClickBaskan();
 
+    Signal<NoClass> &ClickBaskanYrd();
+
+    Signal<NoClass> &ClickMeclisUyeleri();
+
 private:
     Signal<NoClass> _Anasayfa;
 
@@ -54,6 +58,10 @@ private:
     Signal<NoClass> _Iletisim;
 
     Signal<NoClass> _baskan;
+
+    Signal<NoClass> _baskanYrd;
+
+    Signal<NoClass> _MeclisUyeleriPage;
 
 };
 

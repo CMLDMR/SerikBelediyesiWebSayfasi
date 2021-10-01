@@ -116,7 +116,7 @@ Header::Header::Header()
                 trText->decorationStyle().setCursor(Cursor::PointingHand);
 
                 trContainer->clicked().connect([=](){
-                    this->showMessage("İnfo","This Page is in Under Construction!. Please Revisit Later");
+                    this->showMessage("info","This Page is in Under Construction!. Please Revisit Later");
                 });
             }
 

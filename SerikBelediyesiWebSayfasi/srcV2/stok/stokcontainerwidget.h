@@ -50,7 +50,8 @@ class StokContainerWidget : public ContainerWidget, public SerikBLDCore::Stokv2:
         MalzemeGirisPage,
         MalzemeCikisPage,
         Istatistik,
-        Ayarlar
+        Ayarlar,
+        Yerler
     };
 
 
@@ -75,8 +76,11 @@ private:
     SerikBLDCore::User* mUser;
     SerikBLDCore::PersonelManager* mPersonelManager;
     ContainerWidget* mSubMenuBarContainer;
+    SerikBLDCore::Stokv2::Stokv2YerManager* mYerManager;
 
     void initAyarlar();
+
+    void initYerler();
 
     void importMazeleme();
     void exportMalzeme( const double &maxMiktar , const PipeLineStokItem &item);
@@ -126,6 +130,7 @@ public:
 
     std::string getCurrentMalzemeGirenOid() const;
     double getCurrentGirenMiktar() const;
+    double getCurrentGirenFiyat() const;
     std::string getCurrentKategoriOid() const;
     std::string getCurrentMalzemeAdi() const;
     std::string getCurruntMalzemeMetric() const;
@@ -139,6 +144,8 @@ private:
 
     WComboBox* mKalemComboBox;
     WDoubleSpinBox* mGirenMiktarSpinBoxValue;
+    WDoubleSpinBox* mGirenFiyatSpinBoxValue;
+
     WText* mCurrentGirenOid;
     WDateEdit* mDateEditWidget;
 

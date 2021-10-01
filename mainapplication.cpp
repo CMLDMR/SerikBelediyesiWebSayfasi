@@ -62,6 +62,8 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
     WApplication::useStyleSheet(WLink("css/eventWidget.css"));
     WApplication::useStyleSheet(WLink("css/header.css"));
     WApplication::useStyleSheet(WLink("css/style.css"));
+    WApplication::useStyleSheet(WLink("css/v2.css"));
+
 //    WApplication::useStyleSheet (WLink("https://www.w3schools.com/w3css/4/w3.css"));
 
     //    WApplication::useStyleSheet(WLink("css/test.css"));
@@ -174,9 +176,9 @@ void MainApplication::init()
 
     root()->clear();
 
-    if( QDate(2021,1,31).toJulianDay () > QDate::currentDate ().toJulianDay () ){
-        this->showYapilandirmaEmlak ();
-    }
+//    if( QDate(2021,1,31).toJulianDay () > QDate::currentDate ().toJulianDay () ){
+//        this->showYapilandirmaEmlak ();
+//    }
 
     root()->addStyleClass("rootBody");
 
@@ -240,6 +242,62 @@ void MainApplication::init()
 //        }
 
 
+//    std::cout << "\n" << QDate(2021,9,31).toJulianDay() << " " << QDate::currentDate().toJulianDay() << "\n";
+
+
+
+//    if( QDate(2021,9,31).toJulianDay() < QDate::currentDate().toJulianDay() ){
+//        auto container = root()->addWidget(cpp14::make_unique<WContainerWidget>());
+
+//        container->setWidth(WLength("100%"));
+//        container->setHeight(WLength("100%"));
+//        container->setPositionScheme(PositionScheme::Fixed);
+
+//        container->addStyleClass("backanimation");
+
+//        {
+//            std::random_device rd;
+//            std::mt19937 mt(rd());
+//            std::uniform_int_distribution<int> dist(1,35);
+//            auto index = dist(mt);
+//            std::string photoUrl = "v2/slide/"+std::to_string (index)+".jpg";
+//            container->setAttributeValue (Style::style,Style::background::url (photoUrl)+
+//                                          Style::background::size::cover+
+//                                          Style::background::repeat::norepeat);
+//        }
+
+//        container->setZIndex(9999);
+
+
+//        auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
+//        _container->setWidth(WLength("100%"));
+//        _container->setHeight(WLength("100%"));
+//        _container->setPositionScheme(PositionScheme::Absolute);
+//        _container->setAttributeValue(Style::style,Style::background::color::rgba(15,15,15)
+//                                      +Style::background::repeat::repeat);
+//        _container->setZIndex(9999);
+
+
+//        _container->setContentAlignment(AlignmentFlag::Center);
+
+//        auto iframe = _container->addWidget(cpp14::make_unique<WContainerWidget>());
+//        iframe->setHtmlTagName("iframe");
+//        iframe->setWidth(848);
+//        iframe->setHeight(480);
+//        iframe->setAttributeValue("src","https://www.youtube.com/embed/zoVUZK0sI9w?&rel=0&autohide=1&autoplay=1&controls=0");
+//        _container->addWidget(cpp14::make_unique<WBreak>());
+
+//        auto iframe1 = _container->addWidget(cpp14::make_unique<WContainerWidget>());
+//        auto dvmBtn = _container->addWidget(cpp14::make_unique<WPushButton>("Bu Sayfayı Atla"));
+//        dvmBtn->addStyleClass(Bootstrap::Button::Warning);
+//        dvmBtn->clicked().connect([=](){
+//            root()->removeWidget(container);
+//        });
+//    }
+
+
+
+    // Arkaplan Resimleri Slaytı
     {
         auto container = root()->addWidget(cpp14::make_unique<WContainerWidget>());
         container->addStyleClass (Bootstrap::Grid::Hidden::hidden_xs+Bootstrap::Grid::Hidden::hidden_sm);
