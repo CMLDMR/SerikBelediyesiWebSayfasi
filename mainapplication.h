@@ -8,6 +8,8 @@
 #include "mongoheaders.h"
 #include "SerikBelediyesiWebSayfasi/src/body.h"
 
+#include <random>
+
 
 using bsoncxx::builder::basic::document;
 using bsoncxx::builder::basic::kvp;

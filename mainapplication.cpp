@@ -105,7 +105,7 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
         for( auto sec : str.second )
         {
             mapList[str.first.c_str ()] = QString::fromStdString (sec);
-            std::cout << "Parameter: " << str.first << " Value: " << sec << std::endl;
+//            std::cout << "Parameter: " << str.first << " Value: " << sec << std::endl;
         }
     }
 
@@ -183,63 +183,134 @@ void MainApplication::init()
     root()->addStyleClass("rootBody");
 
 //     Afis Ön Görsel
-//        if( true ){
+        if( true ){
 
-//            auto container = root()->addWidget(cpp14::make_unique<WContainerWidget>());
+            auto container = root()->addWidget(cpp14::make_unique<WContainerWidget>());
 
-//            container->setWidth(WLength("100%"));
-//            container->setHeight(WLength("100%"));
-//            container->setPositionScheme(PositionScheme::Fixed);
-//            container->setAttributeValue(Style::style,Style::background::color::rgba(255,255,255,0.75));
-//            container->setZIndex(1000);
+            container->setWidth(WLength("100%"));
+            container->setHeight(WLength("100%"));
+            container->setPositionScheme(PositionScheme::Fixed);
+            container->setAttributeValue(Style::style,Style::background::color::rgba(255,255,255,0.75));
+            container->setZIndex(1000);
 
-//            auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
-//            _container->setWidth(WLength("100%"));
-//            _container->setHeight(WLength("100%"));
-//            _container->setPositionScheme(PositionScheme::Fixed);
+            auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
+            _container->setWidth(WLength("100%"));
+            _container->setHeight(WLength("100%"));
+            _container->setPositionScheme(PositionScheme::Fixed);
 
-//            _container->setZIndex(1000);
+            _container->setZIndex(1000);
 
-//            WTimer::singleShot(std::chrono::milliseconds(116000),[=](){
-//                           root()->removeWidget(container);
-//                        });
+            WTimer::singleShot(std::chrono::milliseconds(27000),[=](){
+                           root()->removeWidget(container);
+                        });
 
-//            {
-//                _container->setContentAlignment (AlignmentFlag::Center);
-//                _container->setPadding (50,Side::Top);
-//                auto mContainer = _container->addWidget(cpp14::make_unique<WContainerWidget>());
-//                mContainer->setPositionScheme (PositionScheme::Relative);
-//                mContainer->setContentAlignment(AlignmentFlag::Center);
-//                mContainer->setMaximumSize(1024,WLength::Auto);
-//                mContainer->setHeight (512);
-//                mContainer->addStyleClass ("boxShadow boxRadius");
-//                {
-//                    auto link = "<iframe src=\"https://www.youtube.com/embed/aVViU6SIkWE?autoplay=1&showinfo=0&controls=0\" style=\"border:0px #ffffff none;\" name=\"myiFrame\" scrolling=\"no\" frameborder=\"1\" marginheight=\"5px\" marginwidth=\"5px\" height=\"100%\" width=\"100%\" "
-//                                                             "allow=\"accelerometer; autoplay=true; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>";
-//                    auto text = mContainer->addWidget(cpp14::make_unique<WText>(link,TextFormat::UnsafeXHTML));
-//                    text->setMaximumSize(1280,WLength::Auto);
-//                }
+            {
+                _container->setContentAlignment (AlignmentFlag::Center);
+                _container->setPadding (50,Side::Top);
+                auto mContainer = _container->addWidget(cpp14::make_unique<WContainerWidget>());
+                mContainer->setPositionScheme (PositionScheme::Relative);
+                mContainer->setContentAlignment(AlignmentFlag::Center);
+                mContainer->setMaximumSize(1024,WLength::Auto);
+                mContainer->setHeight (512);
+                mContainer->addStyleClass ("boxShadow boxRadius");
+                {
+                    QList<std::string> linkList;
 
-//                {
-//                    auto skipContainer = mContainer->addWidget (cpp14::make_unique<WContainerWidget>());
-//                    skipContainer->setPositionScheme (PositionScheme::Absolute);
-//                    skipContainer->setOffsets (0,Side::Right|Side::Top);
-//                    skipContainer->setWidth (170);
-//                    skipContainer->setHeight (60);
-//                    skipContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::White));
-//                    skipContainer->decorationStyle ().setCursor (Cursor::PointingHand);
+                    {
+                        auto link = "<iframe src=\"https://www.youtube.com/embed/37HcNTWQ0xs?autoplay=1&showinfo=0&controls=0\" style=\"border:0px #ffffff none;\" name=\"myiFrame\" scrolling=\"no\" frameborder=\"1\" marginheight=\"5px\" marginwidth=\"5px\" height=\"100%\" width=\"100%\" "
+                                                                 "allow=\"accelerometer; autoplay=true; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>";
+                        linkList.push_back(link);
+                    }
 
-//                    auto layout = skipContainer->setLayout (cpp14::make_unique<WVBoxLayout>());
-//                    auto text = layout->addWidget (cpp14::make_unique<WText>("Ana SAYFA"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
-//                    text->setAttributeValue (Style::style,Style::font::weight::lighter+Style::font::size::s14px+Style::color::color (Style::color::Grey::Black));
+                    {
+                        auto link = "<iframe src=\"https://www.youtube.com/embed/LyUlmFfGPoY?autoplay=1&showinfo=0&controls=0\" style=\"border:0px #ffffff none;\" name=\"myiFrame\" scrolling=\"no\" frameborder=\"1\" marginheight=\"5px\" marginwidth=\"5px\" height=\"100%\" width=\"100%\" "
+                                                                 "allow=\"accelerometer; autoplay=true; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>";
+                        linkList.push_back(link);
+                    }
 
-//                    skipContainer->clicked ().connect ([=](){
-//                        root()->removeWidget(container);
-//                    });
+                    {
+                        auto link = "<iframe src=\"https://www.youtube.com/embed/_S4n2GeZgBw?autoplay=1&showinfo=0&controls=0\" style=\"border:0px #ffffff none;\" name=\"myiFrame\" scrolling=\"no\" frameborder=\"1\" marginheight=\"5px\" marginwidth=\"5px\" height=\"100%\" width=\"100%\" "
+                                                                 "allow=\"accelerometer; autoplay=true; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>";
+                        linkList.push_back(link);
+                    }
 
-//                }
-//            }
-//        }
+
+                    {
+                        auto link = "<iframe src=\"https://www.youtube.com/embed/NCzo3hoc1CI?autoplay=1&showinfo=0&controls=0\" style=\"border:0px #ffffff none;\" name=\"myiFrame\" scrolling=\"no\" frameborder=\"1\" marginheight=\"5px\" marginwidth=\"5px\" height=\"100%\" width=\"100%\" "
+                                                                 "allow=\"accelerometer; autoplay=true; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>";
+                        linkList.push_back(link);
+                    }
+
+                    {
+                        auto link = "<iframe src=\"https://www.youtube.com/embed/JgCz1_oezRk?autoplay=1&showinfo=0&controls=0\" style=\"border:0px #ffffff none;\" name=\"myiFrame\" scrolling=\"no\" frameborder=\"1\" marginheight=\"5px\" marginwidth=\"5px\" height=\"100%\" width=\"100%\" "
+                                                                 "allow=\"accelerometer; autoplay=true; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>";
+                        linkList.push_back(link);
+                    }
+
+                    {
+                        auto link = "<iframe src=\"https://www.youtube.com/embed/v7fmVvbBIQE?autoplay=1&showinfo=0&controls=0\" style=\"border:0px #ffffff none;\" name=\"myiFrame\" scrolling=\"no\" frameborder=\"1\" marginheight=\"5px\" marginwidth=\"5px\" height=\"100%\" width=\"100%\" "
+                                                                 "allow=\"accelerometer; autoplay=true; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>";
+                        linkList.push_back(link);
+                    }
+
+                    {
+                        auto link = "<iframe src=\"https://www.youtube.com/embed/6EH7J3W4axs?autoplay=1&showinfo=0&controls=0\" style=\"border:0px #ffffff none;\" name=\"myiFrame\" scrolling=\"no\" frameborder=\"1\" marginheight=\"5px\" marginwidth=\"5px\" height=\"100%\" width=\"100%\" "
+                                                                 "allow=\"accelerometer; autoplay=true; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>";
+                        linkList.push_back(link);
+                    }
+
+                    {
+                        auto link = "<iframe src=\"https://www.youtube.com/embed/FZkFQGY6O5s?autoplay=1&showinfo=0&controls=0\" style=\"border:0px #ffffff none;\" name=\"myiFrame\" scrolling=\"no\" frameborder=\"1\" marginheight=\"5px\" marginwidth=\"5px\" height=\"100%\" width=\"100%\" "
+                                                                 "allow=\"accelerometer; autoplay=true; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>";
+                        linkList.push_back(link);
+                    }
+
+                    {
+                        auto link = "<iframe src=\"https://www.youtube.com/embed/TP6qml_HGQc?autoplay=1&showinfo=0&controls=0\" style=\"border:0px #ffffff none;\" name=\"myiFrame\" scrolling=\"no\" frameborder=\"1\" marginheight=\"5px\" marginwidth=\"5px\" height=\"100%\" width=\"100%\" "
+                                                                 "allow=\"accelerometer; autoplay=true; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>";
+                        linkList.push_back(link);
+                    }
+
+                    {
+                        auto link = "<iframe src=\"https://www.youtube.com/embed/jtHfbs3RKXY?autoplay=1&showinfo=0&controls=0\" style=\"border:0px #ffffff none;\" name=\"myiFrame\" scrolling=\"no\" frameborder=\"1\" marginheight=\"5px\" marginwidth=\"5px\" height=\"100%\" width=\"100%\" "
+                                                                 "allow=\"accelerometer; autoplay=true; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>";
+                        linkList.push_back(link);
+                    }
+
+                    std::random_device rd;
+                    std::mt19937 mt(rd());
+                    std::uniform_int_distribution<int> dist(0,9);
+                    auto dice_roll = dist(mt);
+
+                    std::cout << "\nDice ve Roll: " << dice_roll << "\n";
+
+                    auto link = linkList.at(dice_roll);
+
+
+                    auto text = mContainer->addWidget(cpp14::make_unique<WText>(link,TextFormat::UnsafeXHTML));
+                    text->setMaximumSize(1280,WLength::Auto);
+                }
+
+                {
+                    auto skipContainer = mContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+                    skipContainer->setPositionScheme (PositionScheme::Absolute);
+                    skipContainer->setOffsets (0,Side::Right|Side::Top);
+                    skipContainer->setWidth (170);
+                    skipContainer->setHeight (60);
+                    skipContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::White));
+                    skipContainer->decorationStyle ().setCursor (Cursor::PointingHand);
+
+                    auto layout = skipContainer->setLayout (cpp14::make_unique<WVBoxLayout>());
+                    auto text = layout->addWidget (cpp14::make_unique<WText>("Ana SAYFA"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+                    text->setAttributeValue (Style::style,Style::font::weight::lighter+Style::font::size::s14px+Style::color::color (Style::color::Grey::Black));
+
+                    skipContainer->clicked ().connect ([=](){
+                        root()->removeWidget(container);
+                    });
+
+                }
+            }
+        }
 
 
 //    std::cout << "\n" << QDate(2021,9,31).toJulianDay() << " " << QDate::currentDate().toJulianDay() << "\n";
@@ -300,7 +371,7 @@ void MainApplication::init()
     // Arkaplan Resimleri Slaytı
     {
         auto container = root()->addWidget(cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass (Bootstrap::Grid::Hidden::hidden_xs+Bootstrap::Grid::Hidden::hidden_sm);
+//        container->addStyleClass (Bootstrap::Grid::Hidden::hidden_xs+Bootstrap::Grid::Hidden::hidden_sm);
 
         container->setWidth(WLength("100%"));
         container->setHeight(WLength("100%"));

@@ -14,6 +14,7 @@ v2::MeclisPublicPage::MeclisPublicPage(SerikBLDCore::DB *db)
     SerikBLDCore::FindOptions findOptions;
 
     findOptions.setSort (SerikBLDCore::Meclis::MeclisItem().append(SerikBLDCore::Meclis::Key::julianDate,-1));
+    findOptions.setLimit(1000);
 
 
     this->UpdateList (SerikBLDCore::Meclis::MeclisItem(),findOptions);
