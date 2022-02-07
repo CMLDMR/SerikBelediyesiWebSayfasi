@@ -92,6 +92,7 @@ void v2::Faaliyet::FaaliyetRaporContainer::initFaaliyetRaporlari()
                 SerikBLDCore::Faaliyet::FaaliyetItem item;
                 item.setBirim (mUser->Birimi ());
                 item.setYil (yilSpinBoxContainer->value ());
+                item.setEnableViewMode(false);
 
                 if( this->insertFaaliyetItem (item) ){
                     this->initFaaliyetRaporlari ();
@@ -118,7 +119,11 @@ void v2::Faaliyet::FaaliyetRaporContainer::initFaaliyetRaporlari()
 
         for( const auto &item : list ){
             auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass (Bootstrap::Grid::col_full_12);
+//            container->addStyleClass (Bootstrap::Grid::col_full_12);
+                        container->addStyleClass (Bootstrap::Grid::Large::col_lg_9+
+                                             Bootstrap::Grid::Medium::col_md_9+
+                                             Bootstrap::Grid::Small::col_sm_9+
+                                             Bootstrap::Grid::ExtraSmall::col_xs_9);
 
             container->addStyleClass (CSSStyle::Shadows::shadow8px);
             container->setPadding (5,Side::Top|Side::Bottom);
@@ -146,6 +151,54 @@ void v2::Faaliyet::FaaliyetRaporContainer::initFaaliyetRaporlari()
             });
 
             existList.append (item.getBirim ().c_str ());
+
+            auto setEnableDisableBtnContainer = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+            setEnableDisableBtnContainer->addStyleClass (Bootstrap::Grid::col_full_12);
+            setEnableDisableBtnContainer->setPadding (5,Side::Top|Side::Bottom);
+            setEnableDisableBtnContainer->setMargin (5,Side::Top|Side::Bottom);
+            setEnableDisableBtnContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
+                                 Bootstrap::Grid::Medium::col_md_3+
+                                 Bootstrap::Grid::Small::col_sm_3+
+                                 Bootstrap::Grid::ExtraSmall::col_xs_3);
+            setEnableDisableBtnContainer->addStyleClass (CSSStyle::Button::grayButton);
+
+
+            SerikBLDCore::Faaliyet::FaaliyetItem filter;
+            filter.setOid(container->attributeValue (Style::dataoid).toUTF8());
+
+            if( item.ViewModeisEnabled() ){
+                auto enableDisableText = setEnableDisableBtnContainer->addWidget(cpp14::make_unique<WText>("Okuma Modu"));
+                setEnableDisableBtnContainer->addStyleClass (CSSStyle::Button::grayButton);
+                filter.setEnableViewMode(false);
+
+            }else{
+                auto enableDisableText = setEnableDisableBtnContainer->addWidget(cpp14::make_unique<WText>("Okuma/Yazma Modu"));
+                setEnableDisableBtnContainer->addStyleClass (CSSStyle::Button::Red::DarkRedButton);
+                filter.setEnableViewMode(false);
+            }
+
+            setEnableDisableBtnContainer->clicked().connect([=](){
+                SerikBLDCore::Faaliyet::FaaliyetItem filter;
+                filter.setOid(container->attributeValue (Style::dataoid).toUTF8());
+                if( item.ViewModeisEnabled() ){
+                    filter.setEnableViewMode(false);
+                }else{
+                    filter.setEnableViewMode(true);
+                }
+
+                auto upt = this->updateItem(filter);
+
+                if( upt ){
+                    if( upt.value().modified_count() ){
+                        this->initFaaliyetRaporlari();
+                        return;
+                    }
+                }
+
+            });
+
+
+
         }
 
         {
@@ -246,10 +299,12 @@ void v2::Faaliyet::FaaliyetRaporContainer::testPage( const std::string &faaliyet
     baslikContainer->setMargin (25,Side::Bottom);
     baslikContainer->setAttributeValue (Style::style,Style::Border::bottom::border ("1px solid gray"));
 
+    bool mViewMode = false;
 
     if( itemList.count () == 0 ){
         SerikBLDCore::Faaliyet::FaaliyetItem filter;
         filter.setOid (faaliyetOid);
+
 
         auto val = this->findOneItem (filter);
 
@@ -281,6 +336,12 @@ void v2::Faaliyet::FaaliyetRaporContainer::testPage( const std::string &faaliyet
                     baslikText->setText ("<h3>"+birim+" "+faaliyetTitle+"</h3>");
                 }catch(bsoncxx::exception &e){
                     baslikText->setText ("<h3>"+faaliyetTitle+"</h3>");
+
+                }
+
+                try{
+                    mViewMode = val->view ()["viewMode"].get_bool().value;
+                }catch(bsoncxx::exception &e){
 
                 }
             }
@@ -498,7 +559,8 @@ void v2::Faaliyet::FaaliyetRaporContainer::testPage( const std::string &faaliyet
         auto item = itemList.at (i);
 
 
-        auto baslikItemContainer = Content ()->addWidget (cpp14::make_unique<ItemContainer<SerikBLDCore::Faaliyet::RaporItem>> (item,mUser->getDB (),false));
+
+        auto baslikItemContainer = Content ()->addWidget (cpp14::make_unique<ItemContainer<SerikBLDCore::Faaliyet::RaporItem>> (item,mUser->getDB (),mViewMode));
         baslikItemContainer->addStyleClass (Bootstrap::Grid::col_full_12);
         baslikContainer->setPadding (15,Side::Top);
         baslikItemContainer->mAddBeforeSignal.connect ([=]( const int &type , const std::string &uuid , const std::string &baslik ){
@@ -1064,7 +1126,7 @@ void v2::Faaliyet::SquencedRaporItem::changeItem(const std::string &currentUuid,
 
 template<typename T>
 v2::Faaliyet::ItemContainer<T>::ItemContainer(const SerikBLDCore::Faaliyet::RaporItem *item, SerikBLDCore::DB* _mDB, const bool &_mViewMode)
-    :mDB(_mDB),mViewMode(_mViewMode)
+    :mViewMode(_mViewMode),mDB(_mDB)
 {
     this->setDocumentView (item->view ());
     this->refreshWidget ();
@@ -1457,7 +1519,10 @@ void v2::Faaliyet::ItemContainer<T>::addPageBreakPre(const bool &addPre)
 template<typename T>
 void v2::Faaliyet::ItemContainer<T>::initWidgetType()
 {
-    this->setAttributeValue (Style::style,Style::background::color::rgba (255,255,255,0)+Style::Border::bottom::border ("1px Dotted lightgray"));
+
+    if( !mViewMode ){
+        this->setAttributeValue (Style::style,Style::background::color::rgba (255,255,255,0)+Style::Border::bottom::border ("1px Dotted lightgray"));
+    }
     this->setPositionScheme (PositionScheme::Relative);
 
     auto lineContainer = this->addWidget (cpp14::make_unique<WContainerWidget>());
@@ -1467,7 +1532,7 @@ void v2::Faaliyet::ItemContainer<T>::initWidgetType()
     lineContainer->setOffsets(0,Side::Bottom|Side::Right);
     lineContainer->setPadding(2,Side::Left|Side::Right);
 
-    if( isPageBreak() ){
+    if( isPageBreak() && !mViewMode ){
 //        this->setPadding (5,Side::Top);
         this->setContentAlignment (AlignmentFlag::Left);
         addWidget (cpp14::make_unique<WText>("Sayfa Sonu - Bu Element Çıktı Alınırken Kullanılacaktır. Lütfen Dokunmayınız."));
@@ -1485,7 +1550,11 @@ void v2::Faaliyet::ItemContainer<T>::initWidgetType()
         addWidget (cpp14::make_unique<WText>("<h3>"+this->getText ()+"</h3>"));
         setPadding (15,Side::Left);
         lineContainer->addStyleClass(CSSStyle::Button::Red::CrimsonButton);
-        typeText->setText("B");
+        if( !mViewMode ){
+            typeText->setText("B");
+        }else{
+            this->removeWidget(lineContainer);
+        }
 
     }
 
@@ -1508,7 +1577,11 @@ void v2::Faaliyet::ItemContainer<T>::initWidgetType()
         //        setPadding (6,Side::Top|Side::Bottom);
         setPadding (40,Side::Left);
         lineContainer->addStyleClass(CSSStyle::Button::Red::IndianRedButton);
-        typeText->setText("A");
+        if( !mViewMode ){
+            typeText->setText("A");
+        }else{
+            this->removeWidget(lineContainer);
+        }
     }
 
 
@@ -1520,7 +1593,11 @@ void v2::Faaliyet::ItemContainer<T>::initWidgetType()
         text->setTextAlignment(AlignmentFlag::Left);
         setPadding (65,Side::Left);
         lineContainer->addStyleClass(CSSStyle::Button::Red::LightCoralButton);
-        typeText->setText("P");
+        if( !mViewMode ){
+            typeText->setText("P");
+        }else{
+            this->removeWidget(lineContainer);
+        }
     }
 
     if( isImg() ){
@@ -1618,7 +1695,11 @@ void v2::Faaliyet::ItemContainer<T>::initWidgetType()
 
         setPadding (65,Side::Left);
         lineContainer->addStyleClass(CSSStyle::Button::Red::LightSalmonButton);
-        typeText->setText("R");
+        if( !mViewMode ){
+            typeText->setText("R");
+        }else{
+            this->removeWidget(lineContainer);
+        }
 
     }
 
@@ -1670,7 +1751,11 @@ void v2::Faaliyet::ItemContainer<T>::initWidgetType()
         }
 
         lineContainer->addStyleClass(CSSStyle::Button::Red::SalmonButton);
-        typeText->setText("T");
+        if( !mViewMode ){
+            typeText->setText("T");
+        }else{
+            this->removeWidget(lineContainer);
+        }
 
     }
 
@@ -2564,7 +2649,9 @@ void v2::Faaliyet::ItemContainer<T>::refreshWidget()
     ::WContainerWidget::clear ();
 
 
-    this->addStyleClass ("faaliyetItem");
+    if( !mViewMode ){
+        this->addStyleClass ("faaliyetItem");
+    }
 
 
     this->initWidgetType ();

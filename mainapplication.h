@@ -7,6 +7,7 @@
 
 #include "mongoheaders.h"
 #include "SerikBelediyesiWebSayfasi/src/body.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/device/deviceitem.h"
 
 #include <random>
 
@@ -47,6 +48,8 @@ public:
     bool loadTalep( const std::string &oid );
 
     bool loadGundem( const std::string& oid );
+
+    void LoadDeviceStatus();
 
 
 

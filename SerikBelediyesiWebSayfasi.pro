@@ -35,6 +35,7 @@ SOURCES += main.cpp \
     SerikBelediyesiWebSayfasi/srcV2/birimIsleri/birimislericontainer.cpp \
     SerikBelediyesiWebSayfasi/srcV2/calismalar/calismacontainerwidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/calismalar/calismamanagercontainer.cpp \
+    SerikBelediyesiWebSayfasi/srcV2/device/deviceitem.cpp \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekcelistwidgetitem.cpp \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekcetcyonetim.cpp \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekceview.cpp \
@@ -118,6 +119,7 @@ HEADERS += \
     SerikBelediyesiWebSayfasi/srcV2/birimIsleri/birimislericontainer.h \
     SerikBelediyesiWebSayfasi/srcV2/calismalar/calismacontainerwidget.h \
     SerikBelediyesiWebSayfasi/srcV2/calismalar/calismamanagercontainer.h \
+    SerikBelediyesiWebSayfasi/srcV2/device/deviceitem.h \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekcelistwidgetitem.h \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekcetcyonetim.h \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekceview.h \
