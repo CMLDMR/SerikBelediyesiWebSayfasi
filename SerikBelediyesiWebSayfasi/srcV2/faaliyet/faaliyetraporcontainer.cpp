@@ -22,6 +22,8 @@ v2::Faaliyet::FaaliyetRaporContainer::FaaliyetRaporContainer( SerikBLDCore::User
         text->setAttributeValue (Style::style,Style::color::color (Style::color::Grey::Black));
         text->setMargin (6,Side::Top|Side::Bottom);
 
+
+
         mYillar = hLayout->addWidget (cpp14::make_unique<WComboBox>());
         mYillar->setWidth(WLength("50%"));
 
@@ -44,6 +46,12 @@ v2::Faaliyet::FaaliyetRaporContainer::FaaliyetRaporContainer( SerikBLDCore::User
         mYillar->activated ().connect ([=](const int &value ){
             this->initFaaliyetRaporlari ();
         });
+
+        auto mBtn2020 = hLayout->addWidget(cpp14::make_unique<WPushButton>("Listeye Dön"));
+        mBtn2020->addStyleClass(Bootstrap::Button::Primary);
+        mBtn2020->clicked().connect([=](){
+            this->initFaaliyetRaporlari ();
+        });
     }
 
 
@@ -56,7 +64,7 @@ v2::Faaliyet::FaaliyetRaporContainer::FaaliyetRaporContainer( SerikBLDCore::User
 
 }
 
-void v2::Faaliyet::FaaliyetRaporContainer::initFaaliyetRaporlari()
+void v2::Faaliyet::FaaliyetRaporContainer::initFaaliyetRaporlari(const int64_t currentYear)
 {
 
     Content ()->setMargin (25,Side::Top|Side::Bottom);
@@ -108,8 +116,6 @@ void v2::Faaliyet::FaaliyetRaporContainer::initFaaliyetRaporlari()
 
     if( this->mUser->Statu () == SerikBLDCore::IK::Statu::Baskan || this->mUser->Statu () == SerikBLDCore::IK::Statu::BaskanYardimcisi || this->mUser->Birimi () == "Yazı İşleri Müdürlüğü"){
 
-
-
         auto list = this->ListFaaliyetItem (std::stoi (mYillar->currentText ().toUTF8 ()));
 
         auto birimList = this->mPersonelManager->birimListResmi ();
@@ -119,11 +125,10 @@ void v2::Faaliyet::FaaliyetRaporContainer::initFaaliyetRaporlari()
 
         for( const auto &item : list ){
             auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-//            container->addStyleClass (Bootstrap::Grid::col_full_12);
-                        container->addStyleClass (Bootstrap::Grid::Large::col_lg_9+
-                                             Bootstrap::Grid::Medium::col_md_9+
-                                             Bootstrap::Grid::Small::col_sm_9+
-                                             Bootstrap::Grid::ExtraSmall::col_xs_9);
+            container->addStyleClass (Bootstrap::Grid::Large::col_lg_9+
+                                      Bootstrap::Grid::Medium::col_md_9+
+                                      Bootstrap::Grid::Small::col_sm_9+
+                                      Bootstrap::Grid::ExtraSmall::col_xs_9);
 
             container->addStyleClass (CSSStyle::Shadows::shadow8px);
             container->setPadding (5,Side::Top|Side::Bottom);
@@ -136,17 +141,13 @@ void v2::Faaliyet::FaaliyetRaporContainer::initFaaliyetRaporlari()
             hLayout->addStyleClass (Bootstrap::Grid::row);
 
             auto text = hLayout->addWidget (cpp14::make_unique<WText>(item.getBirim () + " - " + std::to_string (item.getYil ()) + " : Faaliyet Raporu" ));
-            //            text->addStyleClass (Bootstrap::Grid::Large::col_lg_8+
-            //                                 Bootstrap::Grid::Medium::col_md_8+
-            //                                 Bootstrap::Grid::Small::col_sm_8+
-            //                                 Bootstrap::Grid::ExtraSmall::col_xs_8);
 
             text->addStyleClass (Bootstrap::Grid::col_full_12);
 
-            text->decorationStyle ().setCursor (Cursor::PointingHand);
+            container->decorationStyle ().setCursor (Cursor::PointingHand);
 
 
-            text->clicked ().connect ([=](){
+            container->clicked ().connect ([=](){
                 this->testPage (text->text ().toUTF8 (),container->attributeValue (Style::dataoid).toUTF8());
             });
 
@@ -157,9 +158,9 @@ void v2::Faaliyet::FaaliyetRaporContainer::initFaaliyetRaporlari()
             setEnableDisableBtnContainer->setPadding (5,Side::Top|Side::Bottom);
             setEnableDisableBtnContainer->setMargin (5,Side::Top|Side::Bottom);
             setEnableDisableBtnContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
-                                 Bootstrap::Grid::Medium::col_md_3+
-                                 Bootstrap::Grid::Small::col_sm_3+
-                                 Bootstrap::Grid::ExtraSmall::col_xs_3);
+                                                         Bootstrap::Grid::Medium::col_md_3+
+                                                         Bootstrap::Grid::Small::col_sm_3+
+                                                         Bootstrap::Grid::ExtraSmall::col_xs_3);
             setEnableDisableBtnContainer->addStyleClass (CSSStyle::Button::grayButton);
 
 
@@ -167,12 +168,12 @@ void v2::Faaliyet::FaaliyetRaporContainer::initFaaliyetRaporlari()
             filter.setOid(container->attributeValue (Style::dataoid).toUTF8());
 
             if( item.ViewModeisEnabled() ){
-                auto enableDisableText = setEnableDisableBtnContainer->addWidget(cpp14::make_unique<WText>("Okuma Modu"));
+                setEnableDisableBtnContainer->addWidget(cpp14::make_unique<WText>("Okuma Modu"));
                 setEnableDisableBtnContainer->addStyleClass (CSSStyle::Button::grayButton);
                 filter.setEnableViewMode(false);
 
             }else{
-                auto enableDisableText = setEnableDisableBtnContainer->addWidget(cpp14::make_unique<WText>("Okuma/Yazma Modu"));
+                setEnableDisableBtnContainer->addWidget(cpp14::make_unique<WText>("Okuma/Yazma Modu"));
                 setEnableDisableBtnContainer->addStyleClass (CSSStyle::Button::Red::DarkRedButton);
                 filter.setEnableViewMode(false);
             }
@@ -206,13 +207,13 @@ void v2::Faaliyet::FaaliyetRaporContainer::initFaaliyetRaporlari()
             container->addStyleClass (Bootstrap::Grid::col_full_12);
             container->setMargin(50,Side::Top);
             container->setContentAlignment (AlignmentFlag::Center);
-            auto text = container->addWidget (cpp14::make_unique<WText>("Sisteme Girmeyen Birimler"));
+            container->addWidget (cpp14::make_unique<WText>("Sisteme Girmeyen Birimler"));
 
         }
 
         QVector<QString> newExistList;
 
-        for( auto birimItem : birimList ){
+        for( const auto &birimItem : birimList ){
 
             if( birimItem == "Gelir Şefliği" || birimItem == "Başkanlık" || birimItem == "Antalya Valiliği" || birimItem == "Muhtarlık" || birimItem == "Antalya Büyükşehir Belediyesi" || birimItem == "ASAT" || birimItem == "Test" ) {
 
@@ -232,7 +233,7 @@ void v2::Faaliyet::FaaliyetRaporContainer::initFaaliyetRaporlari()
 
                 auto hLayout = container->setLayout (cpp14::make_unique<WHBoxLayout>());
 
-                auto text = hLayout->addWidget (cpp14::make_unique<WText>(birimItem.toStdString() + " Faaliyet Raporu Yok" ));
+                hLayout->addWidget (cpp14::make_unique<WText>(birimItem.toStdString() + " Faaliyet Raporu Yok" ));
 
                 container->addStyleClass (CSSStyle::Shadows::shadow8px);
                 container->setPadding (5,Side::Top|Side::Bottom);
@@ -242,7 +243,7 @@ void v2::Faaliyet::FaaliyetRaporContainer::initFaaliyetRaporlari()
         }
 
     }else{
-//        LOG << "ListFaaliyetItem : " << this->mUser->Birimi() << "\n";
+        //        LOG << "ListFaaliyetItem : " << this->mUser->Birimi() << "\n";
 
         auto list = this->ListFaaliyetItem (this->mUser->Birimi ());
 
@@ -278,6 +279,7 @@ void v2::Faaliyet::FaaliyetRaporContainer::testPage( const std::string &faaliyet
 {
 
     Content ()->clear ();
+    this->itemList.clearItems();
 
     auto baslikContainer = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
     baslikContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_9+
@@ -294,7 +296,7 @@ void v2::Faaliyet::FaaliyetRaporContainer::testPage( const std::string &faaliyet
 
     auto baslikText = baslikContainer->addWidget (cpp14::make_unique<WText>(""));
     baslikContainer->addWidget (cpp14::make_unique<WBreak>());
-    auto titleOid = baslikContainer->addWidget (cpp14::make_unique<WText>(faaliyetOid));
+    baslikContainer->addWidget (cpp14::make_unique<WText>(faaliyetOid));
 
     baslikContainer->setMargin (25,Side::Bottom);
     baslikContainer->setAttributeValue (Style::style,Style::Border::bottom::border ("1px solid gray"));
@@ -311,6 +313,9 @@ void v2::Faaliyet::FaaliyetRaporContainer::testPage( const std::string &faaliyet
         if( val ){
 
             if( val.value ().view ().empty () ){
+
+                this->showPopUpMessage ("Empty view:","err");
+
 
             }else{
                 try{
@@ -417,61 +422,61 @@ void v2::Faaliyet::FaaliyetRaporContainer::testPage( const std::string &faaliyet
 
 
             {
-            SerikBLDCore::Faaliyet::BaslikItem *baslik = new SerikBLDCore::Faaliyet::BaslikItem();
-            baslik->setText("İDAREYE İLİŞKİN BİLGİLER");
-            this->itemList.push_back(baslik);
+                SerikBLDCore::Faaliyet::BaslikItem *baslik = new SerikBLDCore::Faaliyet::BaslikItem();
+                baslik->setText("İDAREYE İLİŞKİN BİLGİLER");
+                this->itemList.push_back(baslik);
             }
 
             {
-//                SerikBLDCore::Faaliyet::AltBaslikItem altBaslikGorevlik;
-//                altBaslikGorevlik.setText("İnsan Kaynakları");
-//                this->itemList.push_back(&altBaslikGorevlik);
+                //                SerikBLDCore::Faaliyet::AltBaslikItem altBaslikGorevlik;
+                //                altBaslikGorevlik.setText("İnsan Kaynakları");
+                //                this->itemList.push_back(&altBaslikGorevlik);
 
-//                SerikBLDCore::Faaliyet::AltBaslikItem altBaslikSorumluluk;
-//                altBaslikSorumluluk.setText("Teşkilat Yapısı");
-//                this->itemList.push_back(&altBaslikSorumluluk);
+                //                SerikBLDCore::Faaliyet::AltBaslikItem altBaslikSorumluluk;
+                //                altBaslikSorumluluk.setText("Teşkilat Yapısı");
+                //                this->itemList.push_back(&altBaslikSorumluluk);
 
-//                SerikBLDCore::Faaliyet::AltBaslikItem altBaslikYetki;
-//                altBaslikYetki.setText("Fiziksel Yapı");
-//                this->itemList.push_back(&altBaslikYetki);
-            SerikBLDCore::Faaliyet::AltBaslikItem *altBaslikGorevlik = new SerikBLDCore::Faaliyet::AltBaslikItem();
-            altBaslikGorevlik->setText("İnsan Kaynakları");
-            this->itemList.push_back(altBaslikGorevlik);
-            {
-                SerikBLDCore::Faaliyet::ParagrafItem *paragraf = new SerikBLDCore::Faaliyet::ParagrafItem();
-                paragraf->setText("Bu Alanı Silip, Persenol Hakkında Bilgi Giriniz.");
-                this->itemList.push_back(paragraf);
+                //                SerikBLDCore::Faaliyet::AltBaslikItem altBaslikYetki;
+                //                altBaslikYetki.setText("Fiziksel Yapı");
+                //                this->itemList.push_back(&altBaslikYetki);
+                SerikBLDCore::Faaliyet::AltBaslikItem *altBaslikGorevlik = new SerikBLDCore::Faaliyet::AltBaslikItem();
+                altBaslikGorevlik->setText("İnsan Kaynakları");
+                this->itemList.push_back(altBaslikGorevlik);
+                {
+                    SerikBLDCore::Faaliyet::ParagrafItem *paragraf = new SerikBLDCore::Faaliyet::ParagrafItem();
+                    paragraf->setText("Bu Alanı Silip, Persenol Hakkında Bilgi Giriniz.");
+                    this->itemList.push_back(paragraf);
+                }
+
+
+                SerikBLDCore::Faaliyet::AltBaslikItem *altBaslikSorumluluk = new SerikBLDCore::Faaliyet::AltBaslikItem();
+                altBaslikSorumluluk->setText("Teşkilat Yapısı");
+                this->itemList.push_back(altBaslikSorumluluk);
+                {
+                    SerikBLDCore::Faaliyet::ParagrafItem *paragraf = new SerikBLDCore::Faaliyet::ParagrafItem();
+                    paragraf->setText("Bu Alanı Silip, Müdürlüğünüz Altında ki Servisler Hakkında Bilgi Giriniz. Örneğin Zabıta Müdürlüğünün Altındaki Trafik Birimi Gibi");
+                    this->itemList.push_back(paragraf);
+                }
+
+                SerikBLDCore::Faaliyet::AltBaslikItem *altBaslikYetki = new SerikBLDCore::Faaliyet::AltBaslikItem();
+                altBaslikYetki->setText("Fiziksel Yapı");
+                this->itemList.push_back(altBaslikYetki);
+                {
+                    SerikBLDCore::Faaliyet::ParagrafItem *paragraf = new SerikBLDCore::Faaliyet::ParagrafItem();
+                    paragraf->setText("Bu Alanı Silip, Müdürlüğünüzün Fiziksel Yapısı Hakkında Bilgi Giriniz.");
+                    this->itemList.push_back(paragraf);
+                }
             }
 
-
-            SerikBLDCore::Faaliyet::AltBaslikItem *altBaslikSorumluluk = new SerikBLDCore::Faaliyet::AltBaslikItem();
-            altBaslikSorumluluk->setText("Teşkilat Yapısı");
-            this->itemList.push_back(altBaslikSorumluluk);
             {
-                SerikBLDCore::Faaliyet::ParagrafItem *paragraf = new SerikBLDCore::Faaliyet::ParagrafItem();
-                paragraf->setText("Bu Alanı Silip, Müdürlüğünüz Altında ki Servisler Hakkında Bilgi Giriniz. Örneğin Zabıta Müdürlüğünün Altındaki Trafik Birimi Gibi");
-                this->itemList.push_back(paragraf);
-            }
-
-            SerikBLDCore::Faaliyet::AltBaslikItem *altBaslikYetki = new SerikBLDCore::Faaliyet::AltBaslikItem();
-            altBaslikYetki->setText("Fiziksel Yapı");
-            this->itemList.push_back(altBaslikYetki);
-            {
-                SerikBLDCore::Faaliyet::ParagrafItem *paragraf = new SerikBLDCore::Faaliyet::ParagrafItem();
-                paragraf->setText("Bu Alanı Silip, Müdürlüğünüzün Fiziksel Yapısı Hakkında Bilgi Giriniz.");
-                this->itemList.push_back(paragraf);
-            }
-            }
-
-            {
-            SerikBLDCore::Faaliyet::BaslikItem *baslik = new SerikBLDCore::Faaliyet::BaslikItem();
-            baslik->setText("SUNULAN HİZMETLER");
-            this->itemList.push_back(baslik);
-            {
-                SerikBLDCore::Faaliyet::ParagrafItem *paragraf = new SerikBLDCore::Faaliyet::ParagrafItem();
-                paragraf->setText("Bu Alanı Silip, Yapılan Çalışmalar Hakkında Bilgi Giriniz.");
-                this->itemList.push_back(paragraf);
-            }
+                SerikBLDCore::Faaliyet::BaslikItem *baslik = new SerikBLDCore::Faaliyet::BaslikItem();
+                baslik->setText("SUNULAN HİZMETLER");
+                this->itemList.push_back(baslik);
+                {
+                    SerikBLDCore::Faaliyet::ParagrafItem *paragraf = new SerikBLDCore::Faaliyet::ParagrafItem();
+                    paragraf->setText("Bu Alanı Silip, Yapılan Çalışmalar Hakkında Bilgi Giriniz.");
+                    this->itemList.push_back(paragraf);
+                }
             }
 
             {
@@ -503,11 +508,11 @@ void v2::Faaliyet::FaaliyetRaporContainer::testPage( const std::string &faaliyet
                 auto upt = this->updateItem (item);
 
                 if( upt ){
-//                    if( upt.value().inserted() ){
-                        this->showPopUpMessage ("Kayıt Edildi");
-//                    }else{
-//                        this->showPopUpMessage ("Kayıt Edilemedi","err");
-//                    }
+                    //                    if( upt.value().inserted() ){
+                    this->showPopUpMessage ("Kayıt Edildi");
+                    //                    }else{
+                    //                        this->showPopUpMessage ("Kayıt Edilemedi","err");
+                    //                    }
                 }else{
                     this->showPopUpMessage ("Kayıt Edilemedi","err");
                 }
@@ -518,15 +523,15 @@ void v2::Faaliyet::FaaliyetRaporContainer::testPage( const std::string &faaliyet
 
 
 
-//            auto mDialog = createDialog ("Başlık Ekle");
-//            auto baslikLineEdit = mDialog->contents ()->addWidget (cpp14::make_unique<WLineEdit>());
-//            baslikLineEdit->setPlaceholderText ("Başlık Adını Giriniz");
-//            auto saveBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Ekle+"));
-//            saveBtn->addStyleClass (Bootstrap::Button::Primary);
-//            saveBtn->clicked ().connect ([=](){
-//                this->itemList.addBaslikBack (1,"root",baslikLineEdit->text ().toUTF8 ());
-//                removeDialog (mDialog);
-//            });
+            //            auto mDialog = createDialog ("Başlık Ekle");
+            //            auto baslikLineEdit = mDialog->contents ()->addWidget (cpp14::make_unique<WLineEdit>());
+            //            baslikLineEdit->setPlaceholderText ("Başlık Adını Giriniz");
+            //            auto saveBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Ekle+"));
+            //            saveBtn->addStyleClass (Bootstrap::Button::Primary);
+            //            saveBtn->clicked ().connect ([=](){
+            //                this->itemList.addBaslikBack (1,"root",baslikLineEdit->text ().toUTF8 ());
+            //                removeDialog (mDialog);
+            //            });
         });
     }else {
     }
@@ -725,7 +730,7 @@ void v2::Faaliyet::FaaliyetRaporContainer::addKaydetButon(const std::string &tit
 
 
     auto container = hLayout->addWidget (cpp14::make_unique<WContainerWidget>());
-//    container->addStyleClass (Bootstrap::Grid::col_full_12);
+    //    container->addStyleClass (Bootstrap::Grid::col_full_12);
     container->setHeight (40);
     container->setWidth (50);
 
@@ -1116,7 +1121,7 @@ void v2::Faaliyet::SquencedRaporItem::changeItem(const std::string &currentUuid,
             for( const auto &cell : cells ){
                 item->setCell (cell.row,cell.col,cell.value);
             }
-            this->mList.replace (i,item);
+            this->mList.replace (i,std::move(item));
             break;
         }
     }
@@ -1149,7 +1154,8 @@ WContainerWidget *v2::Faaliyet::ItemContainer<T>::addNewButton(const std::string
     tempContainter->setPadding(10,Side::Left|Side::Right);
     tempContainter->addStyleClass("gra");
 
-    return std::move(tempContainter);
+    //    return std::move(tempContainter);
+    return tempContainter;
 
 }
 
@@ -1532,8 +1538,8 @@ void v2::Faaliyet::ItemContainer<T>::initWidgetType()
     lineContainer->setOffsets(0,Side::Bottom|Side::Right);
     lineContainer->setPadding(2,Side::Left|Side::Right);
 
-    if( isPageBreak() && !mViewMode ){
-//        this->setPadding (5,Side::Top);
+    if( this->isPageBreak() && !mViewMode ){
+        //        this->setPadding (5,Side::Top);
         this->setContentAlignment (AlignmentFlag::Left);
         addWidget (cpp14::make_unique<WText>("Sayfa Sonu - Bu Element Çıktı Alınırken Kullanılacaktır. Lütfen Dokunmayınız."));
         setPadding (15,Side::Left);
@@ -1543,7 +1549,7 @@ void v2::Faaliyet::ItemContainer<T>::initWidgetType()
         this->setAttributeValue (Style::style,Style::background::color::rgb (255,150,200)+Style::color::color(Style::color::White::AliceBlue)+Style::Border::border ("1px Dotted red"));
     }
 
-    if( isBaslik() ){
+    if( this->isBaslik() ){
         this->setPadding (20,Side::Top);
         this->setContentAlignment (AlignmentFlag::Left);
         this->setText (this->getText ());
@@ -1559,9 +1565,9 @@ void v2::Faaliyet::ItemContainer<T>::initWidgetType()
     }
 
 
-    if( isAltBaslik() ){
+    if( this->isAltBaslik() ){
 
-//        this->setPositionScheme (PositionScheme::Relative);
+        //        this->setPositionScheme (PositionScheme::Relative);
         this->setContentAlignment (AlignmentFlag::Left);
         QString str = QString::fromStdString (this->getText());
         QStringList strList = str.split(" ");
@@ -1585,8 +1591,8 @@ void v2::Faaliyet::ItemContainer<T>::initWidgetType()
     }
 
 
-    if( isParagraf() ){
-//        this->setPositionScheme (PositionScheme::Relative);
+    if( this->isParagraf() ){
+        //        this->setPositionScheme (PositionScheme::Relative);
         this->setContentAlignment (AlignmentFlag::Justify);
         this->setText (this->getText ());
         auto text = addWidget (cpp14::make_unique<WText>(this->getText (),TextFormat::UnsafeXHTML));
@@ -1600,9 +1606,9 @@ void v2::Faaliyet::ItemContainer<T>::initWidgetType()
         }
     }
 
-    if( isImg() ){
+    if( this->isImg() ){
 
-//        this->setPositionScheme (PositionScheme::Relative);
+        //        this->setPositionScheme (PositionScheme::Relative);
         this->setContentAlignment (AlignmentFlag::Left);
         this->setText (this->getText ());
 
@@ -1703,9 +1709,9 @@ void v2::Faaliyet::ItemContainer<T>::initWidgetType()
 
     }
 
-    if( isTable() ){
+    if( this->isTable() ){
 
-//        this->setPositionScheme (PositionScheme::Relative);
+        //        this->setPositionScheme (PositionScheme::Relative);
         this->setContentAlignment (AlignmentFlag::Center);
         this->setText (this->getText ());
         //        this->setMargin (25,Side::Top);
@@ -1745,7 +1751,7 @@ void v2::Faaliyet::ItemContainer<T>::initWidgetType()
                 for( auto j = 0 ; j < tableItem.column () ; j++ ){
                     auto thContainer = trContainer->addWidget (cpp14::make_unique<WContainerWidget>());
                     thContainer->setHtmlTagName ("td");
-                    auto text = thContainer->addWidget (cpp14::make_unique<WText>(tableItem.cell (i,j)));
+                    thContainer->addWidget (cpp14::make_unique<WText>(tableItem.cell (i,j)));
                 }
             }
         }
@@ -1777,7 +1783,7 @@ template<typename T>
 void v2::Faaliyet::ItemContainer<T>::editWidgetType()
 {
 
-    if( isBaslik() ){
+    if( this->isBaslik() ){
         this->::ContainerWidget::clear ();
         this->setAttributeValue (Style::style,Style::background::color::rgb (225,225,225));
 
@@ -1806,10 +1812,10 @@ void v2::Faaliyet::ItemContainer<T>::editWidgetType()
         saveBtnContainer->setContentAlignment (AlignmentFlag::Center);
         saveBtnContainer->setPadding(5,Side::Top|Side::Bottom);
 
-        auto saveText = saveBtnContainer->addWidget (cpp14::make_unique<WText>("Kaydet"));
+        saveBtnContainer->addWidget (cpp14::make_unique<WText>("Kaydet"));
         saveBtnContainer->decorationStyle ().setCursor (Cursor::PointingHand);
         saveBtnContainer->clicked().connect([=](){
-            setText(text->text().toUTF8());
+            this->setText(text->text().toUTF8());
             mChangeText(this->uuid(),text->text().toUTF8());
 
         });
@@ -1826,7 +1832,7 @@ void v2::Faaliyet::ItemContainer<T>::editWidgetType()
                                            Bootstrap::Grid::Offset::Small::col_sm_4+
                                            Bootstrap::Grid::Offset::ExtraSmall::col_xs_3);
         cancelBtnContainer->setContentAlignment (AlignmentFlag::Center);
-        auto cancelText = cancelBtnContainer->addWidget (cpp14::make_unique<WText>("İptal"));
+        cancelBtnContainer->addWidget (cpp14::make_unique<WText>("İptal"));
         cancelBtnContainer->decorationStyle ().setCursor (Cursor::PointingHand);
         cancelBtnContainer->setPadding(5,Side::Top|Side::Bottom);
 
@@ -1840,7 +1846,7 @@ void v2::Faaliyet::ItemContainer<T>::editWidgetType()
     }
 
 
-    if( isAltBaslik() ){
+    if( this->isAltBaslik() ){
         this->::ContainerWidget::clear ();
         this->setAttributeValue (Style::style,Style::background::color::rgb (225,225,225));
 
@@ -1868,10 +1874,10 @@ void v2::Faaliyet::ItemContainer<T>::editWidgetType()
         saveBtnContainer->setContentAlignment (AlignmentFlag::Center);
         saveBtnContainer->setPadding(5,Side::Top|Side::Bottom);
 
-        auto saveText = saveBtnContainer->addWidget (cpp14::make_unique<WText>("Kaydet"));
+        saveBtnContainer->addWidget (cpp14::make_unique<WText>("Kaydet"));
         saveBtnContainer->decorationStyle ().setCursor (Cursor::PointingHand);
         saveBtnContainer->clicked().connect([=](){
-            setText(text->text().toUTF8());
+            this->setText(text->text().toUTF8());
             mChangeText(this->uuid(),text->text().toUTF8());
 
         });
@@ -1890,7 +1896,7 @@ void v2::Faaliyet::ItemContainer<T>::editWidgetType()
         cancelBtnContainer->setContentAlignment (AlignmentFlag::Center);
         cancelBtnContainer->setPadding(5,Side::Top|Side::Bottom);
 
-        auto cancelText = cancelBtnContainer->addWidget (cpp14::make_unique<WText>("İptal"));
+        cancelBtnContainer->addWidget (cpp14::make_unique<WText>("İptal"));
         cancelBtnContainer->decorationStyle ().setCursor (Cursor::PointingHand);
 
         cancelBtnContainer->clicked().connect([=](){
@@ -1942,12 +1948,12 @@ void v2::Faaliyet::ItemContainer<T>::editWidgetType()
                                          Bootstrap::Grid::Offset::Small::col_sm_2+
                                          Bootstrap::Grid::Offset::ExtraSmall::col_xs_3);
         saveBtnContainer->setContentAlignment (AlignmentFlag::Center);
-        auto saveText = saveBtnContainer->addWidget (cpp14::make_unique<WText>("Kaydet"));
+        saveBtnContainer->addWidget (cpp14::make_unique<WText>("Kaydet"));
         saveBtnContainer->decorationStyle ().setCursor (Cursor::PointingHand);
         saveBtnContainer->setPadding(5,Side::Top|Side::Bottom);
 
         saveBtnContainer->clicked().connect([=](){
-            setText(text->text().toUTF8());
+            this->setText(text->text().toUTF8());
             mChangeText(this->uuid(),text->text().toUTF8());
         });
 
@@ -1965,7 +1971,7 @@ void v2::Faaliyet::ItemContainer<T>::editWidgetType()
         cancelBtnContainer->setContentAlignment (AlignmentFlag::Center);
         cancelBtnContainer->setPadding(5,Side::Top|Side::Bottom);
 
-        auto cancelText = cancelBtnContainer->addWidget (cpp14::make_unique<WText>("İptal"));
+        cancelBtnContainer->addWidget (cpp14::make_unique<WText>("İptal"));
         cancelBtnContainer->decorationStyle ().setCursor (Cursor::PointingHand);
 
         cancelBtnContainer->clicked().connect([=](){
@@ -2056,7 +2062,7 @@ void v2::Faaliyet::ItemContainer<T>::editWidgetType()
                                          Bootstrap::Grid::Offset::ExtraSmall::col_xs_3);
         saveBtnContainer->setContentAlignment (AlignmentFlag::Center);
         saveBtnContainer->setPadding(5,Side::Top|Side::Bottom);
-        auto saveText = saveBtnContainer->addWidget (cpp14::make_unique<WText>("Kaydet"));
+        saveBtnContainer->addWidget (cpp14::make_unique<WText>("Kaydet"));
         saveBtnContainer->decorationStyle ().setCursor (Cursor::PointingHand);
         saveBtnContainer->clicked().connect([=](){
             if( fileContainer->isUploaded() ){
@@ -2092,7 +2098,7 @@ void v2::Faaliyet::ItemContainer<T>::editWidgetType()
                                            Bootstrap::Grid::Offset::ExtraSmall::col_xs_3);
         cancelBtnContainer->setContentAlignment (AlignmentFlag::Center);
         cancelBtnContainer->setPadding(5,Side::Top|Side::Bottom);
-        auto cancelText = cancelBtnContainer->addWidget (cpp14::make_unique<WText>("İptal"));
+        cancelBtnContainer->addWidget (cpp14::make_unique<WText>("İptal"));
         cancelBtnContainer->decorationStyle ().setCursor (Cursor::PointingHand);
 
         cancelBtnContainer->clicked().connect([=](){
@@ -2295,7 +2301,7 @@ void v2::Faaliyet::ItemContainer<T>::editWidgetType()
         rowCikarBtn->addWidget(cpp14::make_unique<WText>("Satır Sil-"));
         rowCikarBtn->setPadding(7,Side::Top|Side::Bottom);
         rowCikarBtn->clicked().connect([=](){
-            Wt::WStandardItem *root = model->invisibleRootItem();
+            //            Wt::WStandardItem *root = model->invisibleRootItem();
 
             int row = -1;
             for( WModelIndex item : tableView->selectedIndexes () ){
@@ -2499,7 +2505,7 @@ void v2::Faaliyet::ItemContainer<T>::editWidgetType()
         colreNameBtn->addWidget(cpp14::make_unique<WText>("S.A.Dğş."));
         colreNameBtn->setPadding(7,Side::Top|Side::Bottom);
         colreNameBtn->clicked().connect([=](){
-            Wt::WStandardItem *root = model->invisibleRootItem();
+            //            Wt::WStandardItem *root = model->invisibleRootItem();
             int col = -1;
             for( WModelIndex item : tableView->selectedIndexes () ){
                 try {
@@ -2545,7 +2551,7 @@ void v2::Faaliyet::ItemContainer<T>::editWidgetType()
         colCikarBtn->addWidget(cpp14::make_unique<WText>("Sütun Sil-"));
         colCikarBtn->setPadding(7,Side::Top|Side::Bottom);
         colCikarBtn->clicked().connect([=](){
-            Wt::WStandardItem *root = model->invisibleRootItem();
+            //            Wt::WStandardItem *root = model->invisibleRootItem();
 
             int col = -1;
             for( WModelIndex item : tableView->selectedIndexes () ){
@@ -2578,7 +2584,7 @@ void v2::Faaliyet::ItemContainer<T>::editWidgetType()
 
         saveBtnContainer->setContentAlignment (AlignmentFlag::Center);
         saveBtnContainer->setPadding(5,Side::Top|Side::Bottom);
-        auto saveText = saveBtnContainer->addWidget (cpp14::make_unique<WText>("Kaydet"));
+        saveBtnContainer->addWidget (cpp14::make_unique<WText>("Kaydet"));
         saveBtnContainer->decorationStyle ().setCursor (Cursor::PointingHand);
         saveBtnContainer->clicked().connect([=](){
 
@@ -2629,7 +2635,7 @@ void v2::Faaliyet::ItemContainer<T>::editWidgetType()
                                            Bootstrap::Grid::Offset::ExtraSmall::col_xs_6);
         cancelBtnContainer->setContentAlignment (AlignmentFlag::Center);
         cancelBtnContainer->setPadding(5,Side::Top|Side::Bottom);
-        auto cancelText = cancelBtnContainer->addWidget (cpp14::make_unique<WText>("İptal"));
+        cancelBtnContainer->addWidget (cpp14::make_unique<WText>("İptal"));
         cancelBtnContainer->decorationStyle ().setCursor (Cursor::PointingHand);
 
         cancelBtnContainer->clicked().connect([=](){
@@ -2679,9 +2685,9 @@ void v2::Faaliyet::ItemContainer<T>::refreshWidget()
         editContainer->setPadding(10,Side::Left|Side::Right);
         editContainer->addStyleClass("gra");
 
-    //    this->doubleClicked ().connect([=](){
-    //        this->editWidgetType ();
-    //    });
+        //    this->doubleClicked ().connect([=](){
+        //        this->editWidgetType ();
+        //    });
 
         editContainer->clicked().connect([=] {
             this->editWidgetType ();
@@ -2838,7 +2844,7 @@ void v2::Faaliyet::ItemContainer<T>::refreshWidget()
 
 
     auto baslikEkleMenu = Wt::cpp14::make_unique<Wt::WPopupMenu>();
-    baslikEkleMenu->addItem("icon/btn-flat.jpg", ("Öncesine Ekle"))->triggered().connect([=] {
+    baslikEkleMenu->addItem("icon/btn-flat.jpg", ("Öncesine Ekle***"))->triggered().connect([=] {
         this->addBaslikPre ();
     });
     baslikEkleMenu->addItem("icon/btn-flat.jpg", ("Sonrasına Ekle"))->triggered().connect([=] {
