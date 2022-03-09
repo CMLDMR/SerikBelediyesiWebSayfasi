@@ -47,6 +47,10 @@ public:
 
     int count(){ return mList.count ();}
 
+    void clearItems(){
+        mList.clear();
+    }
+
     SerikBLDCore::Faaliyet::RaporItem* operator[](const int &index ){
         return mList.at (index);
     }
@@ -83,7 +87,7 @@ class FaaliyetRaporContainer : public ContainerWidget, public SerikBLDCore::Faal
 public:
     explicit FaaliyetRaporContainer( SerikBLDCore::User* _mUser );
 
-    void initFaaliyetRaporlari();
+    void initFaaliyetRaporlari( const std::int64_t currentYear = 2020 );
 
     void testPage(const std::string &faaliyetTitle , const std::string &faaliyetOid);
 
