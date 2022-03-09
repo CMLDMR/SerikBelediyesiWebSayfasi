@@ -398,47 +398,47 @@ MainPageController::MainPageController(mongocxx::database *_db)
 
 
     {
-        auto bContainer = contentContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-        bContainer->addStyleClass(Bootstrap::Grid::row);
+//        auto bContainer = contentContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//        bContainer->addStyleClass(Bootstrap::Grid::row);
 
-//        auto bootsrapString = Bootstrap::Grid::Large::col_lg_3 + Bootstrap::Grid::Medium::col_md_3 + Bootstrap::Grid::Small::col_sm_4 + Bootstrap::Grid::ExtraSmall::col_xs_4;
+////        auto bootsrapString = Bootstrap::Grid::Large::col_lg_3 + Bootstrap::Grid::Medium::col_md_3 + Bootstrap::Grid::Small::col_sm_4 + Bootstrap::Grid::ExtraSmall::col_xs_4;
 
-        {   // EL HİJYENİ
-            auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(Bootstrap::Grid::col_full_12);
-            container->setContentAlignment(AlignmentFlag::Center);
-            container->setMargin(10,Side::Top|Side::Bottom);
+//        {   // EL HİJYENİ
+//            auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//            container->addStyleClass(Bootstrap::Grid::col_full_12);
+//            container->setContentAlignment(AlignmentFlag::Center);
+//            container->setMargin(10,Side::Top|Side::Bottom);
 
-//            container->setAttributeValue(Style::style,Style::background::color::rgb (this->getRandom (50,75),
+////            container->setAttributeValue(Style::style,Style::background::color::rgb (this->getRandom (50,75),
+////                                                                               this->getRandom (150,175),
+////                                                                               this->getRandom (170,210)));
+
+//            auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
+//            btn->setAttributeValue(Style::style,Style::background::color::rgb (this->getRandom (50,75),
 //                                                                               this->getRandom (150,175),
 //                                                                               this->getRandom (170,210)));
+//            btn->setHeight(100);
+//            btn->setWidth(450);
+//            btn->setMargin(15,AllSides);
+//            btn->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+//    //            btn->decorationStyle().setCursor(Cursor::PointingHand);
+//    //            btn->clicked().connect([=](){
+//    //              _NobetciEczane.emit(NoClass());
+//    //            });
 
-            auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
-            btn->setAttributeValue(Style::style,Style::background::color::rgb (this->getRandom (50,75),
-                                                                               this->getRandom (150,175),
-                                                                               this->getRandom (170,210)));
-            btn->setHeight(100);
-            btn->setWidth(450);
-            btn->setMargin(15,AllSides);
-            btn->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
-    //            btn->decorationStyle().setCursor(Cursor::PointingHand);
-    //            btn->clicked().connect([=](){
-    //              _NobetciEczane.emit(NoClass());
-    //            });
+//            auto layout = btn->setLayout(cpp14::make_unique<WVBoxLayout>());
 
-            auto layout = btn->setLayout(cpp14::make_unique<WVBoxLayout>());
+//            // Create an anchor that links to a URL through clickable text.
+//            Wt::WLink link = Wt::WLink("http://www.serik.bel.tr/download/html/isgucu.htm");
+//            link.setTarget(Wt::LinkTarget::NewWindow);
 
-            // Create an anchor that links to a URL through clickable text.
-            Wt::WLink link = Wt::WLink("http://www.serik.bel.tr/download/html/isgucu.htm");
-            link.setTarget(Wt::LinkTarget::NewWindow);
+//            std::unique_ptr<Wt::WAnchor> anchor =
+//                    Wt::cpp14::make_unique<Wt::WAnchor>(link,
+//                                    "NİTELİKLİ İŞ GÜCÜ KURSLARI İÇİN TIKLAYINIZ");
+//            anchor->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
 
-            std::unique_ptr<Wt::WAnchor> anchor =
-                    Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                    "NİTELİKLİ İŞ GÜCÜ KURSLARI İÇİN TIKLAYINIZ");
-            anchor->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
-
-            layout->addWidget (std::move(anchor),0,AlignmentFlag::Center|AlignmentFlag::Middle);
-        }
+//            layout->addWidget (std::move(anchor),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+//        }
 
 
 

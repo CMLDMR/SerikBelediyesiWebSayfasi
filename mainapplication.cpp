@@ -189,7 +189,7 @@ void MainApplication::init()
     root()->addStyleClass("rootBody");
 
 //     Afis Ön Görsel
-        if( true ){
+        if( false ){
 
             auto container = root()->addWidget(cpp14::make_unique<WContainerWidget>());
 

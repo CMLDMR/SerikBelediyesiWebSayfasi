@@ -798,7 +798,7 @@ void v2::StokWidget::StokContainerWidget::exportMalzeme(const double &maxMiktar,
 
 
 
-    auto saveBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Çıkışı Yap"));
+    auto saveBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet & Çık"));
     saveBtn->clicked ().connect ([=](){
 
 
