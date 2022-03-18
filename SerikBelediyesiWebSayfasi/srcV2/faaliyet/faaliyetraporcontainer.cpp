@@ -91,7 +91,7 @@ void v2::Faaliyet::FaaliyetRaporContainer::initFaaliyetRaporlari(const int64_t c
             auto yilSpinBoxContainer = mDialog->contents ()->addWidget (cpp14::make_unique<WSpinBox>());
             yilSpinBoxContainer->setMinimum (2000);
             yilSpinBoxContainer->setMaximum (2030);
-            yilSpinBoxContainer->setValue (WDate::currentDate ().year ());
+            yilSpinBoxContainer->setValue (WDate::currentDate ().year ()-1);
 
             auto savebtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet") );
 
@@ -148,6 +148,8 @@ void v2::Faaliyet::FaaliyetRaporContainer::initFaaliyetRaporlari(const int64_t c
 
 
             container->clicked ().connect ([=](){
+                this->itemList.clearItems();
+
                 this->testPage (text->text ().toUTF8 (),container->attributeValue (Style::dataoid).toUTF8());
             });
 
@@ -279,7 +281,6 @@ void v2::Faaliyet::FaaliyetRaporContainer::testPage( const std::string &faaliyet
 {
 
     Content ()->clear ();
-    this->itemList.clearItems();
 
     auto baslikContainer = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
     baslikContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_9+
@@ -1908,7 +1909,7 @@ void v2::Faaliyet::ItemContainer<T>::editWidgetType()
     }
 
 
-    if( isParagraf() ){
+    if( this->isParagraf() ){
         this->::ContainerWidget::clear ();
         this->setAttributeValue (Style::style,Style::background::color::rgb (225,225,225));
 
@@ -1984,7 +1985,7 @@ void v2::Faaliyet::ItemContainer<T>::editWidgetType()
     }
 
 
-    if( isImg() ){
+    if( this->isImg() ){
 
         this->::ContainerWidget::clear ();
         this->setAttributeValue (Style::style,Style::background::color::rgb (225,225,225));
@@ -2111,7 +2112,7 @@ void v2::Faaliyet::ItemContainer<T>::editWidgetType()
 
 
 
-    if( isTable() ){
+    if( this->isTable() ){
 
         ::ContainerWidget::clear ();
         this->setAttributeValue (Style::style,Style::background::color::rgb (225,225,225));
@@ -2301,7 +2302,6 @@ void v2::Faaliyet::ItemContainer<T>::editWidgetType()
         rowCikarBtn->addWidget(cpp14::make_unique<WText>("Satır Sil-"));
         rowCikarBtn->setPadding(7,Side::Top|Side::Bottom);
         rowCikarBtn->clicked().connect([=](){
-            //            Wt::WStandardItem *root = model->invisibleRootItem();
 
             int row = -1;
             for( WModelIndex item : tableView->selectedIndexes () ){
@@ -2335,10 +2335,6 @@ void v2::Faaliyet::ItemContainer<T>::editWidgetType()
                                    Bootstrap::Grid::Medium::col_md_1+
                                    Bootstrap::Grid::Small::col_sm_1+
                                    Bootstrap::Grid::ExtraSmall::col_xs_1);
-        //        colEkleOBtn->addStyleClass(Bootstrap::Grid::Offset::Large::col_lg_2+
-        //                                 Bootstrap::Grid::Offset::Medium::col_md_2+
-        //                                 Bootstrap::Grid::Offset::Small::col_sm_2+
-        //                                 Bootstrap::Grid::Offset::ExtraSmall::col_xs_2);
 
         colEkleOBtn->addStyleClass(CSSStyle::Button::blueButton);
         colEkleOBtn->addWidget(cpp14::make_unique<WText>("Sütun Ekle<"));
@@ -2397,10 +2393,6 @@ void v2::Faaliyet::ItemContainer<T>::editWidgetType()
             } else{
                 warnDialog ("Sütun Seçmediniz");
             }
-
-
-
-
 
         });
 
@@ -2674,7 +2666,7 @@ void v2::Faaliyet::ItemContainer<T>::refreshWidget()
     gradientContainer->addStyleClass("gra");
 
 
-    if( !isPageBreak() ){
+    if( !this->isPageBreak() ){
         auto editContainer = addWidget (cpp14::make_unique<WContainerWidget>());
         editContainer->setPositionScheme (PositionScheme::Absolute);
         editContainer->setOffsets (25,Side::Right);
@@ -2723,24 +2715,24 @@ void v2::Faaliyet::ItemContainer<T>::refreshWidget()
     typeinfoContainer->setOffsets (160,Side::Right);
     typeinfoContainer->setOffsets (-20,Side::Top);
     typeinfoContainer->addStyleClass (CSSStyle::Button::grayButton);
-    if( isBaslik() ){
+    if( this->isBaslik() ){
         typeinfoContainer->addWidget(cpp14::make_unique<WText>("Ana Başlık"));
-    }else if( isAltBaslik() ){
+    }else if( this->isAltBaslik() ){
         typeinfoContainer->addWidget(cpp14::make_unique<WText>("Alt Başlık"));
-    }else if( isTable() ){
+    }else if( this->isTable() ){
         typeinfoContainer->addWidget(cpp14::make_unique<WText>("Tablo"));
-    }else if( isImg() ){
+    }else if( this->isImg() ){
         typeinfoContainer->addWidget(cpp14::make_unique<WText>("Resim"));
-    }else if( isParagraf() ){
+    }else if( this->isParagraf() ){
         typeinfoContainer->addWidget(cpp14::make_unique<WText>("Parağraf"));
-    }else if( isPageBreak() ){
+    }else if( this->isPageBreak() ){
         typeinfoContainer->addWidget(cpp14::make_unique<WText>("Sayfa Sonu"));
     }
     typeinfoContainer->setPadding(10,Side::Left|Side::Right);
     typeinfoContainer->addStyleClass("gra");
 
 
-    if( isImg() ){
+    if( this->isImg() ){
         auto downloadimgContaier = addNewButton ("",false,20,CSSStyle::Button::greenButton);
         SerikBLDCore::Faaliyet::ImgItem imgItem;
         imgItem.setDocumentView (this->view());

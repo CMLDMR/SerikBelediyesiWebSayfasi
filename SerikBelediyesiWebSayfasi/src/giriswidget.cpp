@@ -576,6 +576,7 @@ void Giris::LoginWidget::sendtempPasswordSMS()
     }
 
 
+    // Telefon Numarası Sistem de kayıtlı mı?
     if( this->checkTCCollection(mTelefonNumarasi->text().toUTF8() ) )
     {
         setUserisPersonel(false);
@@ -969,9 +970,49 @@ void Giris::LoginWidget::ConfirmLogin()
         return;
     }
 
+
+    /////////////////////////////////////////////////////////////////////////////////////////
+    /// Bu 2FA Factor Dogrulama icin devam edilecek.
+//    {
+//        auto mDialog = wApp->instance()->root()->addChild (cpp14::make_unique<WDialog>());
+
+
+//        mDialog->titleBar ()->addWidget (cpp14::make_unique<WText>("2FA Doğrulama Kodu"));
+//        mDialog->titleBar ()->addStyleClass (Bootstrap::ContextualBackGround::bg_primary);
+
+
+//        auto mDogrulamaLineEdit = mDialog->contents()->addWidget(cpp14::make_unique<WLineEdit>());
+//        mDogrulamaLineEdit->setPlaceholderText("Telefonunuza SMS Gelen Doğrulama Kodunu Giriniz");
+//        auto infoText = mDialog->contents()->addWidget(cpp14::make_unique<WText>(""));
+//        infoText->setAttributeValue(Style::style,Style::color::color(Style::color::Red::DarkRed));
+
+
+//        auto closeBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kapat"));
+//        closeBtn->addStyleClass (Bootstrap::Button::Danger);
+
+//        closeBtn->clicked ().connect ([=](){
+//            wApp->instance()->root()->removeChild(mDialog);
+//        });
+
+//        auto girisBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Giriş"));
+//        girisBtn->addStyleClass (Bootstrap::Button::Success);
+
+//        girisBtn->clicked ().connect ([=](){
+
+
+
+
+
+//        });
+
+
+//        mDialog->show ();
+//    }
+
+
+
     if( this->checkTCCollection(mTelefonNumarasi->text().toUTF8() ) )
     {
-        //        std::cout << "phone is exist TC Collection" << std::endl;
         setUserisVatandas(true);
         setUserisPersonel(false);
         this->ConfirmVatandas();
@@ -979,7 +1020,6 @@ void Giris::LoginWidget::ConfirmLogin()
         setUserisVatandas(false);
         if( this->checkPersonelCollection(mTelefonNumarasi->text().toUTF8() ) )
         {
-            //            std::cout << "Personel" << std::endl;
             setUserisPersonel(true);
             this->ConfirmPersonel();
         }else {
@@ -988,14 +1028,14 @@ void Giris::LoginWidget::ConfirmLogin()
             return;
         }
     }
+
+
+
+
 }
 
 void Giris::LoginWidget::ConfirmVatandas()
 {
-
-
-
-    std::cout << "Confirm Vatandas" << std::endl;
 
     auto filter = document{};
 
