@@ -189,7 +189,7 @@ void MainApplication::init()
     root()->addStyleClass("rootBody");
 
 //     Afis Ön Görsel
-        if( true ){
+        if( false ){
 
             auto container = root()->addWidget(cpp14::make_unique<WContainerWidget>());
 
@@ -321,7 +321,7 @@ void MainApplication::init()
 
     if( db )
     {
-        MainPage* mPage = root()->addWidget(cpp14::make_unique<MainPage>(&db));
+        root()->addWidget(cpp14::make_unique<MainPage>(&db));
     }else{
         std::cout << "DATABASE is Not Valid" << std::endl;
     }
