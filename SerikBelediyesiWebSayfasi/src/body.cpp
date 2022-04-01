@@ -1934,7 +1934,7 @@ void Body::Slider::initList()
 
         {
             try {
-                mSlideCount = Collection->count(filter.view());
+                mSlideCount = Collection->count_documents(filter.view());
             } catch (mongocxx::exception &e) {
                 std::cout << "Error: " << e.what() << std::endl;
             }
@@ -5890,7 +5890,7 @@ Body::Haber::Haber(mongocxx::database *_db)
         auto collection = db->collection(SBLDKeys::Haberler::collection);
 
         try {
-            count = collection.count(document{}.view());
+            count = collection.count_documents(document{}.view());
         } catch (mongocxx::exception &e) {
             std::cout << "Error: " << e.what() << std::endl;
         }
@@ -6293,7 +6293,7 @@ Body::Etkinlik::Etkinlik(mongocxx::database *_db)
         auto collection = db->collection(SBLDKeys::Etkinlik::collection);
 
         try {
-            count = collection.count(document{}.view());
+            count = collection.count_documents(document{}.view());
         } catch (mongocxx::exception &e) {
             std::cout << "Error: " << e.what() << std::endl;
         }
@@ -6629,7 +6629,7 @@ Body::Video::Video(mongocxx::database *_db)
         auto collection = db->collection(SBLDKeys::Video::collection);
 
         try {
-            count = collection.count(document{}.view());
+            count = collection.count_documents(document{}.view());
         } catch (mongocxx::exception &e) {
             std::cout << "Error: " << e.what() << std::endl;
         }
@@ -9799,7 +9799,7 @@ void Body::Calisma::initTable(bsoncxx::document::view view)
 
     mTableContainer->clear();
     try {
-        CalismaCount = this->collection(SBLDKeys::Calismalar::collection).count(view);
+        CalismaCount = this->collection(SBLDKeys::Calismalar::collection).count_documents(view);
     } catch (bsoncxx::exception &e) {
         CalismaCount = 0;
         return;
@@ -10787,7 +10787,7 @@ void Body::Calisma::initIstatisticBirimlereGore()
 
         }
 
-        model->setData(  row, 1, this->collection(SBLDKeys::Calismalar::collection).count(filter.view()));
+        model->setData(  row, 1, this->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()));
 
         try {
             filter.append(kvp(SBLDKeys::Calismalar::durum,SBLDKeys::Calismalar::DURUM::tamamlandi));
@@ -10795,7 +10795,7 @@ void Body::Calisma::initIstatisticBirimlereGore()
 
         }
 
-        model->setData(  row, 2, this->collection(SBLDKeys::Calismalar::collection).count(filter.view()));
+        model->setData(  row, 2, this->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()));
 
 
         filter.clear();
@@ -10810,7 +10810,7 @@ void Body::Calisma::initIstatisticBirimlereGore()
 
         }
 
-        model->setData(  row, 3, this->collection(SBLDKeys::Calismalar::collection).count(filter.view()));
+        model->setData(  row, 3, this->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()));
         row++;
     }
 
@@ -10933,7 +10933,7 @@ void Body::Calisma::initIstatisticMahallereGore()
 
         }
 
-        model->setData(  row, 1, this->collection(SBLDKeys::Calismalar::collection).count(filter.view()));
+        model->setData(  row, 1, this->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()));
 
         try {
             filter.append(kvp(SBLDKeys::Calismalar::durum,SBLDKeys::Calismalar::DURUM::tamamlandi));
@@ -10941,7 +10941,7 @@ void Body::Calisma::initIstatisticMahallereGore()
 
         }
 
-        model->setData(  row, 2, this->collection(SBLDKeys::Calismalar::collection).count(filter.view()));
+        model->setData(  row, 2, this->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()));
 
 
         filter.clear();
@@ -10956,7 +10956,7 @@ void Body::Calisma::initIstatisticMahallereGore()
 
         }
 
-        model->setData(  row, 3, this->collection(SBLDKeys::Calismalar::collection).count(filter.view()));
+        model->setData(  row, 3, this->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()));
         row++;
     }
 
@@ -11081,7 +11081,7 @@ void Body::Calisma::initIstatisticBirimMahalle()
 
         }
 
-        model->setData(  row, 1, this->collection(SBLDKeys::Calismalar::collection).count(filter.view()));
+        model->setData(  row, 1, this->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()));
 
         try {
             filter.append(kvp(SBLDKeys::Calismalar::durum,SBLDKeys::Calismalar::DURUM::tamamlandi));
@@ -11089,7 +11089,7 @@ void Body::Calisma::initIstatisticBirimMahalle()
 
         }
 
-        model->setData(  row, 2, this->collection(SBLDKeys::Calismalar::collection).count(filter.view()));
+        model->setData(  row, 2, this->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()));
 
 
         filter.clear();
@@ -11104,7 +11104,7 @@ void Body::Calisma::initIstatisticBirimMahalle()
 
         }
 
-        model->setData(  row, 3, this->collection(SBLDKeys::Calismalar::collection).count(filter.view()));
+        model->setData(  row, 3, this->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()));
         row++;
     }
 

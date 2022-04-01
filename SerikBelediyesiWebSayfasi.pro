@@ -3,7 +3,7 @@ QT += gui core xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++17 console
+CONFIG += c++20 console
 CONFIG -= app_bundle
 #TEMPLATE += app
 
@@ -193,44 +193,38 @@ DISTFILES +=
 
 
 
-    equals(MSVC_VER, 15.0){
-        message("msvc 2017 x64")
+    equals(MSVC_VER, 17.0){
+        message("msvc 2022 x64")
 
-        win32:CONFIG(release, debug|release): LIBS += -L$$PWD/lib/ -lbsoncxx
-        else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/lib/ -lbsoncxxd
-        else:unix: LIBS += -L$$PWD/lib/ -lbsoncxx
+        INCLUDEPATH += C:/Mongo/msvc2022x64/include/bsoncxx/v_noabi
+        DEPENDPATH += C:/Mongo/msvc2022x64/include/bsoncxx/v_noabi
 
-        INCLUDEPATH += $$PWD/include/bsoncxx/v_noabi
-        DEPENDPATH += $$PWD/include/bsoncxx/v_noabi
+        win32: LIBS += -LC:/Mongo/msvc2022x64/lib/ -lmongocxx
+        win32: LIBS += -LC:/Mongo/msvc2022x64/lib/ -lbsoncxx
 
-
-
-        win32:CONFIG(release, debug|release): LIBS += -L$$PWD/lib/ -lmongocxx
-        else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/lib/ -lmongocxxd
-        else:unix: LIBS += -L$$PWD/lib/ -lmongocxx
-
-        INCLUDEPATH += $$PWD/include/mongocxx/v_noabi
-        DEPENDPATH += $$PWD/include/mongocxx/v_noabi
+        INCLUDEPATH += C:/Mongo/msvc2022x64/include/mongocxx/v_noabi
+        DEPENDPATH += C:/Mongo/msvc2022x64/include/mongocxx/v_noabi
 
 
-        win32: LIBS += -LC:/Wt_4.3.1_msvc2017_x64/lib/ -lwt
 
-        INCLUDEPATH += C:/Wt_4.3.1_msvc2017_x64/include
-        DEPENDPATH += C:/Wt_4.3.1_msvc2017_x64/include
+        win32: LIBS += -LC:/Wt_4.7.0_msvs2022_x64/lib/ -lwt
 
-        win32: LIBS += -LC:/Wt_4.3.1_msvc2017_x64/lib/ -lwthttp
+        INCLUDEPATH += C:/Wt_4.7.0_msvs2022_x64/include
+        DEPENDPATH += C:/Wt_4.7.0_msvs2022_x64/include
 
-        win32: LIBS += -LC:/Wt_4.3.1_msvc2017_x64/lib/ -llibhpdf
+        win32: LIBS += -LC:/Wt_4.7.0_msvs2022_x64/lib/ -lwthttp
 
-
-        win32: LIBS += -LC:/SerikBLDCoreRelease/MSVC2017X64/lib/ -lSerikBLDCore
-
-        INCLUDEPATH += C:/SerikBLDCoreRelease/MSVC2017X64/include
-        DEPENDPATH += C:/SerikBLDCoreRelease/MSVC2017X64/include
+        win32: LIBS += -LC:/Wt_4.7.0_msvs2022_x64/lib/ -llibhpdf
 
 
-        INCLUDEPATH += C:/SerikBLDCoreRelease/MSVC2017X64/include/bilgiEdinme
-        DEPENDPATH += C:/SerikBLDCoreRelease/MSVC2017X64/include/bilgiEdinme
+        win32: LIBS += -LC:/SerikBLDCoreRelease/MSVC2022x64/lib/ -lSerikBLDCore
+
+        INCLUDEPATH += C:/SerikBLDCoreRelease/MSVC2022x64/include
+        DEPENDPATH += C:/SerikBLDCoreRelease/MSVC2022x64/include
+
+
+        INCLUDEPATH += C:/SerikBLDCoreRelease/MSVC2022x64/include/bilgiEdinme
+        DEPENDPATH += C:/SerikBLDCoreRelease/MSVC2022x64/include/bilgiEdinme
 
 
     }

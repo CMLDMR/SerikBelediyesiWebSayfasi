@@ -124,7 +124,7 @@ int64_t BaseClass::BaseWidget::count(std::string collection, bsoncxx::document::
 {
     std::int64_t count = 0;
     try {
-        count = this->db()->collection(collection).count(filter);
+        count = this->db()->collection(collection).count_documents(filter);
     } catch (mongocxx::exception &e) {
 
     }
@@ -135,7 +135,7 @@ int64_t BaseClass::BaseWidget::count(std::string collection, bsoncxx::document::
 {
     std::int64_t count = 0;
     try {
-        count = this->db()->collection(collection).count(val.view());
+        count = this->db()->collection(collection).count_documents(val.view());
     } catch (mongocxx::exception &e) {
 
     }

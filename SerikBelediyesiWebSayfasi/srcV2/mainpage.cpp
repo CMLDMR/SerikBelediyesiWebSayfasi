@@ -55,13 +55,13 @@ MainPage::MainPage(mongocxx::database *_db)
 
     _signal.connect([=](int _width,int _height){
 
-       double _w = static_cast<double>(_width);
-       double _h = static_cast<double>(_height);
-       footer->setwidth(_w);
-       footer->setheight(_h);
-       if( footer->getWidth() / footer->getHeight() > 1.433 ){
-             footer->addStyleClass("footerStickAbsolute");
-       }
+        double _w = static_cast<double>(_width);
+        double _h = static_cast<double>(_height);
+        footer->setwidth(_w);
+        footer->setheight(_h);
+        if( footer->getWidth() / footer->getHeight() > 1.433 ){
+            footer->addStyleClass("footerStickAbsolute");
+        }
     });
 
     header->ClickAnaSayfa().connect([=](){
@@ -69,7 +69,7 @@ MainPage::MainPage(mongocxx::database *_db)
             footer->removeStyleClass("footerStickAbsolute");
             footer->addStyleClass("footerStickAbsolute");
         }
-       this->init();
+        this->init();
     });
 
     doJavaScript("var w = window.innerWidth;"
@@ -84,27 +84,27 @@ void MainPage::init()
 
     mContentWidget->clear();
 
-//    auto slider = mContentWidget->addWidget(cpp14::make_unique<Slider>(this->getDB()));
-//    slider->setPositionScheme(PositionScheme::Absolute);
-//    slider->setWidth(WLength("100%"));
-//    slider->setAttributeValue(Style::style,"z-index:-1;");
-//    slider->setId("sliderid");
-//    slider->setHeight(768);
+    //    auto slider = mContentWidget->addWidget(cpp14::make_unique<Slider>(this->getDB()));
+    //    slider->setPositionScheme(PositionScheme::Absolute);
+    //    slider->setWidth(WLength("100%"));
+    //    slider->setAttributeValue(Style::style,"z-index:-1;");
+    //    slider->setId("sliderid");
+    //    slider->setHeight(768);
 
     mContentWidget->setContentAlignment(AlignmentFlag::Center);
 
-//     Meclis Canlı Yayın
-//    {
-//        auto container = mContentWidget->addWidget(cpp14::make_unique<WContainerWidget>());
-//        container->setPadding(90,Side::Top);
-//        container->setContentAlignment(AlignmentFlag::Center);
-//        auto text = container->addWidget(cpp14::make_unique<WText>("<h2>Meclis Canlı Yayın</b>",TextFormat::UnsafeXHTML));
-//        text->setAttributeValue(Style::style,Style::color::rgb("255,255,255"));
-//    }
+    //     Meclis Canlı Yayın
+    //    {
+    //        auto container = mContentWidget->addWidget(cpp14::make_unique<WContainerWidget>());
+    //        container->setPadding(90,Side::Top);
+    //        container->setContentAlignment(AlignmentFlag::Center);
+    //        auto text = container->addWidget(cpp14::make_unique<WText>("<h2>Meclis Canlı Yayın</b>",TextFormat::UnsafeXHTML));
+    //        text->setAttributeValue(Style::style,Style::color::rgb("255,255,255"));
+    //    }
 
-//    this->initMeclisCanliYayin();
+    //    this->initMeclisCanliYayin();
 
-//    <iframe width="1280" height="720" src="https://www.youtube.com/embed/IqWNR7X-fvk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    //    <iframe width="1280" height="720" src="https://www.youtube.com/embed/IqWNR7X-fvk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
     auto rContainer = mContentWidget->addWidget(cpp14::make_unique<WContainerWidget>());
     rContainer->addStyleClass(Bootstrap::Grid::row);
@@ -113,7 +113,7 @@ void MainPage::init()
 
     {
         auto controller = rContainer->addWidget(cpp14::make_unique<MainPageController>(this->getDB()));
-//        controller->addStyleClass(Bootstrap::Grid::Visible::visible_lg);
+        //        controller->addStyleClass(Bootstrap::Grid::Visible::visible_lg);
         controller->addStyleClass(Bootstrap::Grid::col_full_12);
         controller->ClickHaber().connect(this,&MainPage::initHaberler);
         controller->ClickCalisma().connect(this,&MainPage::initCalismalar);
@@ -128,6 +128,29 @@ void MainPage::init()
         controller->ClickIletisim().connect(this,&MainPage::initIletisim);
         controller->ClickDuyurular().connect(this,&MainPage::initAnounceList);
         controller->ClickNobetciEczane().connect(this,&MainPage::initNobetciEczane);
+    }
+
+
+    //
+    if( QDate::currentDate() < QDate(2022,05,2)){
+        auto losevContainer = mContentWidget->addWidget(cpp14::make_unique<WContainerWidget>());
+        losevContainer->setWidth(WLength("100%"));
+        losevContainer->setHeight(90);
+        losevContainer->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::AliceBlue));
+        losevContainer->setMargin(25,Side::Top);
+        losevContainer->setAttributeValue("href","https://www.losev.org.tr/ramazan");
+        losevContainer->setAttributeValue("title","Bağış için tıklayınız...");
+        losevContainer->setAttributeValue("target","_blank");
+        losevContainer->setAttributeValue(Style::style,Style::background::url("http://www.losev.org.tr/filesfordownload/2022/ramazan/banner/980x90_losev_ramazan_banner_2022.gif")+
+                                          Style::background::size::contain+
+                                          Style::background::repeat::norepeat+
+                                          Style::background::position::center_center);
+        losevContainer->decorationStyle().setCursor(Cursor::PointingHand);
+        losevContainer->clicked().connect([=](){
+           this->doJavaScript("window.open('https://www.losev.org.tr/ramazan', '_blank').focus();");
+        });
+        //<a href="https://www.losev.org.tr/ramazan" title="Bağış için tıklayınız..." target="_blank"><img src="http://www.losev.org.tr/filesfordownload/2022/ramazan/banner/1000x130_losev_ramazan_banner_2022.gif" width="" height="" /></a>
+        // <a href="https://www.losev.org.tr/ramazan" title="Bağış için tıklayınız..." target="_blank"><img src="http://www.losev.org.tr/filesfordownload/2022/ramazan/banner/980x90_losev_ramazan_banner_2022.gif" width="" height="" /></a>
     }
 
 }
@@ -239,16 +262,16 @@ void MainPage::initMeclis()
 
 
 
-//    {
-//         auto widget = mContentWidget->addWidget(cpp14::make_unique<v2::MeclisPublicPage>(new SerikBLDCore::DB(this->getDB())));
-//         widget->setMaximumSize(1280,WLength::Auto);
-//    }
+    //    {
+    //         auto widget = mContentWidget->addWidget(cpp14::make_unique<v2::MeclisPublicPage>(new SerikBLDCore::DB(this->getDB())));
+    //         widget->setMaximumSize(1280,WLength::Auto);
+    //    }
 
-//    {
-//        auto widget = mContentWidget->addWidget(cpp14::make_unique<Body::Meclis>(this->getDB()));
-//        widget->setMaximumSize(1280,WLength::Auto);
-//    }
-//    footer->removeStyleClass("footerStickAbsolute");
+    //    {
+    //        auto widget = mContentWidget->addWidget(cpp14::make_unique<Body::Meclis>(this->getDB()));
+    //        widget->setMaximumSize(1280,WLength::Auto);
+    //    }
+    //    footer->removeStyleClass("footerStickAbsolute");
 
     // TODO: Meclis Karar Ekleme Sayfası Yapıldıktan sonra Çalıştırılacak.
     //mContentWidget->addWidget (cpp14::make_unique<v2::MeclisPage>(new SerikBLDCore::DB(this->getDB ())));
@@ -351,12 +374,12 @@ void MainPage::initIletisim()
     }
 
 
-//    {
-//        auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
-//        _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-//        _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-//                                      Style::background::color::color(Style::color::Grey::Gainsboro));
-//    }
+    //    {
+    //        auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
+    //        _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+    //        _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
+    //                                      Style::background::color::color(Style::color::Grey::Gainsboro));
+    //    }
 
 
 
@@ -429,7 +452,7 @@ void MainPage::initAnounceDetail( std::string mOid )
     list->addStyleClass (Bootstrap::Grid::Hidden::hidden_sm+Bootstrap::Grid::Hidden::hidden_xs);
 
     list->mGetOid().connect([=](std::string _mOid){
-       this->initAnounceDetail(_mOid);
+        this->initAnounceDetail(_mOid);
     });
 
 
@@ -624,7 +647,7 @@ bool MainPage::initMeclisCanliYayin()
 
         {
             auto container = rContaier->addWidget(cpp14::make_unique<WContainerWidget>());
-//            container->setPadding(90,Side::Top);
+            //            container->setPadding(90,Side::Top);
             container->setContentAlignment(AlignmentFlag::Center);
             container->addStyleClass(Bootstrap::ImageShape::img_thumbnail+Bootstrap::Grid::col_full_12);
             auto text = container->addWidget(cpp14::make_unique<WText>("<h4>"+CanliYayinTitle+"</h4>",TextFormat::UnsafeXHTML));

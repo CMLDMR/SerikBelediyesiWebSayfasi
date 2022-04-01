@@ -503,7 +503,7 @@ void Giris::GirisWidget::initPersonel()
         }
 
 
-        for( auto birimOid : mUser->mudurlukList () )
+        for( const auto &birimOid : mUser->mudurlukList () )
         {
             for( auto item : mBirimManager->List () )
             {
@@ -907,7 +907,7 @@ bool Giris::LoginWidget::checkTCCollection(std::string tcno)
         return false;
     }
     try {
-        auto val = db->collection(SBLDKeys::TC::collection).count(filter.view());
+        auto val = db->collection(SBLDKeys::TC::collection).count_documents(filter.view());
         if( val )
         {
             return true;
@@ -930,7 +930,7 @@ bool Giris::LoginWidget::checkPersonelCollection(std::string tcno)
         return false;
     }
     try {
-        auto val = db->collection(SBLDKeys::Personel::collection).count(filter.view());
+        auto val = db->collection(SBLDKeys::Personel::collection).count_documents(filter.view());
         if( val )
         {
             return true;
@@ -1361,7 +1361,7 @@ void Giris::LoginWidget::kayitOld()
     container->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
 
     container->setContentAlignment(AlignmentFlag::Center);
-    auto title = container->addWidget(cpp14::make_unique<WText>("<h4>Kayıt Ekranı</h4>"));
+    container->addWidget(cpp14::make_unique<WText>("<h4>Kayıt Ekranı</h4>"));
     auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
     _container->setMaximumSize(750,WLength::Auto);
 
@@ -1465,7 +1465,7 @@ void Giris::LoginWidget::CheckDatabase()
 
     std::int64_t count = 0;
     try {
-        count = db->collection(SBLDKeys::TC::collection).count(filter.view());
+        count = db->collection(SBLDKeys::TC::collection).count_documents(filter.view());
 
     } catch (mongocxx::exception &e) {
         this->showMessage("Error",WString("{1} - {2}").arg("DB Count").arg(e.what()).toUTF8());
@@ -2880,7 +2880,7 @@ int64_t Giris::Personel::BaseWidget::count(std::string collection, const bsoncxx
 {
     std::int64_t count = 0;
     try {
-        count = this->db()->collection(collection).count(filter);
+        count = this->db()->collection(collection).count_documents(filter);
     } catch (mongocxx::exception &e) {
 
     }
@@ -2894,7 +2894,7 @@ int64_t Giris::Personel::BaseWidget::count(std::string collection, bsoncxx::docu
 {
     std::int64_t count = 0;
     try {
-        count = this->db()->collection(collection).count(val.view());
+        count = this->db()->collection(collection).count_documents(val.view());
     } catch (mongocxx::exception &e) {
 
     }
@@ -3587,7 +3587,7 @@ void Giris::Personel::EvrakArsiv::initList()
 int64_t Giris::Personel::EvrakArsiv::listCount(const bsoncxx::document::view &filter)
 {
     try {
-        auto count = this->db()->collection(SBLDKeys::Arsiv::Arsiv::collection).count(filter);
+        auto count = this->db()->collection(SBLDKeys::Arsiv::Arsiv::collection).count_documents(filter);
         return count;
     } catch (mongocxx::exception &e) {
         this->showMessage("Error",e.what());

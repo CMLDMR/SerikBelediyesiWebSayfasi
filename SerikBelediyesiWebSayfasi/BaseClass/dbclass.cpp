@@ -90,7 +90,7 @@ const std::string DBClass::downloadFile(const std::string &oid, const bool &forc
     mongocxx::gridfs::downloader downloader;
 
     try {
-        downloader = this->db()->gridfs_bucket().open_download_stream(bsoncxx::types::value(bsoncxx::types::b_oid{bsoncxx::oid{oid}}));
+        downloader = this->db()->gridfs_bucket().open_download_stream(bsoncxx::types::bson_value::view(bsoncxx::types::b_oid{bsoncxx::oid{oid}}));
     } catch (mongocxx::gridfs_exception &e) {
         std::cout << "ERROR: " << __LINE__ << " " << __FILE__ << " " << e.what() << std::endl;
         return "img/error.png";
@@ -108,8 +108,7 @@ const std::string DBClass::downloadFile(const std::string &oid, const bool &forc
     {
         fullFilename = QString("tempfile/%1").arg(downloader.files_document()["filename"].get_utf8().value.to_string().c_str());
     }else{
-        fullFilename = QString("tempfile/%2.%1").arg(info.suffix())
-                    .arg(downloader.files_document()["_id"].get_oid().value.to_string().c_str());
+        fullFilename = QString("tempfile/%2.%1").arg(info.suffix(),downloader.files_document()["_id"].get_oid().value.to_string().c_str());
     }
 
 
@@ -151,7 +150,7 @@ const std::string DBClass::downloadFile(const std::string &oid, const bool &forc
     return fullFilename.toStdString();
 }
 
-const bsoncxx::types::value DBClass::uploadfile(QString filepath)
+const bsoncxx::types::bson_value::view DBClass::uploadfile(QString filepath)
 {
     QFile file( filepath );
     if( file.open( QIODevice::ReadOnly ) )

@@ -133,7 +133,7 @@ void BasindaBizWidget::initForBasin()
 
     skip = 0;
 
-    itemCount = this->collection("basin").count(document{}.view());
+    itemCount = this->collection("basin").count_documents(document{}.view());
 
 
 

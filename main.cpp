@@ -35,7 +35,7 @@ public:
        });
 
        this->dataExceeded ().connect ([=]( const uint64_t size ){
-          std::cout << "File Size Exceed: " << std::endl;
+          std::cout << "File Size Exceed: " << size << std::endl;
        });
 
        this->dataReceived ().connect ([=](const uint64_t& size, const uint64_t& data ){

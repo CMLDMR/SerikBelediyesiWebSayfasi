@@ -2184,7 +2184,7 @@ void v2::Faaliyet::ItemContainer<T>::editWidgetType()
             for( WModelIndex item : tableView->selectedIndexes () ){
                 try {
                     row = item.row ();
-                }  catch (const std::bad_any_cast& e) {
+                }  catch (const std::exception& e) {
                     LOG << "error: " << e.what () << "\n";
                     warnDialog (std::string("Satır Bulunamadı: ")+e.what ());
                 }
@@ -2268,7 +2268,7 @@ void v2::Faaliyet::ItemContainer<T>::editWidgetType()
             for( WModelIndex item : tableView->selectedIndexes () ){
                 try {
                     row = item.row ();
-                }  catch (const std::bad_any_cast& e) {
+                }  catch (const std::exception& e) {
                     warnDialog (std::string("Satır Bulunamadı: ")+e.what ());
                 }
 
@@ -2309,7 +2309,7 @@ void v2::Faaliyet::ItemContainer<T>::editWidgetType()
                 try {
                     //                        auto anyData = cpp17::any_cast<WString>(item.data ());
                     row = item.row ();
-                }  catch (const std::bad_any_cast& e) {
+                }  catch (const std::exception& e) {
                     LOG << "error: " << e.what () << "\n";
                     warnDialog (std::string("Satır Bulunamadı: ")+e.what ());
                 }
@@ -2367,7 +2367,7 @@ void v2::Faaliyet::ItemContainer<T>::editWidgetType()
                 try {
                     auto anyData = cpp17::any_cast<WString>(item.data ());
                     col = item.column ();
-                }  catch (const std::bad_any_cast& e) {
+                }  catch (const std::exception& e) {
                     warnDialog (std::string("Sütun Bulunamadı: ")+e.what ());
                 }
             }
@@ -2417,7 +2417,7 @@ void v2::Faaliyet::ItemContainer<T>::editWidgetType()
                 try {
                     //                        auto anyData = cpp17::any_cast<WString>(item.data ());
                     col = item.column ();
-                }  catch (const std::bad_any_cast& e) {
+                }  catch (const std::exception& e) {
                     warnDialog (std::string("Sütun Bulunamadı: ")+e.what ());
                 }
             }
@@ -2502,7 +2502,7 @@ void v2::Faaliyet::ItemContainer<T>::editWidgetType()
             for( WModelIndex item : tableView->selectedIndexes () ){
                 try {
                     col = item.column ();
-                }  catch (const std::bad_any_cast& e) {
+                }  catch (const std::exception& e) {
                     warnDialog (std::string("Sütun Bulunamadı: ")+e.what ());
                 }
             }
@@ -2550,7 +2550,7 @@ void v2::Faaliyet::ItemContainer<T>::editWidgetType()
 
                 try {
                     col = item.column ();
-                }  catch (const std::bad_any_cast& e) {
+                }  catch (const std::exception& e) {
                     LOG << "error: " << e.what () << "\n";
                     warnDialog (std::string("Sütun Bulunamadı: ")+e.what ());
                 }

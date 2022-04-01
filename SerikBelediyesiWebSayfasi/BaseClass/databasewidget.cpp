@@ -58,7 +58,7 @@ int64_t DataBaseWidget::count(std::string collection, bsoncxx::document::view &f
 {
     std::int64_t count = 0;
     try {
-        count = this->db->collection(collection).count(filter);
+        count = this->db->collection(collection).count_documents(filter);
     } catch (mongocxx::exception &e) {
 
     }
@@ -70,7 +70,7 @@ int64_t DataBaseWidget::count(std::string collection, const bsoncxx::builder::ba
 {
     std::int64_t count = 0;
     try {
-        count = this->db->collection(collection).count(filter.view());
+        count = this->db->collection(collection).count_documents(filter.view());
     } catch (mongocxx::exception &e) {
 
     }
@@ -81,7 +81,7 @@ int64_t DataBaseWidget::count(std::string collection, bsoncxx::document::value v
 {
     std::int64_t count = 0;
     try {
-        count = this->db->collection(collection).count(val.view());
+        count = this->db->collection(collection).count_documents(val.view());
     } catch (mongocxx::exception &e) {
 
     }

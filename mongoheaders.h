@@ -2,6 +2,7 @@
 #define MONGOHEADERS_H
 
 
+
 #include <bsoncxx/builder/stream/document.hpp>
 #include <bsoncxx/json.hpp>
 #include <bsoncxx/stdx/make_unique.hpp>
@@ -14,6 +15,7 @@
 #include <bsoncxx/builder/basic/kvp.hpp>
 #include <bsoncxx/exception/exception.hpp>
 #include <bsoncxx/view_or_value.hpp>
+#include <bsoncxx/types/value.hpp>
 
 #include <mongocxx/client.hpp>
 #include <mongocxx/instance.hpp>

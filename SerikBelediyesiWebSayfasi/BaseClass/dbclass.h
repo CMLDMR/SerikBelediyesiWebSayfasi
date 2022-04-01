@@ -1,6 +1,7 @@
 #ifndef DBCLASS_H
 #define DBCLASS_H
 
+
 #include "mongoheaders.h"
 #include <iostream>
 
@@ -32,7 +33,7 @@ public:
     /// \param filepath
     /// \return
     /// bsoncxx::types::value
-    const bsoncxx::types::value uploadfile( QString filepath );
+    const bsoncxx::types::bson_value::view uploadfile( QString filepath );
 
 private:
     mongocxx::database* __db;
