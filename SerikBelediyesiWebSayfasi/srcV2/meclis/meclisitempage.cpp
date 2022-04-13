@@ -139,15 +139,22 @@ void v2::MeclisItemPage::onList(const QVector<SerikBLDCore::Meclis::KararItem> *
             auto SilText = container->addWidget (cpp14::make_unique<WText>("Sil"));
             SilText->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
             container->clicked ().connect ([=](){
-                SerikBLDCore::Meclis::KararItem _item;
-                _item.setOid (item.oid ().value ().to_string ());
-                if( !SerikBLDCore::Meclis::KararManager::deleteGridFS (item.kararOid ().c_str ()) ){
-                    this->showMessage ("Uyarı","Karar Veri Tabanından Silinemedi");
-                }else{
-                    SerikBLDCore::Meclis::KararManager::DeleteItem ( _item );
-                    SerikBLDCore::Meclis::KararManager::UpdateList (SerikBLDCore::Meclis::KararItem().setMeclisOid (this->oid ().value ().to_string ()));
-                    this->showMessage ("Bilgi","Karar Başarılı Bir Şekilde Silindi.");
-                }
+
+                auto askConfirm = this->askConfirm("Silmek İstediğinize Eminmisiniz?");
+
+                askConfirm->clicked().connect([=](){
+                    SerikBLDCore::Meclis::KararItem _item;
+                    _item.setOid (item.oid ().value ().to_string ());
+                    if( !SerikBLDCore::Meclis::KararManager::deleteGridFS (item.kararOid ().c_str ()) ){
+                        this->showMessage ("Uyarı","Karar Veri Tabanından Silinemedi");
+                    }else{
+                        SerikBLDCore::Meclis::KararManager::DeleteItem ( _item );
+                        SerikBLDCore::Meclis::KararManager::UpdateList (SerikBLDCore::Meclis::KararItem().setMeclisOid (this->oid ().value ().to_string ()));
+                        this->showMessage ("Bilgi","Karar Başarılı Bir Şekilde Silindi.");
+                    }
+                });
+
+
 
             });
         }
@@ -267,15 +274,25 @@ void v2::MeclisItemPage::onList(const QVector<SerikBLDCore::Meclis::RaporItem> *
             auto SilText = container->addWidget (cpp14::make_unique<WText>("Sil"));
             SilText->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
             container->clicked ().connect ([=](){
-                SerikBLDCore::Meclis::RaporItem _item;
-                _item.setOid (item.oid ().value ().to_string ());
-                if( !SerikBLDCore::Meclis::RaporManager::deleteGridFS (item.raporOid ()) ){
-                    this->showMessage ("Uyarı","Rapor Veri Tabanından Silinemedi");
-                }else{
-                    SerikBLDCore::Meclis::RaporManager::DeleteItem ( _item );
-                    SerikBLDCore::Meclis::RaporManager::UpdateList (SerikBLDCore::Meclis::RaporItem().setMeclisOid (this->oid ().value ().to_string ()));
-                    this->showMessage ("Bilgi","Rapor Başarılı Bir Şekilde Silindi.");
-                }
+
+                auto askConfirm = this->askConfirm("Silmek İstediğinize Emin misiniz?");
+
+                askConfirm->clicked().connect([=](){
+
+                    SerikBLDCore::Meclis::RaporItem _item;
+                    _item.setOid (item.oid ().value ().to_string ());
+                    if( !SerikBLDCore::Meclis::RaporManager::deleteGridFS (item.raporOid ()) ){
+                        this->showMessage ("Uyarı","Rapor Veri Tabanından Silinemedi");
+                    }else{
+                        SerikBLDCore::Meclis::RaporManager::DeleteItem ( _item );
+                        SerikBLDCore::Meclis::RaporManager::UpdateList (SerikBLDCore::Meclis::RaporItem().setMeclisOid (this->oid ().value ().to_string ()));
+                        this->showMessage ("Bilgi","Rapor Başarılı Bir Şekilde Silindi.");
+                    }
+
+                });
+
+
+
 
             });
         }
@@ -329,15 +346,22 @@ void v2::MeclisItemPage::onList(const QVector<SerikBLDCore::Meclis::TeklifItem> 
             auto SilText = container->addWidget (cpp14::make_unique<WText>("Sil"));
             SilText->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
             container->clicked ().connect ([=](){
-                SerikBLDCore::Meclis::TeklifItem _item;
-                _item.setOid (item.oid ().value ().to_string ());
-                if( !SerikBLDCore::Meclis::TeklifManager::deleteGridFS (item.teklifOid ()) ){
-                    this->showMessage ("Uyarı","Teklif Veri Tabanından Silinemedi");
-                }else{
-                    SerikBLDCore::Meclis::TeklifManager::DeleteItem ( _item );
-                    SerikBLDCore::Meclis::TeklifManager::UpdateList (SerikBLDCore::Meclis::TeklifItem().setMeclisOid (this->oid ().value ().to_string ()));
-                    this->showMessage ("Bilgi","Teklif Başarılı Bir Şekilde Silindi.");
-                }
+
+                auto askConfirm = this->askConfirm("Silmek İstediğinize Emin misiniz?");
+
+                askConfirm->clicked().connect([=](){
+
+                    SerikBLDCore::Meclis::TeklifItem _item;
+                    _item.setOid (item.oid ().value ().to_string ());
+                    if( !SerikBLDCore::Meclis::TeklifManager::deleteGridFS (item.teklifOid ()) ){
+                        this->showMessage ("Uyarı","Teklif Veri Tabanından Silinemedi");
+                    }else{
+                        SerikBLDCore::Meclis::TeklifManager::DeleteItem ( _item );
+                        SerikBLDCore::Meclis::TeklifManager::UpdateList (SerikBLDCore::Meclis::TeklifItem().setMeclisOid (this->oid ().value ().to_string ()));
+                        this->showMessage ("Bilgi","Teklif Başarılı Bir Şekilde Silindi.");
+                    }
+
+                });
 
             });
         }
@@ -395,24 +419,33 @@ void v2::MeclisItemPage::onList(const QVector<SerikBLDCore::Meclis::GundemItem> 
             container->setAttributeValue (Style::style,Style::background::color::rgba (105,145,175,1.0));
             auto SilText = container->addWidget (cpp14::make_unique<WText>("Sil"));
             SilText->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
+
+
+
             container->clicked ().connect ([=](){
-                SerikBLDCore::Meclis::GundemItem _item;
-                _item.setOid (item.oid ().value ().to_string ());
-                if( item.gundemDosyasiVar () )
-                {
-                    if( !SerikBLDCore::Meclis::GundemManager::deleteGridFS (item.gundemDosyasi ().c_str ()) ){
-                        this->showMessage ("Uyarı","Gündem Veri Tabanından Silinemedi");
+
+                auto askConfirm = this->askConfirm("Silmek İstediğinizden Emin misiniz?");
+
+                askConfirm->clicked().connect([=](){
+
+                    SerikBLDCore::Meclis::GundemItem _item;
+                    _item.setOid (item.oid ().value ().to_string ());
+                    if( item.gundemDosyasiVar () )
+                    {
+                        if( !SerikBLDCore::Meclis::GundemManager::deleteGridFS (item.gundemDosyasi ().c_str ()) ){
+                            this->showMessage ("Uyarı","Gündem Veri Tabanından Silinemedi");
+                        }else{
+                            SerikBLDCore::Meclis::GundemManager::DeleteItem ( _item );
+                            SerikBLDCore::Meclis::GundemManager::UpdateList (SerikBLDCore::Meclis::GundemItem().setMeclisOid (this->oid ().value ().to_string ()));
+                            this->showMessage ("Bilgi","Gündem Başarılı Bir Şekilde Silindi.");
+                        }
                     }else{
                         SerikBLDCore::Meclis::GundemManager::DeleteItem ( _item );
                         SerikBLDCore::Meclis::GundemManager::UpdateList (SerikBLDCore::Meclis::GundemItem().setMeclisOid (this->oid ().value ().to_string ()));
                         this->showMessage ("Bilgi","Gündem Başarılı Bir Şekilde Silindi.");
                     }
-                }else{
-                    SerikBLDCore::Meclis::GundemManager::DeleteItem ( _item );
-                    SerikBLDCore::Meclis::GundemManager::UpdateList (SerikBLDCore::Meclis::GundemItem().setMeclisOid (this->oid ().value ().to_string ()));
-                    this->showMessage ("Bilgi","Gündem Başarılı Bir Şekilde Silindi.");
-                }
 
+                });
 
             });
         }
@@ -1116,7 +1149,7 @@ void v2::MeclisItemPublicPage::onList(const QVector<SerikBLDCore::Meclis::RaporI
     mRaporContainer->setMargin (25,Side::Top);
     mRaporContainer->addWidget (cpp14::make_unique<WText>("<b>Raporlar</b>",TextFormat::UnsafeXHTML))->addStyleClass (Bootstrap::Grid::col_full_12+Bootstrap::ContextualBackGround::bg_info);
 
-    for( auto item : *mlist )
+    for( const auto &item : *mlist )
     {
         {
             auto container = mRaporContainer->addWidget (cpp14::make_unique<WContainerWidget>());
