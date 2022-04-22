@@ -7720,6 +7720,17 @@ Body::BilgiEdin::faaliyetRapor::faaliyetRapor()
         //2020_FAALIYET_RAPORU
 
         {
+            Wt::WLink link = Wt::WLink("http://www.serik.bel.tr/file/2021_FAALIYET_RAPORU.pdf");
+            link.setTarget(Wt::LinkTarget::NewWindow);
+
+            std::unique_ptr<Wt::WAnchor> anchor =
+                    Wt::cpp14::make_unique<Wt::WAnchor>(link,
+                                                        "2021 Faaliyet Raporu");
+            anchor->setAttributeValue(Style::style,Style::font::size::s20px);
+            layout->addWidget(std::move(anchor));
+        }
+
+        {
             Wt::WLink link = Wt::WLink("http://www.serik.bel.tr/file/2020_FAALIYET_RAPORU.pdf");
             link.setTarget(Wt::LinkTarget::NewWindow);
 
