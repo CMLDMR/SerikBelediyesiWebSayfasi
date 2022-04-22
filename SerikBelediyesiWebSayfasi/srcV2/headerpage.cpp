@@ -205,6 +205,44 @@ HeaderPage::HeaderPage(mongocxx::database *_db)
                 text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::size::s14px);
             }
 
+//            {
+//                auto _container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//                _container->addStyleClass ("headerDown");
+
+//                _container->setHeight(65);
+////                _container->addStyleClass(Bootstrap::Grid::Offset::Large::col_lg_8+Bootstrap::Grid::Offset::Medium::col_md_8+Bootstrap::Grid::Offset::Small::col_sm_10+Bootstrap::Grid::Offset::ExtraSmall::col_xs_9);
+//                _container->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Small::col_sm_2+Bootstrap::Grid::ExtraSmall::col_xs_3);
+//                auto layout = _container->setLayout(cpp14::make_unique<WVBoxLayout>());
+//                auto text = layout->addWidget(cpp14::make_unique<WText>("KVKK"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+//                text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::size::s14px);
+////                text->clicked().connect([=](){
+////                   _baskan.emit(NoClass());
+////                });
+
+//                {
+//                    auto popContainer = layout->addWidget (cpp14::make_unique<WContainerWidget>());
+//                    popContainer->addStyleClass ("headerDown-content");
+
+//                    {
+//                        auto _pC = popContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+//                        _pC->addStyleClass ("headerItem");
+//                        _pC->addWidget (cpp14::make_unique<WText>("Belediye"));
+//                        _pC->clicked().connect([=](){
+////                           _baskan.emit(NoClass());
+//                        });
+//                    }
+
+//                    {
+//                        auto _pC = popContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+//                        _pC->addStyleClass ("headerItem");
+//                        _pC->addWidget (cpp14::make_unique<WText>("SINKAR"));
+//                    }
+//                }
+
+
+//                text->decorationStyle().setCursor(Cursor::PointingHand);
+//            }
+
         }
     }
 }

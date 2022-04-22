@@ -23,10 +23,6 @@ class MainPageController : public DataBaseWidget
 public:
     explicit MainPageController(mongocxx::database* _db);
 
-
-
-
-
     Signal<NoClass> &ClickHaber();
 
     Signal<NoClass> &ClickCalisma();
