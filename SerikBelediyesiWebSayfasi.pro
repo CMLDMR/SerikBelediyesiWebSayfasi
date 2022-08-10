@@ -54,6 +54,7 @@ SOURCES += main.cpp \
     SerikBelediyesiWebSayfasi/srcV2/meclis/meclispublicpage.cpp \
     SerikBelediyesiWebSayfasi/srcV2/meclis/meclisuyesipage.cpp \
     SerikBelediyesiWebSayfasi/srcV2/meclis/meclisuyesipublicwidget.cpp \
+    SerikBelediyesiWebSayfasi/srcV2/nostserik.cpp \
     SerikBelediyesiWebSayfasi/srcV2/personel/baskanyardimcilariwidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/personel/personelmanagerpage.cpp \
     SerikBelediyesiWebSayfasi/srcV2/personel/yenipersonelwidget.cpp \
@@ -138,6 +139,7 @@ HEADERS += \
     SerikBelediyesiWebSayfasi/srcV2/meclis/meclispublicpage.h \
     SerikBelediyesiWebSayfasi/srcV2/meclis/meclisuyesipage.h \
     SerikBelediyesiWebSayfasi/srcV2/meclis/meclisuyesipublicwidget.h \
+    SerikBelediyesiWebSayfasi/srcV2/nostserik.h \
     SerikBelediyesiWebSayfasi/srcV2/personel/baskanyardimcilariwidget.h \
     SerikBelediyesiWebSayfasi/srcV2/personel/personelmanagerpage.h \
     SerikBelediyesiWebSayfasi/srcV2/personel/yenipersonelwidget.h \
