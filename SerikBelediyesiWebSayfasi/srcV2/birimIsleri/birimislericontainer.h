@@ -23,6 +23,8 @@ public:
 
     void initFaaliyetRaporlari();
 
+    void initSerikGaleri();
+
 private:
     SerikBLDCore::User* mUser;
 

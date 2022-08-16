@@ -106,6 +106,7 @@ DEPENDPATH += $$PWD/../../Comman
 
 HEADERS += \
     ../../Comman/CSSCustom.h \
+    ../../Comman/magic_enum.hpp \
     SerikBelediyesiWebSayfasi/BaseClass/containerwiget.h \
     SerikBelediyesiWebSayfasi/BaseClass/dbclass.h \
     SerikBelediyesiWebSayfasi/BaseClass/dialog.h \

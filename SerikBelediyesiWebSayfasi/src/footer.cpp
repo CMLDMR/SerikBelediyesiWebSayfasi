@@ -23,8 +23,11 @@ Footer::Footer::Footer()
     {
         auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
+        container->addStyleClass("footerText");
+
+        container->setPadding(0,AllSides);
         auto layout = container->setLayout(cpp14::make_unique<WHBoxLayout>());
-        layout->addWidget(cpp14::make_unique<WText>("Serik Belediye Başkanlığı"))->addStyleClass("footerText");
+        layout->addWidget(cpp14::make_unique<WText>("Serik Belediye Başkanlığı"));
     }
 
 
@@ -33,6 +36,8 @@ Footer::Footer::Footer()
     {
         auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
+        container->addStyleClass("footerText");
+
         auto layout = container->setLayout(cpp14::make_unique<WHBoxLayout>());
         auto text = layout->addWidget(cpp14::make_unique<WText>("Bu Web Sayfası Serik Belediyesi Bilgi İşlem Müdürlüğü Tarafından Açık Kaynak Kodlu Olarak Geliştirilmektedir."));
         text->addStyleClass("footerText");
@@ -43,6 +48,8 @@ Footer::Footer::Footer()
     {
         auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
+        container->addStyleClass("footerText");
+
         auto layout = container->setLayout(cpp14::make_unique<WHBoxLayout>());
         layout->addStretch(1);
         layout->addWidget(cpp14::make_unique<WText>("© Copyright 2019  "))->addStyleClass("footerText");

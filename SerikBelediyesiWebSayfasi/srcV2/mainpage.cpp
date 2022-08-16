@@ -13,6 +13,7 @@
 
 #include "personel/yonetimwidget.h"
 #include "meclis/meclisuyesipublicwidget.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/nostserik.h"
 
 
 
@@ -128,6 +129,8 @@ void MainPage::init()
         controller->ClickIletisim().connect(this,&MainPage::initIletisim);
         controller->ClickDuyurular().connect(this,&MainPage::initAnounceList);
         controller->ClickNobetciEczane().connect(this,&MainPage::initNobetciEczane);
+        controller->ClickNostSerik().connect(this,&MainPage::initNostSerik);
+
     }
 
 
@@ -691,6 +694,15 @@ void MainPage::initMeclisUyeleri()
     mContentWidget->clear ();
     auto widget = mContentWidget->addWidget(cpp14::make_unique<v2::MeclisUyesiPublicWidget>(new SerikBLDCore::DB(this->getDB ())));
     widget->setMaximumSize(1024,WLength::Auto);
+    footer->removeStyleClass("footerStickAbsolute");
+}
+
+void MainPage::initNostSerik()
+{
+
+//    mContentWidget->clear();
+    auto widget = mContentWidget->addWidget(cpp14::make_unique<v2::NostSerik>());
+//    widget->setMaximumSize(1024,WLength::Auto);
     footer->removeStyleClass("footerStickAbsolute");
 }
 

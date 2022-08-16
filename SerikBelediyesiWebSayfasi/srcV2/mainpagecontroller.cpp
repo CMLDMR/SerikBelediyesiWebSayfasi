@@ -339,22 +339,38 @@ MainPageController::MainPageController(mongocxx::database *_db)
             container->addStyleClass(bootsrapString);
             container->setContentAlignment(AlignmentFlag::Center);
             auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
-            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(175,255),
-                                                                               this->getRandom(150,200),
-                                                                               this->getRandom(25,75),0.85)+Style::Border::border("3px solid white"));
+            btn->setAttributeValue(Style::style,Style::background::url("img/aspicon.jpg")+Style::background::size::cover
+                                   +Style::background::position::center_center
+                                   +Style::background::repeat::norepeat+Style::Border::border("3px solid white"));
+
             btn->setHeight(100);
             btn->setWidth(100);
             btn->setMargin(15,AllSides);
             btn->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+            btn->setPositionScheme(PositionScheme::Relative);
+            btn->addStyleClass("galeriBtn");
 
             btn->decorationStyle().setCursor(Cursor::PointingHand);
             btn->clicked().connect([=](){
 //                std::cout << "Giriş Butonu Clicked" << std::endl;
-//              _Giris.emit(NoClass());
+              _NostSerik.emit(NoClass());
             });
 
+            auto iconWidget = btn->addWidget(cpp14::make_unique<WContainerWidget>());
+//            iconWidget->setPositionScheme(PositionScheme::Absolute);
+            iconWidget->setWidth(WLength("100%"));
+            iconWidget->setHeight(WLength("100%"));
+//            iconWidget->setOffsets(-10,Side::Top|Side::Left);
 
-            auto layout = btn->setLayout(cpp14::make_unique<WVBoxLayout>());
+
+//            iconWidget->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(175,255),
+//                                                                               this->getRandom(150,200),
+//                                                                               this->getRandom(25,75),0.5));
+
+            iconWidget->addStyleClass("galeriBtnSlide");
+
+
+            auto layout = iconWidget->setLayout(cpp14::make_unique<WVBoxLayout>());
             auto text = layout->addWidget(cpp14::make_unique<WText>("BİR ZAMANLAR SERİK"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
             text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
         }

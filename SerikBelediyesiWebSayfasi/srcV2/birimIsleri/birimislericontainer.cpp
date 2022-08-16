@@ -5,9 +5,10 @@
 #include "SerikBelediyesiWebSayfasi/srcV2/imar/mimariprojemanagerpage.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/calismalar/calismamanagercontainer.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/faaliyet/faaliyetraporcontainer.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/nostserik.h"
 
 v2::BirimIsleriContainer::BirimIsleriContainer(SerikBLDCore::User *_user)
-    :mUser(_user),ContainerWidget ("Birim İşleri")
+    :ContainerWidget ("Birim İşleri"),mUser(_user)
 {
 
     Header ()->setMargin (10,Side::Bottom);
@@ -16,15 +17,20 @@ v2::BirimIsleriContainer::BirimIsleriContainer(SerikBLDCore::User *_user)
         this->initImar ();
     }
 
+    //GALERI
+    if( this->mUser->Birimi () == "Bilgi İşlem Müdürlüğü" ){
+        auto menuFirma = createMenu ( "Galeri" , Cursor::PointingHand );
+        menuFirma->clicked ().connect ( [=](){
+            this->initSerikGaleri ();
+        } );
+        Header ()->addWidget (std::move(menuFirma));
+    }
+
     //Çalışma Yönetimi
     {
         auto menuFirma = createMenu ( "Çalışmalar" , Cursor::PointingHand );
         menuFirma->clicked ().connect ( [=](){
-
-
             this->initCalismalar ();
-
-
         } );
         Header ()->addWidget (std::move(menuFirma));
     }
@@ -119,6 +125,12 @@ void v2::BirimIsleriContainer::initFaaliyetRaporlari()
 
 //    LOG << "\n";
 
+}
+
+void v2::BirimIsleriContainer::initSerikGaleri()
+{
+    Content ()->clear ();
+    Content ()->addWidget (cpp14::make_unique<v2::NostSerikManager>(this->mUser->getDB()));
 }
 
 std::unique_ptr<WContainerWidget>  v2::BirimIsleriContainer::createMenu(const std::string &menuName , Cursor cursor )
