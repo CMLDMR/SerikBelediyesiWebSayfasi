@@ -701,9 +701,9 @@ void MainPage::initNostSerik()
 {
 
 //    mContentWidget->clear();
-    auto widget = mContentWidget->addWidget(cpp14::make_unique<v2::NostSerik>());
+    auto widget = mContentWidget->addWidget(cpp14::make_unique<v2::NostSerik>(new SerikBLDCore::DB(this->getDB())));
 //    widget->setMaximumSize(1024,WLength::Auto);
-    footer->removeStyleClass("footerStickAbsolute");
+//    footer->removeStyleClass("footerStickAbsolute");
 }
 
 std::string MainPage::downloadifNotExist(bsoncxx::types::value oid, bool forceFilename)

@@ -269,6 +269,8 @@ void ContainerWidget::showMessage(std::string title, std::string msg, std::strin
     messageBox->show();
 }
 
+
+
 void ContainerWidget::showPopUpMessage(const std::string &msg, const std::string &infoType)
 {
 
@@ -368,11 +370,11 @@ FileUploaderWidget::FileUploaderWidget(const std::string &title)
 
         auto list = mFileUploader->uploadedFiles();
 
-        for( auto item : list )
+        for( const auto &item : list )
         {
             QFileInfo info(item.clientFileName().c_str());
 
-            QString _fileName = QString("%1%2.%3").arg(QUuid::createUuid().toString()).arg(item.clientFileName().c_str()).arg(info.suffix());
+            QString _fileName = QString("%1%2.%3").arg(QUuid::createUuid().toString(QUuid::StringFormat::WithoutBraces)).arg(item.clientFileName().c_str()).arg(info.suffix());
 
             mFileLocation = QString("docroot/tempfile/")+_fileName;
             mDoocRootLocation = QString("tempfile/")+ _fileName;
