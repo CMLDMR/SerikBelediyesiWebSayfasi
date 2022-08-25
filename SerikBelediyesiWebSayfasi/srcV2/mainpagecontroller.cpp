@@ -23,7 +23,7 @@ MainPageController::MainPageController(mongocxx::database *_db)
 
         auto bootsrapString = Bootstrap::Grid::Large::col_lg_3 + Bootstrap::Grid::Medium::col_md_3 + Bootstrap::Grid::Small::col_sm_4 + Bootstrap::Grid::ExtraSmall::col_xs_4;
 
-//        if(false){   // HABERLER
+//        if(false){   // HABERLER.
 //            auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
 //            container->addStyleClass(bootsrapString);
 //            container->setContentAlignment(AlignmentFlag::Center);

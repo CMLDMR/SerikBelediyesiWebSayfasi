@@ -3,7 +3,7 @@ QT += gui core xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++latest console
+CONFIG += c++17 console
 CONFIG -= app_bundle
 #TEMPLATE += app
 
