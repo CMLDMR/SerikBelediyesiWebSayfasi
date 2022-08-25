@@ -63,6 +63,7 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
     WApplication::useStyleSheet(WLink("css/header.css"));
     WApplication::useStyleSheet(WLink("css/style.css"));
     WApplication::useStyleSheet(WLink("css/v2.css"));
+    WApplication::useStyleSheet(WLink("css/nost.css"));
 
 //    WApplication::useStyleSheet (WLink("https://www.w3schools.com/w3css/4/w3.css"));
 
