@@ -15,7 +15,6 @@ v2::MeclisPageManager::MeclisPageManager(SerikBLDCore::DB *db)
 
     this->Content ()->addStyleClass ("boxShadow");
     this->Content ()->setMargin (25,Side::Top|Side::Bottom);
-
     this->Footer ()->addStyleClass ("boxShadow");
 }
 
@@ -60,6 +59,7 @@ void v2::MeclisPageManager::initController()
             options.setSkip (0);
             SerikBLDCore::Item item("none");
             item.append(SerikBLDCore::Meclis::Key::yil,-1);
+            item.append (SerikBLDCore::Meclis::Key::julianDate,-1);
             options.setSort (item);
             this->UpdateList (SerikBLDCore::Meclis::MeclisItem(),options);
         });
@@ -102,7 +102,9 @@ void v2::MeclisPageManager::initController()
         container->addWidget (cpp14::make_unique<WText>("<b>Canlı Yayın</b>"));
         container->decorationStyle ().setCursor (Cursor::PointingHand);
         container->clicked ().connect ([&](){
+            this->Content ()->clear ();
 
+            this->Content()->addNew<MeclisCanliYayin>(this->getDB());
         });
     }
 }
@@ -221,6 +223,7 @@ void v2::MeclisPageManager::yeniEkle()
         SerikBLDCore::Meclis::MeclisItem item;
         item.setAy (newItem->ay());
         item.setYil (newItem->yil ());
+        item.setJulianDay(newItem->julianDay());
         auto count = this->countItem (item);
         if( count )
         {
@@ -242,13 +245,7 @@ void v2::MeclisPageManager::yeniEkle()
             }
         }
 
-
-
-
-
     });
-
-
 
 }
 
@@ -401,4 +398,111 @@ v2::MeclisNewItemPage::MeclisNewItemPage()
 Signal<NoClass> &v2::MeclisNewItemPage::ClickSaved()
 {
     return _ClickSaved;
+}
+
+v2::MeclisCanliYayin::MeclisCanliYayin(SerikBLDCore::DB *_db)
+    :ContainerWidget("Canlı Yayın Bilgileri"),mDb(_db)
+{
+
+    this->addStyleClass(Bootstrap::Grid::col_full_12);
+
+    this->loadInterface();
+
+}
+
+void v2::MeclisCanliYayin::loadInterface()
+{
+
+    this->Content()->clear();
+    this->Footer()->clear();
+
+    SerikBLDCore::Item filter("mecliscanli");
+
+    auto canliitem = this->mDb->findOneItem(filter);
+
+    if( canliitem ){
+
+
+        try {
+            currentOid = canliitem.value().view()["_id"].get_oid().value.to_string();
+        } catch (bsoncxx::exception &e) {
+            this->Footer()->addNew<WText>(WString("Oid Error: {1}").arg(e.what()));
+            this->Footer()->addNew<WBreak>();
+            currentOid = "";
+        }
+
+        mCanliYayinLink = this->Content()->addNew<WLineEdit>();
+        mCanliYayinLink->setPlaceholderText("Sadece Video ID");
+        mCanliYayinLink->addStyleClass(Bootstrap::Grid::col_full_12);
+
+
+
+        mCanliYayinAktif = this->Content()->addNew<WCheckBox>();
+        mCanliYayinAktif->setText("Yayın Aktif");
+        mCanliYayinAktif->addStyleClass(Bootstrap::Grid::col_full_12);
+
+        try {
+            auto aktif = canliitem.value().view()["online"].get_bool().value;
+            mCanliYayinAktif->setChecked(aktif);
+            mCanliYayinAktif->setText(aktif ? "Yayın Aktif" : "Yayın Kapalı");
+
+        } catch (bsoncxx::exception &e) {
+            this->Footer()->addNew<WText>(WString("Yayın Aktif Error: {1}").arg(e.what()));
+            this->Footer()->addNew<WBreak>();
+        }
+
+        mCanliYayinAktif->changed().connect([=](){
+            this->updateInterface();
+        });
+
+
+
+        mCanliYayinBaslik = this->Content()->addNew<WLineEdit>();
+        mCanliYayinBaslik->setPlaceholderText("Yayın Başlığı");
+        mCanliYayinBaslik->addStyleClass(Bootstrap::Grid::col_full_12);
+
+        auto guncelleBtn = this->Content()->addNew<WPushButton>("Güncelle");
+        guncelleBtn->addStyleClass(Bootstrap::Grid::col_full_12+Bootstrap::Button::Primary);
+
+
+
+    }
+
+}
+
+void v2::MeclisCanliYayin::updateInterface()
+{
+
+    if( currentOid.empty() ) return;
+
+    SerikBLDCore::Item filter("mecliscanli");
+
+    filter.setOid(currentOid);
+
+    filter.append("online",mCanliYayinAktif->isChecked());
+    filter.append("link","https://www.youtube.com/embed/"+mCanliYayinLink->text().toUTF8());
+    filter.append("title",mCanliYayinBaslik->text().toUTF8());
+
+    std::cout << bsoncxx::to_json(filter.view()) << "\n";
+
+
+    auto upt = this->mDb->updateItem(filter);
+
+    if( upt ){
+        if( upt.value().modified_count() ){
+            if( mCanliYayinAktif->isChecked() ){
+                this->showPopUpMessage("Canlı Yayın Başlatıldı");
+            }else{
+                this->showPopUpMessage("Canlı Yayın Kapatıldı");
+            }
+            this->loadInterface();
+        }
+    }else{
+        this->showPopUpMessage("Update Yapılamadı");
+    }
+
+
+
+
+
 }

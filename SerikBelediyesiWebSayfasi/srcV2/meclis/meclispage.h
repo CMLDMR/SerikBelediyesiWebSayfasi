@@ -53,6 +53,24 @@ private:
 
 };
 
+
+
+class MeclisCanliYayin : public ContainerWidget
+{
+public:
+    explicit MeclisCanliYayin( SerikBLDCore::DB* _db);
+
+    SerikBLDCore::DB *mDb;
+
+    void loadInterface();
+    void updateInterface();
+
+    std::string currentOid;
+    WCheckBox* mCanliYayinAktif;
+    WLineEdit* mCanliYayinBaslik;
+    WLineEdit* mCanliYayinLink;
+};
+
 }
 
 
