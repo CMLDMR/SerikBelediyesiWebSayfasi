@@ -209,59 +209,66 @@ void MainPage::initGiris()
 
 void MainPage::initMeclis()
 {
+
     mContentWidget->clear();
+    auto widget = mContentWidget->addWidget(cpp14::make_unique<v2::MeclisPublicPage>(new SerikBLDCore::DB(this->getDB())));
+    widget->setMaximumSize(1280,WLength::Auto);
+    footer->removeStyleClass("footerStickAbsolute");
 
 
-    {
-        auto container = mContentWidget->addWidget (cpp14::make_unique<WContainerWidget>());
-        container->setMaximumSize (1280,WLength::Auto);
-        container->addStyleClass (Bootstrap::Grid::row);
-        container->setMargin (90,Side::Top|Side::Bottom);
-        container->setMaximumSize(1280,WLength::Auto);
-        container->setPadding (25,Side::Top|Side::Bottom);
+    //    mContentWidget->clear();
 
 
-        auto oldMeclisContainer = container->addWidget(cpp14::make_unique<ContainerWidget>());
-        oldMeclisContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
-                                           Bootstrap::Grid::Medium::col_md_6+
-                                           Bootstrap::Grid::Small::col_sm_6+
-                                           Bootstrap::Grid::ExtraSmall::col_xs_12+
-                                           Bootstrap::ImageShape::img_thumbnail);
-        oldMeclisContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::Purple::Fuchsia)+
-                                               Style::color::color (Style::color::White::Snow));
-        oldMeclisContainer->addWidget (cpp14::make_unique<WText>("<h4>2020 Öncesi</h4>",TextFormat::UnsafeXHTML));
-        oldMeclisContainer->decorationStyle ().setCursor (Cursor::PointingHand);
-
-        oldMeclisContainer->clicked ().connect ([&](){
-            mContentWidget->clear();
-            auto widget = mContentWidget->addWidget(cpp14::make_unique<Body::Meclis>(this->getDB()));
-            widget->setMaximumSize(1280,WLength::Auto);
-            footer->removeStyleClass("footerStickAbsolute");
-        });
+//    {
+//        auto container = mContentWidget->addWidget (cpp14::make_unique<WContainerWidget>());
+//        container->setMaximumSize (1280,WLength::Auto);
+//        container->addStyleClass (Bootstrap::Grid::row);
+//        container->setMargin (90,Side::Top|Side::Bottom);
+//        container->setMaximumSize(1280,WLength::Auto);
+//        container->setPadding (25,Side::Top|Side::Bottom);
 
 
+//        auto oldMeclisContainer = container->addWidget(cpp14::make_unique<ContainerWidget>());
+//        oldMeclisContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
+//                                           Bootstrap::Grid::Medium::col_md_6+
+//                                           Bootstrap::Grid::Small::col_sm_6+
+//                                           Bootstrap::Grid::ExtraSmall::col_xs_12+
+//                                           Bootstrap::ImageShape::img_thumbnail);
+//        oldMeclisContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::Purple::Fuchsia)+
+//                                               Style::color::color (Style::color::White::Snow));
+//        oldMeclisContainer->addWidget (cpp14::make_unique<WText>("<h4>2020 Öncesi</h4>",TextFormat::UnsafeXHTML));
+//        oldMeclisContainer->decorationStyle ().setCursor (Cursor::PointingHand);
+
+//        oldMeclisContainer->clicked ().connect ([&](){
+//            mContentWidget->clear();
+//            auto widget = mContentWidget->addWidget(cpp14::make_unique<Body::Meclis>(this->getDB()));
+//            widget->setMaximumSize(1280,WLength::Auto);
+//            footer->removeStyleClass("footerStickAbsolute");
+//        });
 
 
 
-        auto newMeclisContainer = container->addWidget(cpp14::make_unique<ContainerWidget>());
-        newMeclisContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
-                                           Bootstrap::Grid::Medium::col_md_6+
-                                           Bootstrap::Grid::Small::col_sm_6+
-                                           Bootstrap::Grid::ExtraSmall::col_xs_12+
-                                           Bootstrap::ImageShape::img_thumbnail);
-        newMeclisContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::Purple::SlateBlue)+
-                                               Style::color::color (Style::color::White::Snow));
 
-        newMeclisContainer->addWidget (cpp14::make_unique<WText>("<h4>2020 Sonrası</h4>",TextFormat::UnsafeXHTML));
-        newMeclisContainer->decorationStyle ().setCursor (Cursor::PointingHand);
 
-        newMeclisContainer->clicked ().connect ([&](){
-            mContentWidget->clear();
-            auto widget = mContentWidget->addWidget(cpp14::make_unique<v2::MeclisPublicPage>(new SerikBLDCore::DB(this->getDB())));
-            widget->setMaximumSize(1280,WLength::Auto);
-            footer->removeStyleClass("footerStickAbsolute");
-        });
-    }
+//        auto newMeclisContainer = container->addWidget(cpp14::make_unique<ContainerWidget>());
+//        newMeclisContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
+//                                           Bootstrap::Grid::Medium::col_md_6+
+//                                           Bootstrap::Grid::Small::col_sm_6+
+//                                           Bootstrap::Grid::ExtraSmall::col_xs_12+
+//                                           Bootstrap::ImageShape::img_thumbnail);
+//        newMeclisContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::Purple::SlateBlue)+
+//                                               Style::color::color (Style::color::White::Snow));
+
+//        newMeclisContainer->addWidget (cpp14::make_unique<WText>("<h4>2020 Sonrası</h4>",TextFormat::UnsafeXHTML));
+//        newMeclisContainer->decorationStyle ().setCursor (Cursor::PointingHand);
+
+//        newMeclisContainer->clicked ().connect ([&](){
+//            mContentWidget->clear();
+//            auto widget = mContentWidget->addWidget(cpp14::make_unique<v2::MeclisPublicPage>(new SerikBLDCore::DB(this->getDB())));
+//            widget->setMaximumSize(1280,WLength::Auto);
+//            footer->removeStyleClass("footerStickAbsolute");
+//        });
+//    }
 
 
 
