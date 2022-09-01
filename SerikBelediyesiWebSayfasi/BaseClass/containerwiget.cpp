@@ -328,6 +328,11 @@ void ContainerWidget::removeTitleBar()
     }
 }
 
+WContainerWidget *ContainerWidget::titleBar() const
+{
+    return mTitleBar;
+}
+
 
 
 

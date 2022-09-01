@@ -107,6 +107,8 @@ public:
     void removeTitleBar();
 
 
+    WContainerWidget *titleBar() const;
+
 private:
     WContainerWidget* mHeaderContainer;
     WContainerWidget* mContentContainer;
