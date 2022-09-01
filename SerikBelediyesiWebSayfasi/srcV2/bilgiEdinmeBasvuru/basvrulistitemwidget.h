@@ -11,7 +11,7 @@ class BilgiEdinmeItem;
 class BasvruListItemWidget : public ContainerWidget
 {
 public:
-    BasvruListItemWidget(SerikBLDCore::BilgiEdinmeItem *_item);
+    explicit BasvruListItemWidget(SerikBLDCore::BilgiEdinmeItem *_item);
 
 
 
