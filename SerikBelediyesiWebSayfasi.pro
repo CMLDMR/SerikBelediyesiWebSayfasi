@@ -3,8 +3,12 @@ QT += gui core xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++20 console
+CONFIG += c++2a console
 CONFIG -= app_bundle
+QMAKE_CXXFLAGS      += -Zc:__cplusplus
+QMAKE_CXXFLAGS_CXX2A = -std:c++20
+
+
 #TEMPLATE += app
 
 CONFIG += no_keywords
@@ -19,9 +23,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
-#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += main.cpp \
+    ../../Comman/bootstrap.cpp \
     SerikBelediyesiWebSayfasi/BaseClass/containerwiget.cpp \
     SerikBelediyesiWebSayfasi/BaseClass/dbclass.cpp \
     SerikBelediyesiWebSayfasi/BaseClass/dialog.cpp \
@@ -97,8 +102,9 @@ SOURCES += main.cpp \
 
 
 
-QMAKE_CXXFLAGS += /wd4251 /wd4275 /wd4267 /wd4189 /wd4100 /wd4101 /wd4715 /wd4189
+QMAKE_CXXFLAGS += /wd4251 /wd4275 /wd4267 /wd4189 /wd4100 /wd4101 /wd4715 /wd4189 /wd4100
 QMAKE_CXXFLAGS_WARN_OFF -= -Wunused-parameter
+
 
 
 INCLUDEPATH += $$PWD/../../Comman
@@ -246,3 +252,8 @@ DEPENDPATH += C:/boost/boost
 
 
 
+
+win32: LIBS += -LC:/SerikBLDCoreRelease/MSVC2022x64/lib/ -lSerikBLDCore
+
+INCLUDEPATH += C:/SerikBLDCoreRelease/MSVC2022x64/include
+DEPENDPATH += C:/SerikBLDCoreRelease/MSVC2022x64/include
