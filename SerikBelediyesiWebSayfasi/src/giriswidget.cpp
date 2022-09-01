@@ -2914,8 +2914,8 @@ void Giris::Personel::BaseWidget::setUser(const bsoncxx::document::value &User)
 
 Giris::Personel::PersonelGorevlendirWidget::PersonelGorevlendirWidget(mongocxx::database *db,std::string tel , bsoncxx::oid photoOid,bsoncxx::oid docOid ,  std::string personelAdi, bsoncxx::oid personelOid, std::string iconPath, bsoncxx::document::value user)
     :Giris::Personel::BaseWidget (db,user),
-      _personelOid(personelOid),
       _personelAdi(personelAdi),
+      _personelOid(personelOid),
       _docoid(docOid),
       _photoOid(photoOid),
       _tel(tel)
@@ -3116,7 +3116,7 @@ void Giris::Personel::EvrakArsiv::initMenu()
 
         //        container->addWidget(cpp14::make_unique<WAnchor>(link,"<b>● Kod Kütüphanesi</b>"));
 
-        auto text = layout->addWidget(cpp14::make_unique<WAnchor>(link,"<b>● E-Arşiv Uygulaması</b>"),0,AlignmentFlag::Center|AlignmentFlag::Bottom);
+        layout->addWidget(cpp14::make_unique<WAnchor>(link,"<b>● E-Arşiv Uygulaması</b>"),0,AlignmentFlag::Center|AlignmentFlag::Bottom);
         //        text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
         //        AramaBtn->clicked().connect(this,&EvrakArsiv::initTumEvraklar);
     }
@@ -4143,9 +4143,9 @@ void Giris::LoginWidgetV2::sendNewPassword()
 }
 
 Giris::FirmaMenuWidget::FirmaMenuWidget(DB *_db, SerikBLDCore::TC *_tcuser)
-    :SerikBLDCore::DB (_db),
-      mTCUser(_tcuser),
-      ContainerWidget ("Firma İşlemleri",ContentType::Horizontal)
+    :ContainerWidget ("Firma İşlemleri",ContentType::Horizontal),
+      SerikBLDCore::DB (_db),
+      mTCUser(_tcuser)
 {
 
     mFirmaManager = new SerikBLDCore::Firma::FirmaManager(this->getDB ());
