@@ -175,15 +175,15 @@ void v2::MeclisUyeleriPage::onList(const QVector<SerikBLDCore::Meclis::MeclisUye
 
     std::string currentParti = "";
 
-    std::string currentBackColor = Style::background::color::rgb (this->getRandom (200,255),this->getRandom (200,255),this->getRandom (200,255));
+    std::string currentBackColor = Style::background::color::rgb (this->getRandom (245,255),this->getRandom (200,255),this->getRandom (220,255));
 
-    for( auto item : *mlist )
+    for( const auto &item : *mlist )
     {
 
 
         if( currentParti != item.partiAdi ().toStdString () ){
             currentParti = item.partiAdi ().toStdString ();
-            currentBackColor = Style::background::color::rgb (this->getRandom (200,255),this->getRandom (200,255),this->getRandom (200,255));
+            currentBackColor = Style::background::color::rgb (this->getRandom (245,255),this->getRandom (200,255),this->getRandom (220,255));
             auto containerBreak = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
             containerBreak->addStyleClass (Bootstrap::Grid::col_full_12);
             containerBreak->addWidget (cpp14::make_unique<WText>("<h4>"+item.partiAdi ().toStdString ()+"</h4>"));
@@ -203,6 +203,7 @@ void v2::MeclisUyeleriPage::onList(const QVector<SerikBLDCore::Meclis::MeclisUye
                                   Bootstrap::Grid::Small::col_sm_6+
                                   Bootstrap::Grid::ExtraSmall::col_xs_6);
         container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+        container->setHeight(160);
 
 
 
@@ -238,6 +239,7 @@ void v2::MeclisUyeleriPage::onList(const QVector<SerikBLDCore::Meclis::MeclisUye
                                       Bootstrap::Grid::Medium::col_md_8+
                                       Bootstrap::Grid::Small::col_sm_8+
                                       Bootstrap::Grid::ExtraSmall::col_xs_12);
+        infoContainer->setPadding(0,Side::Top|Side::Bottom);
 
         auto vLayout = infoContainer->setLayout (cpp14::make_unique<WVBoxLayout>());
 
@@ -434,20 +436,36 @@ v2::MeclisDonemPage::MeclisDonemPage(DB *_db)
     btn->addStyleClass (Bootstrap::Button::Primary);
     btn->clicked ().connect ([=](){
         auto mDialog = createDialog ("Yeni Meclis Dönemi Ekle");
-        auto hLayout = mDialog->contents ()->setLayout (cpp14::make_unique<WHBoxLayout>());
+
+        auto container = mDialog->contents()->addNew<WContainerWidget>();
+
+        auto hLayout = container->setLayout (cpp14::make_unique<WHBoxLayout>());
         hLayout->addWidget (cpp14::make_unique<WText>("Başlangıç Yılı"));
         auto baslangicYili = hLayout->addWidget (cpp14::make_unique<WSpinBox>());
-        baslangicYili->setRange (1990,2999);
+        baslangicYili->setRange (1900,2999);
         baslangicYili->setValue (2019);
         hLayout->addWidget (cpp14::make_unique<WText>("Bitiş Yılı"));
         auto bitisYili = hLayout->addWidget (cpp14::make_unique<WSpinBox>());
         bitisYili->setRange (1990,2999);
         bitisYili->setValue (2024);
+
+        auto julianDateContainer = mDialog->contents()->addNew<WContainerWidget>();
+        auto julianDateLayout = julianDateContainer->setLayout(cpp14::make_unique<WHBoxLayout>());
+
+        auto startDateJulianDay = julianDateLayout->addWidget(cpp14::make_unique<WDateEdit>());
+        startDateJulianDay->setDate(WDate::currentDate());
+
+        auto endDateJulianDay = julianDateLayout->addWidget(cpp14::make_unique<WDateEdit>());
+        endDateJulianDay->setDate(WDate::currentDate());
+
+
         auto svBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet"));
         svBtn->addStyleClass (Bootstrap::Button::Primary);
         svBtn->clicked ().connect ([=](){
             if( this->InsertItem (SerikBLDCore::Meclis::MeclisDonemi()
-                                  .setDonem ( baslangicYili->value () , bitisYili->value ())).size () )
+                                  .setDonem ( baslangicYili->value () , bitisYili->value ())
+                                  .setBaslangicDate(startDateJulianDay->date().toJulianDay())
+                                  .setBitisDate(endDateJulianDay->date().toJulianDay())).size () )
             {
                 SerikBLDCore::Meclis::DonemManager::UpdateList (SerikBLDCore::Meclis::MeclisDonemi());
                 removeDialog (mDialog);
@@ -883,7 +901,8 @@ void v2::KomisyonManagerPage::uyeEkle(const std::string &komisyonOid)
     auto rContainer = mDialog->contents ()->addWidget (cpp14::make_unique<WContainerWidget>());
     rContainer->addStyleClass (Bootstrap::Grid::row);
 
-    donemSelect->sactivated ().connect ([=]( const WString &selected ){
+
+    auto listUyeler = [=]( const WString &selected ){
 
         rContainer->clear ();
 
@@ -990,10 +1009,13 @@ void v2::KomisyonManagerPage::uyeEkle(const std::string &komisyonOid)
 
 
 
-    });
+    };
+
+    donemSelect->sactivated ().connect (listUyeler);
 
 
 
+    listUyeler(donemSelect->currentText());
 
 
 
