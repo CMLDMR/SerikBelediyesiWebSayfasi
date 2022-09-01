@@ -5,7 +5,7 @@
 
 
 AnonsWidget::AnonsWidget(mongocxx::database* _db , bsoncxx::document::value _user)
-    :BaseClass::ContainerWidget (_db , _user , u8"Anons Cihazları")
+    :BaseClass::ContainerWidget (_db , _user , "Anons Cihazları")
 {
 
     mMap = this->getHeaderRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -18,7 +18,7 @@ AnonsWidget::AnonsWidget(mongocxx::database* _db , bsoncxx::document::value _use
         auto container = this->getHeaderRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
         container->setContentAlignment(AlignmentFlag::Center);
-        auto refreshBtn = container->addWidget(cpp14::make_unique<WPushButton>(WString::fromUTF8(u8"Tüm Cihazlar")));
+        auto refreshBtn = container->addWidget(cpp14::make_unique<WPushButton>(WString::fromUTF8("Tüm Cihazlar")));
         refreshBtn->addStyleClass(Bootstrap::Button::Primary);
         refreshBtn->clicked().connect([=](){
             this->initDevices();
@@ -33,13 +33,6 @@ AnonsWidget::AnonsWidget(mongocxx::database* _db , bsoncxx::document::value _use
     mDevicePropertiesContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_9+Bootstrap::Grid::ExtraSmall::col_xs_12);
 
 
-
-
-    {
-        auto container = this->getHeaderRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
-
-        auto text = container->addWidget(cpp14::make_unique<WText>(WString::fromUTF8(u8"B Türkçe Karakter Sorunu ÇŞĞÖİÜ").toUTF8().c_str()));
-    }
 
 
 
@@ -271,7 +264,7 @@ void AnonsWidget::DeviceProperties(std::string deviceOid)
 
                 auto vLayout = adContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
 
-                auto fotoBtn = vLayout->addWidget(cpp14::make_unique<WPushButton>(u8"Fotoğraflar"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+                auto fotoBtn = vLayout->addWidget(cpp14::make_unique<WPushButton>("Fotoğraflar"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
                 fotoBtn->addStyleClass(Bootstrap::Button::Success);
 
                 fotoBtn->clicked().connect([=](){
@@ -290,10 +283,10 @@ void AnonsWidget::DeviceProperties(std::string deviceOid)
 
                 auto vLayout = adContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
 
-                auto aciklamaEkle = vLayout->addWidget(cpp14::make_unique<WPushButton>(u8"Açıklama Ekle"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+                auto aciklamaEkle = vLayout->addWidget(cpp14::make_unique<WPushButton>("Açıklama Ekle"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
                 aciklamaEkle->addStyleClass(Bootstrap::Button::Primary);
 
-                if( this->User().view()["Birimi"].get_utf8().value.to_string() != u8"Bilgi İşlem Müdürlüğü" )
+                if( this->User().view()["Birimi"].get_utf8().value.to_string() != "Bilgi İşlem Müdürlüğü" )
                 {
                     aciklamaEkle->setEnabled(false);
                 }
@@ -316,16 +309,16 @@ void AnonsWidget::DeviceProperties(std::string deviceOid)
                 auto vLayout = adContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
 
                 {
-                    auto text = vLayout->addWidget(cpp14::make_unique<WText>(u8"Adını Değiştir"),0,AlignmentFlag::Center);
+                    auto text = vLayout->addWidget(cpp14::make_unique<WText>("Adını Değiştir"),0,AlignmentFlag::Center);
                     text->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::size::s12px+Style::font::weight::bold);
                 }
                 auto selectBtn = vLayout->addWidget(cpp14::make_unique<WLineEdit>(),0,AlignmentFlag::Center);
                 selectBtn->setText(doc["cihazadi"].get_utf8().value.to_string());
 
-                auto degistir = vLayout->addWidget(cpp14::make_unique<WPushButton>(u8"Değiştir"),0,AlignmentFlag::Center);
+                auto degistir = vLayout->addWidget(cpp14::make_unique<WPushButton>("Değiştir"),0,AlignmentFlag::Center);
                 degistir->addStyleClass(Bootstrap::Button::Primary);
 
-                if( this->User().view()["Birimi"].get_utf8().value.to_string() != u8"Bilgi İşlem Müdürlüğü" )
+                if( this->User().view()["Birimi"].get_utf8().value.to_string() != "Bilgi İşlem Müdürlüğü" )
                 {
                     degistir->setEnabled(false);
                 }
@@ -356,17 +349,17 @@ void AnonsWidget::DeviceProperties(std::string deviceOid)
                         {
                             if( upt.value().modified_count() )
                             {
-                                this->showMessage(u8"Başarılı",u8"Cihaz Adı Değiştirildi","Tamam");
+                                this->showMessage("Başarılı","Cihaz Adı Değiştirildi","Tamam");
                             }else{
-                                this->showMessage(u8"Uyarı",u8"Cihaz Adı Değiştirilemedi","Tamam");
+                                this->showMessage("Uyarı","Cihaz Adı Değiştirilemedi","Tamam");
                             }
                         }else{
-                            this->showMessage(u8"Uyarı",u8"Cihaz Adı Değiştirilemedi","Tamam");
+                            this->showMessage("Uyarı","Cihaz Adı Değiştirilemedi","Tamam");
                         }
 
                     } catch (mongocxx::exception &e) {
-                        std::cout << "Line: " << __LINE__ << "  ->" <<e.what() << std::endl;
-                        this->showMessage(u8"Error",u8"Line: " + std::to_string(__LINE__) + " -> " + e.what(),"Tamam");
+//                        std::cout << "Line: " << __LINE__ << "  ->" <<e.what() << std::endl;
+                        this->showMessage("Error","Line: " + std::to_string(__LINE__) + " -> " + e.what(),"Tamam");
                     }
 
 
@@ -384,18 +377,18 @@ void AnonsWidget::DeviceProperties(std::string deviceOid)
                 auto vLayout = adContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
 
                 {
-                    auto text = vLayout->addWidget(cpp14::make_unique<WText>(u8"Durum Değiştir"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+                    auto text = vLayout->addWidget(cpp14::make_unique<WText>("Durum Değiştir"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
                     text->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::size::s12px+Style::font::weight::bold);
                 }
                 auto selectBtn = vLayout->addWidget(cpp14::make_unique<WComboBox>(),0,AlignmentFlag::Center|AlignmentFlag::Middle);
-                selectBtn->addItem(u8"Arızalı");
-                selectBtn->addItem(u8"Çalışıyor");
-                selectBtn->addItem(u8"Kapalı");
-                selectBtn->addItem(u8"Bilinmiyor");
+                selectBtn->addItem("Arızalı");
+                selectBtn->addItem("Çalışıyor");
+                selectBtn->addItem("Kapalı");
+                selectBtn->addItem("Bilinmiyor");
 
                 //Bilgi İşlem Müdürlüğü
 
-                if( this->User().view()["Birimi"].get_utf8().value.to_string() != u8"Bilgi İşlem Müdürlüğü" )
+                if( this->User().view()["Birimi"].get_utf8().value.to_string() != "Bilgi İşlem Müdürlüğü" )
                 {
                     selectBtn->setEnabled(false);
                 }
@@ -408,12 +401,12 @@ void AnonsWidget::DeviceProperties(std::string deviceOid)
                 }
 
 
-                if( mDurum == u8"Arızalı" )
+                if( mDurum == "Arızalı" )
                 {
                     selectBtn->setCurrentIndex(0);
-                }else if (mDurum == u8"Çalışıyor") {
+                }else if (mDurum == "Çalışıyor") {
                     selectBtn->setCurrentIndex(1);
-                }else if (mDurum == u8"Kapalı") {
+                }else if (mDurum == "Kapalı") {
                     selectBtn->setCurrentIndex(2);
                 }else{
                     selectBtn->setCurrentIndex(3);
@@ -446,17 +439,17 @@ void AnonsWidget::DeviceProperties(std::string deviceOid)
                         {
                             if( upt.value().modified_count() )
                             {
-                                this->showMessage(u8"Başarılı",u8"Cihaz Durumu Değiştirildi","Tamam");
+                                this->showMessage("Başarılı","Cihaz Durumu Değiştirildi","Tamam");
                             }else{
-                                this->showMessage(u8"Uyarı",u8"Cihaz Durumu Değiştirilemedi","Tamam");
+                                this->showMessage("Uyarı","Cihaz Durumu Değiştirilemedi","Tamam");
                             }
                         }else{
-                            this->showMessage(u8"Uyarı",u8"Cihaz Durumu Değiştirilemedi","Tamam");
+                            this->showMessage("Uyarı","Cihaz Durumu Değiştirilemedi","Tamam");
                         }
 
                     } catch (mongocxx::exception &e) {
                         std::cout << "Line: " << __LINE__ << "  ->" <<e.what() << std::endl;
-                        this->showMessage(u8"Error",u8"Line: " + std::to_string(__LINE__) + " -> " + e.what(),"Tamam");
+                        this->showMessage("Error","Line: " + std::to_string(__LINE__) + " -> " + e.what(),"Tamam");
                     }
 
                 });
@@ -474,7 +467,7 @@ void AnonsWidget::DeviceProperties(std::string deviceOid)
                 auto vLayout = adContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
 
                 {
-                    auto text = vLayout->addWidget(cpp14::make_unique<WText>(u8"Açıklamalar"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+                    auto text = vLayout->addWidget(cpp14::make_unique<WText>("Açıklamalar"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
                     text->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::size::s12px+Style::font::weight::bold);
                 }
 
@@ -550,7 +543,7 @@ void AnonsWidget::addAciklama(std::string deviveOid)
 
     std::cout << "ACIKLAMA EKLEM . < " << deviveOid << std::endl;
 
-    auto dialog_ = addChild(std::make_unique<Wt::WDialog>(u8"Açıklama Giriniz"));
+    auto dialog_ = addChild(std::make_unique<Wt::WDialog>("Açıklama Giriniz"));
     dialog_->webWidget()->setZIndex(1000);
 
     //      dialog_->contents()->addWidget(std::make_unique<Wt::WText>(u8"Açıklamanız: "));
@@ -615,17 +608,17 @@ void AnonsWidget::addAciklama(std::string deviveOid)
                 {
                     if( upt.value().modified_count() )
                     {
-                        this->showMessage( u8"Başarılı" , u8"Açıklama Eklendi" , u8"Tamam" );
+                        this->showMessage( "Başarılı" , "Açıklama Eklendi" , "Tamam" );
                         this->DeviceProperties(deviveOid);
                     }else{
-                        this->showMessage( u8"Uyarı" , u8"Açıklama Eklenemedi" , u8"Tamam" );
+                        this->showMessage( "Uyarı" , "Açıklama Eklenemedi" , "Tamam" );
                     }
                 }else{
-                    this->showMessage( u8"Uyarı" , u8"Açıklama Eklenemedi" , u8"Tamam" );
+                    this->showMessage( "Uyarı" , "Açıklama Eklenemedi" , "Tamam" );
                 }
             } catch (mongocxx::exception &e) {
-                std::cout << "Line: " << __LINE__ << "  ->" <<e.what() << std::endl;
-                this->showMessage( u8"Hata" , u8"Line: " + std::to_string(__LINE__) + " -> " +e.what() , u8"Tamam" );
+//                std::cout << "Line: " << __LINE__ << "  ->" <<e.what() << std::endl;
+                this->showMessage( "Hata" , "Line: " + std::to_string(__LINE__) + " -> " +e.what() , "Tamam" );
             }
 
 
@@ -667,7 +660,7 @@ void AnonsWidget::showFoto(const std::string &deviceOid)
 
 
 
-    auto dialog_ = addChild(std::make_unique<Wt::WDialog>(u8"Fotoğraflar"));
+    auto dialog_ = addChild(std::make_unique<Wt::WDialog>("Fotoğraflar"));
     dialog_->webWidget()->setZIndex(1100);
     dialog_->setWidth(1000);
 
@@ -780,8 +773,8 @@ void AnonsWidget::showFoto(const std::string &deviceOid)
 
 }
 
-Device::Device(std::string oid)
-    :WContainerWidget () , _mPopupClick(this,oid)
+Device::Device(const std::string &oid)
+    :WContainerWidget () , mLongtitute{0},mLatitute{0},_mPopupClick(this,oid)
 {
     setOid(oid);
     setAttributeValue(Style::style,Style::background::color::color(Style::color::Purple::DarkSlateBlue));
@@ -874,10 +867,10 @@ void Device::setDurum(const std::string &durum)
 
 //    std::cout << "Durum: " << "u8"+mDurum << durum << std::endl;
 
-    if( mDurum == u8"Arızalı" )
+    if( mDurum == "Arızalı" )
     {
         setAttributeValue(Style::style,Style::background::color::color(Style::color::Red::FireBrick));
-    }else if(mDurum == u8"Çalışıyor") {
+    }else if(mDurum == "Çalışıyor") {
         setAttributeValue(Style::style,Style::background::color::color(Style::color::Green::DarkGreen));
     }else{
         setAttributeValue(Style::style,Style::background::color::color(Style::color::Orange::DarkOrange));

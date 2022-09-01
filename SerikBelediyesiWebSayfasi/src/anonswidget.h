@@ -43,7 +43,7 @@ private:
 class Device : public WContainerWidget
 {
 public:
-    Device(std::string oid);
+    Device(const std::string &oid);
 
 
     Signal<std::string> &ClickOid();
