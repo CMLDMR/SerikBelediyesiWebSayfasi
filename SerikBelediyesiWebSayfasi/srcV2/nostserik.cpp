@@ -505,7 +505,12 @@ void v2::NostSerik::onList(const QVector<NostItem> *mlist)
 
     Node *oldNode;
 
+    for( const auto &item : *mlist ){
+        mFList.append(item);
+    }
+
     for( int i = 0 ; i < mlist->count() ; i++ ){
+
 
         if( i == 0 ){
             item = new NostItem();
@@ -535,9 +540,10 @@ void v2::NostSerik::onList(const QVector<NostItem> *mlist)
                 oldNode = node;
                 firstNode->prev = node;
             }else{
+                node->prev = node;
                 node = node->next;
                 node->index = i;
-                node->prev = oldNode;
+                //node->prev = oldNode;
 
                 item = new NostItem();
                 item->setDocumentView(mlist->at(i+1).view());
@@ -551,7 +557,8 @@ void v2::NostSerik::onList(const QVector<NostItem> *mlist)
 
     }
 
-    this->showItem(firstNode);
+//    this->showItem(firstNode);
+    this->showItem();
 
 }
 
@@ -811,6 +818,197 @@ void v2::NostSerik::showItem( Node *item)
     auto controllerContainer = mContentContainer->addNew<WContainerWidget>();
     controllerContainer->setHeight(250);
 
+}
+
+void v2::NostSerik::showItem()
+{
+
+    if( image_index < 0 ) image_index = mFList.count()-1;
+
+    image_index = image_index%mFList.count();
+
+    auto item = mFList[image_index];
+
+
+    mContentContainer->clear();
+
+    auto fileName = this->downloadFileWeb(item.getFileOid().c_str());
+
+
+
+    auto imgContainer = mContentContainer->addNew<WContainerWidget>();
+    imgContainer->setMaximumSize(750,WLength::Auto);
+
+    imgContainer->addStyleClass("NostListItem");
+    imgContainer->setMargin(45,Side::Top);
+    imgContainer->setWidth(WLength("100%"));
+    imgContainer->setHeight(static_cast<double>(item.getHeight())*0.73);
+    imgContainer->setPositionScheme(PositionScheme::Relative);
+    imgContainer->setAttributeValue(Style::style,Style::background::url(fileName.c_str())
+                                    +Style::background::size::contain
+                                    +Style::background::repeat::norepeat);
+    imgContainer->decorationStyle().setCursor(Cursor::PointingHand);
+
+
+    imgContainer->clicked().connect(this,&NostSerik::showItemFull);
+
+    auto mNextContainer = imgContainer->addNew<WContainerWidget>();
+    mNextContainer->addStyleClass(CSSStyle::Button::blueButton);
+    mNextContainer->setPositionScheme(PositionScheme::Absolute);
+    mNextContainer->setOffsets(80,Side::Top);
+    mNextContainer->setOffsets(-50,Side::Right);
+    mNextContainer->setWidth(50);
+    mNextContainer->setHeight(50);
+    mNextContainer->addNew<WText>("▶");
+    mNextContainer->setAttributeValue(Style::style,Style::font::size::s36px+Style::font::weight::bold+Style::color::rgb("255,255,255"));
+    mNextContainer->clicked().connect([=](){
+        image_index++;
+        this->showItem();
+    });
+
+    auto mBackContainer = imgContainer->addNew<WContainerWidget>();
+    mBackContainer->addStyleClass(CSSStyle::Button::blueButton);
+    mBackContainer->setPositionScheme(PositionScheme::Absolute);
+    mBackContainer->setOffsets(80,Side::Top);
+    mBackContainer->setOffsets(-50,Side::Left);
+    mBackContainer->setWidth(50);
+    mBackContainer->setHeight(50);
+    mBackContainer->addNew<WText>("◀");
+    mBackContainer->setAttributeValue(Style::style,Style::font::size::s36px+Style::font::weight::bold+Style::color::rgb("255,255,255"));
+    mBackContainer->clicked().connect([=](){
+        image_index--;
+        this->showItem();
+    });
+
+    auto textContainer = mContentContainer->addNew<WContainerWidget>();
+    textContainer->addNew<WText>(item.getAciklama(),TextFormat::UnsafeXHTML);
+    textContainer->setWidth(WLength("100%"));
+    textContainer->addStyleClass("nostTextShadow");
+
+
+    auto indexContainer = imgContainer->addNew<WContainerWidget>();
+    indexContainer->addNew<WText>(std::to_string(image_index+1)+"/"+std::to_string(mFList.size()),TextFormat::UnsafeXHTML);
+    indexContainer->setAttributeValue(Style::style,Style::background::color::rgba(175,175,75,.75)+Style::color::color(Style::color::White::AliceBlue+Style::font::size::s20px+Style::font::weight::bold));
+    indexContainer->setPositionScheme(PositionScheme::Absolute);
+    indexContainer->setOffsets(-30,Side::Top);
+    indexContainer->setOffsets(WLength("45%"),Side::Left);
+
+
+
+
+
+    auto controllerContainer = mContentContainer->addNew<WContainerWidget>();
+    controllerContainer->setHeight(250);
+
+
+}
+
+void v2::NostSerik::showItemFull()
+{
+    auto item = mFList[image_index];
+    auto fileName = this->downloadFileWeb(item.getFileOid().c_str());
+
+    if( !mImgFullContainer ){
+        mImgFullContainer = wApp->root()->addNew<WContainerWidget>();
+        mImgFullContainer->setAttributeValue(Style::style,Style::background::color::rgba(255,255,255,0.99));
+    }else{
+        mImgFullContainer->clear();
+    }
+
+
+
+    auto text_Container = mImgFullContainer->addNew<WContainerWidget>();
+    auto text = text_Container->addNew<WText>(item.getAciklama(),TextFormat::UnsafeXHTML);
+    text_Container->setWidth(WLength("100%"));
+    text_Container->setMaximumSize(1024,WLength::Auto);
+    text_Container->setAttributeValue(Style::style,Style::color::color(Style::color::Grey::Black)+Style::font::size::s14px);
+    text_Container->addStyleClass("nostTextShadow");
+    text_Container->setMargin(60,Side::Top);
+
+
+    mImgFullContainer->setPositionScheme(PositionScheme::Fixed);
+    mImgFullContainer->setWidth(WLength("100%"));
+    mImgFullContainer->setHeight(WLength("100%"));
+    mImgFullContainer->setZIndex(12);
+    mImgFullContainer->setOffsets(0,AllSides);
+    mImgFullContainer->setContentAlignment(AlignmentFlag::Center);
+    mImgFullContainer->setOverflow(Overflow::Auto);
+
+    auto img = mImgFullContainer->addNew<WContainerWidget>();
+    img->setAttributeValue(Style::style,Style::background::url(fileName.c_str())
+                                    +Style::background::size::contain
+                                    +Style::background::repeat::norepeat);
+    img->setWidth(WLength("100%"));
+    img->setMaximumSize(1024,WLength::Auto);
+    img->setHeight(item.getHeight());
+    img->addStyleClass("nostShadow");
+
+
+
+
+    auto index_Container = img->addNew<WContainerWidget>();
+    auto indexText = index_Container->addNew<WText>(std::to_string(image_index+1)+"/"+std::to_string(mFList.size()),TextFormat::UnsafeXHTML);
+    index_Container->setAttributeValue(Style::style,Style::background::color::rgba(175,175,75,.75)+Style::color::color(Style::color::White::AliceBlue+Style::font::size::s20px+Style::font::weight::bold));
+    index_Container->setPositionScheme(PositionScheme::Absolute);
+    index_Container->setOffsets(0,Side::Top);
+    index_Container->setOffsets(WLength("50%"),Side::Left);
+
+
+
+
+
+
+    auto back_Container = img->addNew<WContainerWidget>();
+    auto backText = back_Container->addNew<WText>("⬅",TextFormat::UnsafeXHTML);
+    backText->setPadding(5,AllSides);
+    back_Container->setAttributeValue(Style::style,Style::background::color::rgba(175,175,75,.75)+Style::color::color(Style::color::White::AliceBlue+Style::font::size::s36px+Style::font::weight::bold));
+    back_Container->setPositionScheme(PositionScheme::Absolute);
+    back_Container->setOffsets(0,Side::Top);
+    back_Container->setOffsets(WLength("40%"),Side::Left);
+    back_Container->decorationStyle().setCursor(Cursor::PointingHand);
+
+
+    back_Container->clicked().connect([=](){
+        image_index--;
+        image_index = image_index%mFList.count();
+        if( image_index < 0 ) image_index = mFList.count()-1;
+
+        this->showItemFull();
+    });
+
+
+    auto next_Container = img->addNew<WContainerWidget>();
+    auto nextText = next_Container->addNew<WText>("➡",TextFormat::UnsafeXHTML);
+    nextText->setPadding(5,AllSides);
+    next_Container->setAttributeValue(Style::style,Style::background::color::rgba(175,175,75,.75)+Style::color::color(Style::color::White::AliceBlue+Style::font::size::s36px+Style::font::weight::bold));
+    next_Container->setPositionScheme(PositionScheme::Absolute);
+    next_Container->setOffsets(0,Side::Top);
+    next_Container->setOffsets(WLength("60%"),Side::Left);
+    next_Container->decorationStyle().setCursor(Cursor::PointingHand);
+
+
+    next_Container->clicked().connect([=](){
+        image_index++;
+        image_index = image_index%mFList.count();
+        this->showItemFull();
+    });
+
+
+    auto close_Container = img->addNew<WContainerWidget>();
+    auto closeText = close_Container->addNew<WText>("✘",TextFormat::UnsafeXHTML);
+    close_Container->setPadding(5,AllSides);
+    close_Container->setAttributeValue(Style::style,Style::background::color::rgba(175,75,75,.75)+Style::color::color(Style::color::White::AliceBlue+Style::font::size::s24px+Style::font::weight::bold));
+    close_Container->setPositionScheme(PositionScheme::Absolute);
+    close_Container->setOffsets(0,Side::Top);
+    close_Container->setOffsets(WLength("70%"),Side::Left);
+    close_Container->decorationStyle().setCursor(Cursor::PointingHand);
+
+
+    close_Container->clicked().connect([=](){
+        wApp->root()->removeWidget(mImgFullContainer);
+        mImgFullContainer = nullptr;
+        this->showItem();
+    });
 }
 
 

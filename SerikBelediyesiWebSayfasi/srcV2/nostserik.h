@@ -103,7 +103,7 @@ class NostSerik : public ContainerWidget , public SerikBLDCore::ListItem<NostIte
     };
 
 public:
-    NostSerik(SerikBLDCore::DB* mDB);
+    explicit NostSerik(SerikBLDCore::DB* mDB);
 
     virtual void onList(const QVector<NostItem> *mlist ) override;
 
@@ -116,10 +116,16 @@ public:
     }
 
     WContainerWidget* mContentContainer;
+    WContainerWidget* mImgFullContainer = nullptr;
 
     void showItem(Node *item );
 
+    QVector<NostItem> mFList;
 
+    void showItem();
+    void showItemFull();
+
+    int image_index{0};
 
 
 };
