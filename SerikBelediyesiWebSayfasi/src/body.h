@@ -569,7 +569,7 @@ namespace Body {
         WContainerWidget* pdfContainer;
         WContainerWidget* pdflinkContainer;
 
-        void setKararlar(std::string oid);
+        void setKararlar(std::string oid, const int &startSayi = 0);
 
         void setKarar(std::string oid);
     };

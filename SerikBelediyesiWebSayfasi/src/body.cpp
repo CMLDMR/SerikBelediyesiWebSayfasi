@@ -13,6 +13,7 @@ Body::Body::Body(mongocxx::database *_db, mongocxx::gridfs::bucket *_bucket)
     setPadding(0,AllSides);
     setMargin(0,AllSides);
 
+
     mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
 
     mMainContainer->setMaximumSize(1250,WLength::Auto);
@@ -2795,7 +2796,8 @@ Body::NewsAnnounceContent::NewsPanel::ControlPanel::ControlPanel()
         container->addStyleClass("ControlPanelMenuItem");
         container->setHeight(75);
         auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        auto text = layout->addWidget(cpp14::make_unique<WText>("En Çok Okunan"),0,AlignmentFlag::Middle);
+//        auto text1 = layout->addWidget(cpp14::make_unique<WText>(""))
+        auto text = layout->addWidget(cpp14::make_unique<WText>(WString("En Çok Okunan")),0,AlignmentFlag::Middle);
         container->clicked().connect([=](){
             _ClickPanel.emit(SBLDKeys::Haberler::OkunmaSayisi);
         });
@@ -4368,7 +4370,7 @@ Body::IstatistikAnket::IstatistikAnket()
 
     setAttributeValue(Style::style,Style::background::color::color(Style::color::White::AliceBlue));
     setHeight(350);
-    auto mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
+    addWidget(cpp14::make_unique<WContainerWidget>());
 
 }
 
@@ -4520,7 +4522,7 @@ Body::Meclis::Meclis(mongocxx::database *_db)
 
             strList.removeDuplicates();
             int row = 1;
-            for( QString str : strList )
+            for( const QString &str : strList )
             {
                 auto yilText = cpp14::make_unique<WText>(str.toStdString().c_str());
                 yilText->decorationStyle().setCursor(Cursor::PointingHand);
@@ -4528,14 +4530,34 @@ Body::Meclis::Meclis(mongocxx::database *_db)
                     int srow = 1;
                     table_ay->clear();
                     table_ay->elementAt(0, 0)->addWidget(cpp14::make_unique<WText>("Ay Seçimi"));
-                    for( auto item : list )
+                    for( const auto &item : list )
                     {
                         if( item.yil == str.toInt() )
                         {
                             auto ayText = cpp14::make_unique<WText>(item.ay.c_str());
                             ayText->decorationStyle().setCursor(Cursor::PointingHand);
                             ayText->clicked().connect([=](){
-                                this->setKararlar(item.oid);
+
+                                auto mDialog = this->addChild(cpp14::make_unique<WDialog>());
+
+                                auto start_karar_sayi = mDialog->contents()->addWidget(cpp14::make_unique<WSpinBox>());
+
+                                auto startBtn = mDialog->footer()->addWidget(cpp14::make_unique<WPushButton>("Başlat"));
+                                auto kapatBtn = mDialog->footer()->addWidget(cpp14::make_unique<WPushButton>("Kapat"));
+                                kapatBtn->clicked().connect([=](){
+                                   this->removeChild(mDialog);
+                                });
+
+                                startBtn->clicked().connect([=](){
+
+                                    this->setKararlar(item.oid,start_karar_sayi->value());
+
+
+                                });
+
+                                mDialog->show();
+
+
                             });
                             table_ay->elementAt(srow++, 0)->addWidget(std::move(ayText));
                         }
@@ -4569,7 +4591,7 @@ Signal<NoClass> &Body::Meclis::mGetBack()
     return this->_clickBack;
 }
 
-void Body::Meclis::setKararlar(std::string oid)
+void Body::Meclis::setKararlar(std::string oid, const int &startSayi)
 {
 
     auto filter = document{};
@@ -4588,6 +4610,64 @@ void Body::Meclis::setKararlar(std::string oid)
     titleContainer->addStyleClass(Bootstrap::Grid::container_fluid);
     auto titleVideoContainer = titleContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     titleVideoContainer->addStyleClass(Bootstrap::Grid::row);
+    auto testcontainer = pdfContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+    testcontainer->addStyleClass(Bootstrap::Grid::col_full_12);
+
+    auto comboBox = testcontainer->addWidget(cpp14::make_unique<WComboBox>());
+    {
+
+        auto cursor = this->db->collection("MeclisV2").find(document{}.view());
+
+
+
+        for( const auto &item : cursor ){
+
+            std::string oid{};
+            std::string year{};
+            std::string ay{};
+            bool exist = true;
+
+
+            try {
+                oid = item["_id"].get_oid().value.to_string();
+            } catch (bsoncxx::exception &e) {
+                exist = false;
+            }
+
+            try {
+                year = std::to_string(item["yil"].get_int32().value);
+            } catch (bsoncxx::exception &e) {
+                exist = false;
+            }
+
+            try {
+                ay = item["ay"].get_utf8().value.to_string();
+            } catch (bsoncxx::exception &e) {
+                exist = false;
+            }
+
+            if( exist && ( item["yil"].get_int32().value < 2020) ){
+                comboBox->addItem(oid+"-"+year+"-"+ay);
+
+            }else{
+                std::cout << "Not Exist\n";
+            }
+
+        }
+
+
+
+    }
+
+
+
+
+    int mStartSayiKarar = startSayi;
+
+
+
+
+
 
     auto listContainer = pdfContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     listContainer->addStyleClass(Bootstrap::Grid::row);
@@ -4680,17 +4760,131 @@ void Body::Meclis::setKararlar(std::string oid)
             {
                 std::string oid = kararList.at(i);
                 auto container = listContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-                container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_4);
+                container->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_4);
                 container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
                 container->decorationStyle().setCursor(Cursor::PointingHand);
 
                 auto text = (cpp14::make_unique<WText>(WString("Karar {1}").arg(i)));
                 text->setAttributeValue(Style::style,Style::font::weight::bold+
                                         Style::font::size::s12px);
-                container->clicked().connect([=](){
+
+
+                container->addWidget(std::move(text));
+
+                container->addWidget(cpp14::make_unique<WBreak>());
+
+                int _ay = 1;
+
+                if( QString::fromStdString(view[SBLDKeys::Meclis::ay].get_utf8().value.to_string()).contains("Ocak") ){
+                    _ay = 1;
+                }else if( QString::fromStdString(view[SBLDKeys::Meclis::ay].get_utf8().value.to_string()).contains("Şubat") ){
+                    _ay = 2;
+                }else if( QString::fromStdString(view[SBLDKeys::Meclis::ay].get_utf8().value.to_string()).contains("Mart") ){
+                    _ay = 3;
+                }else if( QString::fromStdString(view[SBLDKeys::Meclis::ay].get_utf8().value.to_string()).contains("Nisan") ){
+                    _ay = 4;
+                }else if( QString::fromStdString(view[SBLDKeys::Meclis::ay].get_utf8().value.to_string()).contains("Mayıs") ){
+                    _ay = 5;
+                }else if( QString::fromStdString(view[SBLDKeys::Meclis::ay].get_utf8().value.to_string()).contains("Haziran") ){
+                    _ay = 6;
+                }else if( QString::fromStdString(view[SBLDKeys::Meclis::ay].get_utf8().value.to_string()).contains("Temmuz") ){
+                    _ay = 7;
+                }else if( QString::fromStdString(view[SBLDKeys::Meclis::ay].get_utf8().value.to_string()).contains("Ağustos") ){
+                    _ay = 8;
+                }else if( QString::fromStdString(view[SBLDKeys::Meclis::ay].get_utf8().value.to_string()).contains("Eylül") ){
+                    _ay = 9;
+                }else if( QString::fromStdString(view[SBLDKeys::Meclis::ay].get_utf8().value.to_string()).contains("Ekim") ){
+                    _ay = 10;
+                }else if( QString::fromStdString(view[SBLDKeys::Meclis::ay].get_utf8().value.to_string()).contains("Kasım") ){
+                    _ay = 11;
+                }else if( QString::fromStdString(view[SBLDKeys::Meclis::ay].get_utf8().value.to_string()).contains("Aralık") ){
+                    _ay = 12;
+                }
+
+//                auto datetime = container->addNew<WDateEdit>();
+//                datetime->setDate(WDate(static_cast<int>(view[SBLDKeys::Meclis::yil].get_double().value),_ay,1));
+//                container->addWidget(cpp14::make_unique<WBreak>());
+
+                auto meclisOid = container->addNew<WText>();
+                meclisOid->setText(QString::fromStdString(comboBox->currentText().toUTF8()).split("-").first().toStdString());
+                container->addWidget(cpp14::make_unique<WBreak>());
+
+                auto sayiText = container->addNew<WSpinBox>();
+                sayiText->setValue(mStartSayiKarar++);
+                container->addWidget(cpp14::make_unique<WBreak>());
+
+                auto kararKaydet = container->addNew<WPushButton>("Kaydet");
+
+                kararKaydet->clicked().connect([=](){
+
+                    auto kararDoc = document{};
+
+                    try {
+                        kararDoc.append(kvp("Sayi",bsoncxx::types::b_int32{sayiText->value()}));
+                    } catch (bsoncxx::exception &e) {
+                    }
+
+                    try {
+                        kararDoc.append(kvp("KararOid",bsoncxx::oid{oid}));
+                    } catch (bsoncxx::exception &e) {
+
+                    }
+
+                    try {
+                        kararDoc.append(kvp("MeclisOid",bsoncxx::oid{QString::fromStdString(comboBox->currentText().toUTF8()).split("-").first().toStdString()}));
+                    } catch (bsoncxx::exception &e) {
+
+                    }
+
+                    auto count = this->db->collection("MeclisKararlari").count_documents(kararDoc.view());
+
+
+                    if( count ){
+                        auto mDialog = this->addChild(cpp14::make_unique<WDialog>());
+
+                        mDialog->contents()->addWidget(cpp14::make_unique<WText>("Bu Karar Mevcut"));
+                        auto btn = mDialog->footer()->addWidget(cpp14::make_unique<WPushButton>("Kapat"));
+                        btn->clicked().connect([=](){
+                            this->removeChild(mDialog);
+                        });
+
+                        mDialog->show();
+                    }else{
+                        std::cout << bsoncxx::to_json(kararDoc.view()) << std::endl;
+
+
+
+
+
+                        auto ins = this->db->collection("MeclisKararlari").insert_one(kararDoc.view());
+                        if( ins ){
+                            if( ins.value().result().inserted_count() ){
+                                meclisOid->setText("Kayıt Edildi");
+                            }
+                        }
+                    }
+
+
+
+
+
+
+                });
+
+
+                container->addWidget(cpp14::make_unique<WBreak>());
+
+
+
+                auto gosterBtn = container->addNew<WPushButton>("Göster");
+
+                gosterBtn->clicked().connect([=](){
                     this->setKarar(oid);
                 });
-                container->addWidget(std::move(text));
+
+
+
+
             }
         }
 
@@ -5095,7 +5289,7 @@ void Body::Proje::initBirimlereGoreDagilim()
     {
         auto titleCOntainer = rowCOntainer->addWidget(cpp14::make_unique<WContainerWidget>());
         titleCOntainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-        auto title = rowCOntainer->addWidget(cpp14::make_unique<WText>("<h2>Projelerin Birimlere Dağılımı</h2>"));
+        rowCOntainer->addWidget(cpp14::make_unique<WText>("<h2>Projelerin Birimlere Dağılımı</h2>"));
     }
 
     auto container = rowCOntainer->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -5110,7 +5304,6 @@ void Body::Proje::initBirimlereGoreDagilim()
     model->setHeaderData(1, WString("Proje Sayısı"));
 
     auto filter = document{};
-    auto view = filter.view();
 
     std::vector<std::string> birimList;
 
