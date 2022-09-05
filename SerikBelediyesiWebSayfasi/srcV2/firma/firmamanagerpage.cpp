@@ -295,7 +295,7 @@ void v2::FirmaManagerPage::yeniFirmaKayitDialog()
 
     sp->forEdit(firmaAdiLineEdit);
 
-    for( auto item : this->List () )
+    for( const auto &item : this->List () )
     {
         sp->addSuggestion(item.name ());
     }
