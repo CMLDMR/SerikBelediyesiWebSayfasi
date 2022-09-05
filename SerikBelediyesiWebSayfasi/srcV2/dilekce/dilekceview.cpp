@@ -178,11 +178,12 @@ void DilekceView::initDilekceView()
                                   +Bootstrap::Grid::Medium::col_md_2
                                   +Bootstrap::Grid::Small::col_sm_2
                                   +Bootstrap::Grid::ExtraSmall::col_xs_6);
-        QDateTime _time;
-        _time.setTime_t (this->oid ().value ().get_time_t ());
+        QDateTime _time = QDateTime::fromMSecsSinceEpoch(this->oid().value().get_time_t());
+// QT 6 Not Supported        _time.setTime_t (this->oid ().value ().get_time_t ());
          container->addWidget (cpp14::make_unique<WText>(_time.date ().toString ("dd/MM/yyyy").toStdString ()
                                                                     +" - " + _time.time ().toString ("hh:mm").toStdString ()));
-        container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+
+         container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
     }
 
 
