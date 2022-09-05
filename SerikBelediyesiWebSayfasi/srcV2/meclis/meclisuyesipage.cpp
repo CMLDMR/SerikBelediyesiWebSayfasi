@@ -125,7 +125,7 @@ v2::MeclisUyeleriPage::MeclisUyeleriPage(SerikBLDCore::DB *_db)
                                   Bootstrap::Grid::Small::col_sm_6+
                                   Bootstrap::Grid::ExtraSmall::col_xs_6);
         mDonemFilter = container->addWidget (cpp14::make_unique<WComboBox>());
-        for( auto item : this->getDonemList () )
+        for( const auto &item : this->getDonemList () )
         {
             mDonemFilter->addItem (item.donem ().toStdString ());
         }
@@ -1183,7 +1183,7 @@ void v2::MeclisUyesiProfilPage::meclisUyesiBilgileri()
     selectedContainer->addStyleClass (Bootstrap::Grid::row);
 
 
-    for( auto item : this->komisyonUyelikleri ())
+    for( const auto &item : this->komisyonUyelikleri ())
     {
 
         auto text = selectedContainer->addWidget (cpp14::make_unique<WText>(item.toStdString ()));

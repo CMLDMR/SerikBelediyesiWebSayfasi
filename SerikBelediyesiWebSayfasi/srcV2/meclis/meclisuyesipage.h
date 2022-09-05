@@ -34,6 +34,9 @@ class MeclisUyeleriPage : public SerikBLDCore::Meclis::UyeManager , public Conta
 {
 public:
     explicit MeclisUyeleriPage(DB* _db);
+    ~MeclisUyeleriPage(){
+        delete tcManager;
+    }
 
     void onList(const QVector<SerikBLDCore::Meclis::MeclisUyesi> *mlist) override;
 
