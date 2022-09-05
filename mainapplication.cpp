@@ -99,7 +99,7 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
 
 
     QMap<QString,QString> mapList;
-    //    test Link : http://192.168.0.31:8080/?type=dilekce&_id=5daee97a6435000043002489 cevaplanmis
+    // test Link : http://192.168.0.31:8080/?type=dilekce&_id=5daee97a6435000043002489 cevaplanmis
     // http://192.168.0.31:8080/?type=dilekce&_id=5daeebd8222400005d0005dc Cevaplanmamis
     for (auto str : env.getParameterMap() ) {
         //        std::cout << "First: " << str.first << " " << str.second.size() << " " << str.second.back() << std::endl;
@@ -142,15 +142,10 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
     }
 
 
-
-
     if( !showSpecLink )
     {
         this->init();
     }
-
-
-
 
 
     auto device0 = root()->addWidget(cpp14::make_unique<WText>("Serik Belediyesi © 2019"));
