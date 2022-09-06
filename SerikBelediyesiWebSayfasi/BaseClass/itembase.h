@@ -6,8 +6,10 @@
 #include <QStringList>
 #include <QVector>
 
+#include "db.h"
 
-class ItemBase : public DBClass
+
+class ItemBase : public SerikBLDCore::DB
 {
 public:
     explicit ItemBase(mongocxx::database* _db, const std::string &collection);

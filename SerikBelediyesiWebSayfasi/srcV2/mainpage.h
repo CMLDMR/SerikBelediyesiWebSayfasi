@@ -1,7 +1,7 @@
 #ifndef MAINPAGE_H
 #define MAINPAGE_H
 
-#include "SerikBelediyesiWebSayfasi/BaseClass/databasewidget.h"
+//#include "SerikBelediyesiWebSayfasi/BaseClass/databasewidget.h"
 #include "headerpage.h"
 #include "SerikBelediyesiWebSayfasi/src/footer.h"
 #include "db.h"

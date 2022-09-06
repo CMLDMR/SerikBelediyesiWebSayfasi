@@ -1,11 +1,12 @@
 #include "itembase.h"
 #include "SerikBelediyesiWebSayfasi/baseItem/tcitem.h"
 
+
 ItemBase::ItemBase(mongocxx::database *_db, const std::string &collection)
-    : DBClass (_db),
+    : SerikBLDCore::DB (_db),
+      doc(document{}),
       collectionName(collection),
-      mIsValid(true),
-    doc(document{})
+      mIsValid(true)
 {
     try {
         auto ins = this->db()->collection(collectionName).insert_one(doc.view());
@@ -22,7 +23,7 @@ ItemBase::ItemBase(mongocxx::database *_db, const std::string &collection)
 }
 
 ItemBase::ItemBase(mongocxx::database *_db, const std::string &collection, bsoncxx::document::view &_view)
-    : DBClass (_db),
+    : SerikBLDCore::DB (_db),
       collectionName(collection),
       mIsValid(true)
 {

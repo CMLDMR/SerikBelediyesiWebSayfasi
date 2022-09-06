@@ -6,9 +6,10 @@
 #include "SerikBelediyesiWebSayfasi/BaseClass/wtheaders.h"
 #include "bilgiedinmeitem.h"
 
+#include "db.h"
 
 
-class BilgiEdinmeYonetim : public ContainerWidget , public DBClass , public UserClass
+class BilgiEdinmeYonetim : public ContainerWidget , public SerikBLDCore::DB , public UserClass
 {
 public:
     BilgiEdinmeYonetim(mongocxx::database* _db , const bsoncxx::document::value &_userValue );
@@ -18,7 +19,7 @@ public:
 
 
 
-class BilgiEdinmeListWidget : public ContainerWidget , public DBClass
+class BilgiEdinmeListWidget : public ContainerWidget , public SerikBLDCore::DB
 {
 public:
     explicit BilgiEdinmeListWidget(const BilgiEdinmeItem *_item);
@@ -33,7 +34,7 @@ private:
 };
 
 
-class BilgiEdinmeWidget : public ContainerWidget , public DBClass , public UserClass
+class BilgiEdinmeWidget : public ContainerWidget , public SerikBLDCore::DB , public UserClass
 {
 public:
     BilgiEdinmeWidget( mongocxx::database* _db , const bsoncxx::oid &_oid , const UserClass &user );

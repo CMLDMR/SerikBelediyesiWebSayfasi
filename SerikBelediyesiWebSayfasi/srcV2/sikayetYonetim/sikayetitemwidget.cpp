@@ -3,7 +3,7 @@
 #include "SerikBelediyesiWebSayfasi/baseWidget/tcitemwidget.h"
 
 SikayetItemWidget::SikayetItemWidget(mongocxx::database *_db, const UserClass &userValue, const bsoncxx::oid &_oid)
-    :DBClass (_db),UserClass (userValue),mCurrentSikayet(Sikayet::SikayetItem::Load_Sikayet(_db,_oid).value())
+    :SerikBLDCore::DB (_db),UserClass (userValue),mCurrentSikayet(Sikayet::SikayetItem::Load_Sikayet(_db,_oid).value())
 {
     this->initHeader();
     this->initContent();
@@ -706,7 +706,7 @@ AsamaItemWidget::AsamaItemWidget(bsoncxx::document::view &&view)
 }
 
 newSikayetItemWidget::newSikayetItemWidget(mongocxx::database *_db, const UserClass &userValue)
-    :DBClass (_db),UserClass (userValue)
+    :SerikBLDCore::DB (_db),UserClass (userValue)
 {
     setWidth(WLength("100%"));
     addStyleClass(Bootstrap::Grid::row+Bootstrap::ImageShape::img_thumbnail);

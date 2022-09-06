@@ -5,6 +5,7 @@
 
 #include <boost/optional.hpp>
 #include <QVector>
+#include "db.h"
 
 namespace BilgiEdinmeKEY {
 static const std::string collection{"bilgiEdinmeBasvuru"};
@@ -28,7 +29,10 @@ static const std::string tarih{"tarih"};
 }
 }
 
-class BilgiEdinmeItem : public DBClass
+
+
+
+class BilgiEdinmeItem : public SerikBLDCore::DB
 {
 public:
 

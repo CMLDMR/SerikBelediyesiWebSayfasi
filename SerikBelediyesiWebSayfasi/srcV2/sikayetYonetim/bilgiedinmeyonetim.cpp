@@ -3,7 +3,7 @@
 
 
 BilgiEdinmeYonetim::BilgiEdinmeYonetim(mongocxx::database *_db, const bsoncxx::document::value &_userValue)
-    :DBClass (_db),UserClass (_userValue)
+    :SerikBLDCore::DB (_db),UserClass (_userValue)
 {
     setContainerStyle(ContainerStyleType::ROW);
 
@@ -60,7 +60,7 @@ void BilgiEdinmeYonetim::initBilgiEdinme(const bsoncxx::oid &oid)
 }
 
 BilgiEdinmeListWidget::BilgiEdinmeListWidget( const BilgiEdinmeItem *_item)
-    :DBClass (_item->db()),item(_item)
+    :SerikBLDCore::DB (_item->getDB()),item(_item)
 {
     setWidth(WLength("100%"));
     setContainerStyle(ContainerStyleType::ROW);
@@ -114,7 +114,7 @@ Signal<bsoncxx::oid> &BilgiEdinmeListWidget::ClickBilgiEdinme()
 
 
 BilgiEdinmeWidget::BilgiEdinmeWidget(mongocxx::database *_db, const bsoncxx::oid &_oid, const UserClass &user)
-    :DBClass (_db),UserClass (user),mOid(_oid)
+    :SerikBLDCore::DB (_db),UserClass (user),mOid(_oid)
 {
 
     setPadding(15,Side::Left|Side::Right);
@@ -229,7 +229,30 @@ void BilgiEdinmeWidget::initWidget()
 
         auto birimComboBox = vLayout_->addWidget(cpp14::make_unique<WComboBox>(),1,AlignmentFlag::Middle);
 
-        auto list = this->BirimList();
+        SerikBLDCore::Item birimFilter("Müdürlükler");
+
+        auto list__ = this->getDB()->find(birimFilter,100);
+
+        std::vector<std::string> list;
+
+        for( const auto &_item : *list__ ){
+
+            std::string birim;
+
+            try {
+                auto _int = std::stoi(_item["Haberleşme Kodu"].get_utf8().value.to_string());
+                if( _int > 0 ){
+                    list.push_back(_item["Haberleşme Kodu"].get_utf8().value.to_string());
+                }
+            } catch (bsoncxx::exception &e) {
+
+            }
+
+        }
+
+
+
+//        auto list = this->getDB().;
         int _index = 0;
         bool Increment = true;
         birimComboBox->addItem("Yok");
@@ -341,7 +364,7 @@ void BilgiEdinmeWidget::initWidget()
         layout->addWidget(cpp14::make_unique<WText>("Tarih :"+ WDate::fromJulianDay(mItem->cevap().mTarih).toString("dd/MM/yyyy")),0,AlignmentFlag::Top|AlignmentFlag::Center);
 
 
-        auto fileName = this->downloadFile(mItem->cevap().mCevapOid);
+        auto fileName = this->downloadFileWeb(mItem->cevap().mCevapOid.c_str());
 
         Wt::WLink link = Wt::WLink(LinkType::Url,"/"+fileName);
         link.setTarget(Wt::LinkTarget::NewWindow);

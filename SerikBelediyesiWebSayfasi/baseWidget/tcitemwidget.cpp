@@ -3,13 +3,13 @@
 
 
 TCItemWidget::TCItemWidget(mongocxx::database *_db, bsoncxx::document::value &userValue)
-    :DBClass (_db),UserClass (userValue),mTCItem(nullptr),mNewTCItem(true)
+    :SerikBLDCore::DB (_db),UserClass (userValue),mTCItem(nullptr),mNewTCItem(true)
 {
     addWidget(cpp14::make_unique<WText>("TC Widget For New"));
 }
 
 TCItemWidget::TCItemWidget(mongocxx::database *_db, const bsoncxx::document::value &userValue, TC::TCItem *_mTCItem)
-    :DBClass (_db),UserClass (userValue),mTCItem(_mTCItem), mNewTCItem(false)
+    :SerikBLDCore::DB (_db),UserClass (userValue),mTCItem(_mTCItem), mNewTCItem(false)
 {
     addStyleClass(Bootstrap::ImageShape::img_thumbnail);
     setWidth(WLength("100%"));

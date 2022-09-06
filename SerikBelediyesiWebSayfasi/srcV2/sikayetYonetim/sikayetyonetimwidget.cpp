@@ -6,7 +6,7 @@
 
 
 SikayetYonetimWidget::SikayetYonetimWidget(mongocxx::database *_db, const bsoncxx::document::value &userValue)
-    :UserClass (userValue),DBClass(_db)
+    :UserClass (userValue),SerikBLDCore::DB(_db)
 {
 
     Header()->setMargin(10,Side::Bottom);

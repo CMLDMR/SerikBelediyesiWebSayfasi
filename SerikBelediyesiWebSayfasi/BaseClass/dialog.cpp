@@ -1,7 +1,7 @@
 #include "dialog.h"
 
 Dialog::Dialog(mongocxx::database *_db, const bsoncxx::document::value &userValue, const std::string &title)
-    :DBClass (_db),UserClass (userValue)
+    :SerikBLDCore::DB (_db),UserClass (userValue)
 {
     this->titleBar()->addWidget(cpp14::make_unique<WText>(title));
     this->titleBar()->addStyleClass(Bootstrap::ContextualBackGround::bg_primary);

@@ -150,19 +150,19 @@ const std::string BilgiEdinmeItem::Tarih() const
 
 
 BilgiEdinmeItem::BilgiEdinmeItem(mongocxx::database *_db)
-    :DBClass (_db)
+    :SerikBLDCore::DB (_db)
 {
 
 }
 
 BilgiEdinmeItem::BilgiEdinmeItem(mongocxx::database *_db, const bsoncxx::document::view &view)
-    :DBClass (_db)
+    :SerikBLDCore::DB (_db)
 {
     this->LoadFromDocumentView(view);
 }
 
 BilgiEdinmeItem::BilgiEdinmeItem(const BilgiEdinmeItem *item )
-    :DBClass (item->db()),mOid(item->oid())
+    :SerikBLDCore::DB (item->getDB()),mOid(item->oid())
 {
     this->mKonu = item->Konu();
     this->mTarih = item->Tarih();

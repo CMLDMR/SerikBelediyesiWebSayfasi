@@ -4,7 +4,9 @@
 #include "SerikBelediyesiWebSayfasi/baseItem/tcitem.h"
 #include "SerikBelediyesiWebSayfasi/BaseClass/containerwiget.h"
 
-class TCItemWidget : public ContainerWidget , public DBClass , public UserClass
+#include "db.h"
+
+class TCItemWidget : public ContainerWidget , public SerikBLDCore::DB , public UserClass
 {
 public:
     TCItemWidget(mongocxx::database* _db , bsoncxx::document::value &userValue);

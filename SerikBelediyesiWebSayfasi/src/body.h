@@ -50,7 +50,6 @@
 #include "serikbeltr.h"
 #include "basindabizwidget.h"
 
-#include "SerikBelediyesiWebSayfasi/BaseClass/databasewidget.h"
 
 //#include <iostream>
 //#include <memory>
@@ -861,11 +860,6 @@ namespace Body {
         std::string oldtelefon;
     };
 
-    class MeclisUyeleriWidget : public WContainerWidget, SerikBLDCore::DB
-    {
-    public:
-        MeclisUyeleriWidget(mongocxx::database* _database);
-    };
 
 
 

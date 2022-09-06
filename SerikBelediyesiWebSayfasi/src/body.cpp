@@ -11769,23 +11769,4 @@ Body::BilgiEdin::KamuHizmetRapor::KamuHizmetRapor()
     }
 }
 
-Body::MeclisUyeleriWidget::MeclisUyeleriWidget(mongocxx::database *_database)
-    :SerikBLDCore::DB(_database)
-{
 
-
-    auto fContainer = addWidget(cpp14::make_unique<WContainerWidget>());
-
-    fContainer->addStyleClass(Bootstrap::Grid::container_fluid);
-
-    auto rContainer = fContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-    rContainer->addStyleClass(Bootstrap::Grid::row);
-
-    auto mContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-    mContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
-
-    mContainer->addWidget(cpp14::make_unique<WText>("Meclis Uyeleri"));
-
-
-
-}

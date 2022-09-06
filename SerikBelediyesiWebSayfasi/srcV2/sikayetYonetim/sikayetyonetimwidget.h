@@ -5,7 +5,9 @@
 #include "SerikBelediyesiWebSayfasi/BaseClass/dbclass.h"
 #include "sikayetitem.h"
 
-class SikayetYonetimWidget : public ContainerWidget , public UserClass , public DBClass
+#include "db.h"
+
+class SikayetYonetimWidget : public ContainerWidget , public UserClass , public SerikBLDCore::DB
 {
 public:
     SikayetYonetimWidget(mongocxx::database* _db , const bsoncxx::document::value &userValue);

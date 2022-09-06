@@ -5,9 +5,10 @@
 #include "SerikBelediyesiWebSayfasi/BaseClass/containerwiget.h"
 #include "bilgiedinmeyonetim.h"
 
+#include "db.h"
 
 
-class BilgiEdinmeClient : public DBClass , public UserClass , public ContainerWidget
+class BilgiEdinmeClient : public SerikBLDCore::DB , public UserClass , public ContainerWidget
 {
 public:
     BilgiEdinmeClient(mongocxx::database* _db , const bsoncxx::document::value &_user);

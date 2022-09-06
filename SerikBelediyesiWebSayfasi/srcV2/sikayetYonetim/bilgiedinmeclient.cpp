@@ -1,7 +1,7 @@
 #include "bilgiedinmeclient.h"
 
 BilgiEdinmeClient::BilgiEdinmeClient(mongocxx::database *_db, const bsoncxx::document::value &_user)
-    :DBClass (_db),UserClass (_user),ContainerWidget ("Bilgi Edinme Başvuruları")
+    :SerikBLDCore::DB (_db),UserClass (_user),ContainerWidget ("Bilgi Edinme Başvuruları")
 {
 
     setPadding(15,Side::Top|Side::Left|Side::Right);
