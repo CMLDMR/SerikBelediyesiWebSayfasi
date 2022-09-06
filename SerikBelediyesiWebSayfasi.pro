@@ -96,7 +96,6 @@ SOURCES += main.cpp \
     SerikBelediyesiWebSayfasi/src/basindabizwidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/mainpage.cpp \
     SerikBelediyesiWebSayfasi/srcV2/headerpage.cpp \
-    SerikBelediyesiWebSayfasi/srcV2/slider.cpp \
     SerikBelediyesiWebSayfasi/srcV2/mainpagecontroller.cpp \
     SerikBelediyesiWebSayfasi/srcV2/baskanwidget.cpp
 
@@ -188,7 +187,6 @@ HEADERS += \
     SerikBelediyesiWebSayfasi/src/basindabizwidget.h \
     SerikBelediyesiWebSayfasi/srcV2/mainpage.h \
     SerikBelediyesiWebSayfasi/srcV2/headerpage.h \
-    SerikBelediyesiWebSayfasi/srcV2/slider.h \
     SerikBelediyesiWebSayfasi/srcV2/mainpagecontroller.h \
     SerikBelediyesiWebSayfasi/srcV2/baskanwidget.h
 
