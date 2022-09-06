@@ -1,8 +1,9 @@
 #include "headerpage.h"
 
-HeaderPage::HeaderPage(mongocxx::database *_db)
-    :DataBaseWidget(_db)
+HeaderPage::HeaderPage()
+//    :DataBaseWidget(_db)
 {
+    this->clear();
     setWidth(WLength("100%"));
     setPositionScheme(PositionScheme::Absolute);
     setOffsets(0,Side::Top|Side::Left|Side::Right);
@@ -28,23 +29,23 @@ HeaderPage::HeaderPage(mongocxx::database *_db)
 
         {
             auto _container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            _container->addStyleClass(Bootstrap::Grid::Offset::Large::col_lg_10+Bootstrap::Grid::Offset::Medium::col_md_10+Bootstrap::Grid::Offset::Small::col_sm_8+Bootstrap::Grid::Offset::ExtraSmall::col_xs_6);
+            _container->addStyleClass(Bootstrap::Grid::Offset::Large::col_lg_11+Bootstrap::Grid::Offset::Medium::col_md_11+Bootstrap::Grid::Offset::Small::col_sm_10+Bootstrap::Grid::Offset::ExtraSmall::col_xs_9);
             _container->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Small::col_sm_2+Bootstrap::Grid::ExtraSmall::col_xs_3);
             auto title = _container->addWidget(cpp14::make_unique<WText>("Türkçe"));
             title->setAttributeValue(Style::style,Style::color::rgb("255,255,255")+Style::font::size::s11px);
             _container->setContentAlignment(AlignmentFlag::Center);
         }
 
-        {
-            auto _container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            _container->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Small::col_sm_2+Bootstrap::Grid::ExtraSmall::col_xs_3);
-            auto title = _container->addWidget(cpp14::make_unique<WText>("English"));
-            title->setAttributeValue(Style::style,Style::color::rgb("255,255,255")+Style::font::size::s11px);
-            _container->setContentAlignment(AlignmentFlag::Center);
-            _container->clicked().connect([=](){
-               this->showMessage("Notice","This Page is Underconstruction!");
-            });
-        }
+//        {
+//            auto _container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//            _container->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Small::col_sm_2+Bootstrap::Grid::ExtraSmall::col_xs_3);
+//            auto title = _container->addWidget(cpp14::make_unique<WText>("English"));
+//            title->setAttributeValue(Style::style,Style::color::rgb("255,255,255")+Style::font::size::s11px);
+//            _container->setContentAlignment(AlignmentFlag::Center);
+//            _container->clicked().connect([=](){
+//               this->showMessage("Notice","This Page is Underconstruction!");
+//            });
+//        }
 
     }
 

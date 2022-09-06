@@ -1,5 +1,4 @@
 #include "mainpage.h"
-#include "slider.h"
 #include "mainpagecontroller.h"
 #include "SerikBelediyesiWebSayfasi/src/body.h"
 #include "SerikBelediyesiWebSayfasi/src/giriswidget.h"
@@ -20,7 +19,7 @@
 MainPage::MainPage(mongocxx::database *_db)
     :DataBaseWidget (_db),_signal(this,"_signal")
 {
-    auto header = addWidget(cpp14::make_unique<HeaderPage>(this->getDB()));
+    auto header = addWidget(cpp14::make_unique<HeaderPage>());
     header->setZIndex(12);
     header->addStyleClass("header");
 

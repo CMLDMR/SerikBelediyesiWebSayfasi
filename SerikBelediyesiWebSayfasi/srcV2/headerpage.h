@@ -1,13 +1,12 @@
 #ifndef HEADERPAGE_H
 #define HEADERPAGE_H
 
-#include "SerikBelediyesiWebSayfasi/BaseClass/databasewidget.h"
+#include "SerikBelediyesiWebSayfasi/BaseClass/containerwiget.h"
 
-
-class HeaderPage : public DataBaseWidget
+class HeaderPage : public ContainerWidget
 {
 public:
-    HeaderPage(mongocxx::database* _db);
+    HeaderPage();
 
 
     Signal<NoClass> &ClickAnaSayfa();
