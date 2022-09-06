@@ -91,6 +91,148 @@ void v2::NostSerikManager::onList(const QVector<NostItem> *mlist)
                 }
             });
         });
+
+        imgItem->EditClicked().connect([=](const std::string &fileOid ){
+            auto mDialog = this->createDialog("Değiştir");
+
+            auto imgContainer = mDialog->contents()->addWidget(cpp14::make_unique<WContainerWidget>());
+
+            std::string imgurl;
+            std::string aciklama;
+            for( const auto &_item : *mlist ){
+                if( _item.getFileOid() == fileOid ){
+                    imgurl = _item.getFileOid();
+                    aciklama = _item.getAciklama();
+                    imgurl = this->downloadFileWeb(imgurl.c_str());
+                    break;
+                }
+            }
+
+
+            imgContainer->setAttributeValue(Style::style,Style::background::url(imgurl)+
+                                            Style::background::size::contain+
+                                            Style::background::position::center_center+
+                                            Style::background::repeat::norepeat);
+            imgContainer->setWidth(WLength("100%"));
+            imgContainer->setHeight(250);
+
+
+            auto fileUploadWidget = mDialog->contents()->addWidget(cpp14::make_unique<FileUploaderWidget>("Resim Yükle"));
+            fileUploadWidget->Uploaded().connect([=](){
+
+//                imgurl = fileUploadWidget->doocRootLocation().toStdString();
+
+                imgContainer->setAttributeValue(Style::style,Style::background::url(fileUploadWidget->doocRootLocation().toStdString())+
+                                                Style::background::size::contain+
+                                                Style::background::position::center_center+
+                                                Style::background::repeat::norepeat+"height:250.0px;");
+
+                imgContainer->setWidth(WLength("100%"));
+//                imgContainer->setHeight(250);
+
+            });
+
+
+
+
+            auto textEdit = mDialog->contents()->addNew<WTextEdit>();
+            textEdit->setMargin(15,Side::Top);
+            textEdit->setWidth(WLength("100%"));
+            textEdit->setHeight(250);
+            textEdit->setText(aciklama);
+
+
+
+            auto saveBtn = mDialog->footer()->addNew<WPushButton>("Kaydet");
+
+            saveBtn->clicked().connect([=](){
+
+                bool anyChanged = false;
+
+                auto changeItem = item;
+
+
+                if( fileUploadWidget->isUploaded() ){
+                    auto uploadedFileOid = this->uploadfile(fileUploadWidget->fileLocation());
+                    changeItem.setFileOid(uploadedFileOid.get_oid().value.to_string());
+
+
+                    QImage img;
+                    if( img.load(fileUploadWidget->fileLocation()) ){
+
+                        img = img.scaledToWidth(1024,Qt::SmoothTransformation);
+                        img.save(fileUploadWidget->fileLocation());
+
+
+                        double width = static_cast<double>(img.width());
+                        double height = static_cast<double>(img.height());
+
+
+
+                        double ratio = width/height;
+
+                        if( ratio > 1.3333 ){
+                            auto _img = img.scaledToHeight(150);
+                            img = _img.copy((_img.width()-200)/2,0,200,150);
+                        }else{
+                            auto _img = img.scaledToWidth(200);
+                            img = _img.copy(0,(_img.height()-150)/2,200,150);
+                        }
+
+
+
+                        QMimeDatabase imgDatabase;
+                        auto mimeType = imgDatabase.mimeTypeForFile(fileUploadWidget->fileLocation());
+
+                        if( img.save(fileUploadWidget->fileLocation()+"-----."+mimeType.preferredSuffix()) ){
+                            auto fileOidValue_ = this->uploadfile(fileUploadWidget->fileLocation()+"-----."+mimeType.preferredSuffix());
+
+                        }
+
+
+                        auto fileOidValue = this->uploadfile(fileUploadWidget->fileLocation());
+                        changeItem.setThumbnail(fileOidValue.get_oid().value.to_string());
+
+
+
+                        anyChanged = true;
+
+                    }
+
+
+
+
+                }
+
+
+
+
+                if( textEdit->text().toUTF8() != item.getAciklama() ){
+                    changeItem.setAciklama(textEdit->text().toUTF8());
+                    anyChanged = true;
+
+                }
+
+
+                if( anyChanged ){
+                    auto upt = this->UpdateItem(changeItem);
+                    if( upt ){
+                        this->showPopUpMessage("Değiştirildi");
+                        this->removeDialog(mDialog);
+                        this->UpdateList();
+
+                    }
+                }else{
+                    this->showPopUpMessage("Herhangi Bir Değişiklik Yapılmadı","warn");
+                }
+
+
+            });
+
+
+            mDialog->show();
+
+        });
     }
 
     mCurrentPageInfo->setText(std::to_string(this->currentPage()+1)+"/"+std::to_string(this->totalPage()+1));
@@ -415,14 +557,6 @@ v2::NostItemThumb::NostItemThumb(const std::string &url, const std::string &acik
     container->setHeight(150);
     container->setMargin(20,Side::Top|Side::Bottom);
 
-//    if( aciklama.size() > 24 ){
-//        QString str = QString::fromStdString(aciklama).mid(0,20)+"...";
-//        this->addNew<WText>(str.toStdString());
-
-//    }else{
-//        this->addNew<WText>(aciklama);
-
-//    }
 
     this->setMargin(5,Side::Top|Side::Bottom);
 
@@ -437,10 +571,21 @@ v2::NostItemThumb::NostItemThumb(const std::string &url, const std::string &acik
     editContainer->setHeight(20);
     editContainer->setOffsets(0,Side::Left|Side::Top);
     auto delBtn = editContainer->addNew<WContainerWidget>()->addNew<WText>("Sil");
-    delBtn->addStyleClass(CSSStyle::Button::Red::IndianRedButton);
+    delBtn->addStyleClass(CSSStyle::Button::redButton);
     delBtn->setPadding(5,AllSides);
+    delBtn->setPositionScheme(PositionScheme::Absolute);
+    delBtn->setOffsets(0,Side::Left);
     delBtn->clicked().connect([=](){
        _delClicked.emit(mFileOid);
+    });
+
+    auto editBtn = editContainer->addNew<WContainerWidget>()->addNew<WText>("Edit");
+    editBtn->addStyleClass(CSSStyle::Button::blueButton);
+    editBtn->setPadding(5,AllSides);
+    editBtn->setPositionScheme(PositionScheme::Absolute);
+    editBtn->setOffsets(0,Side::Right);
+    editBtn->clicked().connect([=](){
+       _editClicked.emit(mFileOid);
     });
 
 
@@ -455,6 +600,11 @@ Signal<std::string> &v2::NostItemThumb::Clicked()
 Signal<std::string> &v2::NostItemThumb::DelClicked()
 {
     return _delClicked;
+}
+
+Signal<std::string> &v2::NostItemThumb::EditClicked()
+{
+    return _editClicked;
 }
 
 
@@ -478,7 +628,7 @@ v2::NostSerik::NostSerik(SerikBLDCore::DB *mDB)
     mContentContainer->setMargin(90,Side::Top);
     mContentContainer->setMargin(50,Side::Bottom);
     mContentContainer->addStyleClass("NostListItems");
-//    mContentContainer->setHtmlTagName("section");
+
 
     mContentContainer->setMaximumSize(1280,WLength::Auto);
     mContentContainer->setWidth(WLength("100%"));
@@ -499,326 +649,14 @@ v2::NostSerik::NostSerik(SerikBLDCore::DB *mDB)
 void v2::NostSerik::onList(const QVector<NostItem> *mlist)
 {
 
-    Node *node;
-    NostItem* item;
-    Node *firstNode;
-
-    Node *oldNode;
-
     for( const auto &item : *mlist ){
         mFList.append(item);
     }
 
-    for( int i = 0 ; i < mlist->count() ; i++ ){
-
-
-        if( i == 0 ){
-            item = new NostItem();
-            node = new Node();
-            node->index = i;
-            node->total = mlist->count();
-            firstNode = node;
-            item->setDocumentView(mlist->at(i).view());
-            node->item = item;
-            oldNode = node;
-
-            item = new NostItem();
-            if( mlist->count() > 1 ){
-                item->setDocumentView(mlist->at(i+1).view());
-                node->next = new Node(item);
-                node->prev = nullptr;
-            }
-
-        }else{
-            if( i == mlist->count()-1 ){
-                node = node->next;
-                node->index = i;
-                node->prev = oldNode;
-
-                node->next = firstNode;
-                node->total = mlist->count();
-                oldNode = node;
-                firstNode->prev = node;
-            }else{
-                node->prev = node;
-                node = node->next;
-                node->index = i;
-                //node->prev = oldNode;
-
-                item = new NostItem();
-                item->setDocumentView(mlist->at(i+1).view());
-                node->next = new Node(item);
-                node->total = mlist->count();
-                oldNode = node;
-            }
-
-
-        }
-
-    }
-
-//    this->showItem(firstNode);
     this->showItem();
 
 }
 
-void v2::NostSerik::showItem( Node *item)
-{
-
-    mContentContainer->clear();
-
-    auto fileName = this->downloadFileWeb(item->item->getFileOid().c_str());
-
-
-
-    auto imgContainer = mContentContainer->addNew<WContainerWidget>();
-    imgContainer->setMaximumSize(750,WLength::Auto);
-
-    imgContainer->addStyleClass("NostListItem");
-    imgContainer->setMargin(45,Side::Top);
-    imgContainer->setWidth(WLength("100%"));
-    imgContainer->setHeight(static_cast<double>(item->item->getHeight())*0.73);
-    imgContainer->setPositionScheme(PositionScheme::Relative);
-    imgContainer->setAttributeValue(Style::style,Style::background::url(fileName.c_str())
-                                    +Style::background::size::contain
-                                    +Style::background::repeat::norepeat);
-    imgContainer->decorationStyle().setCursor(Cursor::PointingHand);
-
-
-    imgContainer->clicked().connect([=](){
-
-        auto _imgContainer = wApp->root()->addNew<WContainerWidget>();
-        _imgContainer->setAttributeValue(Style::style,Style::background::color::rgba(255,255,255,0.99));
-
-
-        auto text_Container = _imgContainer->addNew<WContainerWidget>();
-        auto text = text_Container->addNew<WText>(item->item->getAciklama(),TextFormat::UnsafeXHTML);
-        text_Container->setWidth(WLength("100%"));
-        text_Container->setMaximumSize(1024,WLength::Auto);
-        text_Container->setAttributeValue(Style::style,Style::color::color(Style::color::Grey::Black)+Style::font::size::s14px);
-        text_Container->addStyleClass("nostTextShadow");
-        text_Container->setMargin(60,Side::Top);
-
-
-        _imgContainer->setPositionScheme(PositionScheme::Fixed);
-        _imgContainer->setWidth(WLength("100%"));
-        _imgContainer->setHeight(WLength("100%"));
-        _imgContainer->setZIndex(12);
-        _imgContainer->setOffsets(0,AllSides);
-        _imgContainer->setContentAlignment(AlignmentFlag::Center);
-        _imgContainer->setOverflow(Overflow::Auto);
-
-        auto img = _imgContainer->addNew<WContainerWidget>();
-        img->setAttributeValue(Style::style,Style::background::url(fileName.c_str())
-                                        +Style::background::size::contain
-                                        +Style::background::repeat::norepeat);
-        img->setWidth(WLength("100%"));
-        img->setMaximumSize(1024,WLength::Auto);
-        img->setHeight(item->item->getHeight());
-        img->addStyleClass("nostShadow");
-
-
-
-
-        auto index_Container = img->addNew<WContainerWidget>();
-        auto indexText = index_Container->addNew<WText>(std::to_string(item->index+1)+"/"+std::to_string(item->total)+"-"+std::to_string(item->item->getHeight()),TextFormat::UnsafeXHTML);
-        index_Container->setAttributeValue(Style::style,Style::background::color::rgba(175,175,75,.75)+Style::color::color(Style::color::White::AliceBlue+Style::font::size::s20px+Style::font::weight::bold));
-        index_Container->setPositionScheme(PositionScheme::Absolute);
-        index_Container->setOffsets(0,Side::Top);
-        index_Container->setOffsets(WLength("50%"),Side::Left);
-
-
-
-
-
-
-        auto back_Container = img->addNew<WContainerWidget>();
-        auto backText = back_Container->addNew<WText>("⬅",TextFormat::UnsafeXHTML);
-        backText->setPadding(5,AllSides);
-        back_Container->setAttributeValue(Style::style,Style::background::color::rgba(175,175,75,.75)+Style::color::color(Style::color::White::AliceBlue+Style::font::size::s36px+Style::font::weight::bold));
-        back_Container->setPositionScheme(PositionScheme::Absolute);
-        back_Container->setOffsets(0,Side::Top);
-        back_Container->setOffsets(WLength("40%"),Side::Left);
-        back_Container->decorationStyle().setCursor(Cursor::PointingHand);
-
-
-        back_Container->clicked().connect([=]()mutable-> Node{
-            if( item->prev ){
-
-                item = item->prev;
-                auto file_Name = this->downloadFileWeb(item->item->getFileOid().c_str());
-
-                img->setAttributeValue(Style::style,Style::background::url(file_Name.c_str())
-                                                +Style::background::size::contain
-                                                +Style::background::repeat::norepeat
-                                       +Style::background::position::center_center+"height:"+std::to_string(item->item->getHeight())+"px;");
-                img->setMargin(WLength::Auto,Side::Left|Side::Right);
-                img->setWidth(WLength("100%"));
-                img->setMaximumSize(1024,WLength::Auto);
-                text->setText(item->item->getAciklama());
-                if( img->height() == 0 ){
-                    img->setHeight(item->item->getHeight());
-                }
-
-                indexText->setText(std::to_string(item->index+1)+"/"+std::to_string(item->total));
-
-
-            }else{
-                this->showPopUpMessage("Son Resimdeniz");
-            }
-
-        });
-
-
-        auto next_Container = img->addNew<WContainerWidget>();
-        auto nextText = next_Container->addNew<WText>("➡",TextFormat::UnsafeXHTML);
-        nextText->setPadding(5,AllSides);
-        next_Container->setAttributeValue(Style::style,Style::background::color::rgba(175,175,75,.75)+Style::color::color(Style::color::White::AliceBlue+Style::font::size::s36px+Style::font::weight::bold));
-        next_Container->setPositionScheme(PositionScheme::Absolute);
-        next_Container->setOffsets(0,Side::Top);
-        next_Container->setOffsets(WLength("60%"),Side::Left);
-        next_Container->decorationStyle().setCursor(Cursor::PointingHand);
-
-
-        next_Container->clicked().connect([=]()mutable-> Node{
-            if( item->next ){
-
-                item = item->next;
-                auto file_Name = this->downloadFileWeb(item->item->getFileOid().c_str());
-
-                img->setAttributeValue(Style::style,Style::background::url(file_Name.c_str())
-                                                +Style::background::size::contain
-                                                +Style::background::repeat::norepeat
-                                       +Style::background::position::center_center+"height:"+std::to_string(item->item->getHeight())+"px;");
-                img->setMargin(WLength::Auto,Side::Left|Side::Right);
-                img->setWidth(WLength("100%"));
-                img->setMaximumSize(1024,WLength::Auto);
-                text->setText(item->item->getAciklama());
-                if( img->height() == 0 ){
-                    img->setHeight(item->item->getHeight());
-                }
-
-                indexText->setText(std::to_string(item->index+1)+"/"+std::to_string(item->total));
-
-
-            }else{
-                this->showPopUpMessage("Son Resimdeniz");
-            }
-
-        });
-
-
-        auto close_Container = img->addNew<WContainerWidget>();
-        auto closeText = close_Container->addNew<WText>("✘",TextFormat::UnsafeXHTML);
-        close_Container->setPadding(5,AllSides);
-        close_Container->setAttributeValue(Style::style,Style::background::color::rgba(175,75,75,.75)+Style::color::color(Style::color::White::AliceBlue+Style::font::size::s24px+Style::font::weight::bold));
-        close_Container->setPositionScheme(PositionScheme::Absolute);
-        close_Container->setOffsets(0,Side::Top);
-        close_Container->setOffsets(WLength("70%"),Side::Left);
-        close_Container->decorationStyle().setCursor(Cursor::PointingHand);
-
-
-        close_Container->clicked().connect([=](){
-
-//            auto _imgContainer = wApp->root()->addNew<WContainerWidget>();
-
-            wApp->root()->removeWidget(_imgContainer);
-
-        });
-
-
-//        auto _mNextContainer = _imgContainer->addNew<WContainerWidget>();
-//        _mNextContainer->addStyleClass(CSSStyle::Button::blueButton);
-//        _mNextContainer->setPositionScheme(PositionScheme::Absolute);
-//        _mNextContainer->setOffsets(80,Side::Top);
-//        _mNextContainer->setOffsets(136,Side::Right);
-//        _mNextContainer->setWidth(50);
-//        _mNextContainer->setHeight(50);
-//        _mNextContainer->addNew<WText>("▶");
-//        _mNextContainer->setAttributeValue(Style::style,Style::font::size::s36px+Style::font::weight::bold+Style::color::rgb("255,255,255"));
-//        _mNextContainer->clicked().connect([=](){
-//            if( item->next ){
-//                this->showItem(item->next);
-//            }else{
-//                this->showPopUpMessage("Son Resimdeniz");
-//            }
-//        });
-
-//        auto _mBackContainer = _imgContainer->addNew<WContainerWidget>();
-//        _mBackContainer->addStyleClass(CSSStyle::Button::blueButton);
-//        _mBackContainer->setPositionScheme(PositionScheme::Absolute);
-//        _mBackContainer->setOffsets(80,Side::Top);
-//        _mBackContainer->setOffsets(-50,Side::Left);
-//        _mBackContainer->setWidth(50);
-//        _mBackContainer->setHeight(50);
-//        _mBackContainer->addNew<WText>("◀");
-//        _mBackContainer->setAttributeValue(Style::style,Style::font::size::s36px+Style::font::weight::bold+Style::color::rgb("255,255,255"));
-//        _mBackContainer->clicked().connect([=](){
-//            if( item->prev ){
-//                this->showItem(item->prev);
-//            }else{
-//                this->showPopUpMessage("İlk Resimdeniz");
-//            }
-//        });
-
-
-    });
-
-    auto mNextContainer = imgContainer->addNew<WContainerWidget>();
-    mNextContainer->addStyleClass(CSSStyle::Button::blueButton);
-    mNextContainer->setPositionScheme(PositionScheme::Absolute);
-    mNextContainer->setOffsets(80,Side::Top);
-    mNextContainer->setOffsets(-50,Side::Right);
-    mNextContainer->setWidth(50);
-    mNextContainer->setHeight(50);
-    mNextContainer->addNew<WText>("▶");
-    mNextContainer->setAttributeValue(Style::style,Style::font::size::s36px+Style::font::weight::bold+Style::color::rgb("255,255,255"));
-    mNextContainer->clicked().connect([=](){
-        if( item->next ){
-            this->showItem(item->next);
-        }else{
-            this->showPopUpMessage("Son Resimdeniz");
-        }
-    });
-
-    auto mBackContainer = imgContainer->addNew<WContainerWidget>();
-    mBackContainer->addStyleClass(CSSStyle::Button::blueButton);
-    mBackContainer->setPositionScheme(PositionScheme::Absolute);
-    mBackContainer->setOffsets(80,Side::Top);
-    mBackContainer->setOffsets(-50,Side::Left);
-    mBackContainer->setWidth(50);
-    mBackContainer->setHeight(50);
-    mBackContainer->addNew<WText>("◀");
-    mBackContainer->setAttributeValue(Style::style,Style::font::size::s36px+Style::font::weight::bold+Style::color::rgb("255,255,255"));
-    mBackContainer->clicked().connect([=](){
-        if( item->prev ){
-            this->showItem(item->prev);
-        }else{
-            this->showPopUpMessage("İlk Resimdeniz");
-        }
-    });
-
-    auto textContainer = mContentContainer->addNew<WContainerWidget>();
-    textContainer->addNew<WText>(item->item->getAciklama(),TextFormat::UnsafeXHTML);
-    textContainer->setWidth(WLength("100%"));
-    textContainer->setAttributeValue(Style::style,Style::background::color::rgba(25,25,25,.75)+Style::color::color(Style::color::White::AliceBlue)+Style::font::size::s14px);
-
-
-    auto indexContainer = imgContainer->addNew<WContainerWidget>();
-    indexContainer->addNew<WText>(std::to_string(item->index+1)+"/"+std::to_string(item->total),TextFormat::UnsafeXHTML);
-    indexContainer->setAttributeValue(Style::style,Style::background::color::rgba(175,175,75,.75)+Style::color::color(Style::color::White::AliceBlue+Style::font::size::s20px+Style::font::weight::bold));
-    indexContainer->setPositionScheme(PositionScheme::Absolute);
-    indexContainer->setOffsets(0,Side::Top);
-    indexContainer->setOffsets(WLength("50%"),Side::Left);
-
-
-
-
-
-    auto controllerContainer = mContentContainer->addNew<WContainerWidget>();
-    controllerContainer->setHeight(250);
-
-}
 
 void v2::NostSerik::showItem()
 {
@@ -918,7 +756,7 @@ void v2::NostSerik::showItemFull()
 
 
     auto text_Container = mImgFullContainer->addNew<WContainerWidget>();
-    auto text = text_Container->addNew<WText>(item.getAciklama(),TextFormat::UnsafeXHTML);
+    text_Container->addNew<WText>(item.getAciklama(),TextFormat::UnsafeXHTML);
     text_Container->setWidth(WLength("100%"));
     text_Container->setMaximumSize(1024,WLength::Auto);
     text_Container->setAttributeValue(Style::style,Style::color::color(Style::color::Grey::Black)+Style::font::size::s14px);
@@ -947,7 +785,7 @@ void v2::NostSerik::showItemFull()
 
 
     auto index_Container = img->addNew<WContainerWidget>();
-    auto indexText = index_Container->addNew<WText>(std::to_string(image_index+1)+"/"+std::to_string(mFList.size()),TextFormat::UnsafeXHTML);
+    index_Container->addNew<WText>(std::to_string(image_index+1)+"/"+std::to_string(mFList.size()),TextFormat::UnsafeXHTML);
     index_Container->setAttributeValue(Style::style,Style::background::color::rgba(175,175,75,.75)+Style::color::color(Style::color::White::AliceBlue+Style::font::size::s20px+Style::font::weight::bold));
     index_Container->setPositionScheme(PositionScheme::Absolute);
     index_Container->setOffsets(0,Side::Top);
@@ -995,7 +833,7 @@ void v2::NostSerik::showItemFull()
 
 
     auto close_Container = img->addNew<WContainerWidget>();
-    auto closeText = close_Container->addNew<WText>("✘",TextFormat::UnsafeXHTML);
+    close_Container->addNew<WText>("✘",TextFormat::UnsafeXHTML);
     close_Container->setPadding(5,AllSides);
     close_Container->setAttributeValue(Style::style,Style::background::color::rgba(175,75,75,.75)+Style::color::color(Style::color::White::AliceBlue+Style::font::size::s24px+Style::font::weight::bold));
     close_Container->setPositionScheme(PositionScheme::Absolute);

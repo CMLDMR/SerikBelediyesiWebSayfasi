@@ -65,10 +65,12 @@ public:
 
     Signal<std::string> &Clicked();
     Signal<std::string> &DelClicked();
+    Signal<std::string> &EditClicked();
 private:
     std::string mFileOid;
     Signal<std::string> _clicked;
     Signal<std::string> _delClicked;
+    Signal<std::string> _editClicked;
 };
 
 
@@ -91,34 +93,16 @@ private:
 class NostSerik : public ContainerWidget , public SerikBLDCore::ListItem<NostItem>
 {
 
-    struct Node
-    {
-        Node(){}
-        Node( NostItem* currentItem) : item(currentItem){}
-        Node* next = nullptr;
-        Node* prev = nullptr;
-        NostItem* item = nullptr;
-        int index{0};
-        int total{0};
-    };
+
 
 public:
     explicit NostSerik(SerikBLDCore::DB* mDB);
 
     virtual void onList(const QVector<NostItem> *mlist ) override;
 
-    inline int getRandom(int begin = 0 , int end = 127 ) const
-    {
-        std::random_device rd;
-        std::mt19937 mt(rd());
-        std::uniform_int_distribution<int> dist(begin,end);
-        return dist(mt);
-    }
-
     WContainerWidget* mContentContainer;
     WContainerWidget* mImgFullContainer = nullptr;
 
-    void showItem(Node *item );
 
     QVector<NostItem> mFList;
 
