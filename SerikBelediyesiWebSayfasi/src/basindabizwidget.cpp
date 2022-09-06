@@ -3,7 +3,7 @@
 
 
 BasindaBizWidget::BasindaBizWidget(mongocxx::database *_db, bool initForBody)
-    :DataBaseWidget (_db) , mInitForBody( initForBody )
+    :SerikBLDCore::DB (_db) , mInitForBody( initForBody )
 {
 
     if( mInitForBody )
@@ -133,7 +133,7 @@ void BasindaBizWidget::initForBasin()
 
     skip = 0;
 
-    itemCount = this->collection("basin").count_documents(document{}.view());
+    itemCount = this->getDB()->db()->collection("basin").count_documents(document{}.view());
 
 
 
@@ -262,16 +262,13 @@ void BasindaBizWidget::loadListMore(const int &limit)
         findOptions.limit(limit);
         findOptions.skip(skip);
 
-        auto cursor = this->getDB()->collection("basin").find(document{}.view(),findOptions);
+        auto cursor = this->getDB()->db()->collection("basin").find(document{}.view(),findOptions);
 
 
 
         for( auto doc : cursor )
         {
-            this->rowContainer()->addWidget(cpp14::make_unique<BasinItem>(this->getDB() , doc))->addStyleClass(Bootstrap::Grid::Large::col_lg_2
-                                                                                                     +Bootstrap::Grid::Medium::col_md_3
-                                                                                                     +Bootstrap::Grid::Small::col_sm_4
-                                                                                                     +Bootstrap::Grid::ExtraSmall::col_xs_6);
+            this->rowContainer()->addWidget(cpp14::make_unique<BasinItem>(this->getDB()->db() , doc))->addStyleClass(Bootstrap::Grid::Large::col_lg_2                                                                              +Bootstrap::Grid::Medium::col_md_3                                                                                                     +Bootstrap::Grid::ExtraSmall::col_xs_6);
         }
 
     } catch (mongocxx::exception &e) {
@@ -285,8 +282,10 @@ WContainerWidget *BasindaBizWidget::footerRowContainer() const
 }
 
 BasinItem::BasinItem(mongocxx::database *_db, const bsoncxx::document::view &view)
-    :DataBaseWidget (_db)
+    :SerikBLDCore::DB (_db)
 {
+
+    this->clear();
 
     setHeight(250);
 
@@ -308,23 +307,15 @@ BasinItem::BasinItem(mongocxx::database *_db, const bsoncxx::document::view &vie
         logo->setWidth(30);
         logo->setHeight(30);
 
-        auto val = this->collection("basinGazete").find_one(make_document(kvp("gazeteAdi",view["gazete"].get_utf8().value.to_string())));
+        auto val = this->db()->collection("basinGazete").find_one(make_document(kvp("gazeteAdi",view["gazete"].get_utf8().value.to_string())));
 
         if( val )
         {
-            auto bucket = this->bucket();
+            auto url = this->downloadFileWeb(val.value().view()["iconOid"].get_oid().value.to_string().c_str());
             logo->setAttributeValue(Style::style,Style::background::size::contain+
                                     Style::background::repeat::norepeat+
                                     Style::background::position::center_center+
-                                    Style::background::url(SBLDKeys::downloadifNotExist(&bucket , val.value().view()["iconOid"].get_oid().value.to_string())));
-
-//            logo->setAttributeValue(Style::style,Style::background::size::contain+
-//                                    Style::background::repeat::norepeat+
-//                                    Style::background::position::center_center+
-//                                    Style::background::url("img/milliyet.jpg"));
-
-            //milliyet.jpg
-        }else{
+                                    Style::background::url(url));
 
         }
 
@@ -339,10 +330,8 @@ BasinItem::BasinItem(mongocxx::database *_db, const bsoncxx::document::view &vie
     // Resim
     {
         auto imgContainer = vlayout->addWidget(cpp14::make_unique<WContainerWidget>(),0,AlignmentFlag::Justify);
-        auto bucket = this->getDB()->gridfs_bucket();
-        std::string url_ = SBLDKeys::downloadifNotExist(&bucket,view["baski"].get_oid().value.to_string());
+        std::string url_ = this->downloadFileWeb(view["baski"].get_oid().value.to_string().c_str());
 
-//        std::string url_ = "img/"+std::to_string(this->getRandom(0,15))+".jpg";
         imgContainer->setAttributeValue(Style::style,Style::background::url(url_)+Style::background::repeat::norepeat+
                                         Style::background::size::cover);
         imgContainer->addStyleClass(Bootstrap::ImageShape::img_rounded);
@@ -379,8 +368,7 @@ BasinItem::BasinItem(mongocxx::database *_db, const bsoncxx::document::view &vie
 
         baskiContainer->setWidth(WLength("100%"));
         baskiContainer->setHeight(WLength("100%"));
-        auto bucket = this->bucket();
-        baskiContainer->setAttributeValue(Style::style,Style::background::url(SBLDKeys::downloadifNotExist(&bucket,this->getGazetefileoid()))
+        baskiContainer->setAttributeValue(Style::style,Style::background::url(this->downloadFileWeb(this->getGazetefileoid().c_str()))
                                           +Style::background::size::contain
                                           +Style::background::position::center_center
                                           +Style::background::repeat::norepeat);

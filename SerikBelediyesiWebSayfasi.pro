@@ -92,7 +92,6 @@ SOURCES += main.cpp \
     SerikBelediyesiWebSayfasi/Giris/gelenmesajlarwidget.cpp \
     SerikBelediyesiWebSayfasi/src/yenilikler.cpp \
     SerikBelediyesiWebSayfasi/src/anonswidget.cpp \
-    SerikBelediyesiWebSayfasi/BaseClass/databasewidget.cpp \
     SerikBelediyesiWebSayfasi/src/basindabizwidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/mainpage.cpp \
     SerikBelediyesiWebSayfasi/srcV2/headerpage.cpp \
@@ -183,7 +182,6 @@ HEADERS += \
     ../url.h \
     SerikBelediyesiWebSayfasi/src/yenilikler.h \
     SerikBelediyesiWebSayfasi/src/anonswidget.h \
-    SerikBelediyesiWebSayfasi/BaseClass/databasewidget.h \
     SerikBelediyesiWebSayfasi/src/basindabizwidget.h \
     SerikBelediyesiWebSayfasi/srcV2/mainpage.h \
     SerikBelediyesiWebSayfasi/srcV2/headerpage.h \

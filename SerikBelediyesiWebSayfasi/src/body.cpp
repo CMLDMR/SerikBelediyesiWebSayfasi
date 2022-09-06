@@ -4907,8 +4907,9 @@ void Body::Meclis::setKarar(std::string oid)
 }
 
 Body::Proje::Proje(mongocxx::database *_db)
-    :DataBaseWidget(_db)
+    :SerikBLDCore::DB(_db)
 {
+    this->clear();
 
     mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
     mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
@@ -4978,7 +4979,7 @@ Body::Proje::Proje(mongocxx::database *_db)
 
 
     {
-        auto projeblock = container->addWidget(cpp14::make_unique<Job::ProjectBlock>(this->getDB(),true));
+        auto projeblock = container->addWidget(cpp14::make_unique<Job::ProjectBlock>(this->getDB()->db(),true));
         projeblock->ClickLastProject().connect(this,&Proje::setselectedProject);
 
     }
@@ -5182,7 +5183,7 @@ void Body::Proje::initMahallelereGoreDagilim()
     model->setHeaderData(0, WString("Mahalleler"));
     model->setHeaderData(1, WString("Proje Sayısı"));
 
-    int projeCount = this->count(SBLDKeys::Mahalle::collection,view);
+    int projeCount = this->db()->collection(SBLDKeys::Mahalle::collection).count_documents(view);
 
 
 
@@ -5190,7 +5191,7 @@ void Body::Proje::initMahallelereGoreDagilim()
     std::vector<std::string> mahalleList;
 
     try {
-        auto cursor = this->collection(SBLDKeys::Mahalle::collection).find(filter.view());
+        auto cursor = this->db()->collection(SBLDKeys::Mahalle::collection).find(filter.view());
         for( auto doc : cursor )
         {
             if( doc[SBLDKeys::Mahalle::mahalle].get_utf8().value.to_string() != "NULL" )
@@ -5225,7 +5226,7 @@ void Body::Proje::initMahallelereGoreDagilim()
 
         auto _view = _filter.view();
 
-        auto count = this->count(SBLDKeys::Projeler::collection,_view);
+        auto count = this->db()->collection(SBLDKeys::Projeler::collection).count_documents(view);
 
         model->setData(  row, 0, WString(mahalle));
         model->setData(  row, 1, count);
@@ -5314,7 +5315,7 @@ void Body::Proje::initBirimlereGoreDagilim()
     }
 
     try {
-        auto cursor = this->collection(SBLDKeys::Birimler::collection).find(filter.view());
+        auto cursor = this->db()->collection(SBLDKeys::Birimler::collection).find(filter.view());
         for( auto doc : cursor )
         {
             if( doc[SBLDKeys::Birimler::birim].get_utf8().value.to_string() != "NULL" )
@@ -5351,7 +5352,7 @@ void Body::Proje::initBirimlereGoreDagilim()
 
         auto _view = _filter.view();
 
-        auto count = this->count(SBLDKeys::Projeler::collection,_view);
+        auto count = this->db()->collection(SBLDKeys::Projeler::collection).count_documents(_view);
 
         model->setData(  row, 0, WString(birim));
         model->setData(  row, 1, count);
@@ -5465,7 +5466,7 @@ void Body::Proje::initYillaraGoreDagilim()
 
         auto _view = _filter.view();
 
-        auto count = this->count(SBLDKeys::Projeler::collection,_view);
+        auto count = this->db()->collection(SBLDKeys::Projeler::collection).count_documents(_view);
 
         model->setData(  row, 0, WString("{1}").arg(yil));
         model->setData(  row, 1, count);
@@ -5574,7 +5575,7 @@ void Body::Proje::initDurumaGoreDagilim()
 
         auto _view = _filter.view();
 
-        auto count = this->count(SBLDKeys::Projeler::collection,_view);
+        auto count = this->db()->collection(SBLDKeys::Projeler::collection).count_documents(_view);
 
         model->setData(  row, 0, WString("{1}").arg(durum));
         model->setData(  row, 1, count);
@@ -5642,12 +5643,12 @@ void Body::Proje::initPage()
     }
 
 
-    auto collection = this->getDB()->collection(SBLDKeys::Projeler::collection);
-    auto bucket = this->bucket();
+//    auto collection = this->getDB()->collection(SBLDKeys::Projeler::collection);
+//    auto bucket = this->bucket();
 
     try {
 
-        auto cursor = collection.find(filter.view());
+        auto cursor = this->db()->collection(SBLDKeys::Projeler::collection).find(filter.view());
 
         list.clear();
 
@@ -5656,7 +5657,8 @@ void Body::Proje::initPage()
             item _item;
             _item.oid = doc[SBLDKeys::Projeler::oid].get_oid().value.to_string();
             _item.title = doc[SBLDKeys::Projeler::title].get_utf8().value.to_string();
-            _item.iconPath = SBLDKeys::downloadifNotExist(&bucket,doc[SBLDKeys::Projeler::icon].get_oid().value.to_string());
+//            _item.iconPath = SBLDKeys::downloadifNotExist(&bucket,doc[SBLDKeys::Projeler::icon].get_oid().value.to_string());
+            _item.iconPath = this->downloadFileWeb(doc[SBLDKeys::Projeler::icon].get_oid().value.to_string().c_str());
             list.push_back(_item);
         }
 
@@ -5825,7 +5827,7 @@ void Body::Proje::setselectedProject(std::string oid)
     bsoncxx::document::value val(document{}.view());
 
     try {
-        auto val_ = this->getDB()->collection(SBLDKeys::Projeler::collection).find_one(filter.view());
+        auto val_ = this->getDB()->db()->collection(SBLDKeys::Projeler::collection).find_one(filter.view());
         if( val_ )
         {
             if( !val_.value().view().empty() )
@@ -5925,8 +5927,8 @@ void Body::Proje::setselectedProject(std::string oid)
     {
         auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        auto bucket = this->getDB()->gridfs_bucket();
-        std::string iconPaht = SBLDKeys::downloadifNotExist(&bucket,view[SBLDKeys::Projeler::icon].get_oid().value.to_string());
+//        auto bucket = this->getDB()->gridfs_bucket();
+        std::string iconPaht = this->downloadFileWeb(view[SBLDKeys::Projeler::icon].get_oid().value.to_string().c_str());
         TitleContainer->setAttributeValue(Style::style,Style::background::url(iconPaht)+Style::background::size::cover+Style::background::repeat::norepeat+Style::background::position::center_center);
         container->setHeight(50);
     }
@@ -5938,7 +5940,7 @@ void Body::Proje::setselectedProject(std::string oid)
 
         //        mMainContainer->setPadding(5,Side::Top);
         auto asamaContainer = ProjectDetailContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-        auto bucket = this->getDB()->gridfs_bucket();
+//        auto bucket = this->getDB()->gridfs_bucket();
         try {
             auto asamaList = view[SBLDKeys::Projeler::slide].get_array().value;
 
@@ -5953,7 +5955,7 @@ void Body::Proje::setselectedProject(std::string oid)
                 slideCOntainer->setHeight(350);
 
 
-                std::string imgPath = SBLDKeys::downloadifNotExist(&bucket,doc[SBLDKeys::Projeler::slideItem::img].get_oid().value.to_string());
+                std::string imgPath = this->downloadFileWeb(doc[SBLDKeys::Projeler::slideItem::img].get_oid().value.to_string().c_str());
 
                 auto frontimgContainer = slideCOntainer->addWidget(cpp14::make_unique<WContainerWidget>());
                 frontimgContainer->setHeight(350);
@@ -8403,8 +8405,9 @@ void Body::Serik::Content::selectedContent(std::string oid)
 
 
 Body::Job::ProjectBlock::ProjectBlock(mongocxx::database *_db, bool _subPage)
-    :DataBaseWidget (_db),subPage(_subPage)
+    :SerikBLDCore::DB (_db),subPage(_subPage)
 {
+    this->clear();
     if( !subPage )
     {
         //        addWidget(cpp14::make_unique<WText>("<h3>Projeler</h3>"))->addStyleClass(Bootstrap::ContextualBackGround::bg_primary);
@@ -8614,7 +8617,7 @@ Body::Job::ProjectBlock::ProjectBlock(mongocxx::database *_db, bool _subPage)
                 findOptions.sort(sortDoc.view());
 
                 try {
-                    auto val = this->getDB()->collection(SBLDKeys::Projeler::collection).find_one(filter.view(),findOptions);
+                    auto val = this->getDB()->db()->collection(SBLDKeys::Projeler::collection).find_one(filter.view(),findOptions);
                     if( val )
                     {
                         if( !val.value().view().empty() )
@@ -8715,7 +8718,7 @@ void Body::Job::ProjectBlock::displayinYear(int year)
         auto view = filter.view();
         text->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
         //        text->setMargin(margin,AllSides);
-        auto ProjeAdetText = hLayout->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(this->count(SBLDKeys::Projeler::collection,view))));
+        auto ProjeAdetText = hLayout->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(this->db()->collection(SBLDKeys::Projeler::collection).count_documents(view))));
         ProjeAdetText->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
         //        ProjeAdetText->setText(Bootstrap::Badges::badget(WString("{1}").arg(this->count(SBLDKeys::Projeler::collection,view)).toUTF8()));
 
@@ -8767,7 +8770,7 @@ void Body::Job::ProjectBlock::displayinYear(int year)
         auto view = filter.view();
         text->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
         //        text->setMargin(margin,AllSides);
-        auto ProjeAdetText = hLayout->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(this->count(SBLDKeys::Projeler::collection,view))));
+        auto ProjeAdetText = hLayout->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(this->db()->collection(SBLDKeys::Projeler::collection).count_documents(view))));
         //        ProjeAdetText->addStyleClass(Bootstrap::Button::Primary);
         ProjeAdetText->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
 
@@ -8814,7 +8817,7 @@ void Body::Job::ProjectBlock::displayinYear(int year)
         auto view = filter.view();
         text->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
         //        text->setMargin(margin,AllSides);
-        auto ProjeAdetText = hLayout->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(this->count(SBLDKeys::Projeler::collection,view))));
+        auto ProjeAdetText = hLayout->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(this->db()->collection(SBLDKeys::Projeler::collection).count_documents(view))));
         //        ProjeAdetText->addStyleClass(Bootstrap::Button::Success);
         ProjeAdetText->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
         vLayout->addStretch(1);
@@ -8860,7 +8863,7 @@ void Body::Job::ProjectBlock::displayinYear(int year)
         auto view = filter.view();
         text->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
         //        text->setMargin(margin,AllSides);
-        auto ProjeAdetText = hLayout->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(this->count(SBLDKeys::Projeler::collection,view))));
+        auto ProjeAdetText = hLayout->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(this->db()->collection(SBLDKeys::Projeler::collection).count_documents(view))));
         //        ProjeAdetText->addStyleClass(Bootstrap::Button::info);
         ProjeAdetText->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
         vLayout->addStretch(1);
@@ -8891,8 +8894,9 @@ void Body::Job::ProjectBlock::displayinYear(int year)
 }
 
 Body::Job::TaskBlock::TaskBlock(mongocxx::database *_db)
-    :DataBaseWidget(_db)
+    :SerikBLDCore::DB(_db)
 {
+    this->clear();
     //    addWidget(cpp14::make_unique<WText>("<h3>Çalışmalar</h3>"));
     //    setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(0,125),this->getRandom(0,125),this->getRandom(0,125),.12));
 
@@ -9088,7 +9092,7 @@ Body::Job::TaskBlock::TaskBlock(mongocxx::database *_db)
 
 
             try {
-                auto val = this->getDB()->collection(SBLDKeys::Calismalar::collection).find_one(filter.view(),findOptions);
+                auto val = this->getDB()->db()->collection(SBLDKeys::Calismalar::collection).find_one(filter.view(),findOptions);
 
                 if( val )
                 {
@@ -9173,7 +9177,7 @@ void Body::Job::TaskBlock::displayinYear(int year)
         auto text = hLayout->addWidget(cpp14::make_unique<WText>("Tüm Çalışmalar"));
 
         text->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
-        auto ProjeAdetText = hLayout->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(this->count(SBLDKeys::Calismalar::collection,filter))));
+        auto ProjeAdetText = hLayout->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(this->db()->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()))));
         ProjeAdetText->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
 
         vLayout->addStretch(1);
@@ -9211,7 +9215,7 @@ void Body::Job::TaskBlock::displayinYear(int year)
         auto text = hLayout->addWidget(cpp14::make_unique<WText>("Devam Eden"));
 
         text->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
-        auto ProjeAdetText = hLayout->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(this->count(SBLDKeys::Calismalar::collection,filter))));
+        auto ProjeAdetText = hLayout->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(this->db()->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()))));
         ProjeAdetText->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
         vLayout->addStretch(1);
 
@@ -9246,7 +9250,7 @@ void Body::Job::TaskBlock::displayinYear(int year)
         auto hLayout = textContainer->setLayout(cpp14::make_unique<WHBoxLayout>());
         auto text = hLayout->addWidget(cpp14::make_unique<WText>("Tamamlanan"));
         text->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
-        auto ProjeAdetText = hLayout->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(this->count(SBLDKeys::Calismalar::collection,filter))));
+        auto ProjeAdetText = hLayout->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(this->db()->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()))));
         ProjeAdetText->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
         vLayout->addStretch(1);
 
@@ -9280,7 +9284,7 @@ void Body::Job::TaskBlock::displayinYear(int year)
         auto hLayout = textContainer->setLayout(cpp14::make_unique<WHBoxLayout>());
         auto text = hLayout->addWidget(cpp14::make_unique<WText>("Yapılacaklar"));
         text->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
-        auto ProjeAdetText = hLayout->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(this->count(SBLDKeys::Calismalar::collection,filter))));
+        auto ProjeAdetText = hLayout->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(this->db()->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()))));
         ProjeAdetText->setAttributeValue(Style::style,Style::font::size::s18px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
         vLayout->addStretch(1);
 
@@ -9297,7 +9301,7 @@ void Body::Job::TaskBlock::displayinYear(int year)
 
 
 Body::Job::Block::Block(mongocxx::database *_db)
-    :DataBaseWidget(_db)
+    :SerikBLDCore::DB(_db)
 {
 
     //    setPadding(0,AllSides);
@@ -9322,10 +9326,10 @@ Body::Job::Block::Block(mongocxx::database *_db)
     }
 
 
-    mProjectBlock = row->addWidget(cpp14::make_unique<ProjectBlock>(this->getDB()));
+    mProjectBlock = row->addWidget(cpp14::make_unique<ProjectBlock>(this->getDB()->db()));
     mProjectBlock->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
 
-    mTaskBlock = row->addWidget(cpp14::make_unique<TaskBlock>(this->getDB()));
+    mTaskBlock = row->addWidget(cpp14::make_unique<TaskBlock>(this->getDB()->db()));
     mTaskBlock->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
 
 }
@@ -9333,8 +9337,9 @@ Body::Job::Block::Block(mongocxx::database *_db)
 
 
 Body::Calisma::Calisma(mongocxx::database *_db)
-    :DataBaseWidget(_db),TableFilter(document{}.view())
+    :SerikBLDCore::DB(_db),TableFilter(document{}.view())
 {
+    this->clear();
     mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
     mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
 
@@ -9570,7 +9575,7 @@ void Body::Calisma::addZamanTuneli(WContainerWidget *_rowContainer, WContainerWi
     LeftSide = true;
 
     try {
-        auto cursor = this->getDB()->collection(SBLDKeys::Calismalar::collection).find(filter.view(),findOptions);
+        auto cursor = this->getDB()->db()->collection(SBLDKeys::Calismalar::collection).find(filter.view(),findOptions);
 
 
         for( auto doc : cursor )
@@ -9608,7 +9613,6 @@ void Body::Calisma::addZamanTuneli(WContainerWidget *_rowContainer, WContainerWi
 
 void Body::Calisma::addCalismaItemToZamanTuneli(WContainerWidget *widget, bsoncxx::document::view doc)
 {
-    auto bucket = this->getDB()->gridfs_bucket();
     auto container = widget->addWidget(cpp14::make_unique<WContainerWidget>());
     container->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
     container->setMargin(25,Side::Bottom|Side::Top);
@@ -9622,7 +9626,7 @@ void Body::Calisma::addCalismaItemToZamanTuneli(WContainerWidget *widget, bsoncx
     rContainer->addStyleClass(Bootstrap::Grid::row);
 
     auto imgContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-    auto imgPath = SBLDKeys::downloadifNotExist(&bucket,doc[SBLDKeys::Calismalar::icon].get_oid().value.to_string());
+    auto imgPath = this->downloadFileWeb(doc[SBLDKeys::Calismalar::icon].get_oid().value.to_string().c_str());
     imgContainer->setAttributeValue(Style::style,Style::background::url(imgPath)+Style::background::size::cover+Style::background::repeat::norepeat+Style::background::position::center_center);
     imgContainer->setHeight(this->getRandom(180,250));
     imgContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
@@ -9785,7 +9789,7 @@ void Body::Calisma::setCalismaDetail(std::string oid)
     bsoncxx::document::value val(document{}.view());
 
     try {
-        auto val_ = this->getDB()->collection(SBLDKeys::Calismalar::collection).find_one(filter.view());
+        auto val_ = this->getDB()->db()->collection(SBLDKeys::Calismalar::collection).find_one(filter.view());
         if( val_ )
         {
             if( !val_.value().view().empty() )
@@ -9882,8 +9886,7 @@ void Body::Calisma::setCalismaDetail(std::string oid)
     {
         auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        auto bucket = this->getDB()->gridfs_bucket();
-        std::string iconPaht = SBLDKeys::downloadifNotExist(&bucket,view[SBLDKeys::Calismalar::icon].get_oid().value.to_string());
+        std::string iconPaht = this->downloadFileWeb(view[SBLDKeys::Calismalar::icon].get_oid().value.to_string().c_str());
         TitleContainer->setAttributeValue(Style::style,Style::background::url(iconPaht)+Style::background::size::cover+Style::background::repeat::norepeat+Style::background::position::center_center);
         container->setHeight(50);
     }
@@ -9891,7 +9894,7 @@ void Body::Calisma::setCalismaDetail(std::string oid)
 
 
         auto asamaContainer = mTableContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-        auto bucket = this->getDB()->gridfs_bucket();
+
         try {
             auto asamaList = view[SBLDKeys::Calismalar::asamalar].get_array().value;
 
@@ -9905,7 +9908,7 @@ void Body::Calisma::setCalismaDetail(std::string oid)
                 std::vector<std::string> imgPathList;
                 for( auto id : doc[SBLDKeys::Calismalar::Asama::Gorseller].get_array().value )
                 {
-                    std::string imgPath = SBLDKeys::downloadifNotExist(&bucket,id.get_oid().value.to_string());
+                    std::string imgPath = this->downloadFileWeb(id.get_oid().value.to_string().c_str());
                     imgPathList.push_back(imgPath);
                 }
 
@@ -10003,7 +10006,7 @@ void Body::Calisma::initTable(bsoncxx::document::view view)
 
     mTableContainer->clear();
     try {
-        CalismaCount = this->collection(SBLDKeys::Calismalar::collection).count_documents(view);
+        CalismaCount = this->db()->collection(SBLDKeys::Calismalar::collection).count_documents(view);
     } catch (bsoncxx::exception &e) {
         CalismaCount = 0;
         return;
@@ -10111,7 +10114,7 @@ void Body::Calisma::initTable(bsoncxx::document::view view)
 
 
     try {
-        auto cursor = this->collection(SBLDKeys::Calismalar::collection).find(view,findOptions);
+        auto cursor = this->db()->collection(SBLDKeys::Calismalar::collection).find(view,findOptions);
 
 
         CalismaList.clear();
@@ -10260,7 +10263,7 @@ void Body::Calisma::setSelectedCalisma(std::string oid)
     bsoncxx::document::value val(document{}.view());
 
     try {
-        auto val_ = this->collection(SBLDKeys::Calismalar::collection).find_one(filter.view());
+        auto val_ = this->db()->collection(SBLDKeys::Calismalar::collection).find_one(filter.view());
         if( val_ )
         {
             if( !val_.value().view().empty() )
@@ -10356,8 +10359,7 @@ void Body::Calisma::setSelectedCalisma(std::string oid)
     {
         auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        auto bucket = this->bucket();
-        std::string iconPaht = SBLDKeys::downloadifNotExist(&bucket,view[SBLDKeys::Calismalar::icon].get_oid().value.to_string());
+        std::string iconPaht = this->downloadFileWeb(view[SBLDKeys::Calismalar::icon].get_oid().value.to_string().c_str());
         TitleContainer->setAttributeValue(Style::style,Style::background::url(iconPaht)+Style::background::size::cover+Style::background::repeat::norepeat+Style::background::position::center_center);
         container->setHeight(50);
     }
@@ -10365,7 +10367,7 @@ void Body::Calisma::setSelectedCalisma(std::string oid)
 
 
         auto asamaContainer = mTableContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-        auto bucket = this->bucket();
+
         try {
             auto asamaList = view[SBLDKeys::Calismalar::asamalar].get_array().value;
 
@@ -10379,7 +10381,7 @@ void Body::Calisma::setSelectedCalisma(std::string oid)
                 std::vector<std::string> imgPathList;
                 for( auto id : doc[SBLDKeys::Calismalar::Asama::Gorseller].get_array().value )
                 {
-                    std::string imgPath = SBLDKeys::downloadifNotExist(&bucket,id.get_oid().value.to_string());
+                    std::string imgPath = this->downloadFileWeb(id.get_oid().value.to_string().c_str());
                     imgPathList.push_back(imgPath);
                 }
 
@@ -10523,7 +10525,7 @@ void Body::Calisma::initMenu()
         container->decorationStyle().setCursor(Cursor::PointingHand);
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
         vLayout->addStretch(1);
-        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Tüm Çalışmalar: {1}").arg(this->count(SBLDKeys::Calismalar::collection,document{}))),0,AlignmentFlag::Middle);
+        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Tüm Çalışmalar: {1}").arg(this->db()->collection(SBLDKeys::Calismalar::collection).count_documents(document{}.view()))),0,AlignmentFlag::Middle);
         vLayout->addStretch(1);
         container->clicked().connect([=](){
             auto _filter = document{};
@@ -10552,7 +10554,7 @@ void Body::Calisma::initMenu()
         container->decorationStyle().setCursor(Cursor::PointingHand);
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
         vLayout->addStretch(1);
-        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Devam Eden: {1}").arg(this->count(SBLDKeys::Calismalar::collection,filter))),0,AlignmentFlag::Middle);
+        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Devam Eden: {1}").arg(this->db()->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()))),0,AlignmentFlag::Middle);
         vLayout->addStretch(1);
         container->clicked().connect([=](){
             skip = 0;
@@ -10587,7 +10589,7 @@ void Body::Calisma::initMenu()
         container->decorationStyle().setCursor(Cursor::PointingHand);
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
         vLayout->addStretch(1);
-        vLayout->addWidget(cpp14::make_unique<WText>(WString("Tamamlanan: {1}").arg(this->count(SBLDKeys::Calismalar::collection,filter))),0,AlignmentFlag::Middle);
+        vLayout->addWidget(cpp14::make_unique<WText>(WString("Tamamlanan: {1}").arg(this->db()->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()))),0,AlignmentFlag::Middle);
         vLayout->addStretch(1);
         container->clicked().connect([=](){
             skip = 0;
@@ -10625,7 +10627,7 @@ void Body::Calisma::initMenu()
         container->decorationStyle().setCursor(Cursor::PointingHand);
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
         vLayout->addStretch(1);
-        vLayout->addWidget(cpp14::make_unique<WText>(WString("Bugün: {1}").arg(this->count(SBLDKeys::Calismalar::collection,filter))),0,AlignmentFlag::Middle);
+        vLayout->addWidget(cpp14::make_unique<WText>(WString("Bugün: {1}").arg(this->db()->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()))),0,AlignmentFlag::Middle);
         vLayout->addStretch(1);
 
         container->clicked().connect([=](){
@@ -10662,7 +10664,7 @@ void Body::Calisma::initMenu()
         container->decorationStyle().setCursor(Cursor::PointingHand);
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
         vLayout->addStretch(1);
-        vLayout->addWidget(cpp14::make_unique<WText>(WString("Son 1 Hafta: {1}").arg(this->count(SBLDKeys::Calismalar::collection,filter))),0,AlignmentFlag::Middle);
+        vLayout->addWidget(cpp14::make_unique<WText>(WString("Son 1 Hafta: {1}").arg(this->db()->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()))),0,AlignmentFlag::Middle);
         vLayout->addStretch(1);
 
         container->clicked().connect([=](){
@@ -10700,7 +10702,7 @@ void Body::Calisma::initMenu()
         container->decorationStyle().setCursor(Cursor::PointingHand);
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
         vLayout->addStretch(1);
-        vLayout->addWidget(cpp14::make_unique<WText>(WString("Son 1 Ay: {1}").arg(this->count(SBLDKeys::Calismalar::collection,filter))),0,AlignmentFlag::Middle);
+        vLayout->addWidget(cpp14::make_unique<WText>(WString("Son 1 Ay: {1}").arg(this->db()->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()))),0,AlignmentFlag::Middle);
         vLayout->addStretch(1);
         container->clicked().connect([=](){
             skip = 0;
@@ -10737,7 +10739,7 @@ void Body::Calisma::initMenu()
         container->decorationStyle().setCursor(Cursor::PointingHand);
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
         vLayout->addStretch(1);
-        vLayout->addWidget(cpp14::make_unique<WText>(WString("Son 3 Ay: {1}").arg(this->count(SBLDKeys::Calismalar::collection,filter))),0,AlignmentFlag::Middle);
+        vLayout->addWidget(cpp14::make_unique<WText>(WString("Son 3 Ay: {1}").arg(this->db()->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()))),0,AlignmentFlag::Middle);
         vLayout->addStretch(1);
         container->clicked().connect([=](){
             skip = 0;
@@ -10776,7 +10778,7 @@ void Body::Calisma::initMenu()
         container->decorationStyle().setCursor(Cursor::PointingHand);
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
         vLayout->addStretch(1);
-        vLayout->addWidget(cpp14::make_unique<WText>(WString("Bu Yıl: {1}").arg(this->count(SBLDKeys::Calismalar::collection,filter))),0,AlignmentFlag::Middle);
+        vLayout->addWidget(cpp14::make_unique<WText>(WString("Bu Yıl: {1}").arg(this->db()->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()))),0,AlignmentFlag::Middle);
         vLayout->addStretch(1);
         container->clicked().connect([=](){
             skip = 0;
@@ -10830,7 +10832,7 @@ void Body::Calisma::initMenu()
         container->decorationStyle().setCursor(Cursor::PointingHand);
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
         vLayout->addStretch(1);
-        vLayout->addWidget(cpp14::make_unique<WText>(WString("{1} Yılı: {2}").arg(yil-1).arg(this->count(SBLDKeys::Calismalar::collection,filter))),0,AlignmentFlag::Middle);
+        vLayout->addWidget(cpp14::make_unique<WText>(WString("{1} Yılı: {2}").arg(yil-1).arg(this->db()->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()))),0,AlignmentFlag::Middle);
         vLayout->addStretch(1);
         container->clicked().connect([=](){
             skip = 0;
@@ -10958,7 +10960,7 @@ void Body::Calisma::initIstatisticBirimlereGore()
         }
 
         try {
-            auto cursor = this->collection(SBLDKeys::Birimler::collection).find(filter.view());
+            auto cursor = this->db()->collection(SBLDKeys::Birimler::collection).find(filter.view());
 
             for( auto doc : cursor )
             {
@@ -10991,7 +10993,7 @@ void Body::Calisma::initIstatisticBirimlereGore()
 
         }
 
-        model->setData(  row, 1, this->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()));
+        model->setData(  row, 1, this->db()->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()));
 
         try {
             filter.append(kvp(SBLDKeys::Calismalar::durum,SBLDKeys::Calismalar::DURUM::tamamlandi));
@@ -10999,7 +11001,7 @@ void Body::Calisma::initIstatisticBirimlereGore()
 
         }
 
-        model->setData(  row, 2, this->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()));
+        model->setData(  row, 2, this->db()->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()));
 
 
         filter.clear();
@@ -11014,7 +11016,7 @@ void Body::Calisma::initIstatisticBirimlereGore()
 
         }
 
-        model->setData(  row, 3, this->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()));
+        model->setData(  row, 3, this->db()->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()));
         row++;
     }
 
@@ -11104,7 +11106,7 @@ void Body::Calisma::initIstatisticMahallereGore()
 
 
         try {
-            auto cursor = this->collection(SBLDKeys::Mahalle::collection).find(filter.view());
+            auto cursor = this->db()->collection(SBLDKeys::Mahalle::collection).find(filter.view());
 
             for( auto doc : cursor )
             {
@@ -11137,7 +11139,7 @@ void Body::Calisma::initIstatisticMahallereGore()
 
         }
 
-        model->setData(  row, 1, this->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()));
+        model->setData(  row, 1, this->db()->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()));
 
         try {
             filter.append(kvp(SBLDKeys::Calismalar::durum,SBLDKeys::Calismalar::DURUM::tamamlandi));
@@ -11145,7 +11147,7 @@ void Body::Calisma::initIstatisticMahallereGore()
 
         }
 
-        model->setData(  row, 2, this->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()));
+        model->setData(  row, 2, this->db()->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()));
 
 
         filter.clear();
@@ -11160,7 +11162,7 @@ void Body::Calisma::initIstatisticMahallereGore()
 
         }
 
-        model->setData(  row, 3, this->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()));
+        model->setData(  row, 3, this->db()->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()));
         row++;
     }
 
@@ -11252,7 +11254,7 @@ void Body::Calisma::initIstatisticBirimMahalle()
         }
 
         try {
-            auto cursor = this->collection(SBLDKeys::Birimler::collection).find(filter.view());
+            auto cursor = this->db()->collection(SBLDKeys::Birimler::collection).find(filter.view());
 
             for( auto doc : cursor )
             {
@@ -11285,7 +11287,7 @@ void Body::Calisma::initIstatisticBirimMahalle()
 
         }
 
-        model->setData(  row, 1, this->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()));
+        model->setData(  row, 1, this->db()->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()));
 
         try {
             filter.append(kvp(SBLDKeys::Calismalar::durum,SBLDKeys::Calismalar::DURUM::tamamlandi));
@@ -11293,7 +11295,7 @@ void Body::Calisma::initIstatisticBirimMahalle()
 
         }
 
-        model->setData(  row, 2, this->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()));
+        model->setData(  row, 2, this->db()->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()));
 
 
         filter.clear();
@@ -11308,7 +11310,7 @@ void Body::Calisma::initIstatisticBirimMahalle()
 
         }
 
-        model->setData(  row, 3, this->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()));
+        model->setData(  row, 3, this->db()->collection(SBLDKeys::Calismalar::collection).count_documents(filter.view()));
         row++;
     }
 
@@ -11370,9 +11372,10 @@ void Body::Calisma::initIstatisticBirimMahalle()
 }
 
 Body::BaskanaMesajWidget::BaskanaMesajWidget(mongocxx::database *_database)
-    :DataBaseWidget(_database)
+    :SerikBLDCore::DB(_database)
 {
 
+    this->clear();
     this->setMargin(25,Side::Top|Side::Bottom);
     this->setAttributeValue(Style::style,Style::Border::border("1px solid black"));
 
@@ -11477,41 +11480,41 @@ void Body::BaskanaMesajWidget::initializetion(WContainerWidget *row)
             try {
                 doc.append(kvp(SBLDKeys::Yonetim::Baskan::MESAJ::julianDate,bsoncxx::types::b_int64{WDate::currentDate().toJulianDay()}));
             } catch (bsoncxx::exception &e) {
-                this->showMessage("Hata","Error: " , e);
+                this->showMessage("Hata","Error: " , e.what());
                 return;
             }
 
             try {
                 doc.append(kvp(SBLDKeys::Yonetim::Baskan::MESAJ::saat,WTime::currentServerTime().toString("hh:mm").toUTF8()));
             } catch (bsoncxx::exception &e) {
-                this->showMessage("Hata","Error: " , e);
+                this->showMessage("Hata","Error: " , e.what());
                 return;
             }
 
             try {
                 doc.append(kvp(SBLDKeys::Yonetim::Baskan::MESAJ::ad,adSoyadLineEdit->text().toUTF8()));
             } catch (bsoncxx::exception &e) {
-                this->showMessage("Hata","Error: " , e);
+                this->showMessage("Hata","Error: " , e.what());
                 return;
             }
 
             try {
                 doc.append(kvp(SBLDKeys::Yonetim::Baskan::MESAJ::tel,TelText->text().toUTF8()));
             } catch (bsoncxx::exception &e) {
-                this->showMessage("Hata","Error: " , e);
+                this->showMessage("Hata","Error: " , e.what());
                 return;
             }
 
             try {
                 doc.append(kvp(SBLDKeys::Yonetim::Baskan::MESAJ::mesaj,MesajText->text().toUTF8()));
             } catch (bsoncxx::exception &e) {
-                this->showMessage("Hata","Error: " , e);
+                this->showMessage("Hata","Error: " , e.what());
                 return;
             }
 
 
             try {
-                auto ins = this->collection(SBLDKeys::Yonetim::Baskan::MESAJ::collection).insert_one(doc.view());
+                auto ins = this->db()->collection(SBLDKeys::Yonetim::Baskan::MESAJ::collection).insert_one(doc.view());
                 if( ins )
                 {
                     if( ins.value().result().inserted_count() )
@@ -11525,7 +11528,7 @@ void Body::BaskanaMesajWidget::initializetion(WContainerWidget *row)
                     this->showMessage("Bilgi","Belirttiğiniz Telefon Numarasından Size Geri Dönüş Yapılacaktır. İlginiz İçin Teşekkürler","Tamam");
                 }
             } catch (mongocxx::exception &e) {
-                this->showMessage("Hata","Bir Hata Oluştu",e);
+                this->showMessage("Hata","Bir Hata Oluştu");
             }
 
 
@@ -11767,7 +11770,7 @@ Body::BilgiEdin::KamuHizmetRapor::KamuHizmetRapor()
 }
 
 Body::MeclisUyeleriWidget::MeclisUyeleriWidget(mongocxx::database *_database)
-    :DataBaseWidget(_database)
+    :SerikBLDCore::DB(_database)
 {
 
 

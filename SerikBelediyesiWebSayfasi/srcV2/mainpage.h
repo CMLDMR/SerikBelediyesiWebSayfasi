@@ -4,9 +4,10 @@
 #include "SerikBelediyesiWebSayfasi/BaseClass/databasewidget.h"
 #include "headerpage.h"
 #include "SerikBelediyesiWebSayfasi/src/footer.h"
+#include "db.h"
 
 
-class MainPage : public DataBaseWidget
+class MainPage : public WContainerWidget, public SerikBLDCore::DB
 {
 public:
     explicit MainPage(mongocxx::database* _db);

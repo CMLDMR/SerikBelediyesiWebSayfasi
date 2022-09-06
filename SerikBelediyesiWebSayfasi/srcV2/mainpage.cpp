@@ -17,7 +17,7 @@
 
 
 MainPage::MainPage(mongocxx::database *_db)
-    :DataBaseWidget (_db),_signal(this,"_signal")
+    :SerikBLDCore::DB (_db),_signal(this,"_signal")
 {
     auto header = addWidget(cpp14::make_unique<HeaderPage>());
     header->setZIndex(12);
@@ -160,21 +160,21 @@ void MainPage::init()
 void MainPage::initHaberler()
 {
     mContentWidget->clear();
-    mContentWidget->addWidget(cpp14::make_unique<Body::Haber>(this->getDB()));
+    mContentWidget->addWidget(cpp14::make_unique<Body::Haber>(this->getDB()->db()));
     footer->removeStyleClass("footerStickAbsolute");
 }
 
 void MainPage::initCalismalar()
 {
     mContentWidget->clear();
-    mContentWidget->addWidget(cpp14::make_unique<Body::Calisma>(this->getDB()));
+    mContentWidget->addWidget(cpp14::make_unique<Body::Calisma>(this->getDB()->db()));
     footer->removeStyleClass("footerStickAbsolute");
 }
 
 void MainPage::initProjeler()
 {
     mContentWidget->clear();
-    auto widget = mContentWidget->addWidget(cpp14::make_unique<Body::Proje>(this->getDB()));
+    auto widget = mContentWidget->addWidget(cpp14::make_unique<Body::Proje>(this->getDB()->db()));
     widget->setMaximumSize(1024,WLength::Auto);
     footer->removeStyleClass("footerStickAbsolute");
 }
@@ -182,7 +182,7 @@ void MainPage::initProjeler()
 void MainPage::initEtkinlikler()
 {
     mContentWidget->clear();
-    auto widget = mContentWidget->addWidget(cpp14::make_unique<Body::Etkinlik>(this->getDB()));
+    auto widget = mContentWidget->addWidget(cpp14::make_unique<Body::Etkinlik>(this->getDB()->db()));
     widget->setMaximumSize(1024,WLength::Auto);
     footer->removeStyleClass("footerStickAbsolute");
 }
@@ -190,7 +190,7 @@ void MainPage::initEtkinlikler()
 void MainPage::initBilgiEdinme()
 {
     mContentWidget->clear();
-    auto widget = mContentWidget->addWidget(cpp14::make_unique<Body::BilgiEdin::BilgiEdin>(this->getDB()));
+    auto widget = mContentWidget->addWidget(cpp14::make_unique<Body::BilgiEdin::BilgiEdin>(this->getDB()->db()));
     widget->setMaximumSize(1024,WLength::Auto);
     footer->removeStyleClass("footerStickAbsolute");
 }
@@ -201,7 +201,7 @@ void MainPage::initGiris()
     std::cout << "init Giriş" << std::endl;
 
     mContentWidget->clear();
-    auto widget = mContentWidget->addWidget(cpp14::make_unique<Giris::GirisWidget>(this->getDB()));
+    auto widget = mContentWidget->addWidget(cpp14::make_unique<Giris::GirisWidget>(this->getDB()->db()));
     widget->setMaximumSize(1250,WLength::Auto);
     footer->removeStyleClass("footerStickAbsolute");
 }
@@ -291,7 +291,7 @@ void MainPage::initMeclis()
 void MainPage::initHakkinda()
 {
     mContentWidget->clear();
-    auto widget = mContentWidget->addWidget(cpp14::make_unique<Body::Serik::Hakkinda>(this->getDB()));
+    auto widget = mContentWidget->addWidget(cpp14::make_unique<Body::Serik::Hakkinda>(this->getDB()->db()));
     widget->setMaximumSize(1024,WLength::Auto);
     footer->removeStyleClass("footerStickAbsolute");
 }
@@ -408,7 +408,7 @@ void MainPage::initAnounceList()
 
     mContentWidget->clear();
 
-    auto mMainContainer = mContentWidget->addWidget(cpp14::make_unique<Body::NewsAnnounceContent::AnnouncePanel::AnnounceList>(this->getDB()));
+    auto mMainContainer = mContentWidget->addWidget(cpp14::make_unique<Body::NewsAnnounceContent::AnnouncePanel::AnnounceList>(this->getDB()->db()));
     mMainContainer->setPadding( 90 , Side::Top );
     mMainContainer->setContentAlignment(AlignmentFlag::Center);
 
@@ -456,7 +456,7 @@ void MainPage::initAnounceDetail( std::string mOid )
         wApp->setInternalPath("/"+announceTitle->text().toUTF8(),false);
     }
 
-    auto list = row->addWidget(cpp14::make_unique<Body::NewsAnnounceContent::AnnouncePanel::AnnounceList>(this->getDB()));
+    auto list = row->addWidget(cpp14::make_unique<Body::NewsAnnounceContent::AnnouncePanel::AnnounceList>(this->getDB()->db()));
     list->addStyleClass(Bootstrap::Grid::Large::col_lg_4+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_12);
     list->addStyleClass (Bootstrap::Grid::Hidden::hidden_sm+Bootstrap::Grid::Hidden::hidden_xs);
 
@@ -484,7 +484,7 @@ void MainPage::initAnounceDetail( std::string mOid )
 
 
     try {
-        mongocxx::stdx::optional<bsoncxx::document::value> val = this->collection("Duyurular").find_one(filter.view());
+        mongocxx::stdx::optional<bsoncxx::document::value> val = this->db()->collection("Duyurular").find_one(filter.view());
         if( !val )
         {
             container->addWidget(cpp14::make_unique<WText>(WString("Empty Document")));
@@ -499,10 +499,9 @@ void MainPage::initAnounceDetail( std::string mOid )
 
                 try {
                     auto array = view[SBLDKeys::Duyurular::fileList].get_array().value;
-                    auto bucket = this->getDB ()->gridfs_bucket ();
                     for( auto doc : array )
                     {
-                        std::string path = SBLDKeys::downloadifNotExist(&bucket,doc.get_oid().value.to_string(),true);
+                        std::string path = this->downloadFileWeb(doc.get_oid().value.to_string().c_str());
                     }
                 } catch (bsoncxx::exception &e) {
                     std::cout << __LINE__ << " " << __FUNCTION__ << " " <<"Error: No Array in Duyuru Item: " << e.what() << std::endl;
@@ -557,7 +556,7 @@ void MainPage::initAnounceDetail( std::string mOid )
                 backList->clicked ().connect ([=](){
                     mContentWidget->clear();
 
-                    auto _mMainContainer = mContentWidget->addWidget(cpp14::make_unique<Body::NewsAnnounceContent::AnnouncePanel::AnnounceList>(this->getDB()));
+                    auto _mMainContainer = mContentWidget->addWidget(cpp14::make_unique<Body::NewsAnnounceContent::AnnouncePanel::AnnounceList>(this->getDB()->db()));
                     _mMainContainer->setPadding( 90 , Side::Top );
                     _mMainContainer->setContentAlignment(AlignmentFlag::Center);
 
@@ -580,7 +579,7 @@ void MainPage::initBaskan()
 {
 
     mContentWidget->clear();
-    auto widget = mContentWidget->addWidget(cpp14::make_unique<BaskanWidget>(this->getDB()));
+    auto widget = mContentWidget->addWidget(cpp14::make_unique<BaskanWidget>(this->getDB()->db()));
     widget->setMaximumSize(1024,WLength::Auto);
     footer->removeStyleClass("footerStickAbsolute");
 
@@ -602,7 +601,7 @@ bool MainPage::initMeclisCanliYayin()
     bool online = false;
 
     try {
-        auto val = this->getDB()->collection("mecliscanli").find_one(filter.view());
+        auto val = this->getDB()->db()->collection("mecliscanli").find_one(filter.view());
         if( val )
         {
             try {
@@ -715,138 +714,148 @@ void MainPage::initNostSerik()
 std::string MainPage::downloadifNotExist(bsoncxx::types::value oid, bool forceFilename)
 {
 
-    auto downloader = this->bucket().open_download_stream(oid);
-    auto file_length = downloader.file_length();
-    auto bytes_counter = 0;
 
-    QFileInfo info( downloader.files_document()["filename"].get_utf8().value.to_string().c_str() );
+    auto fullFilename = this->downloadFileWeb(oid.get_oid().value.to_string().c_str());
 
-    QString fullFilename;
+    return fullFilename;
 
-    if( forceFilename )
-    {
-        fullFilename = QString("tempfile/%1").arg(downloader.files_document()["filename"].get_utf8().value.to_string().c_str());
-    }else{
-        fullFilename = QString("tempfile/%2.%1").arg(info.suffix())
-                .arg(downloader.files_document()["oid"].get_oid().value.to_string().c_str());
-    }
+//    auto downloader = this->bucket().open_download_stream(oid);
+//    auto file_length = downloader.file_length();
+//    auto bytes_counter = 0;
+
+//    QFileInfo info( downloader.files_document()["filename"].get_utf8().value.to_string().c_str() );
+
+//    QString fullFilename;
+
+//    if( forceFilename )
+//    {
+//        fullFilename = QString("tempfile/%1").arg(downloader.files_document()["filename"].get_utf8().value.to_string().c_str());
+//    }else{
+//        fullFilename = QString("tempfile/%2.%1").arg(info.suffix())
+//                .arg(downloader.files_document()["oid"].get_oid().value.to_string().c_str());
+//    }
 
 
-    if( QFile::exists("docroot/"+fullFilename) )
-    {
-        return fullFilename.toStdString();
-    }
+//    if( QFile::exists("docroot/"+fullFilename) )
+//    {
+//        return fullFilename.toStdString();
+//    }
 
 
-    auto buffer_size = std::min(file_length, static_cast<std::int64_t>(downloader.chunk_size()));
-    auto buffer = bsoncxx::stdx::make_unique<std::uint8_t[]>(static_cast<std::size_t>(buffer_size));
-    QByteArray mainArray;
-    while ( auto length_read = downloader.read(buffer.get(), static_cast<std::size_t>(buffer_size)) ) {
-        bytes_counter += static_cast<std::int32_t>( length_read );
-        QByteArray ar((const char*)buffer.get(),bytes_counter);
-        mainArray+= ar;
-    }
+//    auto buffer_size = std::min(file_length, static_cast<std::int64_t>(downloader.chunk_size()));
+//    auto buffer = bsoncxx::stdx::make_unique<std::uint8_t[]>(static_cast<std::size_t>(buffer_size));
+//    QByteArray mainArray;
+//    while ( auto length_read = downloader.read(buffer.get(), static_cast<std::size_t>(buffer_size)) ) {
+//        bytes_counter += static_cast<std::int32_t>( length_read );
+//        QByteArray ar((const char*)buffer.get(),bytes_counter);
+//        mainArray+= ar;
+//    }
 
-    //    std::cout << "Current Dir: " << QDir::currentPath().toStdString() << std::endl;
-    //    std::cout << "file Size: " << mainArray.size() << std::endl;
-    QFile file( "docroot/"+fullFilename );
-    if( file.open(QIODevice::WriteOnly) )
-    {
-        file.write( mainArray );
-        file.close();
-    }else{
-        std::cout << "Error Can Not Open File: " << file.fileName().toStdString() << std::endl;
-    }
-    return fullFilename.toStdString();
+//    //    std::cout << "Current Dir: " << QDir::currentPath().toStdString() << std::endl;
+//    //    std::cout << "file Size: " << mainArray.size() << std::endl;
+//    QFile file( "docroot/"+fullFilename );
+//    if( file.open(QIODevice::WriteOnly) )
+//    {
+//        file.write( mainArray );
+//        file.close();
+//    }else{
+//        std::cout << "Error Can Not Open File: " << file.fileName().toStdString() << std::endl;
+//    }
+//    return fullFilename.toStdString();
 }
 
 std::string MainPage::downloadifNotExist(std::string oid, bool forceFilename)
 {
-    auto doc = bsoncxx::builder::basic::document{};
 
-    try {
-        doc.append(bsoncxx::builder::basic::kvp("key",bsoncxx::oid{oid}));
-    } catch (bsoncxx::exception& e) {
-        std::cout << "Error: " << e.what() << std::endl;
-        return "NULL";
-    }
-    std::cout << __LINE__ << " " << bsoncxx::to_json (doc.view ()) << std::endl;
-    auto downloader = this->getDB()->gridfs_bucket().open_download_stream(bsoncxx::types::value(doc.view()["key"].get_oid()));
-
-    std::cout << __LINE__ << std::endl;
-
-    auto file_length = downloader.file_length();
-    std::cout << __LINE__ << std::endl;
-
-    auto bytes_counter = 0;
-
-    QFileInfo info( downloader.files_document()["filename"].get_utf8().value.to_string().c_str() );
-
-    std::cout << __LINE__ << " " << bsoncxx::to_json (downloader.files_document ()) <<std::endl;
-
-    QString fullFilename;
+    auto fileName = this->downloadFileWeb(oid.c_str(),forceFilename);
+    return fileName;
 
 
+//    auto doc = bsoncxx::builder::basic::document{};
 
-    if( forceFilename )
-    {
-        fullFilename = QString("tempfile/%1").arg(downloader.files_document()["filename"].get_utf8().value.to_string().c_str());
-    }else{
-        fullFilename = QString("tempfile/%2.%1").arg(info.suffix())
-                .arg(downloader.files_document()["_id"].get_oid().value.to_string().c_str());
-    }
+//    try {
+//        doc.append(bsoncxx::builder::basic::kvp("key",bsoncxx::oid{oid}));
+//    } catch (bsoncxx::exception& e) {
+//        std::cout << "Error: " << e.what() << std::endl;
+//        return "NULL";
+//    }
+//    std::cout << __LINE__ << " " << bsoncxx::to_json (doc.view ()) << std::endl;
+//    auto downloader = this->getDB()->gridfs_bucket().open_download_stream(bsoncxx::types::value(doc.view()["key"].get_oid()));
 
-    std::cout << __LINE__ << std::endl;
+//    std::cout << __LINE__ << std::endl;
 
-    if( QFile::exists("docroot/"+fullFilename) )
-    {
-        return fullFilename.toStdString();
-    }
+//    auto file_length = downloader.file_length();
+//    std::cout << __LINE__ << std::endl;
 
-    std::cout << __LINE__ << std::endl;
+//    auto bytes_counter = 0;
 
-    auto buffer_size = std::min(file_length, static_cast<std::int64_t>(downloader.chunk_size()));
+//    QFileInfo info( downloader.files_document()["filename"].get_utf8().value.to_string().c_str() );
 
-    std::cout << __LINE__ << std::endl;
+//    std::cout << __LINE__ << " " << bsoncxx::to_json (downloader.files_document ()) <<std::endl;
+
+//    QString fullFilename;
 
 
-    auto buffer = bsoncxx::stdx::make_unique<std::uint8_t[]>(static_cast<std::size_t>(buffer_size));
 
-    std::cout << __LINE__ << std::endl;
+//    if( forceFilename )
+//    {
+//        fullFilename = QString("tempfile/%1").arg(downloader.files_document()["filename"].get_utf8().value.to_string().c_str());
+//    }else{
+//        fullFilename = QString("tempfile/%2.%1").arg(info.suffix())
+//                .arg(downloader.files_document()["_id"].get_oid().value.to_string().c_str());
+//    }
 
-    QByteArray mainArray;
+//    std::cout << __LINE__ << std::endl;
 
-    std::cout << __LINE__ << " " <<buffer_size << " " << file_length << std::endl;
+//    if( QFile::exists("docroot/"+fullFilename) )
+//    {
+//        return fullFilename.toStdString();
+//    }
 
-    while ( auto length_read = downloader.read(buffer.get(), static_cast<std::size_t>(buffer_size)) ) {
+//    std::cout << __LINE__ << std::endl;
 
-        std::cout << __LINE__ << " " << length_read << std::endl;
+//    auto buffer_size = std::min(file_length, static_cast<std::int64_t>(downloader.chunk_size()));
 
-        bytes_counter += static_cast<std::int32_t>( length_read );
+//    std::cout << __LINE__ << std::endl;
 
-        std::cout << __LINE__ << " " << bytes_counter << std::endl;
 
-        QByteArray ar((const char*)buffer.get(),bytes_counter);
+//    auto buffer = bsoncxx::stdx::make_unique<std::uint8_t[]>(static_cast<std::size_t>(buffer_size));
 
-        std::cout << __LINE__ << " " << ar.size ()<< std::endl;
+//    std::cout << __LINE__ << std::endl;
 
-        mainArray+= ar;
+//    QByteArray mainArray;
 
-        std::cout << __LINE__ << " " << mainArray.size ()<< "\n"<<std::endl;
+//    std::cout << __LINE__ << " " <<buffer_size << " " << file_length << std::endl;
 
-    }
+//    while ( auto length_read = downloader.read(buffer.get(), static_cast<std::size_t>(buffer_size)) ) {
 
-    std::cout << __LINE__ << std::endl;
+//        std::cout << __LINE__ << " " << length_read << std::endl;
 
-    //    std::cout << "Current Dir: " << QDir::currentPath().toStdString() << std::endl;
-    //    std::cout << "file Size: " << mainArray.size() << std::endl;
-    QFile file( "docroot/"+fullFilename );
-    if( file.open(QIODevice::WriteOnly) )
-    {
-        file.write( mainArray );
-        file.close();
-    }else{
-        std::cout << "Error Can Not Open File: " << file.fileName().toStdString() << std::endl;
-    }
-    return fullFilename.toStdString();
+//        bytes_counter += static_cast<std::int32_t>( length_read );
+
+//        std::cout << __LINE__ << " " << bytes_counter << std::endl;
+
+//        QByteArray ar((const char*)buffer.get(),bytes_counter);
+
+//        std::cout << __LINE__ << " " << ar.size ()<< std::endl;
+
+//        mainArray+= ar;
+
+//        std::cout << __LINE__ << " " << mainArray.size ()<< "\n"<<std::endl;
+
+//    }
+
+//    std::cout << __LINE__ << std::endl;
+
+//    //    std::cout << "Current Dir: " << QDir::currentPath().toStdString() << std::endl;
+//    //    std::cout << "file Size: " << mainArray.size() << std::endl;
+//    QFile file( "docroot/"+fullFilename );
+//    if( file.open(QIODevice::WriteOnly) )
+//    {
+//        file.write( mainArray );
+//        file.close();
+//    }else{
+//        std::cout << "Error Can Not Open File: " << file.fileName().toStdString() << std::endl;
+//    }
+//    return fullFilename.toStdString();
 }

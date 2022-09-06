@@ -3,9 +3,10 @@
 
 #include <QtCore/qglobal.h>
 
-#include "SerikBelediyesiWebSayfasi/BaseClass/databasewidget.h"
+#include "SerikBelediyesiWebSayfasi/BaseClass/containerwiget.h"
+#include "db.h"
 
-class BasindaBizWidget : public DataBaseWidget
+class BasindaBizWidget : public ContainerWidget , public SerikBLDCore::DB
 {
 public:
     ///
@@ -69,7 +70,7 @@ private:
 
 
 
-class BasinItem : public DataBaseWidget
+class BasinItem : public ContainerWidget, public SerikBLDCore::DB
 {
 
 public:

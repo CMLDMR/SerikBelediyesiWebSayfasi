@@ -429,7 +429,7 @@ namespace Body {
 
     };
 
-    class BaskanaMesajWidget : public DataBaseWidget
+    class BaskanaMesajWidget : public ContainerWidget, public SerikBLDCore::DB
     {
     public:
         BaskanaMesajWidget(mongocxx::database* _database);
@@ -448,7 +448,7 @@ namespace Body {
 
         class TaskBlock;
 
-        class Block : public DataBaseWidget
+        class Block : public WContainerWidget, SerikBLDCore::DB
         {
         public:
             Block(mongocxx::database* _db);
@@ -459,7 +459,7 @@ namespace Body {
             TaskBlock* mTaskBlock;
         };
 
-        class ProjectBlock : public DataBaseWidget
+        class ProjectBlock : public ContainerWidget, public SerikBLDCore::DB
         {
         public:
             ProjectBlock(mongocxx::database* _db , bool _subPage = false);
@@ -488,7 +488,7 @@ namespace Body {
 
         };
 
-        class TaskBlock : public DataBaseWidget
+        class TaskBlock : public ContainerWidget, public SerikBLDCore::DB
         {
         public:
             TaskBlock(mongocxx::database* _db);
@@ -574,7 +574,7 @@ namespace Body {
         void setKarar(std::string oid);
     };
 
-    class Proje : public DataBaseWidget
+    class Proje : public ContainerWidget, public SerikBLDCore::DB
     {
     public:
         Proje(mongocxx::database* _db);
@@ -646,7 +646,7 @@ namespace Body {
 
     };
 
-    class Calisma : public DataBaseWidget
+    class Calisma : public ContainerWidget, public SerikBLDCore::DB
     {
     public:
         Calisma(mongocxx::database* _db);
@@ -861,7 +861,7 @@ namespace Body {
         std::string oldtelefon;
     };
 
-    class MeclisUyeleriWidget : public DataBaseWidget
+    class MeclisUyeleriWidget : public WContainerWidget, SerikBLDCore::DB
     {
     public:
         MeclisUyeleriWidget(mongocxx::database* _database);

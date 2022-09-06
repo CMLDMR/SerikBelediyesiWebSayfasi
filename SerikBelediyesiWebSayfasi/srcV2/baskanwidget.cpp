@@ -1,8 +1,9 @@
 #include "baskanwidget.h"
 
 BaskanWidget::BaskanWidget(mongocxx::database *_db)
-    :DataBaseWidget (_db)
+    :SerikBLDCore::DB(_db)
 {
+    this->clear();
 
     setPadding(90,Side::Top);
     setWidth(WLength("100%"));
@@ -53,7 +54,7 @@ BaskanWidget::BaskanWidget(mongocxx::database *_db)
 
 
         try {
-            auto val = this->collection("Yonetim").find_one(filter.view());
+            auto val = this->db()->collection("Yonetim").find_one(filter.view());
 
             if( !val.value().view().empty() )
             {
