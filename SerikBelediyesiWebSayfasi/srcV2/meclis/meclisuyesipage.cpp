@@ -260,7 +260,7 @@ void v2::MeclisUyeleriPage::onList(const QVector<SerikBLDCore::Meclis::MeclisUye
             mDonemText->setAttributeValue (Style::style,Style::font::size::s10px);
         }
 
-        for( auto __item : item.komisyonUyelikleri () )
+        for( const auto &__item : item.komisyonUyelikleri () )
         {
             auto mKomisyonText = vLayout->addWidget (cpp14::make_unique<WText>("● <i>"+__item.toStdString ()+"</i>"),1,AlignmentFlag::Center);
             mKomisyonText->setAttributeValue (Style::style,Style::font::size::s10px);
@@ -336,7 +336,7 @@ void v2::MeclisUyeleriPage::yeniKayit()
     gLayout->addWidget (cpp14::make_unique<WText>("Meclis Dönemini Seçiniz"));
     auto mMeclisDonemi = gLayout->addWidget (cpp14::make_unique<WComboBox>(),1,AlignmentFlag::Justify);
     auto donemList = this->getDonemList ();
-    for( auto item : donemList )
+    for( const auto &item : donemList )
     {
         mMeclisDonemi->addItem (item.donem ().toStdString ());
     }
@@ -348,7 +348,7 @@ void v2::MeclisUyeleriPage::yeniKayit()
     gLayout->addWidget (cpp14::make_unique<WText>("Parti Üyeligini Seçiniz"));
     auto mPartiGrubu = gLayout->addWidget (cpp14::make_unique<WComboBox>(),1,AlignmentFlag::Justify);
     auto partiList = this->getPartiList ();
-    for( auto item : partiList )
+    for( const auto &item : partiList )
     {
         mPartiGrubu->addItem (item.parti ().toStdString ());
     }
@@ -365,7 +365,7 @@ void v2::MeclisUyeleriPage::yeniKayit()
                                  Bootstrap::Grid::Small::col_sm_7+
                                  Bootstrap::Grid::ExtraSmall::col_xs_7);
     auto komisyonList = this->getKomisyonList ();
-    for( auto item : komisyonList )
+    for( const auto &item : komisyonList )
     {
         mKomisyonlar->addItem (item.komisyonAdi ().toStdString ());
     }
@@ -415,7 +415,7 @@ void v2::MeclisUyeleriPage::yeniKayit()
         uyeItem.setTCOid (tcLineEdit->text ().toUTF8 ());
         uyeItem.setPartiAdi (mPartiGrubu->currentText ().toUTF8 ());
         uyeItem.setDonemAdi (mMeclisDonemi->currentText ().toUTF8 ());
-        for( auto item : mSelectedKomisyon )
+        for( const auto &item : mSelectedKomisyon )
         {
             uyeItem.addKomisyonAdi (item.toStdString ());
         }
@@ -597,7 +597,7 @@ void v2::PartiManagerPage::onList(const QVector<SerikBLDCore::Meclis::PartiItem>
 {
     Content ()->clear ();
     Content ()->setMargin (15,Side::Top|Side::Bottom);
-    for( auto item : *mlist )
+    for( const auto &item : *mlist )
     {
         auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
         container->addStyleClass (Bootstrap::Grid::col_full_12);
@@ -1104,7 +1104,7 @@ void v2::MeclisUyesiProfilPage::meclisUyesiBilgileri()
     auto mMeclisDonemi = gLayout->addWidget (cpp14::make_unique<WComboBox>(),1,AlignmentFlag::Justify);
     auto donemList = mUyeManager->getDonemList ();
     int partiCount = 0;
-    for( auto item : donemList )
+    for( const auto &item : donemList )
     {
         mMeclisDonemi->addItem (item.donem ().toStdString ());
         if( this->donemAdi () == item.donem () ){
@@ -1133,7 +1133,7 @@ void v2::MeclisUyesiProfilPage::meclisUyesiBilgileri()
     auto mPartiGrubu = gLayout->addWidget (cpp14::make_unique<WComboBox>(),1,AlignmentFlag::Justify);
     auto partiList = mUyeManager->getPartiList ();
     partiCount = 0;
-    for( auto item : partiList )
+    for( const auto &item : partiList )
     {
         mPartiGrubu->addItem (item.parti ().toStdString ());
         if( this->partiAdi () == item.parti () ){

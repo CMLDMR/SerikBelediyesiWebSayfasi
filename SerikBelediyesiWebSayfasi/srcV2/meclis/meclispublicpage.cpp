@@ -17,27 +17,27 @@ v2::MeclisPublicPage::MeclisPublicPage(SerikBLDCore::DB *db)
 
 
     auto meclistoplantiListContainer = this->Header()->addNew<WContainerWidget>();
-    meclistoplantiListContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_4+
-                                               Bootstrap::Grid::Medium::col_md_4+
-                                               Bootstrap::Grid::Small::col_sm_4+
-                                               Bootstrap::Grid::ExtraSmall::col_xs_12);
+    meclistoplantiListContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_6+
+                                               Bootstrap::Grid::Medium::col_md_6+
+                                               Bootstrap::Grid::Small::col_sm_6+
+                                               Bootstrap::Grid::ExtraSmall::col_xs_6);
 
-    meclistoplantiListContainer->addStyleClass(Bootstrap::ImageShape::img_thumbnail+CSSStyle::Button::grayButton);
+    meclistoplantiListContainer->addStyleClass(CSSStyle::Button::grayButton);
     meclistoplantiListContainer->addNew<WText>("<h4>Meclis Toplantıları</h4>");
-    meclistoplantiListContainer->setPadding(5,Side::Top|Side::Bottom);
+    meclistoplantiListContainer->setPadding(3,Side::Top|Side::Bottom);
     meclistoplantiListContainer->decorationStyle().setCursor(Cursor::PointingHand);
 
 
 
     auto meclisUyesiListesiContainer = this->Header()->addNew<WContainerWidget>();
-    meclisUyesiListesiContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_4+
-                                               Bootstrap::Grid::Medium::col_md_4+
-                                               Bootstrap::Grid::Small::col_sm_4+
-                                               Bootstrap::Grid::ExtraSmall::col_xs_12);
+    meclisUyesiListesiContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_6+
+                                               Bootstrap::Grid::Medium::col_md_6+
+                                               Bootstrap::Grid::Small::col_sm_6+
+                                               Bootstrap::Grid::ExtraSmall::col_xs_6);
 
-    meclisUyesiListesiContainer->addStyleClass(Bootstrap::ImageShape::img_thumbnail+CSSStyle::Button::grayButton);
+    meclisUyesiListesiContainer->addStyleClass(CSSStyle::Button::grayButton);
     meclisUyesiListesiContainer->addNew<WText>("<h4>Meclis Üyeleri</h4>");
-    meclisUyesiListesiContainer->setPadding(5,Side::Top|Side::Bottom);
+    meclisUyesiListesiContainer->setPadding(3,Side::Top|Side::Bottom);
     meclisUyesiListesiContainer->decorationStyle().setCursor(Cursor::PointingHand);
     meclisUyesiListesiContainer->clicked().connect([=]{
 
@@ -54,16 +54,16 @@ v2::MeclisPublicPage::MeclisPublicPage(SerikBLDCore::DB *db)
 
 
 
-    auto komisyonListesiContainer = this->Header()->addNew<WContainerWidget>();
-    komisyonListesiContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_4+
-                                               Bootstrap::Grid::Medium::col_md_4+
-                                               Bootstrap::Grid::Small::col_sm_4+
-                                               Bootstrap::Grid::ExtraSmall::col_xs_12);
+//    auto komisyonListesiContainer = this->Header()->addNew<WContainerWidget>();
+//    komisyonListesiContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_4+
+//                                               Bootstrap::Grid::Medium::col_md_4+
+//                                               Bootstrap::Grid::Small::col_sm_4+
+//                                               Bootstrap::Grid::ExtraSmall::col_xs_12);
 
-    komisyonListesiContainer->addStyleClass(Bootstrap::ImageShape::img_thumbnail+CSSStyle::Button::grayButton);
-    komisyonListesiContainer->addNew<WText>("<h4>Komisyonlar</h4>");
-    komisyonListesiContainer->setPadding(5,Side::Top|Side::Bottom);
-    komisyonListesiContainer->decorationStyle().setCursor(Cursor::PointingHand);
+//    komisyonListesiContainer->addStyleClass(Bootstrap::ImageShape::img_thumbnail+CSSStyle::Button::grayButton);
+//    komisyonListesiContainer->addNew<WText>("<h4>Komisyonlar</h4>");
+//    komisyonListesiContainer->setPadding(5,Side::Top|Side::Bottom);
+//    komisyonListesiContainer->decorationStyle().setCursor(Cursor::PointingHand);
 
 
 
