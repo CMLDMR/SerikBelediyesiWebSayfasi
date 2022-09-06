@@ -1169,7 +1169,7 @@ void v2::MeclisUyesiProfilPage::meclisUyesiBilgileri()
                                  Bootstrap::Grid::ExtraSmall::col_xs_7);
     auto komisyonList = mUyeManager->getKomisyonList ();
     if( komisyonList.size() == 0 ) this->showPopUpMessage ("Komisyon Listesi Çekilemedi","Hata");
-    for( auto item : komisyonList )
+    for( const auto &item : komisyonList )
     {
         mKomisyonlar->addItem (item.komisyonAdi ().toStdString ());
     }
