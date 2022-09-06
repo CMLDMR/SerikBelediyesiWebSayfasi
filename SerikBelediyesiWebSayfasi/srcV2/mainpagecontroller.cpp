@@ -1,10 +1,11 @@
 #include "mainpagecontroller.h"
 #include "SerikBelediyesiWebSayfasi/src/body.h"
 
-MainPageController::MainPageController(mongocxx::database *_db)
-    :DataBaseWidget (_db)
+MainPageController::MainPageController()
+//    :DataBaseWidget (_db)
 {
 
+    this->clear();
     setContentAlignment(AlignmentFlag::Center);
 
     auto rContainer = addWidget(cpp14::make_unique<WContainerWidget>());

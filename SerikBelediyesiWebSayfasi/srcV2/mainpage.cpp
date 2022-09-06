@@ -113,7 +113,7 @@ void MainPage::init()
     rContainer->setPadding(180,Side::Top);
 
     {
-        auto controller = rContainer->addWidget(cpp14::make_unique<MainPageController>(this->getDB()));
+        auto controller = rContainer->addWidget(cpp14::make_unique<MainPageController>());
         //        controller->addStyleClass(Bootstrap::Grid::Visible::visible_lg);
         controller->addStyleClass(Bootstrap::Grid::col_full_12);
         controller->ClickHaber().connect(this,&MainPage::initHaberler);

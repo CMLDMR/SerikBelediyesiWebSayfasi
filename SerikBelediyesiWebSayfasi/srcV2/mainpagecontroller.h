@@ -1,7 +1,8 @@
 #ifndef MAINPAGECONTROLLER_H
 #define MAINPAGECONTROLLER_H
 
-#include "SerikBelediyesiWebSayfasi/BaseClass/databasewidget.h"
+
+#include "SerikBelediyesiWebSayfasi/BaseClass/containerwiget.h"
 
 using namespace Wt;
 
@@ -18,10 +19,10 @@ using namespace Wt;
 /// 7. Galeri
 /// 8. Başvurular
 
-class MainPageController : public DataBaseWidget
+class MainPageController : public ContainerWidget
 {
 public:
-    explicit MainPageController(mongocxx::database* _db);
+    explicit MainPageController();
 
     Signal<NoClass> &ClickHaber();
 
