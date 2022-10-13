@@ -1,0 +1,170 @@
+
+.textShadow {
+  text-shadow: 1px 1px 5px black;
+}
+
+
+.ContentWidget
+{
+    background-color:rgba(255,255,255,1);
+}
+
+
+.VideoWidgetPlayButton
+{
+    width:auto;
+    height:100%;
+}
+
+.EventWidget
+{
+    margin:0px 0px 0px 0px;
+    padding:0px 0px 0px 0px;
+}
+
+.EventWidgetMainContainer
+{
+    position:relative;
+    height:100%;
+}
+
+.EventWidgetMainContainerItems
+{
+    height:100%;
+    width:100%;
+    position:absolute;
+    top:0px;
+}
+
+.EventWidgetMainContainerItemsaddOnlySub
+{
+    height:100%;
+    width:100%;
+    /*margin-top:250px !important;*/
+}
+
+
+.EventWidgetMainContainerItem
+{
+    height:100%;
+}
+
+
+
+/* Large desktops and laptops */
+@media (min-width: 1200px) {
+
+
+
+.EventWidgetMainContainerItemsaddOnlySub
+{
+    /*display:none;*/
+}
+
+
+}
+
+
+
+
+
+
+
+/* Landscape tablets and medium desktops */
+@media (min-width: 992px) and (max-width: 1199px) {
+
+.EventWidgetMainContainerItems
+{
+    top:0px;
+}
+
+
+.EventWidgetMainContainerItemsaddOnlySub
+{
+    /*display:none;*/
+}
+
+
+
+}
+
+
+
+
+
+
+/* Portrait tablets and small desktops */
+@media (min-width: 768px) and (max-width: 991px) {
+
+
+.EventWidgetMainContainerItems
+{
+    top:0px;
+}
+
+
+.HideForSM
+{
+    display:none !important;
+}
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+/* Landscape phones and portrait tablets */
+@media (max-width: 767px) {
+
+
+
+.EventWidgetMainContainerItems
+{
+    position:relative;
+    top:250px;
+}
+
+
+.EventWidgetMainContainerItemsaddOnlySub
+{
+    /*display:none;*/
+}
+
+}
+
+
+
+
+
+
+
+
+
+
+/* Portrait phones and smaller */
+@media (max-width: 480px) {
+
+
+
+.EventWidgetMainContainerItemsaddOnlySub
+{
+    /*display:none;*/
+}
+
+.EventWidgetMainContainerItems
+{
+    position:relative;
+    top:250px;
+}
+
+
+
+}

@@ -1,0 +1,780 @@
+
+
+.rootBody{
+    top:    0px;
+    bottom: 0px;
+    right:  0px;
+    left:   0px;
+}
+
+
+
+
+.popMessage {
+  top: 100%;
+  -webkit-animation-name: popmsganimation; /* Safari 4.0 - 8.0 */
+  -webkit-animation-duration: 3s; /* Safari 4.0 - 8.0 */
+  animation-name: popmsganimation;
+  animation-duration: 3s;
+}
+
+/* Safari 4.0 - 8.0 */
+@-webkit-keyframes popmsganimation {
+  0%   {top: 100%;}
+  10%  {top: 95%;}
+  90%  {top: 95%;}
+  100% {top: 100%;}
+}
+
+/* Standard syntax */
+@keyframes popmsganimation {
+  0%   {top: 100%;}
+  10%  {top: 95%;}
+  90%  {top: 95%;}
+  100% {top: 100%;}
+}
+
+
+
+.popMessageError {
+  top: 100%;
+  -webkit-animation-name: popmsganimationError; /* Safari 4.0 - 8.0 */
+  -webkit-animation-duration: 3s; /* Safari 4.0 - 8.0 */
+  animation-name: popmsganimationError;
+  animation-duration: 3s;
+}
+
+/* Safari 4.0 - 8.0 */
+@-webkit-keyframes popmsganimationError {
+  0%   {top: 100%;}
+  10%  {top: 50%;}
+  90%  {top: 50%;}
+  100% {top: 100%;}
+}
+
+/* Standard syntax */
+@keyframes popmsganimationError {
+  0%   {top: 100%;}
+  10%  {top: 50%;}
+  90%  {top: 50%;}
+  100% {top: 100%;}
+}
+
+
+.NostItemThum{
+  background-color: #eee;
+  border: none;
+  color: black;
+  text-align: justify;
+  transition: 0.3s;
+}
+
+.NostItemThum:hover {
+  background-color: #3e3e31;
+  color: white;
+}
+
+.NostListItem{
+-webkit-box-shadow: inset 0px 0px 38px -9px rgba(0,0,0,1);
+-moz-box-shadow: inset 0px 0px 38px -9px rgba(0,0,0,1);
+box-shadow: inset 0px 0px 38px -9px rgba(0,0,0,1);
+
+-webkit-box-shadow: 0px 0px 38px -9px rgba(0,0,0,1);
+-moz-box-shadow: 0px 0px 38px -9px rgba(0,0,0,1);
+box-shadow: 0px 0px 38px -9px rgba(0,0,0,1);
+}
+
+
+.NostListItems{
+	padding: 1rem;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+}
+
+.NostListItems::-webkit-scrollbar {
+  display: none;
+}
+
+.footerStickAbsolute{
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+}
+
+
+.galeriBtn{
+	padding: 0px !important;
+}
+
+.galeriBtnSlide{
+	background-color: rgba(255, 0, 71, 0.5);
+	animation: galeriBtnSlide ease-in-out 5s infinite alternate;
+}
+
+@keyframes galeriBtnSlide {
+  0%   {background-color: rgba(255, 0, 71, 0.5);}
+  33%  {background-color: rgba(255, 0, 194, 0.3);}
+  66%  {background-color: rgba(0, 231, 194, 0.3);}
+  100%  {background-color: rgba(255, 0, 71, 0.5);}
+}
+
+
+
+.backanimation{
+    background:url("v2/slide/1.jpg");
+    background-size:cover;
+    background-repeat:no-repeat;
+    background-position:center center;
+    /*animation: slideFrame 25s ease-in-out 5s infinite alternate;*/
+    z-index: -1;
+}
+
+
+
+@keyframes slideFrame {
+  0%   {
+  background:url("v2/slide/1.jpg");
+  background-size:cover;
+  background-repeat:no-repeat;
+  background-position:center center;
+  }
+  20%  {
+  background:url("v2/slide/2.jpg");
+  background-size:cover;
+  background-repeat:no-repeat;
+  background-position:center center;
+  }
+  40%  {
+  background:url("v2/slide/3.jpg");
+  background-size:cover;
+  background-repeat:no-repeat;
+  background-position:center center;
+  }
+  60% {
+  background:url("v2/slide/4.jpg");
+  background-size:cover;
+  background-repeat:no-repeat;
+  background-position:center center;
+  }
+  80%  {
+  background:url("v2/slide/5.jpg");
+  background-size:cover;
+  background-repeat:no-repeat;
+  background-position:center center;
+  }
+  100% {
+  background:url("v2/slide/6.jpg");
+  background-size:cover;
+  background-repeat:no-repeat;
+  background-position:center center;
+  }
+}
+
+
+.mapcss{
+    width: 100% !important;
+    height: 100%;
+}
+
+
+
+
+
+
+
+
+.NewsAnnounceContent
+{
+    margin-top:0px;
+}
+
+.NewsPanel
+{
+    height:100%;
+}
+
+.ControlPanel
+{
+    height:100%;
+}
+
+.ControlPanelMenuItemComboBox
+{
+    color:black;
+    font-family:"Tahoma";
+    font-size:16px;
+    font-weight:bold;
+    transition:ease-in-out .2s;
+    background-color:rgba(175,175,175,0.0);
+    border-bottom:1px solid rgba(175,175,175,0.5);
+    display:none !important;
+}
+
+.NoComBoBoxStyle{
+    display:block;
+}
+
+.lastComboBoxItems
+{
+    color:black;
+    font-family:"Tahoma";
+    font-size:16px;
+    font-weight:bold;
+    transition:ease-in-out .2s;
+    background-color:rgba(175,175,175,0.0);
+    border-bottom:1px solid rgba(175,175,175,0.5);
+    height:30px;
+    line-height: 10px;
+}
+
+.ControlPanelMenuItem
+{
+    color:black;
+    font-family:"Tahoma";
+    font-size:16px;
+    font-weight:bold;
+    transition:ease-in-out .2s;
+    background-color:rgba(175,175,175,0.0);
+    border-bottom:1px solid rgba(175,175,175,0.5);
+}
+
+.ControlPanelMenuItem:hover
+{
+    color:white;
+    cursor:pointer;
+    text-decoration:underline;
+    background-color:rgba(25,25,25,0.5);
+}
+
+
+.NewsList
+{
+
+}
+
+.NewsListItemimg
+{
+    width:100%;
+    height:100%;
+}
+
+.NewItemSubText
+{
+    color:gray;
+    font-size:11px;
+}
+
+.ControlPanelMenuItem:hover .NewItemSubText
+{
+    color:white;
+}
+
+
+
+.BaskanWidget
+{
+background: -moz-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 74%, rgba(0,0,0,0.65) 100%, rgba(0,0,0,0.65) 102%);
+background: -webkit-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(0,0,0,0) 74%,rgba(0,0,0,0.65) 100%,rgba(0,0,0,0.65) 102%);
+background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0,0,0,0) 74%,rgba(0,0,0,0.65) 100%,rgba(0,0,0,0.65) 102%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#a6000000',GradientType=0 );
+}
+
+.BaskanText
+{
+    text-shadow: 2px 0px 3px black;
+}
+
+.announceRow
+{
+    overflow:hidden;
+    border-top:1px solid black;
+    height:650px;
+    position:relative;
+}
+
+.AnnounceListSliderCss
+{
+    position:absolute;
+    top:0px;
+    animation-name: anounceList;
+    animation-duration: 20s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    overflow-y:hidden;
+    width:100%;
+
+    border-bottom: 1px solid gray;
+}
+
+.AnnounceListSliderPlay
+{
+    animation-play-state:running;
+}
+.AnnounceListSliderPaused
+{
+    animation-play-state:paused;
+}
+
+.AnnounceListSliderCss:hover
+{
+    animation-play-state:paused;
+}
+
+
+.AnnounceListItem
+{
+
+}
+
+.AnnounceListItem:hover
+{
+    cursor:pointer;
+}
+
+
+@keyframes anounceList
+{
+    0% {top:0px;}
+    15% {top:0px;}
+    100% {top:-600px;}
+}
+
+
+.TaskItem
+{
+color:white;
+background: rgb(127,138,137);
+background: -moz-linear-gradient(top, rgba(127,138,137,1) 1%, rgba(132,148,147,1) 100%);
+background: -webkit-linear-gradient(top, rgba(127,138,137,1) 1%,rgba(132,148,147,1) 100%);
+background: linear-gradient(to bottom, rgba(127,138,137,1) 1%,rgba(132,148,147,1) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7f8a89', endColorstr='#849493',GradientType=0 );
+box-shadow: 0px 1px 10px black;
+}
+
+.TaskItem:hover
+{
+    cursor:pointer;
+    color:black;
+    background: rgb(255,255,255);
+    box-shadow: 0px 1px 10px white;
+
+}
+
+
+
+
+.ProjectIMGRow
+{
+    position:relative;
+    left:0px;
+    right:0px;
+    height:100%;
+    overflow:hidden;
+}
+
+.ProjectIMGSlideBack
+{
+    position:absolute;
+    left:-80px;
+    top:40%;
+    font-size:48px;
+    color:white;
+    background:rgba(25,25,25,.45);
+    padding:15px;
+    transition:ease-in-out .2s;
+}
+
+.ProjectIMGSlideNext
+{
+    position:absolute;
+    right:-80px;
+    top:40%;
+    font-size:48px;
+    color:white;
+    background:rgba(25,25,25,.45);
+    padding:15px;
+    transition:ease-in-out .2s;
+}
+.ProjectIMGSlideNext:hover
+{
+    background:rgba(25,25,25,.95);
+}
+
+.ProjectIMGSlideText
+{
+    position:absolute;
+    bottom:-80px;
+    font-size:18px;
+    color:white;
+    background:rgba(25,25,25,.65);
+    padding:15px;
+    transition:ease-in-out .2s;
+}
+
+
+
+
+
+.ProjectIMGRow:hover
+{
+    cursor:pointer;
+}
+
+.ProjectIMGRow:hover .ProjectIMGSlideBack
+{
+    left:0px;
+    background:rgba(25,25,25,.55);
+}
+
+.ProjectIMGRow:hover .ProjectIMGSlideNext
+{
+    right:0px;
+    background:rgba(25,25,25,.55);
+}
+.ProjectIMGRow:hover .ProjectIMGSlideText
+{
+    bottom:0px;
+}
+
+
+.ProjectSliderButtonBackground
+{
+    filter:grayscale(100%);
+    opacity: .5;
+}
+
+
+.ProjectSliderButton
+{
+    color:lightgray;
+    font-size:108px;
+    background:rgba(25,25,25,.45);
+    transition:ease-in-out .2s;
+}
+
+.ProjectSliderButton:hover
+{
+    color:white;
+    background:rgba(25,25,25,.80);
+    cursor:pointer;
+}
+
+.ProjectSliderButton:active
+{
+    background:rgba(25,25,25,1);
+    filter:drop-shadow(0px 0px 10px black);
+}
+
+
+.ProjectSliderDot
+{
+    background:rgb(255,255,255);
+    min-width:15px;
+    min-height:15px;
+    max-height:15px;
+    max-width:15px;
+    width:15px;
+    height:15px;
+    box-shadow:0px 0px 10px white;
+}
+
+.ProjectSliderDotText
+{
+    color:white;
+    font-size:12px;
+    display:none;
+}
+
+.ProjectSliderDot:hover
+{
+    cursor:pointer;
+}
+
+.ProjectSliderDot:hover .ProjectSliderDotText
+{
+    display:block;
+}
+
+
+.blackLine{
+    height:550px;
+}
+
+
+/**************************************/
+
+
+.footerText
+{
+    color:white;
+	padding:0px !important;
+	    font-size:12px !important;
+
+}
+
+
+.CommanBoxShadow{
+    box-shadow:2px 2px 5px black;
+}
+
+
+
+/* Large desktops and laptops */
+@media (min-width: 1200px) {
+
+
+.CommanFilter
+{
+    -webkit-filter: blur(50px);
+    -moz-filter: blur(50px);
+    -o-filter: blur(50px);
+    -ms-filter: blur(50px);
+    filter: blur(50px);
+}
+
+
+.CanliYayin{
+    width: 100%;
+    height: 720px;
+    max-width:1280px;
+}
+
+
+
+}
+
+
+
+
+
+
+
+/* Landscape tablets and medium desktops */
+@media (min-width: 992px) and (max-width: 1199px) {
+
+
+
+.NewsAnnounceContent
+{
+    /*margin-top:250px;*/
+}
+
+
+.CommanFilter
+{
+    -webkit-filter: blur(50px);
+    -moz-filter: blur(50px);
+    -o-filter: blur(50px);
+    -ms-filter: blur(50px);
+    filter: blur(50px);
+}
+
+
+.CanliYayin{
+    width: 100%;
+    height: 640px;
+}
+
+
+
+
+}
+
+
+
+
+
+
+/* Portrait tablets and small desktops */
+@media (min-width: 768px) and (max-width: 991px) {
+
+
+.ControlPanelMenuItemComboBox
+{
+    display:block !important;
+}
+
+.NoComBoBoxStyle
+{
+    display: none !important;
+}
+
+
+.blackLine{
+    height:250px;
+}
+
+
+
+.NewsAnnounceContent
+{
+    margin-top:0px;
+}
+
+
+.CommanFilter
+{
+    -webkit-filter: blur(50px);
+    -moz-filter: blur(50px);
+    -o-filter: blur(50px);
+    -ms-filter: blur(50px);
+    filter: blur(50px);
+}
+
+
+.CanliYayin{
+    width: 100%;
+    height: 570px;
+}
+
+
+
+
+}
+
+
+
+
+
+
+
+/* Landscape phones and portrait tablets */
+@media (max-width: 767px) {
+.NewsMainTitle
+{
+    font-size:28px !important;
+    z-index:10;
+}
+.ControlPanelMenuItemComboBox
+{
+    display:block !important;
+}
+
+.NoComBoBoxStyle
+{
+    display: none !important;
+}
+
+
+.blackLine{
+    height:250px;
+}
+
+
+.NewsAnnounceContent
+{
+    /*margin-top:1250px;*/
+}
+
+
+.CommanFilter
+{
+
+}
+
+.ZamanTuneliFont
+{
+    font-size:11px !important;
+}
+
+
+.CanliYayin{
+    width: 100%;
+    height: 420px;
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+/* Portrait phones and smaller */
+@media (max-width: 480px) {
+
+
+.NewsMainTitle
+{
+    font-size:24px !important;
+    z-index:10;
+}
+
+.ControlPanelMenuItemComboBox
+{
+    display:block !important;
+}
+
+.NoComBoBoxStyle
+{
+    display: none !important;
+}
+
+.blackLine{
+    height:250px;
+}
+
+
+.NewsAnnounceContent
+{
+    /*margin-top:1250px;*/
+}
+
+
+.CommanFilter
+{
+
+}
+
+.ZamanTuneliFont
+{
+    font-size:10px !important;
+}
+
+
+.CanliYayin{
+    width: 100%;
+    height: 320px;
+}
+
+
+
+}
+
+
+
+.blink {
+  -webkit-animation: 2s linear infinite condemned_blink_effect; /* for Safari 4.0 - 8.0 */
+  animation: 2s linear infinite condemned_blink_effect;
+}
+
+/* for Safari 4.0 - 8.0 */
+@-webkit-keyframes condemned_blink_effect { 
+  0% {
+    visibility: hidden;
+  }
+  50% {
+    visibility: hidden;
+  }
+  100% {
+    visibility: visible;
+  }
+}
+
+@keyframes condemned_blink_effect {
+  0% {
+    visibility: hidden;
+  }
+  50% {
+    visibility: hidden;
+  }
+  100% {
+    visibility: visible;
+  }
+}

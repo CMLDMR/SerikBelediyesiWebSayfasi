@@ -1,0 +1,176 @@
+.blueGradient___{
+    background: linear-gradient(0deg, rgba(1, 88, 117, 0.74) 0%, rgba(0, 110, 161, 0.452) 100%);
+    color: white;
+}
+
+.redGradient___{
+    background: linear-gradient(180deg, rgba(204,19,0,0.41780462184873945) 0%, rgba(255,0,0,0.41780462184873945) 100%);
+    color: white;
+}
+
+
+.greenGradient___{
+    background: linear-gradient(180deg, rgba(0,204,16,0.41780462184873945) 0%, rgba(0,204,16,0.41780462184873945) 100%);
+    color: white;
+}
+
+
+.grayGradient___90{
+    background: linear-gradient(270deg, rgb(0 0 0 / 19%) 0%, rgba(125,125,125,0.0) 100%);
+    color: white;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+.blueGradient___btn{
+    background: linear-gradient(180deg, rgba(0,153,204,0.41780462184873945) 0%, rgba(0,212,255,41780462184873945) 100%);
+}
+.blueGradient___btn:hover{
+    background: linear-gradient(180deg, rgba(0,83,150,0.5746673669467788) 0%, rgba(3,158,190,0.5746673669467788) 100%);
+    cursor: pointer;
+    color: white;
+}
+
+.redGradient___btn{
+    background: linear-gradient(180deg, rgba(204,19,0,0.41780462184873945) 0%, rgba(255,0,0,41780462184873945) 100%);
+}
+.redGradient___btn:hover{
+    background: linear-gradient(180deg, rgba(150,0,0,0.5746673669467788) 0%, rgba(190,0,3,0.5746673669467788) 100%);
+    cursor: pointer;
+    color: white;
+}
+
+.greenGradient___btn{
+    background: linear-gradient(180deg, rgba(0,204,16,0.41780462184873945) 0%, rgba(0,204,16,41780462184873945) 100%);
+}
+.greenGradient___btn:hover{
+    background: linear-gradient(180deg, rgba(0,255,0,0.5746673669467788) 0%, rgba(0,255,36,0.5746673669467788) 100%);
+    cursor: pointer;
+    color: white;
+}
+
+.grayGradient___btn{
+    background: linear-gradient(180deg, rgba(191,201,202,0.41780462184873945) 0%, rgba(191,201,202,41780462184873945) 100%);
+}
+.grayGradient___btn:hover{
+    background: linear-gradient(180deg, rgba(191,201,202,0.5746673669467788) 0%, rgba(211,221,222,0.5746673669467788) 100%);
+    cursor: pointer;
+    color: white;
+}
+
+.IndianRedGradient___btn{
+    background: linear-gradient(180deg, rgba(191,201,202,0.41780462184873945) 0%, rgba(205,92,92,41780462184873945) 100%);
+}
+.IndianRedGradient___btn:hover{
+    background: linear-gradient(180deg, rgba(191,201,202,0.5746673669467788) 0%, rgba(211,125,125,0.5746673669467788) 100%);
+    cursor: pointer;
+    color: white;
+}
+
+.LightCoralGradient___btn{
+    background: linear-gradient(180deg, rgba(191,201,202,0.41780462184873945) 0%, rgba(240,128,128,41780462184873945) 100%);
+}
+.LightCoralGradient___btn:hover{
+    background: linear-gradient(180deg, rgba(191,201,202,0.5746673669467788) 0%, rgba(245,155,155,0.5746673669467788) 100%);
+    cursor: pointer;
+    color: white;
+}
+
+.SalmonGradient___btn{
+    background: linear-gradient(180deg, rgba(250,128,114,0.41780462184873945) 0%, rgba(250,128,114,41780462184873945) 100%);
+}
+.SalmonGradient___btn:hover{
+    background: linear-gradient(180deg, rgba(250,128,114,0.5746673669467788) 0%, rgba(250,128,114,0.5746673669467788) 100%);
+    cursor: pointer;
+    color: white;
+}
+
+
+.DarkSalmonnGradient___btn{
+    background: linear-gradient(180deg, rgba(233,150,122,0.41780462184873945) 0%, rgba(233,150,122,41780462184873945) 100%);
+}
+.DarkSalmonGradient___btn:hover{
+    background: linear-gradient(180deg, rgba(233,150,122,0.5746673669467788) 0%, rgba(233,150,122,0.5746673669467788) 100%);
+    cursor: pointer;
+    color: white;
+}
+
+.LightSalmonGradient___btn{
+    background: linear-gradient(180deg, rgba(255,160,122,0.41780462184873945) 0%, rgba(255,160,122,41780462184873945) 100%);
+}
+.LightSalmonGradient___btn:hover{
+    background: linear-gradient(180deg, rgba(255,160,122,0.5746673669467788) 0%, rgba(255,160,122,0.5746673669467788) 100%);
+    cursor: pointer;
+    color: white;
+}
+
+
+
+.CrimsonGradient___btn{
+    background: linear-gradient(180deg, rgba(220,20,60,0.41780462184873945) 0%, rgba(220,20,60,41780462184873945) 100%);
+}
+.CrimsonGradient___btn:hover{
+    background: linear-gradient(180deg, rgba(220,20,60,0.5746673669467788) 0%, rgba(220,20,60,0.5746673669467788) 100%);
+    cursor: pointer;
+    color: white;
+}
+
+
+.FireBrickGradient___btn{
+    background: linear-gradient(180deg, rgba(178,34,34,0.41780462184873945) 0%, rgba(178,34,34,41780462184873945) 100%);
+}
+.FireBrickGradient___btn:hover{
+    background: linear-gradient(180deg, rgba(178,34,34,0.5746673669467788) 0%, rgba(178,34,34,0.5746673669467788) 100%);
+    cursor: pointer;
+    color: white;
+}
+
+.DarkRedGradient___btn{
+    background: linear-gradient(180deg, rgba(139,0,0,0.41780462184873945) 0%, rgba(139,0,0,41780462184873945) 100%);
+}
+.DarkRedGradient___btn:hover{
+    background: linear-gradient(180deg, rgba(139,0,0,0.5746673669467788) 0%, rgba(139,0,0,0.5746673669467788) 100%);
+    cursor: pointer;
+    color: white;
+}
+
+
+
+
+
+
+
+
+
+
+.GreenYellowGradient___btn{
+    background: linear-gradient(180deg, rgba(173,255,47,0.41780462184873945) 0%, rgba(173,255,47,41780462184873945) 100%);
+}
+.GreenYellowGradient___btn:hover{
+    background: linear-gradient(180deg, rgba(173,255,47,0.5746673669467788) 0%, rgba(173,255,47,0.5746673669467788) 100%);
+    cursor: pointer;
+    color: white;
+}
+
+/* https://htmlcolorcodes.com/color-names/ */
+.boxShadow {
+    box-shadow: 0px 0px 8px #50505061 !important;
+  }
+
+  .boxRadius {
+    border-radius: 3px;
+    border: 1px solid #5050502e;
+  }
+
+
+

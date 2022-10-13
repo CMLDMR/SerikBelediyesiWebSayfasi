@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/css"/>
+    <qresource prefix="/">
+        <file>css/CSSCustom.css</file>
+        <file>css/mainPage.css</file>
+        <file>css/eventWidget.css</file>
+        <file>css/header.css</file>
+        <file>css/nost.css</file>
+        <file>css/slider.css</file>
+        <file>css/style.css</file>
+        <file>css/test.css</file>
+        <file>css/v2.css</file>
+    </qresource>
+</RCC>

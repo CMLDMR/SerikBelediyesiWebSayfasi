@@ -1,0 +1,38 @@
+
+
+/* Header CSS Drop Menu*/
+.headerDown {
+  position: relative;
+  display: inline-block;
+}
+
+.headerDown:hover {
+  background-color:rgba(25,25,25,0.5);
+}
+
+.headerItem{
+  cursor:pointer;
+  padding-bottom:5px;
+  padding-top:5px;
+  border-bottom: 1px solid gray;
+}
+
+.headerItem:hover{
+  background-color:DimGray;
+  color:white;
+}
+
+.headerDown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  top:62px;
+  left:0px;
+}
+
+.headerDown:hover .headerDown-content {
+  display: block;
+}
