@@ -10,7 +10,9 @@ namespace v2{
 class MeclisUyesiPublicWidget : public ContainerWidget, public SerikBLDCore::Meclis::UyeManager
 {
 public:
-    MeclisUyesiPublicWidget( SerikBLDCore::DB* _mDB );
+    explicit MeclisUyesiPublicWidget( SerikBLDCore::DB* _mDB );
+
+    virtual void onList(const QVector<SerikBLDCore::Meclis::MeclisUyesi> *mlist ) override;
 
 
 private:

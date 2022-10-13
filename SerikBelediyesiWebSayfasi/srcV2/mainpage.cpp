@@ -129,31 +129,33 @@ void MainPage::init()
         controller->ClickDuyurular().connect(this,&MainPage::initAnounceList);
         controller->ClickNobetciEczane().connect(this,&MainPage::initNobetciEczane);
         controller->ClickNostSerik().connect(this,&MainPage::initNostSerik);
+        controller->ClickYonetim().connect(this,&MainPage::initBaskanYardimcilari);
+
 
     }
 
 
-    //
-    if( QDate::currentDate() < QDate(2022,05,2)){
-        auto losevContainer = mContentWidget->addWidget(cpp14::make_unique<WContainerWidget>());
-        losevContainer->setWidth(WLength("100%"));
-        losevContainer->setHeight(90);
-        losevContainer->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::AliceBlue));
-        losevContainer->setMargin(25,Side::Top);
-        losevContainer->setAttributeValue("href","https://www.losev.org.tr/ramazan");
-        losevContainer->setAttributeValue("title","Bağış için tıklayınız...");
-        losevContainer->setAttributeValue("target","_blank");
-        losevContainer->setAttributeValue(Style::style,Style::background::url("http://www.losev.org.tr/filesfordownload/2022/ramazan/banner/980x90_losev_ramazan_banner_2022.gif")+
-                                          Style::background::size::contain+
-                                          Style::background::repeat::norepeat+
-                                          Style::background::position::center_center);
-        losevContainer->decorationStyle().setCursor(Cursor::PointingHand);
-        losevContainer->clicked().connect([=](){
-           this->doJavaScript("window.open('https://www.losev.org.tr/ramazan', '_blank').focus();");
-        });
-        //<a href="https://www.losev.org.tr/ramazan" title="Bağış için tıklayınız..." target="_blank"><img src="http://www.losev.org.tr/filesfordownload/2022/ramazan/banner/1000x130_losev_ramazan_banner_2022.gif" width="" height="" /></a>
-        // <a href="https://www.losev.org.tr/ramazan" title="Bağış için tıklayınız..." target="_blank"><img src="http://www.losev.org.tr/filesfordownload/2022/ramazan/banner/980x90_losev_ramazan_banner_2022.gif" width="" height="" /></a>
-    }
+//    //
+//    if( QDate::currentDate() < QDate(2022,05,2)){
+//        auto losevContainer = mContentWidget->addWidget(cpp14::make_unique<WContainerWidget>());
+//        losevContainer->setWidth(WLength("100%"));
+//        losevContainer->setHeight(90);
+//        losevContainer->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::AliceBlue));
+//        losevContainer->setMargin(25,Side::Top);
+//        losevContainer->setAttributeValue("href","https://www.losev.org.tr/ramazan");
+//        losevContainer->setAttributeValue("title","Bağış için tıklayınız...");
+//        losevContainer->setAttributeValue("target","_blank");
+//        losevContainer->setAttributeValue(Style::style,Style::background::url("http://www.losev.org.tr/filesfordownload/2022/ramazan/banner/980x90_losev_ramazan_banner_2022.gif")+
+//                                          Style::background::size::contain+
+//                                          Style::background::repeat::norepeat+
+//                                          Style::background::position::center_center);
+//        losevContainer->decorationStyle().setCursor(Cursor::PointingHand);
+//        losevContainer->clicked().connect([=](){
+//           this->doJavaScript("window.open('https://www.losev.org.tr/ramazan', '_blank').focus();");
+//        });
+//        //<a href="https://www.losev.org.tr/ramazan" title="Bağış için tıklayınız..." target="_blank"><img src="http://www.losev.org.tr/filesfordownload/2022/ramazan/banner/1000x130_losev_ramazan_banner_2022.gif" width="" height="" /></a>
+//        // <a href="https://www.losev.org.tr/ramazan" title="Bağış için tıklayınız..." target="_blank"><img src="http://www.losev.org.tr/filesfordownload/2022/ramazan/banner/980x90_losev_ramazan_banner_2022.gif" width="" height="" /></a>
+//    }
 
 }
 
@@ -501,7 +503,7 @@ void MainPage::initAnounceDetail( std::string mOid )
                     auto array = view[SBLDKeys::Duyurular::fileList].get_array().value;
                     for( auto doc : array )
                     {
-                        std::string path = this->downloadFileWeb(doc.get_oid().value.to_string().c_str());
+                        std::string path = this->downloadFileWeb(doc.get_oid().value.to_string().c_str(),true);
                     }
                 } catch (bsoncxx::exception &e) {
                     std::cout << __LINE__ << " " << __FUNCTION__ << " " <<"Error: No Array in Duyuru Item: " << e.what() << std::endl;
@@ -520,7 +522,7 @@ void MainPage::initAnounceDetail( std::string mOid )
                 Department = _Llayout->addWidget(cpp14::make_unique<WText>("<b>"+view[SBLDKeys::Duyurular::department].get_utf8().value.to_string()+"</b>"));
 
 
-                LastDate = _Llayout->addWidget(cpp14::make_unique<WText>("Son Yayınlanma  Tarihi:"+QDate::fromString(QString::number((int)view[SBLDKeys::Duyurular::endDate].get_double().value),"yyyyMMdd").toString("dddd dd/MM/yyyy").toStdString()));
+                LastDate = _Llayout->addWidget(cpp14::make_unique<WText>("Son Yayınlanma  Tarihi:"+QDate::fromString(QString::number((int)view[SBLDKeys::Duyurular::endDate].get_double().value),"yyyyMMdd").toString("dd/MM/yyyy").toStdString()));
 
                 _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
                                               Style::background::color::color(Style::color::Grey::Gainsboro));
@@ -691,6 +693,7 @@ void MainPage::initBaskanYardimcilari()
     mContentWidget->clear ();
     auto widget = mContentWidget->addWidget(cpp14::make_unique<v2::YonetimWidget>(new SerikBLDCore::DB(this->getDB ())));
     widget->setMaximumSize(1024,WLength::Auto);
+    widget->BaskanClicked().connect(this,&MainPage::initBaskan);
     footer->removeStyleClass("footerStickAbsolute");
 }
 
@@ -706,156 +709,8 @@ void MainPage::initNostSerik()
 {
 
 //    mContentWidget->clear();
-    auto widget = mContentWidget->addWidget(cpp14::make_unique<v2::NostSerik>(new SerikBLDCore::DB(this->getDB())));
+    [[maybe_unused]] auto widget = mContentWidget->addWidget(cpp14::make_unique<v2::NostSerik>(new SerikBLDCore::DB(this->getDB())));
 //    widget->setMaximumSize(1024,WLength::Auto);
 //    footer->removeStyleClass("footerStickAbsolute");
 }
 
-std::string MainPage::downloadifNotExist(bsoncxx::types::value oid, bool forceFilename)
-{
-
-
-    auto fullFilename = this->downloadFileWeb(oid.get_oid().value.to_string().c_str());
-
-    return fullFilename;
-
-//    auto downloader = this->bucket().open_download_stream(oid);
-//    auto file_length = downloader.file_length();
-//    auto bytes_counter = 0;
-
-//    QFileInfo info( downloader.files_document()["filename"].get_utf8().value.to_string().c_str() );
-
-//    QString fullFilename;
-
-//    if( forceFilename )
-//    {
-//        fullFilename = QString("tempfile/%1").arg(downloader.files_document()["filename"].get_utf8().value.to_string().c_str());
-//    }else{
-//        fullFilename = QString("tempfile/%2.%1").arg(info.suffix())
-//                .arg(downloader.files_document()["oid"].get_oid().value.to_string().c_str());
-//    }
-
-
-//    if( QFile::exists("docroot/"+fullFilename) )
-//    {
-//        return fullFilename.toStdString();
-//    }
-
-
-//    auto buffer_size = std::min(file_length, static_cast<std::int64_t>(downloader.chunk_size()));
-//    auto buffer = bsoncxx::stdx::make_unique<std::uint8_t[]>(static_cast<std::size_t>(buffer_size));
-//    QByteArray mainArray;
-//    while ( auto length_read = downloader.read(buffer.get(), static_cast<std::size_t>(buffer_size)) ) {
-//        bytes_counter += static_cast<std::int32_t>( length_read );
-//        QByteArray ar((const char*)buffer.get(),bytes_counter);
-//        mainArray+= ar;
-//    }
-
-//    //    std::cout << "Current Dir: " << QDir::currentPath().toStdString() << std::endl;
-//    //    std::cout << "file Size: " << mainArray.size() << std::endl;
-//    QFile file( "docroot/"+fullFilename );
-//    if( file.open(QIODevice::WriteOnly) )
-//    {
-//        file.write( mainArray );
-//        file.close();
-//    }else{
-//        std::cout << "Error Can Not Open File: " << file.fileName().toStdString() << std::endl;
-//    }
-//    return fullFilename.toStdString();
-}
-
-std::string MainPage::downloadifNotExist(std::string oid, bool forceFilename)
-{
-
-    auto fileName = this->downloadFileWeb(oid.c_str(),forceFilename);
-    return fileName;
-
-
-//    auto doc = bsoncxx::builder::basic::document{};
-
-//    try {
-//        doc.append(bsoncxx::builder::basic::kvp("key",bsoncxx::oid{oid}));
-//    } catch (bsoncxx::exception& e) {
-//        std::cout << "Error: " << e.what() << std::endl;
-//        return "NULL";
-//    }
-//    std::cout << __LINE__ << " " << bsoncxx::to_json (doc.view ()) << std::endl;
-//    auto downloader = this->getDB()->gridfs_bucket().open_download_stream(bsoncxx::types::value(doc.view()["key"].get_oid()));
-
-//    std::cout << __LINE__ << std::endl;
-
-//    auto file_length = downloader.file_length();
-//    std::cout << __LINE__ << std::endl;
-
-//    auto bytes_counter = 0;
-
-//    QFileInfo info( downloader.files_document()["filename"].get_utf8().value.to_string().c_str() );
-
-//    std::cout << __LINE__ << " " << bsoncxx::to_json (downloader.files_document ()) <<std::endl;
-
-//    QString fullFilename;
-
-
-
-//    if( forceFilename )
-//    {
-//        fullFilename = QString("tempfile/%1").arg(downloader.files_document()["filename"].get_utf8().value.to_string().c_str());
-//    }else{
-//        fullFilename = QString("tempfile/%2.%1").arg(info.suffix())
-//                .arg(downloader.files_document()["_id"].get_oid().value.to_string().c_str());
-//    }
-
-//    std::cout << __LINE__ << std::endl;
-
-//    if( QFile::exists("docroot/"+fullFilename) )
-//    {
-//        return fullFilename.toStdString();
-//    }
-
-//    std::cout << __LINE__ << std::endl;
-
-//    auto buffer_size = std::min(file_length, static_cast<std::int64_t>(downloader.chunk_size()));
-
-//    std::cout << __LINE__ << std::endl;
-
-
-//    auto buffer = bsoncxx::stdx::make_unique<std::uint8_t[]>(static_cast<std::size_t>(buffer_size));
-
-//    std::cout << __LINE__ << std::endl;
-
-//    QByteArray mainArray;
-
-//    std::cout << __LINE__ << " " <<buffer_size << " " << file_length << std::endl;
-
-//    while ( auto length_read = downloader.read(buffer.get(), static_cast<std::size_t>(buffer_size)) ) {
-
-//        std::cout << __LINE__ << " " << length_read << std::endl;
-
-//        bytes_counter += static_cast<std::int32_t>( length_read );
-
-//        std::cout << __LINE__ << " " << bytes_counter << std::endl;
-
-//        QByteArray ar((const char*)buffer.get(),bytes_counter);
-
-//        std::cout << __LINE__ << " " << ar.size ()<< std::endl;
-
-//        mainArray+= ar;
-
-//        std::cout << __LINE__ << " " << mainArray.size ()<< "\n"<<std::endl;
-
-//    }
-
-//    std::cout << __LINE__ << std::endl;
-
-//    //    std::cout << "Current Dir: " << QDir::currentPath().toStdString() << std::endl;
-//    //    std::cout << "file Size: " << mainArray.size() << std::endl;
-//    QFile file( "docroot/"+fullFilename );
-//    if( file.open(QIODevice::WriteOnly) )
-//    {
-//        file.write( mainArray );
-//        file.close();
-//    }else{
-//        std::cout << "Error Can Not Open File: " << file.fileName().toStdString() << std::endl;
-//    }
-//    return fullFilename.toStdString();
-}

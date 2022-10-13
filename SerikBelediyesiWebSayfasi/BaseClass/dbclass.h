@@ -16,30 +16,6 @@ using bsoncxx::builder::basic::make_array;
 class QString;
 
 
-//class DBClass
-//{
-//public:
-//    explicit DBClass( mongocxx::database* _db );
-
-//    mongocxx::database *db() const;
-
-//    std::vector<std::string> BirimList() const;
-
-//    const std::string downloadFile(const std::string &oid , const bool &forceFilename = false);
-
-//    ///
-//    /// \brief uploadfile: upload file to database
-//    /// throw std::string if error
-//    /// \param filepath
-//    /// \return
-//    /// bsoncxx::types::value
-//    const bsoncxx::types::bson_value::view uploadfile( QString filepath );
-
-//private:
-//    mongocxx::database* __db;
-//};
-
-
 
 
 class UserClass

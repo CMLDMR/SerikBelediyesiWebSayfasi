@@ -10,8 +10,8 @@ v2::YonetimWidget::YonetimWidget(SerikBLDCore::DB *_mDB)
 
     this->setAttributeValue (Style::style,Style::background::color::rgba (this->getRandom (240,255),this->getRandom (240,255),this->getRandom (240,255),0.85));
 
-    Header ()->addWidget (cpp14::make_unique<WText>("<h3>Yönetim Şeması</h3>"))->setAttributeValue (Style::style,Style::color::color (Style::color::Grey::Black));
-    Header ()->setMargin (15,Side::Top|Side::Bottom);
+    Header ()->addWidget (cpp14::make_unique<WText>("<h4>Yönetim Şeması</h4>"))->setAttributeValue (Style::style,Style::color::color (Style::color::Grey::Black));
+    Header ()->setMargin (5,Side::Bottom);
     Content ()->clear ();
 
     this->initBaskan ();
@@ -59,6 +59,12 @@ void v2::YonetimWidget::initBaskan()
     statuText->setAttributeValue (Style::style,Style::font::size::s16px);
 
 
+    fotoContainer->decorationStyle().setCursor(Cursor::PointingHand);
+    fotoContainer->clicked().connect([=](){
+        this->_baskanClicked.emit(NoClass());
+    });
+
+
 }
 
 void v2::YonetimWidget::initBaskanYrd()
@@ -78,7 +84,7 @@ void v2::YonetimWidget::initBaskanYrd()
 
 
         auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_3);
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
 //        container->setAttributeValue (Style::style,Style::color::color (Style::color::White::AliceBlue));
 
         auto fotoContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
@@ -93,9 +99,9 @@ void v2::YonetimWidget::initBaskanYrd()
 
         container->addWidget (cpp14::make_unique<WBreak>());
 
-        auto baskanAdi = container->addWidget (cpp14::make_unique<WText>(item.AdSoyad ().toStdString ()));
+        container->addWidget (cpp14::make_unique<WText>(item.AdSoyad ().toStdString ()));
         container->addWidget (cpp14::make_unique<WBreak>());
-        auto statuText = container->addWidget (cpp14::make_unique<WText>(item.statu ().toStdString ()));
+        container->addWidget (cpp14::make_unique<WText>(item.statu ().toStdString ()));
 
     }
 
@@ -103,7 +109,7 @@ void v2::YonetimWidget::initBaskanYrd()
     {
         auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
         container->addStyleClass (Bootstrap::Grid::col_full_12);
-        container->setHeight (100);
+        container->setHeight (10);
     }
 
 
@@ -130,7 +136,7 @@ void v2::YonetimWidget::initMudurler()
         auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
         container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
 //        container->setAttributeValue (Style::style,Style::color::color (Style::color::White::AliceBlue));
-
+        container->setHeight(120);
         auto hLayout = container->setLayout (cpp14::make_unique<WHBoxLayout>());
 
 
@@ -193,4 +199,9 @@ void v2::YonetimWidget::initMudurler()
 
     }
 
+}
+
+Signal<NoClass> &v2::YonetimWidget::BaskanClicked()
+{
+    return _baskanClicked;
 }

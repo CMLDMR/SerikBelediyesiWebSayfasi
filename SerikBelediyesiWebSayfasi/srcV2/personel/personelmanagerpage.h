@@ -35,6 +35,8 @@ class PersonelThumpPage : public SerikBLDCore::IK::Personel , public ContainerWi
 {
 public:
     explicit PersonelThumpPage(Personel &personel , SerikBLDCore::DB* _db );
+    explicit PersonelThumpPage(const Personel &personel , SerikBLDCore::DB* _db );
+
     virtual void errorOccured(const std::string &errorText) override;
 private:
     SerikBLDCore::DB* mDB;

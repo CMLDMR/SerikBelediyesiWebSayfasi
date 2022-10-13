@@ -20,6 +20,7 @@ using bsoncxx::builder::basic::make_array;
 
 using namespace Wt;
 
+#include <filesystem>
 
 
 
@@ -31,6 +32,8 @@ class MainApplication : public WApplication
 public:
     explicit MainApplication(const WEnvironment& env);
     ~MainApplication();
+
+    void initCSSFiles();
 
 
     ///

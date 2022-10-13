@@ -25,6 +25,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000     # disables all the APIs deprecated before Qt 6.0.0
 
+
 SOURCES += main.cpp \
     ../../Comman/bootstrap.cpp \
     SerikBelediyesiWebSayfasi/BaseClass/containerwiget.cpp \
@@ -37,6 +38,7 @@ SOURCES += main.cpp \
     SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/basvuruitemviewwidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/basvurularim.cpp \
     SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/bilgiedinmebasvuruwidget.cpp \
+    SerikBelediyesiWebSayfasi/srcV2/bilgiislem/firewallcontainer.cpp \
     SerikBelediyesiWebSayfasi/srcV2/birimIsleri/birimislericontainer.cpp \
     SerikBelediyesiWebSayfasi/srcV2/calismalar/calismacontainerwidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/calismalar/calismamanagercontainer.cpp \
@@ -122,6 +124,7 @@ HEADERS += \
     SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/basvuruitemviewwidget.h \
     SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/basvurularim.h \
     SerikBelediyesiWebSayfasi/srcV2/bilgiEdinmeBasvuru/bilgiedinmebasvuruwidget.h \
+    SerikBelediyesiWebSayfasi/srcV2/bilgiislem/firewallcontainer.h \
     SerikBelediyesiWebSayfasi/srcV2/birimIsleri/birimislericontainer.h \
     SerikBelediyesiWebSayfasi/srcV2/calismalar/calismacontainerwidget.h \
     SerikBelediyesiWebSayfasi/srcV2/calismalar/calismamanagercontainer.h \
@@ -253,3 +256,6 @@ win32: LIBS += -LC:/SerikBLDCoreRelease/MSVC2022x64/lib/ -lSerikBLDCore
 
 INCLUDEPATH += C:/SerikBLDCoreRelease/MSVC2022x64/include
 DEPENDPATH += C:/SerikBLDCoreRelease/MSVC2022x64/include
+
+RESOURCES += \
+    CSSContainer.qrc

@@ -20,6 +20,11 @@ public:
     void initMudurler();
 
     SerikBLDCore::BirimManager* mBirimManager;
+
+    Signal<NoClass> &BaskanClicked();
+
+private:
+    Signal<NoClass> _baskanClicked;
 };
 
 

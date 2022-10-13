@@ -376,6 +376,31 @@ MainPageController::MainPageController()
             text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
         }
 
+        {   // Kurumsal
+            auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+            container->addStyleClass(Bootstrap::Grid::Hidden::hidden_lg+Bootstrap::Grid::Hidden::hidden_md);
+            container->addStyleClass(bootsrapString);
+            container->setContentAlignment(AlignmentFlag::Center);
+            auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
+            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,75),
+                                                                               this->getRandom(25,75),
+                                                                               this->getRandom(25,75),0.85));
+            btn->setHeight(100);
+            btn->setWidth(100);
+            btn->setMargin(15,AllSides);
+            btn->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+
+            btn->decorationStyle().setCursor(Cursor::PointingHand);
+            btn->clicked().connect([=](){
+              _Yonetim.emit(NoClass());
+            });
+
+
+            auto layout = btn->setLayout(cpp14::make_unique<WVBoxLayout>());
+            auto text = layout->addWidget(cpp14::make_unique<WText>("YÖNETİM"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+            text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
+        }
+
 
 
 
@@ -410,9 +435,9 @@ MainPageController::MainPageController()
             container->addStyleClass(bootsrapString);
             container->setContentAlignment(AlignmentFlag::Center);
             auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
-            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,100),
-                                                                               this->getRandom(25,100),
-                                                                               this->getRandom(25,100)));
+            btn->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(25,75),
+                                                                               this->getRandom(25,75),
+                                                                               this->getRandom(25,75),0.85));
             btn->setHeight(100);
             btn->setWidth(100);
             btn->setMargin(15,AllSides);
@@ -425,9 +450,11 @@ MainPageController::MainPageController()
 
 
             auto layout = btn->setLayout(cpp14::make_unique<WVBoxLayout>());
-            auto text = layout->addWidget(cpp14::make_unique<WText>("HAKKINDA"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+            auto text = layout->addWidget(cpp14::make_unique<WText>("SERİK"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
             text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
         }
+
+
 
 
 
@@ -623,6 +650,12 @@ Signal<NoClass> &MainPageController::ClickNostSerik()
 {
     return _NostSerik;
 ;
+
+}
+
+Signal<NoClass> &MainPageController::ClickYonetim()
+{
+    return _Yonetim;
 
 }
 

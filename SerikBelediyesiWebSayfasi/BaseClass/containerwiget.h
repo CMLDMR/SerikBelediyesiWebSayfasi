@@ -9,9 +9,9 @@
 
 
 constexpr int MAJOR = 3;
-constexpr int MINOR = 3;
-constexpr int REV = 31;
-constexpr int COM = 477;
+constexpr int MINOR = 4;
+constexpr int REV = 33;
+constexpr int COM = 542;
 
 
 #define LOG std::cout <<"\n"<< __LINE__ << " " << __FUNCTION__ << " -> "

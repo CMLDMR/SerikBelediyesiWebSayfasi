@@ -15,12 +15,15 @@
 
 #include "../url.h"
 
+#include <QDir>
+#include <QCryptographicHash>
 
 
 
 MainApplication::MainApplication(const Wt::WEnvironment &env)
     :WApplication(env)
 {
+
 
     wApp->addMetaHeader(MetaHeaderType::Meta,"Content-Type","text/html; charset=windows-1254");
 
@@ -64,6 +67,7 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
     WApplication::useStyleSheet(WLink("css/style.css"));
     WApplication::useStyleSheet(WLink("css/v2.css"));
     WApplication::useStyleSheet(WLink("css/nost.css"));
+    WApplication::useStyleSheet(WLink("css/CSSCustom.css"));
 
 //    WApplication::useStyleSheet (WLink("https://www.w3schools.com/w3css/4/w3.css"));
 
@@ -101,9 +105,9 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
     QMap<QString,QString> mapList;
     // test Link : http://192.168.0.31:8080/?type=dilekce&_id=5daee97a6435000043002489 cevaplanmis
     // http://192.168.0.31:8080/?type=dilekce&_id=5daeebd8222400005d0005dc Cevaplanmamis
-    for (auto str : env.getParameterMap() ) {
+    for (const auto &str : env.getParameterMap() ) {
         //        std::cout << "First: " << str.first << " " << str.second.size() << " " << str.second.back() << std::endl;
-        for( auto sec : str.second )
+        for( const auto &sec : str.second )
         {
             mapList[str.first.c_str ()] = QString::fromStdString (sec);
 //            std::cout << "Parameter: " << str.first << " Value: " << sec << std::endl;
@@ -139,6 +143,23 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
             showSpecLink = this->loadGundem (oid.toStdString ());
         }
 
+        if( mapList["type"] == "faultUrl" )
+        {
+            auto container = root()->addWidget(cpp14::make_unique<WContainerWidget>());
+            container->setPositionScheme(PositionScheme::Fixed);
+            container->setWidth(WLength("100%"));
+            container->setHeight(WLength("100%"));
+            container->setAttributeValue(Style::style,Style::background::color::rgba(255,0,0,.75));
+            container->setZIndex(1000);
+
+            auto hLayout = container->setLayout(cpp14::make_unique<WHBoxLayout>());
+            hLayout->addStretch(1);
+            auto text = hLayout->addWidget(cpp14::make_unique<WText>("<h4><p>Sitede Zararlı İçerik Tespit Edildi.</p></h4>"),0,AlignmentFlag::Middle);
+            hLayout->addStretch(1);
+            return;
+
+        }
+
     }
 
 
@@ -171,6 +192,130 @@ MainApplication::~MainApplication()
     {
         delete  mClient;
     }
+}
+
+
+void MainApplication::initCSSFiles()
+{
+
+    QDir dir;
+
+    if( !dir.cd("docroot") ){
+        std::cout << "can not cs docroot\n";
+        return;
+    }
+
+    if( !dir.cd("css") ){
+        std::cout << "can not cs css\n";
+        return;
+    }
+
+    if( !dir.exists("autocss") ){
+        dir.mkdir("autocss");
+        dir.cd("autocss");
+    }else{
+        if( !dir.cd("autocss") ){
+            std::cout << "can not cs autocss\n";
+
+            return;
+        }
+
+    }
+
+
+    auto checkSameFile = [=]( const QString &firstFile, const QString &secondFile ) -> bool{
+
+        QFile file1(firstFile);
+        QFile file2(secondFile);
+
+        QByteArray ar1,ar2;
+
+        bool returnValue{true};
+
+        if( file1.open(QIODevice::ReadOnly) ){
+
+            ar1 = file1.readAll();
+            file1.waitForReadyRead(5000);
+            file1.close();
+
+        }else{
+            std::cout << secondFile.toStdString() << "\n";
+            returnValue = false;
+        }
+
+        if( file2.open(QIODevice::ReadOnly) ){
+
+            ar2 = file2.readAll();
+            file2.waitForReadyRead(5000);
+            file2.close();
+
+        }else{
+            std::cout << secondFile.toStdString() << "\n";
+            returnValue = false;
+        }
+
+        if( ar1.size() != ar2.size() ){
+            return false;
+        }
+
+        QCryptographicHash hash1(QCryptographicHash::Algorithm::Md5);
+        hash1.addData(ar1);
+        auto result1 = hash1.result();
+
+        QCryptographicHash hash2(QCryptographicHash::Algorithm::Md5);
+        hash2.addData(ar2);
+        auto result2 = hash2.result();
+
+        QCryptographicHash hash3(QCryptographicHash::Algorithm::Md5);
+        hash3.addData(ar2);
+        auto result3 = hash3.result();
+
+
+
+        if( result1 != result1 ) returnValue = false;
+
+
+
+
+        return returnValue;
+
+    };
+
+    auto createFile = [=]( const QString &qrcFileName ){
+
+        if( !checkSameFile(":/css/"+ qrcFileName +".css","./docroot/css/autocss/"+qrcFileName+".css") ){
+
+            std::filesystem::path path{"./docroot/css/autocss/"+qrcFileName.toStdString()+".css"};
+
+            if( std::filesystem::remove(path) ){
+            }else{
+                std::cout << qrcFileName.toStdString() << " filesystem Not Deleted\n";
+            }
+
+            if( QFile::copy(":/css/"+ qrcFileName +".css","./docroot/css/autocss/"+qrcFileName+".css") ){
+            }else{
+                std::cout << qrcFileName.toStdString() << ".css File Does Not Copied\n";
+            }
+        }else{
+            std::cout << qrcFileName.toStdString() << " File Same\n";
+        }
+        WApplication::useStyleSheet(WLink("css/autocss/"+qrcFileName.toStdString()+".css"));
+    };
+
+
+    createFile("CSSCustom");
+    createFile("mainPage");
+    createFile("eventWidget");
+    createFile("header");
+    createFile("nost");
+    createFile("slider");
+    createFile("test");
+    createFile("v2");
+
+
+
+
+
 }
 
 void MainApplication::init()

@@ -49,6 +49,7 @@
 #include "mongoheaders.h"
 #include "serikbeltr.h"
 #include "basindabizwidget.h"
+#include "db.h"
 
 
 //#include <iostream>
@@ -80,27 +81,26 @@ namespace Body {
 
     class Body : public WContainerWidget
     {
+        SerikBLDCore::DB* mDB;
     public:
         Body(mongocxx::database* _db, mongocxx::gridfs::bucket* _bucket);
 
         void initBody();
-        void initYonetim();
-        void initMeclis();
+
+
         void initProje();
         void initHaberler();
         void initEtkinlikler();
-        void initVideo();
+//        void initVideo();
         void initBilgiEdin();
         void initiletisim();
         void initTalep();
         void initGiris();
         void initHakkinda();
         void initCalismalar();
-        void initBasindaBiz();
 
 
-        Slider* mSlider;
-        void setSliderDetail(std::string oid);
+
         NewsAnnounceContent* mNewsAnnounceContent;
         void setNewsDetail(std::string oid);
         void setAnnounceDetail(std::string oid);
@@ -142,89 +142,8 @@ namespace Body {
 
     };
 
-    class Slider : public WContainerWidget
-    {
-    public:
-        Slider(mongocxx::collection* _collectin, mongocxx::gridfs::bucket* _bucket);
-
-        Signal<std::string> &mGetOid();
-
-    private:
-        void initList();
-
-        void addItem(std::string oid, int currentIndex, int indexCount , std::string title, std::string text, std::string imgPath, std::string css = "passive");
-
-        WContainerWidget* mMaincontainer;
-
-        std::int64_t mSlideCount;
-
-        Signal<int> sSlideIndex;
-
-        void setIndex(int index);
-
-        int mCurrentIndex;
-
-        const std::int64_t limit = 12;
-
-        std::vector<WContainerWidget*> sliderWidgetList;
-        std::vector<WContainerWidget*> sliderWidgetListBtn;
-
-        std::string downloadifNotExist(bsoncxx::types::value oid, bool forceFilename = false);
-
-        mongocxx::collection* Collection;
-        mongocxx::gridfs::bucket* Bucket;
-
-        Signal<std::string> _clickOid;
-    };
-
-    class ContentWidget : public WContainerWidget
-    {
-    public:
-        ContentWidget(mongocxx::database *_db);
 
 
-        class VideoWidget : public WContainerWidget
-        {
-        public:
-            VideoWidget(mongocxx::database* _db);
-
-            Signal<std::string> &mGetClickVideo();
-        private:
-            mongocxx::database* db;
-
-            Signal<std::string> _ClickOid;
-
-            std::string oid;
-        };
-
-        class EventWidget : public WContainerWidget
-        {
-        public:
-            EventWidget(mongocxx::database* _db, bool addOnlySub = false );
-
-            void addisimizGucumuz();
-            void addBaskan();
-
-
-            Signal<std::string> &mGetBaskanClick();
-            Signal<std::string> &mGetEventClick();
-        private:
-            mongocxx::database* db;
-
-            Signal<std::string> _BaskanClick;
-            Signal<std::string> _ClickEvent;
-
-            WContainerWidget* mMainContainer,*container;
-        };
-
-
-        VideoWidget* mVideoWidget;
-        EventWidget* mEventWidget;
-
-    private:
-        mongocxx::database* db;
-
-    };
 
     class NewsAnnounceContent : public WContainerWidget
     {
@@ -520,13 +439,6 @@ namespace Body {
 
 
 
-    class Partners : public WContainerWidget
-    {
-    public:
-        Partners();
-
-        void showMessage( std::string title , std::string msg );
-    };
 
     class Iletisim : public WContainerWidget
     {
@@ -540,38 +452,7 @@ namespace Body {
 
     };
 
-    class Meclis : public WContainerWidget
-    {
-    public:
-        Meclis(mongocxx::database* _db);
-        Signal<NoClass> &mGetBack();
 
-
-    private:
-        mongocxx::database *db;
-
-        Signal<NoClass> _clickBack;
-
-
-        struct MeclisItem
-        {
-            std::string oid;
-            int yil;
-            std::string ay;
-        };
-
-        std::vector<MeclisItem> list;
-
-        std::vector<std::string> kararList;
-
-
-        WContainerWidget* pdfContainer;
-        WContainerWidget* pdflinkContainer;
-
-        void setKararlar(std::string oid, const int &startSayi = 0);
-
-        void setKarar(std::string oid);
-    };
 
     class Proje : public ContainerWidget, public SerikBLDCore::DB
     {
@@ -784,44 +665,46 @@ namespace Body {
         std::int64_t count;
     };
 
-    class Video : public WContainerWidget
-    {
-    public:
-        Video(mongocxx::database* _db);
+//    class Video : public WContainerWidget
+//    {
+//    public:
+//        Video(mongocxx::database* _db);
 
-        Signal<NoClass> &mGetBack();
-        Signal<std::string> &mGetVideo();
-
-
-    private:
-        mongocxx::database *db;
-        Signal<NoClass> _ClickBack;
-        Signal<std::string> _ClickVideo;
-
-        WContainerWidget* mMainContainer,*container,*contentContainer;
-
-        void initPage();
-        void setstatus(bsoncxx::exception &e);
-        void setstatus(mongocxx::exception &e);
-        void setstatus(std::string e);
+//        Signal<NoClass> &mGetBack();
+//        Signal<std::string> &mGetVideo();
 
 
-        struct item
-        {
-            std::string oid;
-            std::string iconPath;
-            std::string title;
-        };
+//    private:
+//        mongocxx::database *db;
+//        Signal<NoClass> _ClickBack;
+//        Signal<std::string> _ClickVideo;
 
-        std::vector<item> list;
+//        WContainerWidget* mMainContainer,*container,*contentContainer;
 
-        void addItem(WContainerWidget* widget, item _item);
-        void setVideo(std::string oid);
+//        void initPage();
+//        void setstatus(bsoncxx::exception &e);
+//        void setstatus(mongocxx::exception &e);
+//        void setstatus(std::string e);
 
-        const int limit = 12;
-        int skip;
-        std::int64_t count;
-    };
+
+//        struct item
+//        {
+//            std::string oid;
+//            std::string iconPath;
+//            std::string title;
+//        };
+
+//        std::vector<item> list;
+
+//        void addItem(WContainerWidget* widget, item _item);
+//        void setVideo(std::string oid);
+
+//        const int limit = 12;
+//        int skip;
+//        std::int64_t count;
+//    };
+
+
 
     class Talep : public WContainerWidget
     {

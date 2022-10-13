@@ -1282,7 +1282,8 @@ void v2::MeclisItemPublicPage::initMeclisBilgileri()
                                   Bootstrap::Grid::Small::col_sm_6+
                                   Bootstrap::Grid::ExtraSmall::col_xs_6);
         container->setMargin (5,Side::Top);
-        container->addWidget (cpp14::make_unique<WText>("Tarih: "+QDate::fromJulianDay (this->julianDay ()).toString ("dd/MM/yyyy  dddd").toStdString ()));
+        container->addWidget (cpp14::make_unique<WText>("Tarih: "+QDate::fromJulianDay (this->julianDay ()).toString ("dd/MM/yyyy").toStdString ()));
+
     }
 
     {

@@ -50,6 +50,8 @@ public:
 
     Signal<NoClass> &ClickNostSerik();
 
+    Signal<NoClass> &ClickYonetim();
+
 private:
     Signal<NoClass> _Haber;
 
@@ -76,6 +78,9 @@ private:
     Signal<NoClass> _NobetciEczane;
 
     Signal<NoClass> _NostSerik;
+
+    Signal<NoClass> _Yonetim;
+
 
 };
 

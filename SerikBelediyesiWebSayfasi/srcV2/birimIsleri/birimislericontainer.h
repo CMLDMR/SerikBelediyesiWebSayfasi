@@ -25,6 +25,8 @@ public:
 
     void initSerikGaleri();
 
+    void initFireWallLog();
+
 private:
     SerikBLDCore::User* mUser;
 

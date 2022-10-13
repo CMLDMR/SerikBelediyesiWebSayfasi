@@ -50,8 +50,6 @@ public:
 
     void initNostSerik();
 
-    std::string downloadifNotExist( bsoncxx::types::value oid , bool forceFilename = false );
-    std::string downloadifNotExist( std::string oid , bool forceFilename = false );
 
     JSignal<int,int> _signal;
 

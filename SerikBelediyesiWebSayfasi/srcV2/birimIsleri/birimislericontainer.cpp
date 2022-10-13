@@ -6,6 +6,7 @@
 #include "SerikBelediyesiWebSayfasi/srcV2/calismalar/calismamanagercontainer.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/faaliyet/faaliyetraporcontainer.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/nostserik.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/bilgiislem/firewallcontainer.h"
 
 v2::BirimIsleriContainer::BirimIsleriContainer(SerikBLDCore::User *_user)
     :ContainerWidget ("Birim İşleri"),mUser(_user)
@@ -24,6 +25,12 @@ v2::BirimIsleriContainer::BirimIsleriContainer(SerikBLDCore::User *_user)
             this->initSerikGaleri ();
         } );
         Header ()->addWidget (std::move(menuFirma));
+
+        auto menufireWallLog = createMenu ( "FireWallLog" , Cursor::PointingHand );
+        menufireWallLog->clicked ().connect ( [=](){
+            this->initFireWallLog ();
+        } );
+        Header ()->addWidget (std::move(menufireWallLog));
     }
 
     //Çalışma Yönetimi
@@ -131,6 +138,14 @@ void v2::BirimIsleriContainer::initSerikGaleri()
 {
     Content ()->clear ();
     Content ()->addWidget (cpp14::make_unique<v2::NostSerikManager>(this->mUser->getDB()));
+}
+
+void v2::BirimIsleriContainer::initFireWallLog()
+{
+
+    Content ()->clear ();
+    Content ()->addWidget (cpp14::make_unique<FireWallContainer>());
+
 }
 
 std::unique_ptr<WContainerWidget>  v2::BirimIsleriContainer::createMenu(const std::string &menuName , Cursor cursor )
