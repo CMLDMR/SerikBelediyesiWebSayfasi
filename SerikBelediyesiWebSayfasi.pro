@@ -47,6 +47,7 @@ SOURCES += main.cpp \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekcetcyonetim.cpp \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekceview.cpp \
     SerikBelediyesiWebSayfasi/srcV2/dilekceyonetim.cpp \
+    SerikBelediyesiWebSayfasi/srcV2/duyuruyonetim.cpp \
     SerikBelediyesiWebSayfasi/srcV2/externalWidget/haritawidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/externalWidget/nobetcieczanewidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/faaliyet/faaliyetraporcontainer.cpp \
@@ -133,6 +134,7 @@ HEADERS += \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekcetcyonetim.h \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekceview.h \
     SerikBelediyesiWebSayfasi/srcV2/dilekceyonetim.h \
+    SerikBelediyesiWebSayfasi/srcV2/duyuruyonetim.h \
     SerikBelediyesiWebSayfasi/srcV2/externalWidget/haritawidget.h \
     SerikBelediyesiWebSayfasi/srcV2/externalWidget/nobetcieczanewidget.h \
     SerikBelediyesiWebSayfasi/srcV2/faaliyet/faaliyetraporcontainer.h \
