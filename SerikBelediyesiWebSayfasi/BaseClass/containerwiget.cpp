@@ -7,14 +7,45 @@
 
 
 ContainerWidget::ContainerWidget(const std::string &title, ContainerWidget::ContentType _contentType)
-    :mTitle(title)
+    :mTitle(title),initController(false),mContainerStyle(_contentType)
+{
+    this->initWidget();
+}
+
+ContainerWidget::ContainerWidget(const std::string &title, const bool &_initContoller)
+    :mTitle(title),initController(_initContoller),mContainerStyle(ContainerWidget::ContentType::Horizontal)
+{
+    this->initWidget();
+}
+
+WContainerWidget *ContainerWidget::Header()
+{
+    return mHeaderContainer;
+}
+
+WContainerWidget *ContainerWidget::Content()
+{
+    return mContentContainer;
+}
+
+WContainerWidget *ContainerWidget::Footer()
+{
+    return mFootContainer;
+}
+
+void ContainerWidget::setTitleBarBackColor(const std::string &color)
+{
+    mTitleBar->setAttributeValue (Style::style,Style::background::color::color (color));
+}
+
+void ContainerWidget::initWidget()
 {
     addStyleClass(Bootstrap::Grid::container_fluid);
 
     if( mTitle.size() )
     {
         mTitleBar = addWidget(cpp14::make_unique<WContainerWidget>());
-        mTitleBar->addWidget(cpp14::make_unique<WText>("<h5>"+title+"</h5>",TextFormat::XHTML));
+        mTitleBar->addWidget(cpp14::make_unique<WText>("<h5>"+mTitle+"</h5>",TextFormat::XHTML));
         mTitleBar->setContentAlignment(AlignmentFlag::Center);
         mTitleBar->setMargin (15,Side::Bottom);
         mTitleBar->setMargin (-15,Side::Left|Side::Right);
@@ -22,7 +53,7 @@ ContainerWidget::ContainerWidget(const std::string &title, ContainerWidget::Cont
         mTitleBar->addStyleClass (Bootstrap::ContextualBackGround::bg_primary+"boxShadow" );
     }
 
-    if( _contentType == Horizontal )
+    if( mContainerStyle == Horizontal )
     {
         auto __container = addWidget (cpp14::make_unique<WContainerWidget>());
         __container->addStyleClass (Bootstrap::Grid::row);
@@ -61,26 +92,11 @@ ContainerWidget::ContainerWidget(const std::string &title, ContainerWidget::Cont
 
     mFootContainer = addWidget(cpp14::make_unique<WContainerWidget>());
     mFootContainer->addStyleClass(Bootstrap::Grid::row);
-}
 
-WContainerWidget *ContainerWidget::Header()
-{
-    return mHeaderContainer;
-}
+    if( this->initController ){
+        mFootContainer->addNew<ControllerWidget>();
+    }
 
-WContainerWidget *ContainerWidget::Content()
-{
-    return mContentContainer;
-}
-
-WContainerWidget *ContainerWidget::Footer()
-{
-    return mFootContainer;
-}
-
-void ContainerWidget::setTitleBarBackColor(const std::string &color)
-{
-    mTitleBar->setAttributeValue (Style::style,Style::background::color::color (color));
 }
 
 WPushButton* ContainerWidget::askConfirm(const std::string &question)
