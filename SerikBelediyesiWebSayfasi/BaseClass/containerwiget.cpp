@@ -12,12 +12,6 @@ ContainerWidget::ContainerWidget(const std::string &title, ContainerWidget::Cont
     this->initWidget();
 }
 
-ContainerWidget::ContainerWidget(const std::string &title, const bool &_initContoller)
-    :mTitle(title),initController(_initContoller),mContainerStyle(ContainerWidget::ContentType::Horizontal)
-{
-    this->initWidget();
-}
-
 WContainerWidget *ContainerWidget::Header()
 {
     return mHeaderContainer;
@@ -92,10 +86,6 @@ void ContainerWidget::initWidget()
 
     mFootContainer = addWidget(cpp14::make_unique<WContainerWidget>());
     mFootContainer->addStyleClass(Bootstrap::Grid::row);
-
-    if( this->initController ){
-        mFootContainer->addNew<ControllerWidget>();
-    }
 
 }
 

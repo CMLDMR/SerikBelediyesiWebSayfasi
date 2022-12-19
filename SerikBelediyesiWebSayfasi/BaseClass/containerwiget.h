@@ -41,15 +41,18 @@ public:
                                       Bootstrap::Grid::ExtraSmall::col_xs_2);
         mBackContainer->addStyleClass(Bootstrap::Button::Primary);
         mBackContainer->addNew<WText>("Geri");
-        mBackContainer->clicked().connect(this,&_backClicked);
+        mBackContainer->clicked().connect([=](){ _backClicked.emit(NoClass());});
+        mBackContainer->setPadding(5,Side::Top|Side::Bottom);
+        mBackContainer->decorationStyle().setCursor(Cursor::PointingHand);
 
         mInfoContainer = this->addNew<WContainerWidget>();
         mInfoContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_8+
                                       Bootstrap::Grid::Medium::col_md_8+
                                       Bootstrap::Grid::Small::col_sm_8+
                                       Bootstrap::Grid::ExtraSmall::col_xs_8);
-        mInfoContainer->addStyleClass(Bootstrap::Button::info);
+        mInfoContainer->addStyleClass(Bootstrap::Label::info);
         mText = mInfoContainer->addNew<WText>("Info");
+        mInfoContainer->setPadding(5,Side::Top|Side::Bottom);
 
         mNextContainer = this->addNew<WContainerWidget>();
         mNextContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_2+
@@ -58,8 +61,9 @@ public:
                                       Bootstrap::Grid::ExtraSmall::col_xs_2);
         mNextContainer->addStyleClass(Bootstrap::Button::Primary);
         mNextContainer->addNew<WText>("İleri");
-        mNextContainer->clicked().connect(this,&_nextClicked);
-
+        mNextContainer->clicked().connect([=](){ _nextClicked.emit(NoClass());});
+        mNextContainer->setPadding(5,Side::Top|Side::Bottom);
+        mNextContainer->decorationStyle().setCursor(Cursor::PointingHand);
     }
 
     void setText( const std::string &text ){
@@ -87,7 +91,6 @@ public:
     };
 
     explicit ContainerWidget(const std::string &title = "" , ContentType _contentType = Vertical );
-    ContainerWidget(const std::string &title = "" , const bool &_initContoller = false );
 
     WContainerWidget* Header();
     WContainerWidget* Content();
@@ -169,6 +172,21 @@ public:
 
     WContainerWidget *titleBar() const;
 
+    ///
+    /// \brief getContoller
+    /// \return
+    ///
+    std::optional<ControllerWidget*> getContoller() {
+        if( !mController ){
+            mController = addNew<ControllerWidget>();
+            mController->addStyleClass(Bootstrap::Grid::col_full_12);
+            mController->setMargin(20,Side::Bottom);
+            mController->setMargin(10,Side::Top);
+        }
+
+        return mController;
+    }
+
 private:
     WContainerWidget* mHeaderContainer;
     WContainerWidget* mContentContainer;
@@ -179,6 +197,7 @@ private:
 
     bool initController = false;
     ContainerWidget::ContentType mContainerStyle;
+    ControllerWidget* mController = nullptr;
 
 };
 
