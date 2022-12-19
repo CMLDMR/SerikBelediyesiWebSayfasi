@@ -19,6 +19,7 @@ inline constexpr std::string baslik{"Başlık"};
 inline constexpr std::string yayinda{"Yayında"};
 inline constexpr std::string birim{"Birim"};
 inline constexpr std::string endDate{"Bitiş Tarihi"};
+inline constexpr std::string icerik{"İçerik"};
 
 }
 
@@ -31,6 +32,7 @@ public:
     bool Yayinda() const;
     std::string Birim() const;
     std::string SonTarihText() const;
+    std::string Icerik() const;
 };
 
 
@@ -45,6 +47,10 @@ public:
 
     void errorOccured( const std::string &errorText ) override;
 
+    void initDuyuruItem( const std::string &duyuruOid );
+
+    void yeniDuyuruEkle();
+
     std::optional<ControllerWidget*> mControllerWidget;
 
 };
@@ -57,6 +63,12 @@ namespace Widget {
     {
     public:
         ListItem(const DuyuruItem &item);
+    };
+
+    class DuyuruView : public ContainerWidget , public DuyuruItem
+    {
+    public:
+        DuyuruView( const DuyuruItem &item );
     };
 
 }
