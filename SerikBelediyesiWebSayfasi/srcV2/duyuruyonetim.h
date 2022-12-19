@@ -6,21 +6,69 @@
 #include "SerikBelediyesiWebSayfasi/BaseClass/containerwiget.h"
 
 
+namespace v2{
 
+
+namespace Duyuru {
+
+
+namespace Key {
+
+inline constexpr std::string Collection{"Duyurular"};
+inline constexpr std::string baslik{"Başlık"};
+inline constexpr std::string yayinda{"Yayında"};
+inline constexpr std::string birim{"Birim"};
+inline constexpr std::string endDate{"Bitiş Tarihi"};
+
+}
 
 class DuyuruItem : public SerikBLDCore::Item
 {
 public:
-    explicit DuyuruItem():SerikBLDCore::Item("collection"){}
+    explicit DuyuruItem():SerikBLDCore::Item(Duyuru::Key::Collection){}
+
+    std::string Baslik() const;
+    bool Yayinda() const;
+    std::string Birim() const;
+    std::string SonTarihText() const;
 };
 
 
 
 
-class DuyuruYonetim : public SerikBLDCore::ListItem<DuyuruItem>
+class DuyuruYonetim : public ContainerWidget, public SerikBLDCore::ListItem<DuyuruItem>
 {
 public:
-    DuyuruYonetim();
+    explicit DuyuruYonetim(SerikBLDCore::DB* _mdb);
+
+    void onList( const QVector<DuyuruItem> *mlist) override;
+
+    void errorOccured( const std::string &errorText ) override;
+
+    std::optional<ControllerWidget*> mControllerWidget;
+
 };
+
+
+
+namespace Widget {
+
+    class ListItem : public ContainerWidget, public DuyuruItem
+    {
+    public:
+        ListItem(const DuyuruItem &item);
+    };
+
+}
+
+
+}
+
+
+
+
+}
+
+
 
 #endif // DUYURUYONETIM_H
