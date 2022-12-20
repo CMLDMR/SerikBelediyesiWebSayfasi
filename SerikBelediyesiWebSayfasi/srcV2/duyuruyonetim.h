@@ -20,6 +20,9 @@ inline constexpr std::string yayinda{"Yayında"};
 inline constexpr std::string birim{"Birim"};
 inline constexpr std::string endDate{"Bitiş Tarihi"};
 inline constexpr std::string icerik{"İçerik"};
+inline constexpr std::string julianBaslangic{"julianBaslangic"};
+inline constexpr std::string julianBitis{"julianBitis"};
+
 
 }
 
@@ -33,6 +36,13 @@ public:
     std::string Birim() const;
     std::string SonTarihText() const;
     std::string Icerik() const;
+
+    std::int64_t BaslangicDate() const;
+    std::int64_t BitisDate() const;
+
+
+
+
 };
 
 

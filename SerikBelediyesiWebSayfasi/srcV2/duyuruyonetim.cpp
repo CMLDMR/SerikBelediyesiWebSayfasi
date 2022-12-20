@@ -6,7 +6,6 @@ v2::Duyuru::DuyuruYonetim::DuyuruYonetim(DB *_mdb)
     :ContainerWidget("Duyurular"),SerikBLDCore::ListItem<v2::Duyuru::DuyuruItem>(_mdb)
 {
 
-    this->UpdateList(Duyuru::DuyuruItem());
 
     mControllerWidget = this->getContoller();
     if( mControllerWidget ){
@@ -55,6 +54,8 @@ v2::Duyuru::DuyuruYonetim::DuyuruYonetim(DB *_mdb)
         this->Header()->setMargin(25,Side::Top|Side::Bottom);
         this->Header()->setContentAlignment(AlignmentFlag::Right);
     }
+
+    this->UpdateList(Duyuru::DuyuruItem());
 
 
 }
@@ -169,13 +170,10 @@ std::string v2::Duyuru::DuyuruItem::Birim() const
 
 std::string v2::Duyuru::DuyuruItem::SonTarihText() const
 {
-    auto val = this->element(Key::endDate);
+    auto val = this->element(Key::julianBitis);
     if( val ){
-        auto str = QString::number(static_cast<int>(val->get_double().value));
-        auto yilStr = str.mid(0,4);
-        auto ayStr = str.mid(4,2);
-        auto dayStr = str.mid(6,2);
-        return dayStr.toStdString()+"/"+ayStr.toStdString()+"/"+yilStr.toStdString();
+        auto str = QDate::fromJulianDay(val.value().get_int64().value).toString("dd/MM/yyyy").toStdString();
+        return str;
     }
     return "";
 }
@@ -188,6 +186,26 @@ std::string v2::Duyuru::DuyuruItem::Icerik() const
     }
     return "";
 }
+
+int64_t v2::Duyuru::DuyuruItem::BaslangicDate() const
+{
+    auto val = this->element(Key::julianBaslangic);
+    if( val ){
+        return val->get_int64().value;
+    }
+    return 0;
+}
+
+int64_t v2::Duyuru::DuyuruItem::BitisDate() const
+{
+    auto val = this->element(Key::julianBitis);
+    if( val ){
+        return val->get_int64().value;
+    }
+    return 0;
+}
+
+
 
 v2::Duyuru::Widget::ListItem::ListItem(const DuyuruItem &item)
     :DuyuruItem(item)
@@ -226,12 +244,35 @@ v2::Duyuru::Widget::ListItem::ListItem(const DuyuruItem &item)
                                  Bootstrap::Grid::Medium::col_md_1+
                                  Bootstrap::Grid::Small::col_sm_1+
                                  Bootstrap::Grid::ExtraSmall::col_xs_1);
-        container->addNew<WText>((this->Yayinda() ? "Yayında" : "Değil"));
+        std::string sonDurum = "";
         if( this->Yayinda() ){
-            container->setAttributeValue(Style::style,Style::background::color::color(Style::color::Green::LightGreen));
+
+            if( QDate::currentDate().toJulianDay() < this->BaslangicDate() ){
+                sonDurum = "Yaklaşıyor";
+            }else{
+                if( QDate::currentDate().toJulianDay() > this->BitisDate() ){
+                    sonDurum = "Geçmiş";
+                }else{
+                    sonDurum = "Yayında";
+                }
+            }
         }else{
-            container->setAttributeValue(Style::style,Style::background::color::color(Style::color::Red::LightCoral));
+            sonDurum = "Değil";
         }
+
+
+        container->addNew<WText>(sonDurum);
+        if( sonDurum == "Yayında" ){
+            container->setAttributeValue(Style::style,Style::background::color::color(Style::color::Green::LightGreen));
+        }else if( sonDurum == "Yaklaşıyor" ){
+            container->setAttributeValue(Style::style,Style::background::color::color(Style::color::Green::Green));
+        }else if( sonDurum == "Geçmiş" ){
+            container->setAttributeValue(Style::style,Style::background::color::color(Style::color::Green::DarkSeaGreen));
+        }else if( sonDurum == "Değil" ){
+            container->setAttributeValue(Style::style,Style::background::color::color(Style::color::Red::Red));
+        }
+
+
     }
 
     //Son Tarih
@@ -251,10 +292,24 @@ v2::Duyuru::Widget::DuyuruView::DuyuruView(const DuyuruItem &item)
     :DuyuruItem(item)
 {
 
-    auto baslikText = this->Content()->addNew<WText>("<h3>"+this->Baslik()+"</h3>",TextFormat::UnsafeXHTML);
+    this->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+
+
+    auto baslikText = this->Content()->addNew<WText>("<h4>"+this->Baslik()+"</h4>",TextFormat::UnsafeXHTML);
     baslikText->addStyleClass(Bootstrap::Grid::col_full_12);
     baslikText->setAttributeValue(Style::style,Style::background::color::color(Style::color::Grey::DimGray)+Style::color::color(Style::color::White::AliceBlue));
 
     auto icerikText = this->Content()->addNew<WText>(item.Icerik(),TextFormat::UnsafeXHTML);
     icerikText->addStyleClass(Bootstrap::Grid::col_full_12);
+    icerikText->setMargin(25,Side::Bottom);
+
+    auto tarihText = this->Content()->addNew<WText>("<h5>"+QDate::fromJulianDay(item.BaslangicDate()).toString("dd/MM/yyyy").toStdString()+"  -  " + QDate::fromJulianDay(item.BitisDate()).toString("dd/MM/yyyy").toStdString()+"</h5>",TextFormat::UnsafeXHTML);
+    tarihText->addStyleClass(Bootstrap::Grid::col_full_12);
+    tarihText->addStyleClass(Bootstrap::ContextualBackGround::bg_danger);
+
+
+    auto kalanGunText = this->Content()->addNew<WText>("Yayından Kalkmasına " + std::to_string(this->BitisDate() - QDate::currentDate().toJulianDay())+" gün var",TextFormat::UnsafeXHTML);
+    kalanGunText->addStyleClass(Bootstrap::Grid::col_full_12);
+    tarihText->addStyleClass(Bootstrap::ContextualBackGround::bg_info);
+
 }
