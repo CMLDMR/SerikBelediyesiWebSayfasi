@@ -69,14 +69,14 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
     WApplication::useStyleSheet(WLink("css/nost.css"));
     WApplication::useStyleSheet(WLink("css/CSSCustom.css"));
 
-//    WApplication::useStyleSheet (WLink("https://www.w3schools.com/w3css/4/w3.css"));
-
-    //    WApplication::useStyleSheet(WLink("css/test.css"));
 
     Wt::WApplication::instance()->useStyleSheet("resources/themes/bootstrap/3/bootstrap-theme.min.css");
     Wt::WApplication::require("script/Script.js");
-    //    Wt::WApplication::require("script/testscript.js");
 
+
+    Wt::WApplication::require("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js");
+    Wt::WApplication::require("font/PTSans-Regular-normal.js");
+    Wt::WApplication::require("script/personelPrint.js");
 
     Wt::WApplication::require("script/jszip/jszip.min.js");
     Wt::WApplication::require("script/jszip/jszip.js");

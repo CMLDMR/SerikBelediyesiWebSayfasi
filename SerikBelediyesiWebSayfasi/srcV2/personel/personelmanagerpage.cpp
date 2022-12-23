@@ -85,10 +85,8 @@ void PersonelManagerPage::onList(const QVector<SerikBLDCore::IK::Personel> *mlis
     auto titleContainer = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
     titleContainer->addStyleClass (Bootstrap::Grid::col_full_12);
     titleContainer->setMargin (15,Side::Bottom);
-    auto titleText = titleContainer->addWidget (cpp14::make_unique<WText>(WString("{1} - {2} Adet Personel").arg(0).arg (mlist->count ())));
+    auto titleText = titleContainer->addWidget (cpp14::make_unique<WText>(WString("<b>{1}</b> - {2} Adet Personel").arg(0).arg (mlist->count ()),TextFormat::UnsafeXHTML));
     titleContainer->addStyleClass (Bootstrap::ContextualBackGround::bg_warning);
-
-
 
     if( mlist->count () == 0 )
     {
@@ -129,7 +127,7 @@ void PersonelManagerPage::onList(const QVector<SerikBLDCore::IK::Personel> *mlis
         }
     }
 
-    titleText->setText(WString("{1} - {2} Adet Personel").arg(titleString).arg(mlist->count()));
+    titleText->setText(WString("<b>{1}</b> - {2} Adet Personel").arg(titleString).arg(mlist->count()));
 
     if( !mListFromSearchText ){
         if( mudurExist == 0 )
@@ -195,16 +193,49 @@ void PersonelManagerPage::initBirimList()
 
     {
         auto container = Footer ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass (Bootstrap::Grid::col_full_12);
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
         container->setContentAlignment (AlignmentFlag::Center);
-
-        auto newPersonelBtn = container->addWidget (cpp14::make_unique<WPushButton>("Yeni Personel Tanımla"));
-
-        newPersonelBtn->addStyleClass (Bootstrap::Button::Primary);
-        newPersonelBtn->clicked ().connect ( this , &PersonelManagerPage::initNewPersonelWidget );
-
-
+        container->addWidget (cpp14::make_unique<WText>("<b>Yeni Personel Tanımla</b>"));
+        container->addStyleClass (Bootstrap::Button::Primary);
+        container->setMargin(5,Side::Top|Side::Bottom);
+        container->setPadding(5,Side::Top|Side::Bottom);
+        container->decorationStyle().setCursor(Cursor::PointingHand);
+        container->clicked ().connect ( this , &PersonelManagerPage::initNewPersonelWidget );
     }
+
+    {
+        auto container = Footer ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass (Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
+        container->setContentAlignment (AlignmentFlag::Center);
+        container->addWidget (cpp14::make_unique<WText>("<b>Print to A4</b>"));
+        container->addStyleClass (Bootstrap::Button::info);
+        container->setMargin(5,Side::Top|Side::Bottom);
+        container->setPadding(5,Side::Top|Side::Bottom);
+        container->decorationStyle().setCursor(Cursor::PointingHand);
+        container->clicked ().connect ([=](){
+
+            auto list = this->List();
+            std::string json{"["};
+
+            for( const auto &personelItem : list ){
+
+                std::string jsonObj{"{"};
+
+                jsonObj += "\"adsoyad\":\""+personelItem.AdSoyad().toStdString()+"\",";
+                jsonObj += "\"birim\":\""+personelItem.Birim().toStdString()+"\",";
+
+                auto url = this->downloadFileWeb(personelItem.FotoOid());
+                jsonObj += "\"fotourl\":\"" + url+"\"";
+                jsonObj += "}";
+
+                json += jsonObj+",";
+            }
+            json += "]";
+            container->doJavaScript("printPersonelListToA4("+json+");");
+        });
+    }
+
+
 
 
     auto birimFiltercontainer = Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
