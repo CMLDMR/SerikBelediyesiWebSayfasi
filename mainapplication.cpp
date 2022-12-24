@@ -648,51 +648,51 @@ bool MainApplication::loadGundem(const std::string &oid)
 void MainApplication::LoadDeviceStatus()
 {
 
-    DeviceServices::DeviceServicesManager* mDeviceManager = new DeviceServices::DeviceServicesManager(new SerikBLDCore::DB(&this->db));
+//    DeviceServices::DeviceServicesManager* mDeviceManager = new DeviceServices::DeviceServicesManager(new SerikBLDCore::DB(&this->db));
 
 
-    DeviceServices::DeviceServicesItem filter;
+//    DeviceServices::DeviceServicesItem filter;
 
-    auto cursor = mDeviceManager->GetList(filter,1000);
+//    auto cursor = mDeviceManager->GetList(filter,1000);
 
 
-    root()->clear();
-    root()->setContentAlignment(AlignmentFlag::Center);
+//    root()->clear();
+//    root()->setContentAlignment(AlignmentFlag::Center);
 
-    root()->addStyleClass("rootBody");
-    root ()->setContentAlignment (AlignmentFlag::Center);
-    auto rContainer = root ()->addWidget (cpp14::make_unique<WContainerWidget>());
-    rContainer->addStyleClass (Bootstrap::Grid::row);
-    rContainer->setMaximumSize (WLength(1024),WLength::Auto);
-    rContainer->setMargin(100,Side::Top|Side::Bottom);
+//    root()->addStyleClass("rootBody");
+//    root ()->setContentAlignment (AlignmentFlag::Center);
+//    auto rContainer = root ()->addWidget (cpp14::make_unique<WContainerWidget>());
+//    rContainer->addStyleClass (Bootstrap::Grid::row);
+//    rContainer->setMaximumSize (WLength(1024),WLength::Auto);
+//    rContainer->setMargin(100,Side::Top|Side::Bottom);
 
-    int row = 0;
-    for( const auto &item : cursor ){
+//    int row = 0;
+//    for( const auto &item : cursor ){
 
-        auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass(Bootstrap::Grid::col_full_12);
-        container->setMargin(2,Side::Top|Side::Bottom);
-        container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+//        auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//        container->addStyleClass(Bootstrap::Grid::col_full_12);
+//        container->setMargin(2,Side::Top|Side::Bottom);
+//        container->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
-        if( item.getStatus() == "OK" ){
-            container->addStyleClass(Bootstrap::Button::Primary);
-        }else{
-            container->addStyleClass(Bootstrap::Button::Danger);
-        }
+//        if( item.getStatus() == "OK" ){
+//            container->addStyleClass(Bootstrap::Button::Primary);
+//        }else{
+//            container->addStyleClass(Bootstrap::Button::Danger);
+//        }
 
-        auto gLayout = container->setLayout(cpp14::make_unique<WGridLayout>());
+//        auto gLayout = container->setLayout(cpp14::make_unique<WGridLayout>());
 
-        int col = 0;
+//        int col = 0;
 
-        gLayout->addWidget(cpp14::make_unique<WText>(item.getType()),row,col++,AlignmentFlag::Left);
-        gLayout->addWidget(cpp14::make_unique<WText>(item.getName()),row,col++,AlignmentFlag::Left);
-        gLayout->addWidget(cpp14::make_unique<WText>(item.getIpAddress()),row,col++,AlignmentFlag::Left);
-        gLayout->addWidget(cpp14::make_unique<WText>(item.getStatus()),row,col++,AlignmentFlag::Left);
-        gLayout->addWidget(cpp14::make_unique<WText>(QDateTime::fromMSecsSinceEpoch(item.getLastEventTime()).date().toString("dd/MM/yyyy").toStdString()),row,col++,AlignmentFlag::Left);
-        gLayout->addWidget(cpp14::make_unique<WText>(QDateTime::fromMSecsSinceEpoch(item.getLastEventTime()).time().toString("hh:mm:ss").toStdString()),row,col++,AlignmentFlag::Left);
-        row++;
+//        gLayout->addWidget(cpp14::make_unique<WText>(item.getType()),row,col++,AlignmentFlag::Left);
+//        gLayout->addWidget(cpp14::make_unique<WText>(item.getName()),row,col++,AlignmentFlag::Left);
+//        gLayout->addWidget(cpp14::make_unique<WText>(item.getIpAddress()),row,col++,AlignmentFlag::Left);
+//        gLayout->addWidget(cpp14::make_unique<WText>(item.getStatus()),row,col++,AlignmentFlag::Left);
+//        gLayout->addWidget(cpp14::make_unique<WText>(QDateTime::fromMSecsSinceEpoch(item.getLastEventTime()).date().toString("dd/MM/yyyy").toStdString()),row,col++,AlignmentFlag::Left);
+//        gLayout->addWidget(cpp14::make_unique<WText>(QDateTime::fromMSecsSinceEpoch(item.getLastEventTime()).time().toString("hh:mm:ss").toStdString()),row,col++,AlignmentFlag::Left);
+//        row++;
 
-    }
+//    }
 
 }
 

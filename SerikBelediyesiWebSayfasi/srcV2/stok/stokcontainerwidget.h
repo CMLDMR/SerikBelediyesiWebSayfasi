@@ -76,7 +76,7 @@ private:
     SerikBLDCore::User* mUser;
     SerikBLDCore::PersonelManager* mPersonelManager;
     ContainerWidget* mSubMenuBarContainer;
-    SerikBLDCore::Stokv2::Stokv2YerManager* mYerManager;
+//    SerikBLDCore::Stokv2::Stokv2YerManager* mYerManager;
 
     void initAyarlar();
 
