@@ -2450,10 +2450,10 @@ void Giris::Personel::PersonelWidget::initMenu()
     }
 
 
-    menu->addItem(WString::fromUTF8("Stok"))->clicked ().connect ([&](){
-        this->Content ()->clear ();
-        this->Content ()->addWidget (Wt::cpp14::make_unique<v2::StokWidget::StokContainerWidget>(mUser));
-    });
+//    menu->addItem(WString::fromUTF8("Stok"))->clicked ().connect ([&](){
+//        this->Content ()->clear ();
+//        this->Content ()->addWidget (Wt::cpp14::make_unique<v2::StokWidget::StokContainerWidget>(mUser));
+//    });
 
 
 
