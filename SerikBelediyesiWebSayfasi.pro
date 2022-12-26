@@ -47,6 +47,7 @@ SOURCES += main.cpp \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekcetcyonetim.cpp \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekceview.cpp \
     SerikBelediyesiWebSayfasi/srcV2/dilekceyonetim.cpp \
+    SerikBelediyesiWebSayfasi/srcV2/duyuruyonetim.cpp \
     SerikBelediyesiWebSayfasi/srcV2/externalWidget/haritawidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/externalWidget/nobetcieczanewidget.cpp \
     SerikBelediyesiWebSayfasi/srcV2/faaliyet/faaliyetraporcontainer.cpp \
@@ -133,6 +134,7 @@ HEADERS += \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekcetcyonetim.h \
     SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekceview.h \
     SerikBelediyesiWebSayfasi/srcV2/dilekceyonetim.h \
+    SerikBelediyesiWebSayfasi/srcV2/duyuruyonetim.h \
     SerikBelediyesiWebSayfasi/srcV2/externalWidget/haritawidget.h \
     SerikBelediyesiWebSayfasi/srcV2/externalWidget/nobetcieczanewidget.h \
     SerikBelediyesiWebSayfasi/srcV2/faaliyet/faaliyetraporcontainer.h \
@@ -191,8 +193,6 @@ HEADERS += \
     SerikBelediyesiWebSayfasi/srcV2/mainpagecontroller.h \
     SerikBelediyesiWebSayfasi/srcV2/baskanwidget.h
 
-DISTFILES +=
-
 
     MSVC_VER = $$(VisualStudioVersion)
 
@@ -200,48 +200,35 @@ DISTFILES +=
 
 
 
+INCLUDEPATH += C:/Mongo/msvc2022x64/include/bsoncxx/v_noabi
+DEPENDPATH += C:/Mongo/msvc2022x64/include/bsoncxx/v_noabi
 
-    equals(MSVC_VER, 17.0){
-        message("msvc 2022 x64")
+win32: LIBS += -LC:/Mongo/msvc2022x64/lib/ -lmongocxx
+win32: LIBS += -LC:/Mongo/msvc2022x64/lib/ -lbsoncxx
 
-        INCLUDEPATH += C:/Mongo/msvc2022x64/include/bsoncxx/v_noabi
-        DEPENDPATH += C:/Mongo/msvc2022x64/include/bsoncxx/v_noabi
-
-        win32: LIBS += -LC:/Mongo/msvc2022x64/lib/ -lmongocxx
-        win32: LIBS += -LC:/Mongo/msvc2022x64/lib/ -lbsoncxx
-
-        INCLUDEPATH += C:/Mongo/msvc2022x64/include/mongocxx/v_noabi
-        DEPENDPATH += C:/Mongo/msvc2022x64/include/mongocxx/v_noabi
+INCLUDEPATH += C:/Mongo/msvc2022x64/include/mongocxx/v_noabi
+DEPENDPATH += C:/Mongo/msvc2022x64/include/mongocxx/v_noabi
 
 
 
-        win32: LIBS += -LC:/Wt_4.7.0_msvs2022_x64/lib/ -lwt
+win32: LIBS += -LC:/Wt_4.7.0_msvs2022_x64/lib/ -lwt
 
-        INCLUDEPATH += C:/Wt_4.7.0_msvs2022_x64/include
-        DEPENDPATH += C:/Wt_4.7.0_msvs2022_x64/include
+INCLUDEPATH += C:/Wt_4.7.0_msvs2022_x64/include
+DEPENDPATH += C:/Wt_4.7.0_msvs2022_x64/include
 
-        win32: LIBS += -LC:/Wt_4.7.0_msvs2022_x64/lib/ -lwthttp
+win32: LIBS += -LC:/Wt_4.7.0_msvs2022_x64/lib/ -lwthttp
 
-        win32: LIBS += -LC:/Wt_4.7.0_msvs2022_x64/lib/ -llibhpdf
-
-
-        win32: LIBS += -LC:/SerikBLDCoreRelease/MSVC2022x64/lib/ -lSerikBLDCore
-
-        INCLUDEPATH += C:/SerikBLDCoreRelease/MSVC2022x64/include
-        DEPENDPATH += C:/SerikBLDCoreRelease/MSVC2022x64/include
+win32: LIBS += -LC:/Wt_4.7.0_msvs2022_x64/lib/ -llibhpdf
 
 
-        INCLUDEPATH += C:/SerikBLDCoreRelease/MSVC2022x64/include/bilgiEdinme
-        DEPENDPATH += C:/SerikBLDCoreRelease/MSVC2022x64/include/bilgiEdinme
+win32: LIBS += -LC:/SerikBLDCoreRelease/MSVC2022x64/lib/ -lSerikBLDCore
+
+INCLUDEPATH += C:/SerikBLDCoreRelease/MSVC2022x64/include
+DEPENDPATH += C:/SerikBLDCoreRelease/MSVC2022x64/include
 
 
-    }
-
-
-
-
-
-
+INCLUDEPATH += C:/SerikBLDCoreRelease/MSVC2022x64/include/bilgiEdinme
+DEPENDPATH += C:/SerikBLDCoreRelease/MSVC2022x64/include/bilgiEdinme
 
 
 INCLUDEPATH += C:/boost/boost
@@ -252,10 +239,10 @@ DEPENDPATH += C:/boost/boost
 
 
 
-win32: LIBS += -LC:/SerikBLDCoreRelease/MSVC2022x64/lib/ -lSerikBLDCore
+#win32: LIBS += -LC:/SerikBLDCoreRelease/MSVC2022x64/lib/ -lSerikBLDCore
 
-INCLUDEPATH += C:/SerikBLDCoreRelease/MSVC2022x64/include
-DEPENDPATH += C:/SerikBLDCoreRelease/MSVC2022x64/include
+#INCLUDEPATH += C:/SerikBLDCoreRelease/MSVC2022x64/include
+#DEPENDPATH += C:/SerikBLDCoreRelease/MSVC2022x64/include
 
 RESOURCES += \
     CSSContainer.qrc

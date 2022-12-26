@@ -13,6 +13,7 @@
 #include "personel/yonetimwidget.h"
 #include "meclis/meclisuyesipublicwidget.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/nostserik.h"
+#include "duyuruyonetim.h"
 
 
 
@@ -410,13 +411,21 @@ void MainPage::initAnounceList()
 
     mContentWidget->clear();
 
-    auto mMainContainer = mContentWidget->addWidget(cpp14::make_unique<Body::NewsAnnounceContent::AnnouncePanel::AnnounceList>(this->getDB()->db()));
+    auto mMainContainer = mContentWidget->addWidget(cpp14::make_unique<v2::Duyuru::Widget::PublicListView>(this->getDB()));
     mMainContainer->setPadding( 90 , Side::Top );
     mMainContainer->setContentAlignment(AlignmentFlag::Center);
 
-    mMainContainer->mGetOid().connect([=](std::string mOid){
-        initAnounceDetail(mOid);
-    });
+//    mMainContainer->mGetOid().connect([=](std::string mOid){
+//        initAnounceDetail(mOid);
+//    });
+
+//    auto mMainContaiener = mContentWidget->addWidget(cpp14::make_unique<Body::NewsAnnounceContent::AnnouncePanel::AnnounceList>(this->getDB()->db()));
+//    mMainContainer->setPadding( 90 , Side::Top );
+//    mMainContainer->setContentAlignment(AlignmentFlag::Center);
+
+//    mMainContainer->mGetOid().connect([=](std::string mOid){
+//        initAnounceDetail(mOid);
+//    });
 
     footer->removeStyleClass("footerStickAbsolute");
 }

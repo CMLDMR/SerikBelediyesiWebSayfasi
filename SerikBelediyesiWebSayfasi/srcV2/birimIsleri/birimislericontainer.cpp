@@ -7,6 +7,7 @@
 #include "SerikBelediyesiWebSayfasi/srcV2/faaliyet/faaliyetraporcontainer.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/nostserik.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/bilgiislem/firewallcontainer.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/duyuruyonetim.h"
 
 v2::BirimIsleriContainer::BirimIsleriContainer(SerikBLDCore::User *_user)
     :ContainerWidget ("Birim İşleri"),mUser(_user)
@@ -31,6 +32,13 @@ v2::BirimIsleriContainer::BirimIsleriContainer(SerikBLDCore::User *_user)
             this->initFireWallLog ();
         } );
         Header ()->addWidget (std::move(menufireWallLog));
+
+        auto menuDuyuruItem = createMenu ( "Duyurular" , Cursor::PointingHand );
+        menuDuyuruItem->clicked ().connect ( [=](){
+            Content ()->clear ();
+            Content ()->addWidget (cpp14::make_unique<v2::Duyuru::DuyuruYonetim>(this->mUser->getDB()));
+        } );
+        Header ()->addWidget (std::move(menuDuyuruItem));
     }
 
     //Çalışma Yönetimi
