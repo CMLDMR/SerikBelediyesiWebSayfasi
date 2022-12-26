@@ -36,8 +36,6 @@ public:
 
     void initAnounceList();
 
-    void initAnounceDetail( std::string mOid );
-
     void initBaskan();
 
     bool initMeclisCanliYayin();

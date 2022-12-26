@@ -51,29 +51,11 @@
 #include "basindabizwidget.h"
 #include "db.h"
 
-
-//#include <iostream>
-//#include <memory>
-//#include <iterator>
-//#include <stdexcept>
-//#include <random>
-
-
-
-//using bsoncxx::builder::basic::document;
-//using bsoncxx::builder::basic::kvp;
-//using bsoncxx::builder::basic::array;
-//using bsoncxx::builder::basic::make_document;
-//using bsoncxx::builder::basic::make_array;
-
-//using namespace Wt;
-
-
 namespace Body {
 
 
     class Slider;
-    class NewsAnnounceContent;
+
     class ContentWidget;
     class Meclis;
 
@@ -87,11 +69,9 @@ namespace Body {
 
         void initBody();
 
-
         void initProje();
         void initHaberler();
         void initEtkinlikler();
-//        void initVideo();
         void initBilgiEdin();
         void initiletisim();
         void initTalep();
@@ -99,11 +79,7 @@ namespace Body {
         void initHakkinda();
         void initCalismalar();
 
-
-
-        NewsAnnounceContent* mNewsAnnounceContent;
         void setNewsDetail(std::string oid);
-        void setAnnounceDetail(std::string oid);
         void setVideoDetail(std::string oid);
 
         ContentWidget* mContentWidget;
@@ -144,163 +120,6 @@ namespace Body {
 
 
 
-
-    class NewsAnnounceContent : public WContainerWidget
-    {
-    public:
-        NewsAnnounceContent(mongocxx::database* _database);
-
-        class NewsPanel : public WContainerWidget
-        {
-        public:
-            NewsPanel(mongocxx::database* _db);
-
-
-            class ControlPanel : public WContainerWidget
-            {
-            public:
-                ControlPanel();
-                Signal<std::string> &mGetClickNews();
-                Signal<std::string> &mGetClickZiyaret();
-                Signal<std::string> &mGetClickVideolar();
-                Signal<std::string> &mGetClickEtkinlikler();
-                Signal<std::string> &mGetClickProjects();
-            private:
-                Signal<std::string> _ClickPanel;
-
-                Signal<std::string> _ClickZiyaret;
-
-                Signal<std::string> _ClickVideolar;
-
-                Signal<std::string> _ClickEtkinlikler;
-
-                Signal<std::string> _ClickProjects;
-
-            };
-
-
-
-            class NewsList : public WContainerWidget
-            {
-
-            public:
-
-                NewsList(mongocxx::database* _db, mongocxx::collection* _collection,mongocxx::collection* _Videcollection, mongocxx::gridfs::bucket* _Bucket);
-
-
-                void initList(std::string key = SBLDKeys::Haberler::oid );
-
-                void initZiyaretList(std::string key);
-
-                void initVideoList(std::string key);
-
-                void initEtkinlikList(std::string key);
-
-                void initProjectList(std::string key);
-
-                Signal<std::string> &mGetClickOid();
-                Signal<std::string> &mGetClickVideoOid();
-                Signal<std::string> &mGetClickEtkinlikOid();
-                Signal<std::string> &mGetClickProjeOid();
-
-            private:
-                void addItem(std::string title,std::string text , std::string imgPath , std::string oid = "null", std::string type = "news");
-
-                mongocxx::collection* Collection;
-                mongocxx::collection* VideoCollection;
-                mongocxx::gridfs::bucket* Bucket;
-                mongocxx::database* db;
-
-                WContainerWidget* mMainContainer;
-
-                std::string currentKey;
-
-                Signal<std::string> _ClickOid;
-                Signal<std::string> _ClickVideoOid;
-                Signal<std::string> _ClickEtkinlikOid;
-                Signal<std::string> _ClickProjeOid;
-
-
-            };
-
-
-            mongocxx::database* db;
-
-            mongocxx::collection nCollection;
-            mongocxx::collection nVCollection;
-            mongocxx::gridfs::bucket Bucket;
-
-            NewsList* mNewsList;
-
-
-        };
-
-
-
-
-
-        class AnnouncePanel : public WContainerWidget
-        {
-        public:
-            AnnouncePanel(mongocxx::database* _db);
-
-
-
-            class AnnounceList : public WContainerWidget
-            {
-            public:
-                AnnounceList(mongocxx::database* _db);
-
-
-                Signal<std::string> &mGetOid();
-
-                class AnnounceItem : public WContainerWidget
-                {
-                public:
-                    AnnounceItem( std::string oid , std::string title , std::string birim );
-
-                    Signal<std::string> _ClickItem;
-                };
-
-            private:
-                mongocxx::database* db;
-                mongocxx::collection Collection;
-                void _ClickItem(std::string oid);
-                Signal<std::string> mClickoid;
-            };
-
-
-
-            class TaskList : public WContainerWidget
-            {
-            public:
-                TaskList(mongocxx::database* _db);
-
-                class TaskItem : public WContainerWidget
-                {
-                public:
-                    TaskItem(std::string title, std::string birim , std::string mahalle, std::string tarih);
-                };
-
-            private:
-                mongocxx::database* db;
-                mongocxx::collection Collection;
-            };
-
-
-
-            AnnounceList* mAnnounceList;
-        private:
-            mongocxx::database* db;
-
-            Signal<std::string> _ClickAnnounceDetail;
-        };
-
-
-        NewsPanel* mNewsPanel;
-        AnnouncePanel* mAnnouncePanel;
-
-    };
 
     class IstatistikAnket : public WContainerWidget
     {
@@ -665,55 +484,12 @@ namespace Body {
         std::int64_t count;
     };
 
-//    class Video : public WContainerWidget
-//    {
-//    public:
-//        Video(mongocxx::database* _db);
-
-//        Signal<NoClass> &mGetBack();
-//        Signal<std::string> &mGetVideo();
-
-
-//    private:
-//        mongocxx::database *db;
-//        Signal<NoClass> _ClickBack;
-//        Signal<std::string> _ClickVideo;
-
-//        WContainerWidget* mMainContainer,*container,*contentContainer;
-
-//        void initPage();
-//        void setstatus(bsoncxx::exception &e);
-//        void setstatus(mongocxx::exception &e);
-//        void setstatus(std::string e);
-
-
-//        struct item
-//        {
-//            std::string oid;
-//            std::string iconPath;
-//            std::string title;
-//        };
-
-//        std::vector<item> list;
-
-//        void addItem(WContainerWidget* widget, item _item);
-//        void setVideo(std::string oid);
-
-//        const int limit = 12;
-//        int skip;
-//        std::int64_t count;
-//    };
-
 
 
     class Talep : public WContainerWidget
     {
     public:
         Talep(mongocxx::database* _db);
-
-
-
-
     private:
         mongocxx::database* db;
 
@@ -742,9 +518,6 @@ namespace Body {
         std::string oldmahalle;
         std::string oldtelefon;
     };
-
-
-
 
 
     namespace BilgiEdin {

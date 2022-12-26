@@ -123,7 +123,7 @@ void MainPage::init()
         controller->ClickBilgiEdinme().connect(this,&MainPage::initBilgiEdinme);
         controller->ClickGiris().connect(this,&MainPage::initGiris);
         controller->ClickMeclis().connect(this,&MainPage::initMeclis);
-        controller->ClickAnounce().connect(this,&MainPage::initAnounceDetail);
+//        controller->ClickAnounce().connect(this,&MainPage::initAnounceDetail);
         controller->ClickDuyurular().connect(this,&MainPage::initAnounceList);
         controller->ClickHakkinda().connect(this,&MainPage::initHakkinda);
         controller->ClickIletisim().connect(this,&MainPage::initIletisim);
@@ -408,183 +408,13 @@ void MainPage::initIletisim()
 
 void MainPage::initAnounceList()
 {
-
     mContentWidget->clear();
-
     auto mMainContainer = mContentWidget->addWidget(cpp14::make_unique<v2::Duyuru::Widget::PublicListView>(this->getDB()));
     mMainContainer->setPadding( 90 , Side::Top );
     mMainContainer->setContentAlignment(AlignmentFlag::Center);
-
-//    mMainContainer->mGetOid().connect([=](std::string mOid){
-//        initAnounceDetail(mOid);
-//    });
-
-//    auto mMainContaiener = mContentWidget->addWidget(cpp14::make_unique<Body::NewsAnnounceContent::AnnouncePanel::AnnounceList>(this->getDB()->db()));
-//    mMainContainer->setPadding( 90 , Side::Top );
-//    mMainContainer->setContentAlignment(AlignmentFlag::Center);
-
-//    mMainContainer->mGetOid().connect([=](std::string mOid){
-//        initAnounceDetail(mOid);
-//    });
-
     footer->removeStyleClass("footerStickAbsolute");
 }
 
-void MainPage::initAnounceDetail( std::string mOid )
-{
-    mContentWidget->clear();
-
-    auto mMainContainer = mContentWidget->addWidget(cpp14::make_unique<WContainerWidget>());
-    mMainContainer->setPadding( 90 , Side::Top );
-    mMainContainer->setContentAlignment(AlignmentFlag::Center);
-
-
-    auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-    row->addStyleClass(Bootstrap::Grid::row);
-    row->setMaximumSize(1280,WLength::Auto);
-
-    WText* announceTitle = nullptr;
-    WText* AnnounceContent = nullptr;
-    WText* LastDate = nullptr;
-    WText* Department = nullptr;
-    {
-        auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
-        container->setPadding(0,AllSides);
-        auto img = container->addWidget(cpp14::make_unique<WContainerWidget>());
-        img->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-        img->setAttributeValue(Style::style,Style::background::url("img/duyuru1.JPG")+Style::background::size::cover+Style::background::repeat::norepeat+Style::background::position::center_center);
-        img->setHeight(150);
-        img->setPadding(0,AllSides);
-
-        auto gradientContainer = img->addWidget(cpp14::make_unique<WContainerWidget>());
-        gradientContainer->setHeight(150);
-        gradientContainer->addStyleClass("SliderDetailTextBackground");
-        auto layout = gradientContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
-        layout->addStretch(1);
-        announceTitle = layout->addWidget(cpp14::make_unique<WText>(""),0,AlignmentFlag::Bottom|AlignmentFlag::Center);
-        announceTitle->setAttributeValue(Style::style,Style::font::size::s24px+Style::color::color(Style::color::White::WhiteSmoke));
-        wApp->setInternalPath("/"+announceTitle->text().toUTF8(),false);
-    }
-
-    auto list = row->addWidget(cpp14::make_unique<Body::NewsAnnounceContent::AnnouncePanel::AnnounceList>(this->getDB()->db()));
-    list->addStyleClass(Bootstrap::Grid::Large::col_lg_4+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_12);
-    list->addStyleClass (Bootstrap::Grid::Hidden::hidden_sm+Bootstrap::Grid::Hidden::hidden_xs);
-
-    list->mGetOid().connect([=](std::string _mOid){
-        this->initAnounceDetail(_mOid);
-    });
-
-
-
-    auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
-    container->addStyleClass(Bootstrap::Grid::Large::col_lg_8+Bootstrap::Grid::Medium::col_md_8+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
-
-    container->setPadding(0,AllSides);
-
-
-    auto filter = document{};
-
-
-    try {
-        filter.append(kvp(SBLDKeys::Duyurular::oid,bsoncxx::oid{mOid}));
-    } catch (bsoncxx::exception &e) {
-        container->addWidget(cpp14::make_unique<WText>(WString("Error: {1}").arg(e.what())));
-        return;
-    }
-
-
-    try {
-        mongocxx::stdx::optional<bsoncxx::document::value> val = this->db()->collection("Duyurular").find_one(filter.view());
-        if( !val )
-        {
-            container->addWidget(cpp14::make_unique<WText>(WString("Empty Document")));
-            return;
-        }else{
-
-            auto view = val.value().view();
-
-            announceTitle->setText(view[SBLDKeys::Duyurular::title].get_utf8().value.to_string().c_str());
-
-            {
-
-                try {
-                    auto array = view[SBLDKeys::Duyurular::fileList].get_array().value;
-                    for( auto doc : array )
-                    {
-                        std::string path = this->downloadFileWeb(doc.get_oid().value.to_string().c_str(),true);
-                    }
-                } catch (bsoncxx::exception &e) {
-                    std::cout << __LINE__ << " " << __FUNCTION__ << " " <<"Error: No Array in Duyuru Item: " << e.what() << std::endl;
-                }
-            }
-
-            {
-                auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
-                _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-                auto _layout = _container->setLayout(cpp14::make_unique<WHBoxLayout>());
-
-                auto textContainer = _layout->addWidget(cpp14::make_unique<WContainerWidget>());
-
-                auto _Llayout = textContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
-
-                Department = _Llayout->addWidget(cpp14::make_unique<WText>("<b>"+view[SBLDKeys::Duyurular::department].get_utf8().value.to_string()+"</b>"));
-
-
-                LastDate = _Llayout->addWidget(cpp14::make_unique<WText>("Son Yayınlanma  Tarihi:"+QDate::fromString(QString::number((int)view[SBLDKeys::Duyurular::endDate].get_double().value),"yyyyMMdd").toString("dd/MM/yyyy").toStdString()));
-
-                _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                              Style::background::color::color(Style::color::Grey::Gainsboro));
-            }
-
-
-            {
-                auto textContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
-                textContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-                textContainer->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                                 Style::background::color::color(Style::color::White::Snow));
-
-                auto layout = textContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
-                AnnounceContent = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Duyurular::html].get_utf8().value.to_string().c_str(),TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
-            }
-
-
-            {
-                auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
-                _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-                _container->setHeight(20);
-                _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
-                                              Style::background::color::color(Style::color::Grey::Gainsboro));
-            }
-
-            {
-                auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
-                _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-                _container->addStyleClass (Bootstrap::Grid::Hidden::hidden_lg+Bootstrap::Grid::Hidden::hidden_md);
-                _container->setAttributeValue(Style::style,Style::background::color::color(Style::color::Grey::Gainsboro));
-                auto backList = _container->addWidget (cpp14::make_unique<WPushButton>("Duyurular"));
-                backList->addStyleClass (Bootstrap::Button::Primary);
-                backList->clicked ().connect ([=](){
-                    mContentWidget->clear();
-
-                    auto _mMainContainer = mContentWidget->addWidget(cpp14::make_unique<Body::NewsAnnounceContent::AnnouncePanel::AnnounceList>(this->getDB()->db()));
-                    _mMainContainer->setPadding( 90 , Side::Top );
-                    _mMainContainer->setContentAlignment(AlignmentFlag::Center);
-
-                    _mMainContainer->mGetOid().connect([=](std::string mOid){
-                        initAnounceDetail(mOid);
-                    });
-                });
-            }
-
-
-        }
-    } catch (mongocxx::exception &e) {
-        mMainContainer->addWidget(cpp14::make_unique<WText>(WString("Error: {1}").arg(e.what())));
-        return;
-    }
-
-}
 
 void MainPage::initBaskan()
 {
