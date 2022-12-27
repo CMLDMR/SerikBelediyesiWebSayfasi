@@ -4,8 +4,6 @@
 #include "listitem.h"
 #include "SerikBelediyesiWebSayfasi/BaseClass/containerwiget.h"
 
-
-
 namespace v2{
 
 
@@ -92,9 +90,13 @@ namespace Widget {
 
         void loadPublic();
         void loadEditable();
+
+        Signal<NoClass> &UpdateListRequired();
     private:
         bool mPublicView;
         SerikBLDCore::DB* mDB;
+
+        Signal<NoClass> _updateList;
     };
 
 
