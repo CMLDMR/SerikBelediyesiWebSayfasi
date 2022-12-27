@@ -110,6 +110,10 @@ namespace Widget {
 
         void initDuyuruItem( const std::string &duyuruOid );
 
+    private:
+        WContainerWidget* mListContainerWidget;
+        WContainerWidget* mContentContainer;
+
     };
 
 }
