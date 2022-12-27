@@ -6,7 +6,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 CONFIG += c++2a console
 CONFIG -= app_bundle
 QMAKE_CXXFLAGS      += -Zc:__cplusplus
-QMAKE_CXXFLAGS_CXX2A = -std:c++20
+QMAKE_CXXFLAGS += -std:c++20
 
 
 #TEMPLATE += app

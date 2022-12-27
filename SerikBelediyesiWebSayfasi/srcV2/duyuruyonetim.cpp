@@ -80,6 +80,9 @@ void v2::Duyuru::DuyuruYonetim::initDuyuruItem(const std::string &duyuruOid)
     }
     auto duyuruWidget = this->Content()->addNew<Widget::DuyuruView>(duyuruItem,this->getDB(),false);
     duyuruWidget->setMargin(25,Side::Left|Side::Right);
+    duyuruWidget->UpdateListRequired().connect([=](){
+        this->UpdateList();
+    });
 }
 
 void v2::Duyuru::DuyuruYonetim::yeniDuyuruEkle()
@@ -229,6 +232,7 @@ void v2::Duyuru::DuyuruYonetim::yeniDuyuruEkle()
         saveBtnContainer->addStyleClass(Bootstrap::Grid::col_full_12);
         saveBtnContainer->addStyleClass(CSSStyle::Button::blueButton);
         saveBtnContainer->addNew<WText>("Kaydet");
+        saveBtnContainer->setPadding(5,Side::Top|Side::Bottom);
 
         saveBtnContainer->clicked().connect([=](){
 
@@ -244,7 +248,9 @@ void v2::Duyuru::DuyuruYonetim::yeniDuyuruEkle()
 
             if( this->InsertItem(duyuruItem).size() ){
                 this->showMessage("Bilgi","Ekledi");
+                this->UpdateList();
             }else{
+                this->showMessage("Hata","Duyuru Eklenemedi");
 
             }
         });
@@ -693,12 +699,19 @@ void v2::Duyuru::Widget::DuyuruView::loadEditable()
     delBtn->clicked().connect([=](){
         auto delDialogBtn = askConfirm("Silmek İstediğinize Emin misiniz?");
         delDialogBtn->clicked().connect([=](){
+            bool delSuccesfully = true;
             for( const auto &[fileOid , fileTitle] : this->fileOidList() ){
-                this->mDB->deleteGridFS(fileOid.c_str());
+                if( !this->mDB->deleteGridFS(fileOid.c_str()) ){
+                    delSuccesfully = false;
+                }
             }
-            if( mDB->deleteItem(*this) ){
-                this->showPopUpMessage("Bilgi","Duyuru Silindi.");
+            if( delSuccesfully ){
+                if( mDB->deleteItem(*this) ){
+                    this->showPopUpMessage("Bilgi: Duyuru Silindi");
+                    this->_updateList.emit(NoClass());
+                }
             }
+
         });
     });
 
@@ -729,6 +742,11 @@ void v2::Duyuru::Widget::DuyuruView::loadEditable()
             }
         });
     });
+}
+
+Signal<NoClass> &v2::Duyuru::Widget::DuyuruView::UpdateListRequired()
+{
+    return _updateList;
 }
 
 
