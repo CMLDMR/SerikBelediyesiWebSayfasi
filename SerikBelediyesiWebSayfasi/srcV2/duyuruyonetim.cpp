@@ -484,9 +484,11 @@ v2::Duyuru::Widget::ListItem::ListItem(const DuyuruItem &item)
 v2::Duyuru::Widget::DuyuruView::DuyuruView(const DuyuruItem &item ,SerikBLDCore::DB* _mDB, const bool &publicView)
     :DuyuruItem(item),mPublicView(publicView),mDB(_mDB)
 {
+
     this->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::AliceBlue));
     if( mPublicView ){
         this->loadPublic();
+        this->addStyleClass(CSSStyle::Shadows::shadow8px);
     }else{
         this->loadEditable();
     }
@@ -505,9 +507,10 @@ void v2::Duyuru::Widget::DuyuruView::loadPublic()
     baslikText->setAttributeValue(Style::style,Style::background::color::color(Style::color::Grey::DimGray)+Style::color::color(Style::color::White::AliceBlue));
 
     auto icerikText = this->Content()->addNew<WText>(this->Icerik(),TextFormat::UnsafeXHTML);
-    icerikText->setPadding(25,Side::Top|Side::Bottom);
+//    icerikText->setPadding(25,Side::Top|Side::Bottom);
     icerikText->addStyleClass(Bootstrap::Grid::col_full_12);
     icerikText->setMargin(25,Side::Bottom);
+    icerikText->setPadding(15,Side::Left|Side::Right);
 
     auto fileListContainer = this->Content()->addNew<WContainerWidget>();
     fileListContainer->addStyleClass(Bootstrap::Grid::col_full_12);
@@ -735,6 +738,7 @@ void v2::Duyuru::Widget::DuyuruView::loadEditable()
 v2::Duyuru::Widget::PublicListView::PublicListView(DB *_mdb)
     :SerikBLDCore::ListItem<DuyuruItem>(_mdb)
 {
+    this->setLimit(100);
     Header()->setContentAlignment(AlignmentFlag::Center);
     Content()->setContentAlignment(AlignmentFlag::Center);
 
@@ -765,22 +769,34 @@ v2::Duyuru::Widget::PublicListView::PublicListView(DB *_mdb)
 
             img->clicked().connect(this,&PublicListView::initList);
         }
-
-
-
     }
+
+
+
+    auto _container = this->Content()->addNew<WContainerWidget>();
+//    _container->addStyleClass(Bootstrap::Grid::col_full_12);
+    _container->setMaximumSize(1280,WLength::Auto);
+
+    mListContainerWidget = _container->addNew<WContainerWidget>();
+    mListContainerWidget->addStyleClass(Bootstrap::Grid::Large::col_lg_4+
+                                        Bootstrap::Grid::Medium::col_md_4+
+                                        Bootstrap::Grid::Small::col_sm_4+
+                                        Bootstrap::Grid::ExtraSmall::col_xs_12);
+
+    mContentContainer = _container->addNew<WContainerWidget>();
+    mContentContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_8+
+                                        Bootstrap::Grid::Medium::col_md_8+
+                                        Bootstrap::Grid::Small::col_sm_8+
+                                        Bootstrap::Grid::ExtraSmall::col_xs_12);
+
     this->initList();
 }
 
 void v2::Duyuru::Widget::PublicListView::onList(const QVector<DuyuruItem> *mlist)
 {
-
-
-    Content()->clear();
-
-
+    mListContainerWidget->clear();
     for( const auto &item : *mlist ){
-        auto container = Content()->addNew<WContainerWidget>();
+        auto container = mListContainerWidget->addNew<WContainerWidget>();
         container->addStyleClass(Bootstrap::Grid::col_full_12);
         container->setContentAlignment(AlignmentFlag::Center);
         auto itemContainer = container->addNew<WContainerWidget>();
@@ -796,7 +812,7 @@ void v2::Duyuru::Widget::PublicListView::onList(const QVector<DuyuruItem> *mlist
             this->initDuyuruItem(item.oid().value().to_string());
         });
     }
-
+    this->initDuyuruItem(mlist->first().oid()->to_string());
 }
 
 void v2::Duyuru::Widget::PublicListView::initList()
@@ -813,12 +829,12 @@ void v2::Duyuru::Widget::PublicListView::initDuyuruItem(const std::string &duyur
     DuyuruItem filter;
     filter.setOid(duyuruOid);
     auto val = this->FindOneItem(filter);
-    Content()->clear();
+    mContentContainer->clear();
 
     std::map<std::string,std::string> fileMap;
     for( const auto &[fileOid,fileTitle] : val.fileOidList() ){
         fileMap[fileTitle]=this->downloadFileWeb(fileOid.c_str());
     }
-    auto item = Content()->addNew<DuyuruView>(val,this->getDB());
+    auto item = mContentContainer->addNew<DuyuruView>(val,this->getDB());
     item->setMaximumSize(1280,WLength::Auto);
 }
