@@ -20,7 +20,7 @@ MainPageController::MainPageController()
 
         auto bContainer = contentContainer->addWidget(cpp14::make_unique<WContainerWidget>());
         bContainer->addStyleClass(Bootstrap::Grid::row+CSSStyle::Radius::radius3px+CSSStyle::Shadows::shadow8px);
-        bContainer->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(200,250),this->getRandom(200,250),this->getRandom(200,250),0.5));
+        bContainer->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(175,250),this->getRandom(210,250),this->getRandom(225,255),0.75));
 
         auto bootsrapString = Bootstrap::Grid::Large::col_lg_3 + Bootstrap::Grid::Medium::col_md_3 + Bootstrap::Grid::Small::col_sm_4 + Bootstrap::Grid::ExtraSmall::col_xs_4;
 
