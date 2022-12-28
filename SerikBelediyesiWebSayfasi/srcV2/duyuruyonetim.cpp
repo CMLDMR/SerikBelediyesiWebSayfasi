@@ -849,10 +849,6 @@ void v2::Duyuru::Widget::PublicListView::initDuyuruItem(const std::string &duyur
     auto val = this->FindOneItem(filter);
     mContentContainer->clear();
 
-    std::map<std::string,std::string> fileMap;
-    for( const auto &[fileOid,fileTitle] : val.fileOidList() ){
-        fileMap[fileTitle]=this->downloadFileWeb(fileOid.c_str());
-    }
     auto item = mContentContainer->addNew<DuyuruView>(val,this->getDB());
     item->setMaximumSize(1280,WLength::Auto);
 }
