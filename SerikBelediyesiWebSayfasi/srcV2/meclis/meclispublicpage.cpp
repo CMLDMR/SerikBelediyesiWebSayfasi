@@ -5,14 +5,45 @@
 v2::MeclisPublicPage::MeclisPublicPage(SerikBLDCore::DB *db)
     :ContainerWidget(),SerikBLDCore::Meclis::MeclisManager (db),SerikBLDCore::Meclis::UyeManager(db)
 {
+
+    {
+        auto container = Header()->addWidget(cpp14::make_unique<WContainerWidget>());
+        container->addStyleClass(Bootstrap::Grid::row);
+        container->setMaximumSize(1280,WLength::Auto);
+        container->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::Azure));
+        container->setMargin(90,Side::Top);
+
+        {
+            std::string path = "img/baskanBackGround.JPG";
+
+            auto img = container->addWidget(cpp14::make_unique<WContainerWidget>());
+            img->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+
+            img->setAttributeValue(Style::style,Style::background::url(path)+Style::background::size::cover+Style::background::repeat::norepeat+Style::background::position::center_center);
+            img->setHeight(100);
+            img->setPadding(0,AllSides);
+            img->decorationStyle().setCursor(Cursor::PointingHand);
+
+            auto gradientContainer = img->addWidget(cpp14::make_unique<WContainerWidget>());
+            gradientContainer->setHeight(100);
+            gradientContainer->addStyleClass("SliderDetailTextBackground");
+            auto layout = gradientContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
+            layout->addStretch(1);
+            auto serik = layout->addWidget(cpp14::make_unique<WText>("Meclis"),0,AlignmentFlag::Bottom|AlignmentFlag::Center);
+            serik->setAttributeValue(Style::style,Style::font::size::s36px+Style::color::color(Style::color::White::AliceBlue));
+
+//            img->clicked().connect(this,&PublicListView::initList);
+        }
+    }
+
     tcManager = new SerikBLDCore::TCManager(db);
 
-    this->setMargin (90,Side::Top);
+//    this->setMargin (90,Side::Top);
     setAttributeValue (Style::style,Style::background::color::color (Style::color::White::Snow));
 
 
-    this->Header()->setPadding( 20 , Side::Top );
-    this->Header()->setMargin( 30 , Side::Bottom);
+//    this->Header()->setPadding( 20 , Side::Top );
+//    this->Header()->setMargin( 30 , Side::Bottom);
 
 
 
