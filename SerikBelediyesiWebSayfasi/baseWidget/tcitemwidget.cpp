@@ -25,19 +25,19 @@ TCItemWidget::TCItemWidget(mongocxx::database *_db, const bsoncxx::document::val
     Header()->addWidget(cpp14::make_unique<WText>("<h4><b>Vatandaş Bilgileri</b></h4>"));
     Header()->addWidget(cpp14::make_unique<WBreak>());
 
-    Content()->addWidget(cpp14::make_unique<WText>(mTCItem->Element(TC::KEY::adsoyad)->get_string().value.data()));
+    Content()->addWidget(cpp14::make_unique<WText>(mTCItem->Element(TC::KEY::adsoyad)->view().get_string().value.data()));
     Content()->addWidget(cpp14::make_unique<WBreak>());
 
-    Content()->addWidget(cpp14::make_unique<WText>(mTCItem->Element(TC::KEY::tcno)->get_string().value.data()));
+    Content()->addWidget(cpp14::make_unique<WText>(mTCItem->Element(TC::KEY::tcno)->view().get_string().value.data()));
     Content()->addWidget(cpp14::make_unique<WBreak>());
 
-    Content()->addWidget(cpp14::make_unique<WText>(mTCItem->Element(TC::KEY::cepTelefonu)->get_string().value.data()));
+    Content()->addWidget(cpp14::make_unique<WText>(mTCItem->Element(TC::KEY::cepTelefonu)->view().get_string().value.data()));
     Content()->addWidget(cpp14::make_unique<WBreak>());
 
-    Content()->addWidget(cpp14::make_unique<WText>(mTCItem->Element(TC::KEY::mahalle)->get_string().value.data()));
+    Content()->addWidget(cpp14::make_unique<WText>(mTCItem->Element(TC::KEY::mahalle)->view().get_string().value.data()));
     Content()->addWidget(cpp14::make_unique<WBreak>());
 
-    Content()->addWidget(cpp14::make_unique<WText>(mTCItem->Element(TC::KEY::tamAdres)->get_string().value.data()));
+    Content()->addWidget(cpp14::make_unique<WText>(mTCItem->Element(TC::KEY::tamAdres)->view().get_string().value.data()));
     Content()->addWidget(cpp14::make_unique<WBreak>());
 
     setMargin(15,Side::Bottom);

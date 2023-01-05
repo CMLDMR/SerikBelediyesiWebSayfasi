@@ -138,6 +138,8 @@ bool ItemBase::reLoad()
                     std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << e.what() << std::endl;
                     mIsValid = false;
                 }
+            }else{
+                return false;
             }
 
         }else{
@@ -167,11 +169,11 @@ bool ItemBase::isValid() const
 }
 
 
-std::optional<bsoncxx::types::value> ItemBase::Element(const std::string &key)
+std::optional<bsoncxx::types::bson_value::value> ItemBase::Element(const std::string &key)
 {
 
     try {
-        return this->view()[key].get_value();
+        return bsoncxx::types::bson_value::value(this->view()[key].get_value());
     } catch (bsoncxx::exception &e) {
         std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " "<<key << ": " << e.what() << std::endl;
         return std::nullopt;

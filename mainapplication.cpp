@@ -84,7 +84,7 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
     Wt::WApplication::require("script/jszip/FileSaver.js");
 
 
-    WApplication::instance()->require("https://www.googletagmanager.com/gtag/js?id=UA-56529726-1");
+//    WApplication::instance()->require("https://www.googletagmanager.com/gtag/js?id=UA-56529726-1");
 
     WApplication::instance()->require("https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js");
 

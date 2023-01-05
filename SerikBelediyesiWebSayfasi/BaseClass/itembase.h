@@ -79,7 +79,7 @@ public:
         return this->setElement(key,value.toStdString());
     }
 
-    std::optional<bsoncxx::types::value> Element( const std::string &key);
+    std::optional<bsoncxx::types::bson_value::value> Element( const std::string &key);
 
     bool isValid() const;
 
