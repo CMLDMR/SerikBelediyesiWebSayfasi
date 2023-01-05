@@ -314,7 +314,7 @@ void v2::MainProjeView::addNewProje(const int &projeType)
 
                 SerikBLDCore::Imar::MimariProje::FileProject fileProject;
                 fileProject.setOnay (false);
-                fileProject.setFileOid (val.get_oid ().value);
+                fileProject.setFileOid (val.view().get_oid ().value);
                 fileProject.setProjeAdi (item.first);
 
                 proje.addProje (fileProject);
@@ -355,7 +355,7 @@ void v2::MainProjeView::addNewProje(const int &projeType)
 
                 SerikBLDCore::Imar::MimariProje::FileProject fileProject;
                 fileProject.setOnay (false);
-                fileProject.setFileOid (val.get_oid ().value);
+                fileProject.setFileOid (val.view().get_oid ().value);
                 fileProject.setProjeAdi (item.first);
 
                 proje.addProje (fileProject);
@@ -395,7 +395,7 @@ void v2::MainProjeView::addNewProje(const int &projeType)
 
                 SerikBLDCore::Imar::MimariProje::FileProject fileProject;
                 fileProject.setOnay (false);
-                fileProject.setFileOid (val.get_oid ().value);
+                fileProject.setFileOid (val.view().get_oid ().value);
                 fileProject.setProjeAdi (item.first);
 
                 proje.addProje (fileProject);
@@ -435,7 +435,7 @@ void v2::MainProjeView::addNewProje(const int &projeType)
 
                 SerikBLDCore::Imar::MimariProje::FileProject fileProject;
                 fileProject.setOnay (false);
-                fileProject.setFileOid (val.get_oid ().value);
+                fileProject.setFileOid (val.view().get_oid ().value);
                 fileProject.setProjeAdi (item.first);
 
                 proje.addProje (fileProject);
@@ -475,7 +475,7 @@ void v2::MainProjeView::addNewProje(const int &projeType)
 
                 SerikBLDCore::Imar::MimariProje::FileProject fileProject;
                 fileProject.setOnay (false);
-                fileProject.setFileOid (val.get_oid ().value);
+                fileProject.setFileOid (val.view().get_oid ().value);
                 fileProject.setProjeAdi (item.first);
 
                 proje.addProje (fileProject);
@@ -515,7 +515,7 @@ void v2::MainProjeView::addNewProje(const int &projeType)
 
                 SerikBLDCore::Imar::MimariProje::FileProject fileProject;
                 fileProject.setOnay (false);
-                fileProject.setFileOid (val.get_oid ().value);
+                fileProject.setFileOid (val.view().get_oid ().value);
                 fileProject.setProjeAdi (item.first);
 
                 proje.addProje (fileProject);
@@ -555,7 +555,7 @@ void v2::MainProjeView::addNewProje(const int &projeType)
 
                 SerikBLDCore::Imar::MimariProje::FileProject fileProject;
                 fileProject.setOnay (false);
-                fileProject.setFileOid (val.get_oid ().value);
+                fileProject.setFileOid (val.view().get_oid ().value);
                 fileProject.setProjeAdi (item.first);
 
                 proje.addProje (fileProject);
@@ -595,7 +595,7 @@ void v2::MainProjeView::addNewProje(const int &projeType)
 
                 SerikBLDCore::Imar::MimariProje::FileProject fileProject;
                 fileProject.setOnay (false);
-                fileProject.setFileOid (val.get_oid ().value);
+                fileProject.setFileOid (val.view().get_oid ().value);
                 fileProject.setProjeAdi (item.first);
 
                 proje.addProje (fileProject);
@@ -635,7 +635,7 @@ void v2::MainProjeView::addNewProje(const int &projeType)
 
                 SerikBLDCore::Imar::MimariProje::FileProject fileProject;
                 fileProject.setOnay (false);
-                fileProject.setFileOid (val.get_oid ().value);
+                fileProject.setFileOid (val.view().get_oid ().value);
                 fileProject.setProjeAdi (item.first);
 
                 proje.addProje (fileProject);
@@ -896,7 +896,7 @@ void v2::MainProjeView::onList(const QVector<SerikBLDCore::Imar::MimariLog> *mli
 
 
             SerikBLDCore::Imar::DosyaLog dosyaLog;
-            dosyaLog.setFileOid (val.get_oid ().value);
+            dosyaLog.setFileOid (val.view().get_oid ().value);
             dosyaLog.setProjeOid (bsoncxx::oid{this->selectedProjectOid ()});
             dosyaLog.setEkleyen (mTCUser->AdSoyad ().toStdString ());
             dosyaLog.setFileName (fileNameTextEdit->text ().toUTF8 ());
@@ -1599,7 +1599,7 @@ void v2::MainProjeView::loadProject(const bsoncxx::oid &projectOid )
                     newFileProject.setOnay (false);
                     newFileProject.setProjeAdi (mProje[i].value ().projeAdi ());
                     auto newFileOid = SerikBLDCore::Imar::BaseProjeManager::getDB ()->uploadfile (fileuploader->fileLocation ().toStdString ().c_str ());
-                    newFileProject.setFileOid (newFileOid.get_oid ().value);
+                    newFileProject.setFileOid (newFileOid.view().get_oid ().value);
                     filter.addProje (newFileProject);
                     auto upt = SerikBLDCore::Imar::BaseProjeManager::UpdateItem (filter);
                     if( !upt ){
@@ -1777,7 +1777,7 @@ void v2::MainProjeView::loadProject(const bsoncxx::oid &projectOid )
                 SerikBLDCore::Imar::MimariProje::FileProject newFileProject;
                 newFileProject.setOnay (false);
                 auto newFileOid = SerikBLDCore::Imar::BaseProjeManager::getDB ()->uploadfile (fileuploader->fileLocation ().toStdString ().c_str ());
-                newFileProject.setFileOid (newFileOid.get_oid ().value);
+                newFileProject.setFileOid (newFileOid.view().get_oid ().value);
                 newFileProject.setProjeAdi (fileNameLineEdit->text ().toUTF8 ());
                 filter.addProje (newFileProject);
                 auto upt = SerikBLDCore::Imar::BaseProjeManager::UpdateItem (filter);
@@ -2343,7 +2343,7 @@ void v2::KurumsalProjeView::loadProject(const bsoncxx::oid &projectOid)
                         newFileProject.setOnay (false);
                         newFileProject.setProjeAdi (mProje[i].value ().projeAdi ());
                         auto newFileOid = SerikBLDCore::Imar::BaseProjeManager::getDB ()->uploadfile (fileuploader->fileLocation ().toStdString ().c_str ());
-                        newFileProject.setFileOid (newFileOid.get_oid ().value);
+                        newFileProject.setFileOid (newFileOid.view().get_oid ().value);
                         filter.addProje (newFileProject);
                         auto upt = SerikBLDCore::Imar::BaseProjeManager::UpdateItem (filter);
                         if( !upt ){
@@ -2609,7 +2609,7 @@ void v2::KurumsalProjeView::onList(const QVector<SerikBLDCore::Imar::MimariLog> 
 
 
             SerikBLDCore::Imar::DosyaLog dosyaLog;
-            dosyaLog.setFileOid (val.get_oid ().value);
+            dosyaLog.setFileOid (val.view().get_oid ().value);
             dosyaLog.setProjeOid (bsoncxx::oid{this->selectedProjectOid ()});
             dosyaLog.setEkleyen (mUser->AdSoyad ());
             dosyaLog.setFileName (fileNameTextEdit->text ().toUTF8 ());
@@ -3270,7 +3270,7 @@ void v2::BireyselProjeView::loadProject(const bsoncxx::oid &projectOid)
                     newFileProject.setOnay (false);
                     newFileProject.setProjeAdi (mProje[i].value ().projeAdi ());
                     auto newFileOid = SerikBLDCore::Imar::BaseProjeManager::getDB ()->uploadfile (fileuploader->fileLocation ().toStdString ().c_str ());
-                    newFileProject.setFileOid (newFileOid.get_oid ().value);
+                    newFileProject.setFileOid (newFileOid.view().get_oid ().value);
                     filter.addProje (newFileProject);
                     auto upt = SerikBLDCore::Imar::BaseProjeManager::UpdateItem (filter);
                     if( !upt ){
@@ -3448,7 +3448,7 @@ void v2::BireyselProjeView::loadProject(const bsoncxx::oid &projectOid)
                 SerikBLDCore::Imar::MimariProje::FileProject newFileProject;
                 newFileProject.setOnay (false);
                 auto newFileOid = SerikBLDCore::Imar::BaseProjeManager::getDB ()->uploadfile (fileuploader->fileLocation ().toStdString ().c_str ());
-                newFileProject.setFileOid (newFileOid.get_oid ().value);
+                newFileProject.setFileOid (newFileOid.view().get_oid ().value);
                 newFileProject.setProjeAdi (fileNameLineEdit->text ().toUTF8 ());
                 filter.addProje (newFileProject);
                 auto upt = SerikBLDCore::Imar::BaseProjeManager::UpdateItem (filter);

@@ -34,25 +34,25 @@ UserClass UserClass::User() const
     return *this;
 }
 
-boost::optional<std::string> UserClass::birim()
+std::optional<std::string> UserClass::birim()
 {
     try {
-        return this->mUserValue.view()["Birimi"].get_utf8().value.to_string();
+        return this->mUserValue.view()["Birimi"].get_string().value.data();
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
         std::cout << str << std::endl;
-        return boost::none;
+        return std::nullopt;
     }
 }
 
-boost::optional<std::string> UserClass::adSoyad()
+std::optional<std::string> UserClass::adSoyad()
 {
     try {
-        return this->mUserValue.view()["ad soyad"].get_utf8().value.to_string();
+        return this->mUserValue.view()["ad soyad"].get_string().value.data();
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
         std::cout << str << std::endl;
-        return boost::none;
+        return std::nullopt;
     }
 }
 
@@ -63,7 +63,7 @@ bool UserClass::yetki(const std::string &yetkiAdi)
         auto array = this->mUserValue.view()["Yetkiler"].get_array().value;
         for( auto item : array )
         {
-            if( yetkiAdi == item.get_utf8().value.to_string() )
+            if( yetkiAdi == item.get_string().value.data() )
             {
                 exist = true;
                 break;

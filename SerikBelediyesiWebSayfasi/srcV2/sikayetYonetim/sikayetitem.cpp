@@ -2,18 +2,18 @@
 
 
 
-boost::optional<Sikayet::SikayetItem> Sikayet::SikayetItem::Create_Sikayet(mongocxx::database *_db)
+std::optional<Sikayet::SikayetItem> Sikayet::SikayetItem::Create_Sikayet(mongocxx::database *_db)
 {
     SikayetItem item(_db);
     if( item.isValid() )
     {
         return std::move(item);
     }else{
-        return boost::none;
+        return std::nullopt;
     }
 }
 
-boost::optional<Sikayet::SikayetItem *> Sikayet::SikayetItem::Load_Sikayet(mongocxx::database *_db, const bsoncxx::oid &oid)
+std::optional<Sikayet::SikayetItem *> Sikayet::SikayetItem::Load_Sikayet(mongocxx::database *_db, const bsoncxx::oid &oid)
 {
     auto filter = document{};
 
@@ -22,7 +22,7 @@ boost::optional<Sikayet::SikayetItem *> Sikayet::SikayetItem::Load_Sikayet(mongo
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
         std::cout << str << std::endl;
-        return boost::none;
+        return std::nullopt;
     }
 
     try {
@@ -33,13 +33,13 @@ boost::optional<Sikayet::SikayetItem *> Sikayet::SikayetItem::Load_Sikayet(mongo
             SikayetItem* item = new SikayetItem(_db,val.value().view());
             return std::move(item);
         }else{
-            return boost::none;
+            return std::nullopt;
         }
 
     } catch (mongocxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
         std::cout << str << std::endl;
-        return boost::none;
+        return std::nullopt;
     }
 }
 
@@ -90,7 +90,7 @@ Sikayet::ASAMA::ASAMA(bsoncxx::document::view &_view)
 std::string Sikayet::ASAMA::tarih()
 {
     try {
-        return mView[Sikayet::KEY::ASAMAKEY::tarih_utf8].get_utf8().value.to_string();
+        return mView[Sikayet::KEY::ASAMAKEY::tarih_utf8].get_string().value.data();
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
         return str;
@@ -100,7 +100,7 @@ std::string Sikayet::ASAMA::tarih()
 std::string Sikayet::ASAMA::tip()
 {
     try {
-        return mView[Sikayet::KEY::ASAMAKEY::tip_utf8].get_utf8().value.to_string();
+        return mView[Sikayet::KEY::ASAMAKEY::tip_utf8].get_string().value.data();
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
         return str;
@@ -110,7 +110,7 @@ std::string Sikayet::ASAMA::tip()
 std::string Sikayet::ASAMA::saat()
 {
     try {
-        return mView[Sikayet::KEY::ASAMAKEY::saat_utf8].get_utf8().value.to_string();
+        return mView[Sikayet::KEY::ASAMAKEY::saat_utf8].get_string().value.data();
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
         return str;
@@ -120,7 +120,7 @@ std::string Sikayet::ASAMA::saat()
 std::string Sikayet::ASAMA::birim()
 {
     try {
-        return mView[Sikayet::KEY::ASAMAKEY::birim_utf8].get_utf8().value.to_string();
+        return mView[Sikayet::KEY::ASAMAKEY::birim_utf8].get_string().value.data();
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
         return str;
@@ -130,7 +130,7 @@ std::string Sikayet::ASAMA::birim()
 std::string Sikayet::ASAMA::aciklama()
 {
     try {
-        return mView[Sikayet::KEY::ASAMAKEY::aciklama_utf8].get_utf8().value.to_string();
+        return mView[Sikayet::KEY::ASAMAKEY::aciklama_utf8].get_string().value.data();
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
         return str;
@@ -140,7 +140,7 @@ std::string Sikayet::ASAMA::aciklama()
 std::string Sikayet::ASAMA::degisiklik()
 {
     try {
-        return mView[Sikayet::KEY::ASAMAKEY::degisim_utf8].get_utf8().value.to_string();
+        return mView[Sikayet::KEY::ASAMAKEY::degisim_utf8].get_string().value.data();
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
         return str;
@@ -150,7 +150,7 @@ std::string Sikayet::ASAMA::degisiklik()
 std::string Sikayet::ASAMA::personelAdi()
 {
     try {
-        return mView[Sikayet::KEY::ASAMAKEY::personel_doc].get_document().view()[Sikayet::KEY::ASAMAKEY::personel_doc_adsoyad].get_utf8().value.to_string();
+        return mView[Sikayet::KEY::ASAMAKEY::personel_doc].get_document().view()[Sikayet::KEY::ASAMAKEY::personel_doc_adsoyad].get_string().value.data();
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
         return str;

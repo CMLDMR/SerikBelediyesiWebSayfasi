@@ -1657,7 +1657,7 @@ void TalepView::addEventItem(TalepSubItem::ItemType type_ , const std::string &i
             TalepSubItem* item = new TalepSubItem;
             item->setType (TalepSubItem::ItemType::Pdf);
             item->setTalepOid (this->oid ());
-            item->setPdf (pdfOid.get_oid ().value.to_string ().c_str ());
+            item->setPdf (pdfOid.view().get_oid ().value.to_string ().c_str ());
             item->setPersonelOid (this->mUser->UserOid ());
             item->setPersonelName (this->mUser->AdSoyad ().c_str ());
 
@@ -1767,7 +1767,7 @@ void TalepView::addEventItem(TalepSubItem::ItemType type_ , const std::string &i
             TalepSubItem* item = new TalepSubItem;
             item->setType (TalepSubItem::ItemType::Fotograf);
             item->setTalepOid (this->oid ());
-            item->setFotograf (fotoOid.get_oid ().value.to_string ().c_str ());
+            item->setFotograf (fotoOid.view().get_oid ().value.to_string ().c_str ());
             item->setPersonelOid (this->mUser->UserOid ());
             item->setPersonelName (this->mUser->AdSoyad ().c_str ());
 
@@ -1859,7 +1859,7 @@ void TalepView::addEventVatandasItem(TalepSubItem::ItemType type_)
             TalepSubItem* item = new TalepSubItem;
             item->setType (TalepSubItem::ItemType::Pdf);
             item->setTalepOid (this->oid ());
-            item->setPdf (pdfOid.get_oid ().value.to_string ().c_str ());
+            item->setPdf (pdfOid.view().get_oid ().value.to_string ().c_str ());
             item->setTCOid (this->mTC->oid().value ().to_string ().c_str ());
             item->setTCName (this->mTC->AdSoyad ());
 
@@ -1916,7 +1916,7 @@ void TalepView::addEventVatandasItem(TalepSubItem::ItemType type_)
             TalepSubItem* item = new TalepSubItem;
             item->setType (TalepSubItem::ItemType::Fotograf);
             item->setTalepOid (this->oid ());
-            item->setFotograf (fotoOid.get_oid ().value.to_string ().c_str ());
+            item->setFotograf (fotoOid.view().get_oid ().value.to_string ().c_str ());
             item->setTCOid (this->mTC->oid().value ().to_string ().c_str ());
             item->setTCName (this->mTC->AdSoyad ());
             if( this->insertTalepSubItem (item) ){

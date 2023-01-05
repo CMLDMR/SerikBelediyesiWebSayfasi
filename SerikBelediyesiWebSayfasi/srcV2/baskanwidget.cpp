@@ -58,7 +58,7 @@ BaskanWidget::BaskanWidget(mongocxx::database *_db)
 
             if( !val.value().view().empty() )
             {
-                auto str = val.value().view()["html"].get_utf8().value.to_string();
+                auto str = val.value().view()["html"].get_string().value.data();
                 auto text = textWidget->addWidget(cpp14::make_unique<WText>(str,TextFormat::UnsafeXHTML));
             }
 

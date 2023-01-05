@@ -58,14 +58,14 @@ ItemBase::ItemBase(mongocxx::database *_db, const std::string &collection, bsonc
 //    std::cout << "Destructor ItemBase" << std::endl;
 //}
 
-boost::optional<bsoncxx::builder::basic::document> ItemBase::filter()
+std::optional<bsoncxx::builder::basic::document> ItemBase::filter()
 {
     auto filter_ = document{};
     try {
         filter_.append(kvp("_id",mOid));
     } catch (bsoncxx::exception &e) {
         std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << e.what() << std::endl;
-        return boost::none;
+        return std::nullopt;
     }
     return std::move(filter_);
 }
@@ -74,7 +74,7 @@ QStringList ItemBase::keyList()
 {
     QStringList list;
     for (auto it = this->doc.view().cbegin() ; it != this->doc.view().cend() ; it++ ) {
-        list.push_back(it->key().to_string().c_str());
+        list.push_back(it->key().data());
     }
     return list;
 }
@@ -167,14 +167,14 @@ bool ItemBase::isValid() const
 }
 
 
-boost::optional<bsoncxx::types::value> ItemBase::Element(const std::string &key)
+std::optional<bsoncxx::types::value> ItemBase::Element(const std::string &key)
 {
 
     try {
         return this->view()[key].get_value();
     } catch (bsoncxx::exception &e) {
         std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " "<<key << ": " << e.what() << std::endl;
-        return boost::none;
+        return std::nullopt;
     }
 
 }

@@ -293,7 +293,7 @@ void DilekceYonetim::initDilekce(const std::string &dilekceOid)
     if( dilekce )
     {
         this->Content ()->clear ();
-        auto dilekceView = this->Content ()->addWidget (cpp14::make_unique<DilekceView>(dilekce.get ()
+        auto dilekceView = this->Content ()->addWidget (cpp14::make_unique<DilekceView>(dilekce.value ()
                                                                                         ,this->db ()
                                                                                         ,this->mUser
                                                                                         ,false
@@ -314,7 +314,7 @@ void DilekceYonetim::initBilgiDilekce(const std::string &dilekceOid)
     {
         this->Content ()->clear ();
         std::cout << "CALL initBilgiDilekce" << std::endl;
-        auto dilekceView = this->Content ()->addWidget (cpp14::make_unique<DilekceView>(dilekce.get ()
+        auto dilekceView = this->Content ()->addWidget (cpp14::make_unique<DilekceView>(dilekce.value ()
                                                                                         ,this->db ()
                                                                                         ,this->mUser
                                                                                         ,false

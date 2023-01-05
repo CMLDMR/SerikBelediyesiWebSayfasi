@@ -74,7 +74,7 @@ void VatandasWidget::initChangeTC()
         if( photoUploadWidget->isUploaded () )
         {
             auto fileOid = this->uploadfile (photoUploadWidget->fileLocation ());
-            mTC->setFotoOid (fileOid.get_oid ().value.to_string ().c_str ());
+            mTC->setFotoOid (fileOid.view().get_oid ().value.to_string ().c_str ());
         }
 
 
@@ -352,7 +352,7 @@ VatandasYeniKayitWidget::VatandasYeniKayitWidget(SerikBLDCore::DB *db)
         if( photoUploadWidget->isUploaded () )
         {
             auto fileOid = this->uploadfile (photoUploadWidget->fileLocation ());
-            mTC->setFotoOid (fileOid.get_oid ().value.to_string ().c_str ());
+            mTC->setFotoOid (fileOid.view().get_oid ().value.to_string ().c_str ());
         }
 
 

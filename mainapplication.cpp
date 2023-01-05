@@ -578,7 +578,7 @@ bool MainApplication::loadDilekce(const std::string &oid)
         rContainer->addStyleClass (Bootstrap::Grid::row);
         rContainer->setMaximumSize (WLength(1024),WLength::Auto);
 
-        rContainer->addWidget (cpp14::make_unique<DilekceView>(dilekce.get (),&this->db,nullptr,true));
+        rContainer->addWidget (cpp14::make_unique<DilekceView>(dilekce.value (),&this->db,nullptr,true));
         return true;
     }
 

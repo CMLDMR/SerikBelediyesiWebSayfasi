@@ -598,7 +598,7 @@ void Giris::LoginWidget::sendtempPasswordSMS()
                 if( !val.value().view().empty() )
                 {
                     try {
-                        verificationCODE = val.value().view()[SBLDKeys::TC::password].get_utf8().value.to_string();
+                        verificationCODE = val.value().view()[SBLDKeys::TC::password].get_string().value.data();
                     } catch (bsoncxx::exception &e) {
                         this->showMessage("UYARI",WString("Şifreniz Yok: {1}").arg(e.what()).toUTF8());
                         return;
@@ -631,7 +631,7 @@ void Giris::LoginWidget::sendtempPasswordSMS()
                     if( !val.value().view().empty() )
                     {
                         try {
-                            verificationCODE = val.value().view()[SBLDKeys::Personel::password].get_utf8().value.to_string();
+                            verificationCODE = val.value().view()[SBLDKeys::Personel::password].get_string().value.data();
                         } catch (bsoncxx::exception &e) {
                             this->showMessage("UYARI",WString("Şifreniz Yok: {1}").arg(e.what()).toUTF8());
                             return;
@@ -1060,14 +1060,14 @@ void Giris::LoginWidget::ConfirmVatandas()
 
                 std::string password;
                 try {
-                    password = vatandas.view()[SBLDKeys::TC::password].get_utf8().value.to_string();
+                    password = vatandas.view()[SBLDKeys::TC::password].get_string().value.data();
                 } catch (bsoncxx::exception &e) {
                     std::cout << "Password Error: " << e.what() << std::endl;
                 }
 
                 std::string tel;
                 try {
-                    tel = vatandas.view()[SBLDKeys::TC::cepTel].get_utf8().value.to_string();
+                    tel = vatandas.view()[SBLDKeys::TC::cepTel].get_string().value.data();
                 } catch (bsoncxx::exception &e) {
                     std::cout << "tel Error: " << e.what() << std::endl;
                 }
@@ -1123,7 +1123,7 @@ void Giris::LoginWidget::ConfirmPersonel()
             {
                 vatandas = val.value();
                 try {
-                    std::string password = val.value().view()[SBLDKeys::Personel::password].get_utf8().value.to_string();
+                    std::string password = val.value().view()[SBLDKeys::Personel::password].get_string().value.data();
                     std::cout << "Personel PassWord: " << password <<  "  " << mSifre->text().toUTF8() << std::endl;
                     if ( val.value().view()[SBLDKeys::Personel::password].length() )
                     {
@@ -1136,11 +1136,11 @@ void Giris::LoginWidget::ConfirmPersonel()
                         }
                     }else{
                         std::cout << "No PAssword Legnth Create Password" << std::endl;
-                        this->CreatePersonelPassword(val.value().view()[SBLDKeys::Personel::telefon].get_utf8().value.to_string());
+                        this->CreatePersonelPassword(val.value().view()[SBLDKeys::Personel::telefon].get_string().value.data());
                     }
                 } catch (bsoncxx::exception &e) {
                     std::cout << "Try Catch Create Password" << std::endl;
-                    this->CreatePersonelPassword(val.value().view()[SBLDKeys::Personel::telefon].get_utf8().value.to_string());
+                    this->CreatePersonelPassword(val.value().view()[SBLDKeys::Personel::telefon].get_string().value.data());
                 }
             }else{
                 this->showMessage("UYARI","Kaydınız Bulunmamakta.!");
@@ -1423,7 +1423,7 @@ void Giris::LoginWidget::kayitOld()
 
             for( auto doc : cursor )
             {
-                comboBoxMahalle->addItem(WString("{1}").arg(doc[SBLDKeys::Mahalle::mahalle].get_utf8().value.to_string().c_str()));
+                comboBoxMahalle->addItem(WString("{1}").arg(doc[SBLDKeys::Mahalle::mahalle].get_string().value.data()));
             }
 
         } catch (mongocxx::exception &e) {
@@ -2042,19 +2042,19 @@ void Giris::Basvurularim::initBasvurular(Giris::Basvurularim::Cevaplanma durum)
             }
 
             try {
-                item.konu = doc[SBLDKeys::BilgiEdinme::Basvuru::konu].get_utf8().value.to_string();
+                item.konu = doc[SBLDKeys::BilgiEdinme::Basvuru::konu].get_string().value.data();
             } catch (bsoncxx::exception &e) {
                 item.konu = e.what();
             }
 
             try {
-                item.saat = doc[SBLDKeys::BilgiEdinme::Basvuru::saat].get_utf8().value.to_string();
+                item.saat = doc[SBLDKeys::BilgiEdinme::Basvuru::saat].get_string().value.data();
             } catch (bsoncxx::exception &e) {
                 item.saat = e.what();
             }
 
             try {
-                item.tarih = doc[SBLDKeys::BilgiEdinme::Basvuru::tarih].get_utf8().value.to_string();
+                item.tarih = doc[SBLDKeys::BilgiEdinme::Basvuru::tarih].get_string().value.data();
             } catch (bsoncxx::exception &e) {
                 item.tarih = e.what();
             }
@@ -2210,7 +2210,7 @@ void Giris::Basvurularim::setBasvuruDetail(bsoncxx::oid oid)
                     auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
                     container->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
 
-                    auto title = container->addWidget(cpp14::make_unique<WText>(val.value().view()[SBLDKeys::BilgiEdinme::Basvuru::konu].get_utf8().value.to_string()));
+                    auto title = container->addWidget(cpp14::make_unique<WText>(val.value().view()[SBLDKeys::BilgiEdinme::Basvuru::konu].get_string().value.data()));
                     title->setMargin(25,Side::Bottom|Side::Top);
                     title->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold);
                 } catch (bsoncxx::exception &e) {
@@ -2222,7 +2222,7 @@ void Giris::Basvurularim::setBasvuruDetail(bsoncxx::oid oid)
                     auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
                     container->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
 
-                    auto text = container->addWidget(cpp14::make_unique<WText>(val.value().view()[SBLDKeys::BilgiEdinme::Basvuru::mesaj].get_utf8().value.to_string(),TextFormat::UnsafeXHTML));
+                    auto text = container->addWidget(cpp14::make_unique<WText>(val.value().view()[SBLDKeys::BilgiEdinme::Basvuru::mesaj].get_string().value.data(),TextFormat::UnsafeXHTML));
                     text->setMargin(25,Side::Top|Side::Bottom);
                 } catch (bsoncxx::exception &e) {
 
@@ -2266,7 +2266,7 @@ void Giris::Basvurularim::setBasvuruDetail(bsoncxx::oid oid)
                             container->setAttributeValue(Style::style,Style::background::color::color(Style::color::Pink::LightPink));
                             container->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
 
-                            auto text = container->addWidget(cpp14::make_unique<WText>(doc[SBLDKeys::BilgiEdinme::Basvuru::ACIKLAMA::saat].get_utf8().value.to_string(),TextFormat::UnsafeXHTML));
+                            auto text = container->addWidget(cpp14::make_unique<WText>(doc[SBLDKeys::BilgiEdinme::Basvuru::ACIKLAMA::saat].get_string().value.data(),TextFormat::UnsafeXHTML));
                             text->setMargin(25,Side::Top|Side::Bottom);
                         } catch (bsoncxx::exception &e) {
                             auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -2281,7 +2281,7 @@ void Giris::Basvurularim::setBasvuruDetail(bsoncxx::oid oid)
                             container->setAttributeValue(Style::style,Style::background::color::color(Style::color::Pink::LightPink));
                             container->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
 
-                            auto text = container->addWidget(cpp14::make_unique<WText>(doc[SBLDKeys::BilgiEdinme::Basvuru::ACIKLAMA::aciklama].get_utf8().value.to_string(),TextFormat::UnsafeXHTML));
+                            auto text = container->addWidget(cpp14::make_unique<WText>(doc[SBLDKeys::BilgiEdinme::Basvuru::ACIKLAMA::aciklama].get_string().value.data(),TextFormat::UnsafeXHTML));
                             text->setMargin(25,Side::Top|Side::Bottom);
                         } catch (bsoncxx::exception &e) {
                             auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -2833,7 +2833,7 @@ QVector<QString> Giris::Personel::BaseWidget::UserYetki() const
         for( auto item : _array )
         {
             try {
-                yetkiler.push_back(item.get_utf8().value.to_string().c_str());
+                yetkiler.push_back(item.get_string().value.data());
             } catch (bsoncxx::exception &e) {
                 std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << e.what() << std::endl;
             }
@@ -3181,7 +3181,7 @@ void Giris::Personel::EvrakArsiv::initEvrakTip(WString kategoriName)
         Tipcombobox->addItem("Hepsi");
         for( auto doc : cursor )
         {
-            Tipcombobox->addItem(doc[SBLDKeys::Arsiv::Tip::adi].get_utf8().value.to_string().c_str());
+            Tipcombobox->addItem(doc[SBLDKeys::Arsiv::Tip::adi].get_string().value.data());
         }
 
     }
@@ -3240,7 +3240,7 @@ void Giris::Personel::EvrakArsiv::initEvrakArama()
         kateogoricombobox->addItem("Hepsi");
         for( auto doc : cursor )
         {
-            kateogoricombobox->addItem(doc[SBLDKeys::Arsiv::Kategori::kategoriAdi].get_utf8().value.to_string().c_str());
+            kateogoricombobox->addItem(doc[SBLDKeys::Arsiv::Kategori::kategoriAdi].get_string().value.data());
         }
         kateogoricombobox->sactivated().connect(this,&EvrakArsiv::initEvrakTip);
         kategoriContainer->setHeight(128);
@@ -3551,10 +3551,10 @@ void Giris::Personel::EvrakArsiv::initList()
     for( auto doc : cursor )
     {
         table->elementAt(row,0)->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(skip+row)));
-        table->elementAt(row,1)->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(doc[SBLDKeys::Arsiv::Arsiv::arsivAdi].get_utf8().value.to_string().c_str())));
-        table->elementAt(row,2)->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(doc[SBLDKeys::Arsiv::Arsiv::anahtarKelime].get_utf8().value.to_string().c_str())));
+        table->elementAt(row,1)->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(doc[SBLDKeys::Arsiv::Arsiv::arsivAdi].get_string().value.data())));
+        table->elementAt(row,2)->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(doc[SBLDKeys::Arsiv::Arsiv::anahtarKelime].get_string().value.data())));
         table->elementAt(row,3)->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(doc[SBLDKeys::Arsiv::Arsiv::sayi].get_int32().value)));
-        table->elementAt(row,4)->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(doc[SBLDKeys::Arsiv::Arsiv::birim].get_utf8().value.to_string().c_str())));
+        table->elementAt(row,4)->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(doc[SBLDKeys::Arsiv::Arsiv::birim].get_string().value.data())));
         oidList.push_back(doc[SBLDKeys::oid].get_oid().value);
 
         {
@@ -3751,7 +3751,7 @@ void Giris::Personel::EvrakArsiv::setArsiv(bsoncxx::oid oid)
                 auto view = val.value().view();
                 Currentoid = view[SBLDKeys::oid].get_oid().value.to_string();
 
-                //                std::cout << "Current OID: " << Currentoid << " Title: " <<view[SBLDKeys::Arsiv::Arsiv::arsivAdi].get_utf8().value.to_string() <<  std::endl;
+                //                std::cout << "Current OID: " << Currentoid << " Title: " <<view[SBLDKeys::Arsiv::Arsiv::arsivAdi].get_string().value.data() <<  std::endl;
 
                 {
                     PreviousEvrak->clicked().connect([=](){
@@ -3765,7 +3765,7 @@ void Giris::Personel::EvrakArsiv::setArsiv(bsoncxx::oid oid)
                                 return;
                             }
                             try {
-                                filter_.append(kvp(SBLDKeys::Arsiv::Arsiv::birim,this->User().view()[SBLDKeys::Personel::birimi].get_utf8().value.to_string().c_str()));
+                                filter_.append(kvp(SBLDKeys::Arsiv::Arsiv::birim,this->User().view()[SBLDKeys::Personel::birimi].get_string().value.data()));
                             } catch (bsoncxx::exception &e) {
                                 this->showMessage("Error",WString("Bence Sen Aç Mabel Matizden Öyle Kolaysayı,Boşver Evrak Mevrak İşini\n {1}").arg(e.what()).toUTF8(),"Kes Lan!");
                                 return;
@@ -3812,7 +3812,7 @@ void Giris::Personel::EvrakArsiv::setArsiv(bsoncxx::oid oid)
                             }
 
                             try {
-                                filter_.append(kvp(SBLDKeys::Arsiv::Arsiv::birim,this->User().view()[SBLDKeys::Personel::birimi].get_utf8().value.to_string().c_str()));
+                                filter_.append(kvp(SBLDKeys::Arsiv::Arsiv::birim,this->User().view()[SBLDKeys::Personel::birimi].get_string().value.data()));
                             } catch (bsoncxx::exception &e) {
                                 this->showMessage("Error",WString("Bence Sen Aç Mabel Matizden Öyle Kolaysayı,Boşver Evrak Mevrak İşini\n {1}").arg(e.what()).toUTF8(),"Kafam Karışık!");
                                 return;
@@ -3839,7 +3839,7 @@ void Giris::Personel::EvrakArsiv::setArsiv(bsoncxx::oid oid)
 
 
                 auto __Layout = titleContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
-                auto title = __Layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Arsiv::Arsiv::arsivAdi].get_utf8().value.to_string()),0,AlignmentFlag::Middle);
+                auto title = __Layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Arsiv::Arsiv::arsivAdi].get_string().value.data()),0,AlignmentFlag::Middle);
                 title->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold);
                 title->setMargin(10,Side::Bottom|Side::Top);
 
@@ -3852,7 +3852,7 @@ void Giris::Personel::EvrakArsiv::setArsiv(bsoncxx::oid oid)
                     container->setMargin(0,AllSides);
                     container->setAttributeValue(Style::style,Style::background::color::color(Style::color::Grey::LightGray));
                     auto layout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-                    QFileInfo info(doc[SBLDKeys::Arsiv::Arsiv::dosya::adi].get_utf8().value.to_string().c_str());
+                    QFileInfo info(doc[SBLDKeys::Arsiv::Arsiv::dosya::adi].get_string().value.data());
                     auto text = layout->addWidget(cpp14::make_unique<WText>(info.fileName().toStdString()));
                     text->setAttributeValue(Style::style,Style::font::size::s12px+Style::font::weight::bold);
                     Backcontainer->decorationStyle().setCursor(Cursor::PointingHand);
@@ -3977,7 +3977,7 @@ void Giris::Personel::EvrakArsiv::setForDownload(bsoncxx::oid oid)
         if( !val.value().view().empty() )
         {
 
-            auto arsivadi = val.value().view()[SBLDKeys::Arsiv::Arsiv::anahtarKelime].get_utf8().value.to_string();
+            auto arsivadi = val.value().view()[SBLDKeys::Arsiv::Arsiv::anahtarKelime].get_string().value.data();
             auto filelist = val.value().view()[SBLDKeys::Arsiv::Arsiv::dosyalar].get_array().value;
 
             auto bucket = this->db()->gridfs_bucket();
@@ -3998,12 +3998,12 @@ void Giris::Personel::EvrakArsiv::setForDownload(bsoncxx::oid oid)
 
             scriptString +="var urls = [";
 
-            for( auto url : filenameList )
+            for( const auto &url : filenameList )
             {
                 scriptString += "\""+url+"\",";
             }
             scriptString += "];"
-                            "var name = \""+std::string(QLatin1String(arsivadi.c_str()).latin1())+".zip\";"
+                            "var name = \""+std::string(QLatin1String(arsivadi).latin1())+".zip\";"
                                                                                                   "compressed_img(urls,name);";
 
 

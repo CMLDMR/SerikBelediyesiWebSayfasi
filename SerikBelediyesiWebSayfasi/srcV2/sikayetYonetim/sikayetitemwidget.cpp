@@ -25,7 +25,7 @@ void SikayetItemWidget::initHeader()
 
         container->setContentAlignment(AlignmentFlag::Right);
 
-        auto text = container->addWidget(cpp14::make_unique<WText>(this->mCurrentSikayet->Element(Sikayet::KEY::adSoyad)->get_utf8().value.to_string()));
+        auto text = container->addWidget(cpp14::make_unique<WText>(this->mCurrentSikayet->Element(Sikayet::KEY::adSoyad)->get_string().value.data()));
         text->addStyleClass(Bootstrap::Label::Primary);
         text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold);
     }
@@ -41,11 +41,11 @@ void SikayetItemWidget::initHeader()
         container->setContentAlignment(AlignmentFlag::Left);
 
 
-        auto tcitem = TC::TCItem::LoadByTC(this->db(),this->mCurrentSikayet->Element(Sikayet::KEY::talepSahibi)->get_utf8().value.to_string());
+        auto tcitem = TC::TCItem::LoadByTC(this->db(),this->mCurrentSikayet->Element(Sikayet::KEY::talepSahibi)->get_string().value.data());
 
         if( tcitem )
         {
-            auto text = container->addWidget(cpp14::make_unique<WText>(tcitem.value()->Element(TC::KEY::cepTelefonu)->get_utf8().value.to_string()));
+            auto text = container->addWidget(cpp14::make_unique<WText>(tcitem.value()->Element(TC::KEY::cepTelefonu)->get_string().value.data()));
             text->addStyleClass(Bootstrap::Label::Success);
             text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold);
         }else{
@@ -68,7 +68,7 @@ void SikayetItemWidget::initHeader()
 
         container->setContentAlignment(AlignmentFlag::Right);
 
-        auto text = container->addWidget(cpp14::make_unique<WText>(this->mCurrentSikayet->Element(Sikayet::KEY::tarih)->get_utf8().value.to_string()));
+        auto text = container->addWidget(cpp14::make_unique<WText>(this->mCurrentSikayet->Element(Sikayet::KEY::tarih)->get_string().value.data()));
         text->addStyleClass(Bootstrap::Label::Default);
         text->setAttributeValue(Style::style,Style::font::size::s14px+Style::font::weight::normal);
     }
@@ -82,7 +82,7 @@ void SikayetItemWidget::initHeader()
 
         container->setContentAlignment(AlignmentFlag::Left);
 
-        auto text = container->addWidget(cpp14::make_unique<WText>(this->mCurrentSikayet->Element(Sikayet::KEY::saat)->get_utf8().value.to_string()));
+        auto text = container->addWidget(cpp14::make_unique<WText>(this->mCurrentSikayet->Element(Sikayet::KEY::saat)->get_string().value.data()));
         text->addStyleClass(Bootstrap::Label::Default);
         text->setAttributeValue(Style::style,Style::font::size::s14px+Style::font::weight::normal);
     }
@@ -99,7 +99,7 @@ void SikayetItemWidget::initHeader()
         auto _kategori = this->mCurrentSikayet->Element(Sikayet::KEY::kategori);
         if( _kategori )
         {
-            auto text = container->addWidget(cpp14::make_unique<WText>(_kategori->get_utf8().value.to_string()));
+            auto text = container->addWidget(cpp14::make_unique<WText>(_kategori->get_string().value.data()));
             text->addStyleClass(Bootstrap::Label::info);
             text->setAttributeValue(Style::style,Style::font::size::s14px+Style::font::weight::normal);
 
@@ -122,7 +122,7 @@ void SikayetItemWidget::initHeader()
         auto _birim = this->mCurrentSikayet->Element(Sikayet::KEY::birim);
         if( _birim )
         {
-            auto text = container->addWidget(cpp14::make_unique<WText>(_birim->get_utf8().value.to_string()));
+            auto text = container->addWidget(cpp14::make_unique<WText>(_birim->get_string().value.data()));
             text->addStyleClass(Bootstrap::Label::info);
             text->setAttributeValue(Style::style,Style::font::size::s14px+Style::font::weight::normal);
 
@@ -144,7 +144,7 @@ void SikayetItemWidget::initHeader()
 
         container->setContentAlignment(AlignmentFlag::Center);
 
-        auto text = container->addWidget(cpp14::make_unique<WText>(this->mCurrentSikayet->Element(Sikayet::KEY::mahalle)->get_utf8().value.to_string()));
+        auto text = container->addWidget(cpp14::make_unique<WText>(this->mCurrentSikayet->Element(Sikayet::KEY::mahalle)->get_string().value.data()));
         text->addStyleClass(Bootstrap::Label::Default);
         text->setAttributeValue(Style::style,Style::font::size::s14px+Style::font::weight::normal);
     }
@@ -156,7 +156,7 @@ void SikayetItemWidget::initHeader()
 
         container->setContentAlignment(AlignmentFlag::Center);
 
-        auto text = container->addWidget(cpp14::make_unique<WText>(this->mCurrentSikayet->Element(Sikayet::KEY::tamAdress)->get_utf8().value.to_string()));
+        auto text = container->addWidget(cpp14::make_unique<WText>(this->mCurrentSikayet->Element(Sikayet::KEY::tamAdress)->get_string().value.data()));
         text->addStyleClass(Bootstrap::Label::Default);
         text->setAttributeValue(Style::style,Style::font::size::s14px+Style::font::weight::normal);
     }
@@ -171,7 +171,7 @@ void SikayetItemWidget::initHeader()
         container->addWidget(cpp14::make_unique<WText>("<h4><b>Konu:</b></h4>"));
         container->addWidget(cpp14::make_unique<WBreak>());
 
-        container->addWidget(cpp14::make_unique<WText>(this->mCurrentSikayet->Element(Sikayet::KEY::konu)->get_utf8().value.to_string()));
+        container->addWidget(cpp14::make_unique<WText>(this->mCurrentSikayet->Element(Sikayet::KEY::konu)->get_string().value.data()));
     }
 
 
@@ -262,7 +262,7 @@ void SikayetItemWidget::initController()
                 {
 
                     try {
-                        comboBox->addItem(doc["Birim"].get_utf8().value.to_string());
+                        comboBox->addItem(doc["Birim"].get_string().value.data());
                     } catch (bsoncxx::exception &e) {
                         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
                         std::cout << str << std::endl;
@@ -407,7 +407,7 @@ void SikayetItemWidget::initController()
                 {
 
                     try {
-                        comboBox->addItem(doc["baslik"].get_utf8().value.to_string());
+                        comboBox->addItem(doc["baslik"].get_string().value.data());
                     } catch (bsoncxx::exception &e) {
                         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
                         std::cout << str << std::endl;
@@ -780,14 +780,14 @@ newSikayetItemWidget::newSikayetItemWidget(mongocxx::database *_db, const UserCl
 
                 if( tcitem )
                 {
-                    tcContainer->addWidget(cpp14::make_unique<TCItemWidget>(this->db(),this->UserValue(),tcitem.get()));
+                    tcContainer->addWidget(cpp14::make_unique<TCItemWidget>(this->db(),this->UserValue(),tcitem.value()));
                 }
             }else if (mSorguTipi->currentIndex() == 1 ) {
                 auto tcitem = TC::TCItem::LoadByTel(this->db(),mSorguAlani->text().toUTF8());
 
                 if( tcitem )
                 {
-                    tcContainer->addWidget(cpp14::make_unique<TCItemWidget>(this->db(),this->UserValue(),tcitem.get()));
+                    tcContainer->addWidget(cpp14::make_unique<TCItemWidget>(this->db(),this->UserValue(),tcitem.value()));
                 }
             }else{
                 if( mSorguAlani->text().toUTF8().size() > 2 )
@@ -825,7 +825,7 @@ newSikayetItemWidget::newSikayetItemWidget(mongocxx::database *_db, const UserCl
                         _rContainer->setWidth(WLength("100%"));
 
                         {
-                            QString str = QString::fromStdString(_item->Element(TC::KEY::adsoyad)->get_utf8().value.to_string());
+                            QString str = QString::fromStdString(_item->Element(TC::KEY::adsoyad)->get_string().value.data());
                             str.replace(QString::fromStdString(mSorguAlani->text().toUTF8()),"<mark><b>"+QString::fromStdString(mSorguAlani->text().toUTF8())+"</b></mark>",Qt::CaseInsensitive);
                             auto _adItem = _rContainer->addWidget(cpp14::make_unique<WText>(str.toStdString()));
                             _adItem->addStyleClass(Bootstrap::Grid::Large::col_lg_6+
@@ -836,7 +836,7 @@ newSikayetItemWidget::newSikayetItemWidget(mongocxx::database *_db, const UserCl
                         }
 
                         {
-                            auto _adItem = _rContainer->addWidget(cpp14::make_unique<WText>(_item->Element(TC::KEY::cepTelefonu)->get_utf8().value.to_string()));
+                            auto _adItem = _rContainer->addWidget(cpp14::make_unique<WText>(_item->Element(TC::KEY::cepTelefonu)->get_string().value.data()));
                             _adItem->addStyleClass(Bootstrap::Grid::Large::col_lg_6+
                                                    Bootstrap::Grid::Medium::col_md_6+
                                                    Bootstrap::Grid::Small::col_sm_6+
@@ -847,7 +847,7 @@ newSikayetItemWidget::newSikayetItemWidget(mongocxx::database *_db, const UserCl
                         _rContainer->setMargin(5,Side::Top);
                         _rContainer->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
                         _rContainer->decorationStyle().setCursor(Cursor::PointingHand);
-                        _rContainer->setAttributeValue(Style::dataoid,_item->Element(TC::KEY::tcno)->get_utf8().value.to_string());
+                        _rContainer->setAttributeValue(Style::dataoid,_item->Element(TC::KEY::tcno)->get_string().value.data());
 
                         _rContainer->clicked().connect([=](){
 
@@ -856,7 +856,7 @@ newSikayetItemWidget::newSikayetItemWidget(mongocxx::database *_db, const UserCl
 
                             if( tcitem )
                             {
-                                tcContainer->addWidget(cpp14::make_unique<TCItemWidget>(this->db(),this->UserValue(),tcitem.get()));
+                                tcContainer->addWidget(cpp14::make_unique<TCItemWidget>(this->db(),this->UserValue(),tcitem.value()));
                             }
 
 

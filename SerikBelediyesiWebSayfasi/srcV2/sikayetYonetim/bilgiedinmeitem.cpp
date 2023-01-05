@@ -1,12 +1,12 @@
 #include "bilgiedinmeitem.h"
 #include <iostream>
 
-boost::optional<BilgiEdinmeItem> BilgiEdinmeItem::Create_EmptyItem(mongocxx::database* _db)
+std::optional<BilgiEdinmeItem> BilgiEdinmeItem::Create_EmptyItem(mongocxx::database* _db)
 {
     return BilgiEdinmeItem(_db);
 }
 
-boost::optional<BilgiEdinmeItem *> BilgiEdinmeItem::LoadBilgiEdinmeItem(mongocxx::database *_db, const std::string &mOid)
+std::optional<BilgiEdinmeItem *> BilgiEdinmeItem::LoadBilgiEdinmeItem(mongocxx::database *_db, const std::string &mOid)
 {
     auto _filter = document{};
 
@@ -14,7 +14,7 @@ boost::optional<BilgiEdinmeItem *> BilgiEdinmeItem::LoadBilgiEdinmeItem(mongocxx
         _filter.append(kvp("_id",bsoncxx::oid{mOid}));
     } catch (bsoncxx::exception &e) {
         std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << e.what() << std::endl;
-        return boost::none;
+        return std::nullopt;
     }
 
 
@@ -30,20 +30,20 @@ boost::optional<BilgiEdinmeItem *> BilgiEdinmeItem::LoadBilgiEdinmeItem(mongocxx
             return item;
         }else{
             std::cout << "No Value Returned: " << bsoncxx::to_json(_filter.view()) << std::endl;
-            return boost::none;
+            return std::nullopt;
         }
 
     } catch (mongocxx::exception &e) {
         std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << e.what() << std::endl;
-        return boost::none;
+        return std::nullopt;
     }
 
 }
 
-QVector<boost::optional<BilgiEdinmeItem*> > BilgiEdinmeItem::GetList(mongocxx::database *_db, bsoncxx::builder::basic::document filter)
+QVector<std::optional<BilgiEdinmeItem*> > BilgiEdinmeItem::GetList(mongocxx::database *_db, bsoncxx::builder::basic::document filter)
 {
 
-    QVector<boost::optional<BilgiEdinmeItem*>> list;
+    QVector<std::optional<BilgiEdinmeItem*>> list;
 
     mongocxx::options::find findOptions;
 
@@ -452,7 +452,7 @@ bsoncxx::oid BilgiEdinmeItem::oid() const
     return mOid;
 }
 
-boost::optional<bsoncxx::builder::basic::document> BilgiEdinmeItem::filter()
+std::optional<bsoncxx::builder::basic::document> BilgiEdinmeItem::filter()
 {
 
     auto filter = document{};
@@ -461,7 +461,7 @@ boost::optional<bsoncxx::builder::basic::document> BilgiEdinmeItem::filter()
         filter.append(kvp("_id",mOid));
     } catch (bsoncxx::exception &e) {
         std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << e.what() << std::endl;
-        return boost::none;
+        return std::nullopt;
     }
 
 
@@ -480,14 +480,14 @@ void BilgiEdinmeItem::LoadFromDocumentView(const bsoncxx::document::view &view)
     }
 
     try {
-        mKonu = view[BilgiEdinmeKEY::konu].get_utf8().value.to_string();
+        mKonu = view[BilgiEdinmeKEY::konu].get_string().value.data();
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
         std::cout << str << std::endl;
     }
 
     try {
-        mTarih = view[BilgiEdinmeKEY::tarih].get_utf8().value.to_string();
+        mTarih = view[BilgiEdinmeKEY::tarih].get_string().value.data();
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
         std::cout << str << std::endl;
@@ -502,7 +502,7 @@ void BilgiEdinmeItem::LoadFromDocumentView(const bsoncxx::document::view &view)
     }
 
     try {
-        mSaat = view[BilgiEdinmeKEY::saat].get_utf8().value.to_string();
+        mSaat = view[BilgiEdinmeKEY::saat].get_string().value.data();
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
         std::cout << str << std::endl;
@@ -516,7 +516,7 @@ void BilgiEdinmeItem::LoadFromDocumentView(const bsoncxx::document::view &view)
     }
 
     try {
-        mTCNO = view[BilgiEdinmeKEY::tcno].get_utf8().value.to_string();
+        mTCNO = view[BilgiEdinmeKEY::tcno].get_string().value.data();
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
         std::cout << str << std::endl;
@@ -525,28 +525,28 @@ void BilgiEdinmeItem::LoadFromDocumentView(const bsoncxx::document::view &view)
 
 
     try {
-        mAdSoyad = view[BilgiEdinmeKEY::adsoyad].get_utf8().value.to_string();
+        mAdSoyad = view[BilgiEdinmeKEY::adsoyad].get_string().value.data();
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
         std::cout << str << std::endl;
     }
 
     try {
-        mePosta = view[BilgiEdinmeKEY::eposta].get_utf8().value.to_string();
+        mePosta = view[BilgiEdinmeKEY::eposta].get_string().value.data();
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
         std::cout << str << std::endl;
     }
 
     try {
-        mTelefon = view[BilgiEdinmeKEY::telefon].get_utf8().value.to_string();
+        mTelefon = view[BilgiEdinmeKEY::telefon].get_string().value.data();
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
         std::cout << str << std::endl;
     }
 
     try {
-        mAdres = view[BilgiEdinmeKEY::adres].get_utf8().value.to_string();
+        mAdres = view[BilgiEdinmeKEY::adres].get_string().value.data();
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
         std::cout << str << std::endl;
@@ -554,14 +554,14 @@ void BilgiEdinmeItem::LoadFromDocumentView(const bsoncxx::document::view &view)
 
 
     try {
-        mBirim = view[BilgiEdinmeKEY::birim].get_utf8().value.to_string();
+        mBirim = view[BilgiEdinmeKEY::birim].get_string().value.data();
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
 //        std::cout << str << std::endl;
     }
 
     try {
-        mMesaj = view[BilgiEdinmeKEY::mesaj].get_utf8().value.to_string();
+        mMesaj = view[BilgiEdinmeKEY::mesaj].get_string().value.data();
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
         std::cout << str << std::endl;
@@ -679,7 +679,7 @@ BilgiEdinmeItem::Cevap &BilgiEdinmeItem::Cevap::operator=(const BilgiEdinmeItem:
 BilgiEdinmeItem::Cevap &BilgiEdinmeItem::Cevap::operator=(const bsoncxx::document::view &view)
 {
     try {
-        this->mSaat = view[BilgiEdinmeKEY::Cevap::saat].get_utf8().value.to_string();
+        this->mSaat = view[BilgiEdinmeKEY::Cevap::saat].get_string().value.data();
     } catch (bsoncxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
         std::cout << str << std::endl;

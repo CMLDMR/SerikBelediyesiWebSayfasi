@@ -258,7 +258,7 @@ void V2::GelenBasvurular::initItem(const std::string &itemOid)
         uploadWidget->Uploaded ().connect ([=](){
             auto fileid = this->uploadfile ( uploadWidget->fileLocation () );
             decltype (item) _item = item;
-            _item.setCevap (fileid.get_oid ().value.to_string ().c_str ());
+            _item.setCevap (fileid.view().get_oid ().value.to_string ().c_str ());
             if( this->UpdateItem (_item) )
             {
                 this->initItem (_item.oid ().value ().to_string () );

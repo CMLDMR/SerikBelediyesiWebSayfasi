@@ -9,21 +9,21 @@ namespace Sikayet {
 
 
 namespace KEY {
-static const std::string collection{"Sikayet"};
+inline constexpr std::string collection{"Sikayet"};
 
-static const std::string julianDay{"julianDay"};
-static const std::string konu{"Konu"};
-static const std::string mahalle{"Mahalle"};
-static const std::string birim{"Birim"};
-static const std::string durum{"Durum"};
-static const std::string talepSahibi{"Şikayet/Talep Sahibi"};
-static const std::string adSoyad{"adSoyad"};
-static const std::string saat{"Saat"};
-static const std::string tarih{"Tarih"};
-static const std::string tamAdress{"Tam Adres"};
-static const std::string cagriMerkeziPersonel{"CagriMerkeziPersoneli"};
-static const std::string kategori{"Kategori"};
-static const std::string asama{"AŞAMA"};
+inline const std::string julianDay{"julianDay"};
+inline const std::string konu{"Konu"};
+inline const std::string mahalle{"Mahalle"};
+inline const std::string birim{"Birim"};
+inline const std::string durum{"Durum"};
+inline const std::string talepSahibi{"Şikayet/Talep Sahibi"};
+inline const std::string adSoyad{"adSoyad"};
+inline const std::string saat{"Saat"};
+inline const std::string tarih{"Tarih"};
+inline const std::string tamAdress{"Tam Adres"};
+inline const std::string cagriMerkeziPersonel{"CagriMerkeziPersoneli"};
+inline const std::string kategori{"Kategori"};
+inline const std::string asama{"AŞAMA"};
 
 namespace ASAMAKEY {
 
@@ -59,9 +59,9 @@ static const std::string gorevli{"Görevli Personeller"};
 class SikayetItem : public ItemBase
 {
 public:
-    static boost::optional<SikayetItem> Create_Sikayet(mongocxx::database* _db);
+    static std::optional<SikayetItem> Create_Sikayet(mongocxx::database* _db);
 
-    static boost::optional<SikayetItem*> Load_Sikayet( mongocxx::database* _db , const bsoncxx::oid &oid);
+    static std::optional<SikayetItem*> Load_Sikayet( mongocxx::database* _db , const bsoncxx::oid &oid);
 
     static QVector<SikayetItem*> GetList(mongocxx::database* _db,
                                   bsoncxx::builder::basic::document filter = document{} ,

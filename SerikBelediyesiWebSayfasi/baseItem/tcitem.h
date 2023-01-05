@@ -20,10 +20,10 @@ static const std::string password{"password"};
 class TCItem : public ItemBase
 {
 public:
-    static boost::optional<TCItem> Create_TC( mongocxx::database* _db );
-    static boost::optional<TCItem*> LoadByTC( mongocxx::database* _db , const std::string &_tcno );
-    static boost::optional<TCItem*> LoadByTel( mongocxx::database* _db , const std::string &_ceptel );
-    static boost::optional<TCItem*> LoadByOid( mongocxx::database* _db , const std::string &_oid );
+    static std::optional<TCItem> Create_TC( mongocxx::database* _db );
+    static std::optional<TCItem*> LoadByTC( mongocxx::database* _db , const std::string &_tcno );
+    static std::optional<TCItem*> LoadByTel( mongocxx::database* _db , const std::string &_ceptel );
+    static std::optional<TCItem*> LoadByOid( mongocxx::database* _db , const std::string &_oid );
 
 
 

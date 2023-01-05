@@ -453,13 +453,13 @@ bool MainPage::initMeclisCanliYayin()
             if( online )
             {
                 try {
-                    embedlink = val.value().view()["link"].get_utf8().value.to_string()+"?autoplay=1+";
+                    embedlink = val.value().view()["link"].get_string().value.data()+std::string("?autoplay=1+");
                 } catch (bsoncxx::exception &e) {
 
                 }
 
                 try {
-                    CanliYayinTitle = val.value().view()["title"].get_utf8().value.to_string();
+                    CanliYayinTitle = val.value().view()["title"].get_string().value.data();
                 } catch (bsoncxx::exception &e) {
 
                 }

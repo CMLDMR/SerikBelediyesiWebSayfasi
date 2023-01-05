@@ -5,12 +5,12 @@ GirisCikisWidget::GirisCikisWidget(mongocxx::database *_db, bsoncxx::document::v
 {
 
     setPadding(20,Side::Bottom);
-    if( this->User().view()["Statü"].get_utf8().value.to_string() == "Personel" )
+    if( this->User().view()["Statü"].get_string().value.data() == "Personel" )
     {
         this->initPersonelMenu();
-    }else if ( this->User().view()["Statü"].get_utf8().value.to_string() == "Müdür" ) {
+    }else if ( this->User().view()["Statü"].get_string().value.data() == "Müdür" ) {
         this->initPersonelMenu();
-    }else if ( this->User().view()["Statü"].get_utf8().value.to_string() == "Başkan Yardımcısı" || this->User().view()["Statü"].get_utf8().value.to_string() == "Başkan" ) {
+    }else if ( this->User().view()["Statü"].get_string().value.data() == "Başkan Yardımcısı" || this->User().view()["Statü"].get_string().value.data() == "Başkan" ) {
         this->initBaskanMenu();
     }
 
@@ -112,7 +112,7 @@ void GirisCikisWidget::initBaskanMenu()
             for( auto doc : cursor )
             {
                 try {
-                    mCurrentBirim->addItem(doc["Birim"].get_utf8().value.to_string());
+                    mCurrentBirim->addItem(doc["Birim"].get_string().value.data());
                 } catch (bsoncxx::exception &e) {
 
                 }
@@ -320,12 +320,12 @@ void GirisCikisWidget::initSelectedDay(qint64 julianDay)
 
 
             try {
-                perbirim = QString(doc["Birimi"].get_utf8().value.to_string().c_str());
+                perbirim = QString(doc["Birimi"].get_string().value.data());
             } catch (bsoncxx::exception &e) {
             }
 
             try {
-                pername = QString(doc["ad soyad"].get_utf8().value.to_string().c_str());
+                pername = QString(doc["ad soyad"].get_string().value.data());
             } catch (bsoncxx::exception &e) {
             }
 
@@ -436,13 +436,13 @@ void GirisCikisWidget::addRow(QString personeloid, qint64 julianDay)
         auto val = this->db()->collection("INOUT").find_one(filter.view());
 
         try {
-            PersonelName = val.value().view()["ad soyad"].get_utf8().value.to_string().c_str();
+            PersonelName = val.value().view()["ad soyad"].get_string().value.data();
         } catch (bsoncxx::exception &e) {
 
         }
 
         try {
-            BirimName = val.value().view()["Birimi"].get_utf8().value.to_string().c_str();
+            BirimName = val.value().view()["Birimi"].get_string().value.data();
         } catch (bsoncxx::exception &e) {
 
         }

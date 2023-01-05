@@ -3,7 +3,7 @@
 
 #include "SerikBelediyesiWebSayfasi/BaseClass/dbclass.h"
 
-#include <boost/optional.hpp>
+//#include <boost/optional.hpp>
 #include <QVector>
 #include "db.h"
 
@@ -36,11 +36,11 @@ class BilgiEdinmeItem : public SerikBLDCore::DB
 {
 public:
 
-    static boost::optional<BilgiEdinmeItem> Create_EmptyItem(mongocxx::database *_db);
+    static std::optional<BilgiEdinmeItem> Create_EmptyItem(mongocxx::database *_db);
 
-    static boost::optional<BilgiEdinmeItem*> LoadBilgiEdinmeItem( mongocxx::database* _db , const std::string &mOid );
+    static std::optional<BilgiEdinmeItem*> LoadBilgiEdinmeItem( mongocxx::database* _db , const std::string &mOid );
 
-    static QVector<boost::optional<BilgiEdinmeItem *> > GetList( mongocxx::database* _db , document filter = document{} );
+    static QVector<std::optional<BilgiEdinmeItem *> > GetList( mongocxx::database* _db , document filter = document{} );
 
 
     struct Cevap{
@@ -119,7 +119,7 @@ private:
     Cevap mCevap;
     std::string mBirim;
 
-    boost::optional<document> filter();
+    std::optional<document> filter();
 
     template<typename T>
     bool setElement( const std::string &elementKey , const T &elementValue );

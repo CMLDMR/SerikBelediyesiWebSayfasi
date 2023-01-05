@@ -52,7 +52,7 @@
 //{
 //    auto val = this->element(Key::type);
 //    if( val ){
-//        return val->get_utf8().value.to_string();
+//        return val->get_string().value.data();
 //    }
 //    return "UnKnown";
 //}
@@ -61,7 +61,7 @@
 //{
 //    auto val = this->element(Key::url);
 //    if( val ){
-//        return val->get_utf8().value.to_string();
+//        return val->get_string().value.data();
 //    }
 //    return "UnKnown";
 //}
@@ -70,7 +70,7 @@
 //{
 //    auto val = this->element(Key::ipAdress);
 //    if( val ){
-//        return val->get_utf8().value.to_string();
+//        return val->get_string().value.data();
 //    }
 //    return "UnKnown";
 //}
@@ -79,7 +79,7 @@
 //{
 //    auto val = this->element(Key::Name);
 //    if( val ){
-//        return val->get_utf8().value.to_string();
+//        return val->get_string().value.data();
 //    }
 //    return "UnKnown";
 //}
@@ -88,7 +88,7 @@
 //{
 //    auto val = this->element(Key::Status);
 //    if( val ){
-//        return val->get_utf8().value.to_string();
+//        return val->get_string().value.data();
 //    }
 //    return "UnKnown";
 //}
