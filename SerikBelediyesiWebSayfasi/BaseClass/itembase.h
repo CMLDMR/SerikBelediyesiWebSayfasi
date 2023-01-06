@@ -16,7 +16,7 @@ public:
     ItemBase(mongocxx::database* _db , const std::string &collection , bsoncxx::document::view &_view);
 
     template<class T>
-    static boost::optional<T*> LoadItem(mongocxx::database* _db ,
+    static std::optional<T*> LoadItem(mongocxx::database* _db ,
                                        const std::string &collection,
                                        document filter)
     {
@@ -27,12 +27,12 @@ public:
                 T* item = new T(_db,collection,val.value().view());
                 return item;
             }else{
-                return boost::none;
+                return std::nullopt;
             }
         } catch (mongocxx::exception &e) {
             std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
             std::cout << str << std::endl;
-            return boost::none;
+            return std::nullopt;
         }
     }
 
@@ -79,13 +79,13 @@ public:
         return this->setElement(key,value.toStdString());
     }
 
-    boost::optional<bsoncxx::types::value> Element( const std::string &key);
+    std::optional<bsoncxx::types::bson_value::value> Element( const std::string &key);
 
     bool isValid() const;
 
     bsoncxx::oid oid() const;
 
-    boost::optional<document> filter();
+    std::optional<document> filter();
 
 
     QStringList keyList();

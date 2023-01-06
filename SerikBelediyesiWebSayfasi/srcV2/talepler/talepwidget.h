@@ -33,9 +33,9 @@ public:
 
     void TCChanged();
     void setDefault();
-    boost::optional<SerikBLDCore::TC> TCItem();
+    std::optional<SerikBLDCore::TC> TCItem();
 
-    boost::optional<SerikBLDCore::TC> saveTCItem();
+    std::optional<SerikBLDCore::TC> saveTCItem();
 
 
     std::string lastError() const;

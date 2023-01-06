@@ -622,12 +622,12 @@ void DilekceView::initCevapView()
                     mCevap.setDilekceOid (this->oid ().value ().to_string ().c_str ());
                     auto cevapOid_ = this->uploadfile (mCevapUploader->fileLocation ());
 
-                    mCevap.setCevapOid (cevapOid_.get_oid ().value.to_string ().c_str ());
+                    mCevap.setCevapOid (cevapOid_.view().get_oid ().value.to_string ().c_str ());
 
                     for( auto item : mUploadedFilePathList )
                     {
                         auto cevapOidEk_ = this->uploadfile (item);
-                        mCevap.addEkOid (cevapOidEk_.get_oid ().value.to_string ().c_str ());
+                        mCevap.addEkOid (cevapOidEk_.view().get_oid ().value.to_string ().c_str ());
                     }
                     auto insCevap = this->insertCevap (&mCevap);
                     if( insCevap ){

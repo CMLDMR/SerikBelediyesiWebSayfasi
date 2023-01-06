@@ -224,7 +224,7 @@ void v2::Duyuru::DuyuruYonetim::yeniDuyuruEkle()
 
             auto fileOid = this->uploadfile(mFileUploaderWidget->fileLocation());
 
-            addFileContainer(fileOid.get_oid().value.to_string(),mFileTitleLineEdit->text().toUTF8());
+            addFileContainer(fileOid.view().get_oid().value.to_string(),mFileTitleLineEdit->text().toUTF8());
 
         });
 
@@ -263,7 +263,7 @@ std::string v2::Duyuru::DuyuruItem::Baslik() const
 {
     auto val = this->element(Key::baslik);
     if( val ){
-        return val->get_utf8().value.to_string();
+        return val->view().get_string().value.data();
     }
     return "";
 }
@@ -271,7 +271,7 @@ bool v2::Duyuru::DuyuruItem::Yayinda() const
 {
     auto val = this->element(Key::yayinda);
     if( val ){
-        return val->get_utf8().value.to_string() == "Yayında" ? true : false;
+        return val->view().get_string().value == "Yayında" ? true : false;
     }
     return false;
 }
@@ -279,7 +279,7 @@ std::string v2::Duyuru::DuyuruItem::Birim() const
 {
     auto val = this->element(Key::birim);
     if( val ){
-        return val->get_utf8().value.to_string();
+        return val->view().get_string().value.data();
     }
     return "";
 }
@@ -287,7 +287,7 @@ std::string v2::Duyuru::DuyuruItem::SonTarihText() const
 {
     auto val = this->element(Key::julianBitis);
     if( val ){
-        auto str = QDate::fromJulianDay(val.value().get_int64().value).toString("dd/MM/yyyy").toStdString();
+        auto str = QDate::fromJulianDay(val->view().get_int64().value).toString("dd/MM/yyyy").toStdString();
         return str;
     }
     return "";
@@ -296,7 +296,7 @@ std::string v2::Duyuru::DuyuruItem::Icerik() const
 {
     auto val = this->element(Key::icerik);
     if( val ){
-        return val.value().get_utf8().value.to_string();
+        return val->view().get_string().value.data();
     }
     return "";
 }
@@ -304,7 +304,7 @@ int64_t v2::Duyuru::DuyuruItem::BaslangicDate() const
 {
     auto val = this->element(Key::julianBaslangic);
     if( val ){
-        return val->get_int64().value;
+        return val->view().get_int64().value;
     }
     return 0;
 }
@@ -312,7 +312,7 @@ int64_t v2::Duyuru::DuyuruItem::BitisDate() const
 {
     auto val = this->element(Key::julianBitis);
     if( val ){
-        return val->get_int64().value;
+        return val->view().get_int64().value;
     }
     return 0;
 }
@@ -323,7 +323,7 @@ std::vector<std::string> v2::Duyuru::DuyuruItem::fileList()
 
     auto val = this->element(Key::fileList);
     if( val ){
-        auto ar = val->get_array().value;
+        auto ar = val->view().get_array().value;
 
         for( const auto &item : ar ){
             list.push_back(item.get_oid().value.to_string());
@@ -338,11 +338,11 @@ std::map<std::string,std::string> v2::Duyuru::DuyuruItem::fileOidList() const
 
     auto val = this->element(Key::fileOidList);
     if( val ){
-        auto ar = val->get_array().value;
+        auto ar = val->view().get_array().value;
 
         for( const auto &item : ar ){
             try {
-                list[item.get_document().value[Key::FILEKEY::fileOid].get_oid().value.to_string()] = item.get_document().value[Key::FILEKEY::fileTitle].get_utf8().value.to_string();
+                list[item.get_document().value[Key::FILEKEY::fileOid].get_oid().value.to_string()] = item.get_document().value[Key::FILEKEY::fileTitle].get_string().value.data();
             } catch (bsoncxx::exception &e) {
                 LOG << e.what();
             }
@@ -392,7 +392,7 @@ v2::Duyuru::DuyuruItem &v2::Duyuru::DuyuruItem::removeFile(const std::string &fi
     if( arList ){
 
         std::vector<SerikBLDCore::Item> arItemList;
-        for( const auto &item : arList.value().get_array().value ){
+        for( const auto &item : arList->view().get_array().value ){
             SerikBLDCore::Item __item("");
             __item.setDocumentView(item.get_document().value);
             arItemList.push_back(__item);
@@ -401,7 +401,7 @@ v2::Duyuru::DuyuruItem &v2::Duyuru::DuyuruItem::removeFile(const std::string &fi
         for( const auto &item : arItemList ){
             auto file_oid = item.element(Key::FILEKEY::fileOid);
             if( file_oid ){
-                if( file_oid->get_oid().value.to_string() != fileOid ){
+                if( file_oid->view().get_oid().value.to_string() != fileOid ){
                     this->pushArray(Key::fileOidList,item);
                 }
             }

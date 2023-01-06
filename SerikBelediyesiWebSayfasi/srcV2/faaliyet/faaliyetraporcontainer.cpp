@@ -338,7 +338,7 @@ void v2::Faaliyet::FaaliyetRaporContainer::testPage( const std::string &faaliyet
                 }
 
                 try{
-                    auto birim = val->view ()["birimi"].get_utf8 ().value.to_string();
+                    std::string birim = val->view ()["birimi"].get_string().value.data();
                     baslikText->setText ("<h3>"+birim+" "+faaliyetTitle+"</h3>");
                 }catch(bsoncxx::exception &e){
                     baslikText->setText ("<h3>"+faaliyetTitle+"</h3>");
@@ -1301,9 +1301,10 @@ void v2::Faaliyet::ItemContainer<T>::addImgPre(const bool &addPre)
             if( baslikLineEdit->text().toUTF8().size() ){
                 auto val = mDB->uploadfile (fileUploader->fileLocation());
                 if( !addPre ){
-                    mAddImgAftereSignal(this->uuid(),val.get_oid ().value.to_string (),baslikLineEdit->text().toUTF8());
+
+                    mAddImgAftereSignal(this->uuid(),val.view().get_oid ().value.to_string (),baslikLineEdit->text().toUTF8());
                 }else{
-                    mAddImgBeforeSignal(this->uuid(),val.get_oid ().value.to_string (),baslikLineEdit->text().toUTF8());
+                    mAddImgBeforeSignal(this->uuid(),val.view().get_oid ().value.to_string (),baslikLineEdit->text().toUTF8());
                 }
                 removeDialog (mDialog);
             }else{
@@ -1670,10 +1671,10 @@ void v2::Faaliyet::ItemContainer<T>::initWidgetType()
 
                         SerikBLDCore::Faaliyet::ImgItem _imgItem;
                         _imgItem.setDocumentView (this->view());
-                        _imgItem.setImgOid (val.get_oid ().value.to_string ());
+                        _imgItem.setImgOid (val.view().get_oid ().value.to_string ());
                         this->setDocumentView(_imgItem.view ());
 
-                        mChangeImg(this->uuid(),_imgItem.getText (),val.get_oid ().value.to_string ());
+                        mChangeImg(this->uuid(),_imgItem.getText (),val.view().get_oid ().value.to_string ());
                     }
 
 
@@ -2071,11 +2072,11 @@ void v2::Faaliyet::ItemContainer<T>::editWidgetType()
 
                 SerikBLDCore::Faaliyet::ImgItem _imgItem;
                 _imgItem.setDocumentView (this->view());
-                _imgItem.setImgOid (val.get_oid ().value.to_string ());
+                _imgItem.setImgOid (val.view().get_oid ().value.to_string ());
                 _imgItem.setText (baslikLineEdit->text().toUTF8());
                 this->setDocumentView(_imgItem.view ());
 
-                mChangeImg(this->uuid(),baslikLineEdit->text().toUTF8(),val.get_oid ().value.to_string ());
+                mChangeImg(this->uuid(),baslikLineEdit->text().toUTF8(),val.view().get_oid ().value.to_string ());
 
             }else{
                 SerikBLDCore::Faaliyet::ImgItem _imgItem;

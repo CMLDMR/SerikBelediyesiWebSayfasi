@@ -120,7 +120,7 @@ SikayetYonetimWidget::SikayetYonetimWidget(mongocxx::database *_db, const bsoncx
 
 
             auto text1 = vLayout->addWidget(cpp14::make_unique<WText>(),0,AlignmentFlag::Center|AlignmentFlag::Middle);
-            text1->setText(WString("{1}").arg(doc["_id"].get_utf8().value.to_string()));
+            text1->setText(WString("{1}").arg(doc["_id"].get_string().value.data()));
             text1->setAttributeValue(Style::style,Style::color::color(Style::color::Grey::Black)+
                                      Style::font::size::s14px+
                                      Style::font::family::tahoma+
@@ -132,7 +132,7 @@ SikayetYonetimWidget::SikayetYonetimWidget(mongocxx::database *_db, const bsoncx
                 Tumu += doc["count"].get_int32().value;
             }
 
-            filterListCount[doc["_id"].get_utf8().value.to_string()] = doc["count"].get_int32().value;
+            filterListCount[doc["_id"].get_string().value.data()] = doc["count"].get_int32().value;
 
             _container->clicked().connect([=](){
                 skip = 0;
@@ -196,12 +196,12 @@ void SikayetYonetimWidget::initSikayetler(const std::string &durumFilter)
         auto _VadSoyad = item->Element(Sikayet::KEY::adSoyad);
 
         std::string durum,tarih,mahalle,birim,kategori,adSoyad;
-        if( _Vdurum ){ durum = std::to_string(count++)+ " " + _Vdurum.value().get_utf8().value.to_string();}
-        if( _Vtarih ){ tarih = _Vtarih.value().get_utf8().value.to_string();}
-        if( _Vmahalle ){ mahalle = _Vmahalle.value().get_utf8().value.to_string();}
-        if( _Vbirim ){ birim = _Vbirim.value().get_utf8().value.to_string();}
-        if( _Vkategori ){ kategori = _Vkategori.value().get_utf8().value.to_string();}
-        if( _VadSoyad ){ adSoyad = _VadSoyad.value().get_utf8().value.to_string();}
+        if( _Vdurum ){ durum = std::to_string(count++)+ " " + _Vdurum->view().get_string().value.data();}
+        if( _Vtarih ){ tarih = _Vtarih->view().get_string().value.data();}
+        if( _Vmahalle ){ mahalle = _Vmahalle->view().get_string().value.data();}
+        if( _Vbirim ){ birim = _Vbirim->view().get_string().value.data();}
+        if( _Vkategori ){ kategori = _Vkategori->view().get_string().value.data();}
+        if( _VadSoyad ){ adSoyad = _VadSoyad->view().get_string().value.data();}
 
         auto container = rContainer->addWidget(cpp14::make_unique<SikayetListItemWidget>(item->oid(),durum,
                                                                                          tarih,
@@ -313,12 +313,12 @@ void SikayetYonetimWidget::initSikayetlerBySahibi(const std::string &sahibi)
         auto _VadSoyad = item->Element(Sikayet::KEY::adSoyad);
 
         std::string durum,tarih,mahalle,birim,kategori,adSoyad;
-        if( _Vdurum ){ durum = std::to_string(count++)+ " " + _Vdurum.value().get_utf8().value.to_string();}
-        if( _Vtarih ){ tarih = _Vtarih.value().get_utf8().value.to_string();}
-        if( _Vmahalle ){ mahalle = _Vmahalle.value().get_utf8().value.to_string();}
-        if( _Vbirim ){ birim = _Vbirim.value().get_utf8().value.to_string();}
-        if( _Vkategori ){ kategori = _Vkategori.value().get_utf8().value.to_string();}
-        if( _VadSoyad ){ adSoyad = _VadSoyad.value().get_utf8().value.to_string();}
+        if( _Vdurum ){ durum = std::to_string(count++)+ " " + _Vdurum->view().get_string().value.data();}
+        if( _Vtarih ){ tarih = _Vtarih->view().get_string().value.data();}
+        if( _Vmahalle ){ mahalle = _Vmahalle->view().get_string().value.data();}
+        if( _Vbirim ){ birim = _Vbirim->view().get_string().value.data();}
+        if( _Vkategori ){ kategori = _Vkategori->view().get_string().value.data();}
+        if( _VadSoyad ){ adSoyad = _VadSoyad->view().get_string().value.data();}
 
         auto container = rContainer->addWidget(cpp14::make_unique<SikayetListItemWidget>(item->oid(),durum,
                                                                                          tarih,
@@ -355,7 +355,7 @@ void SikayetYonetimWidget::createNewSikayet()
     this->Content()->addWidget(cpp14::make_unique<newSikayetItemWidget>(this->db(),this->User()));
 
     this->Footer()->setContentAlignment(AlignmentFlag::Center);
-    auto BackBtn = this->Footer()->addWidget(cpp14::make_unique<WText>("Sayfa Sonu"));
+    this->Footer()->addWidget(cpp14::make_unique<WText>("Sayfa Sonu"));
 }
 
 void SikayetYonetimWidget::Sorgula()
@@ -437,7 +437,7 @@ void SikayetYonetimWidget::Sorgula()
 
             if( tcitem )
             {
-                this->initSikayetlerBySahibi(tcitem.value()->Element(TC::KEY::tcno).value().get_utf8().value.to_string());
+                this->initSikayetlerBySahibi(tcitem.value()->Element(TC::KEY::tcno)->view().get_string().value.data());
                 wApp->instance()->root()->removeChild(mDialog);
             }
         }else if (tComboBox->currentIndex() == 1 ) {
@@ -445,7 +445,7 @@ void SikayetYonetimWidget::Sorgula()
 
             if( tcitem )
             {
-                this->initSikayetlerBySahibi(tcitem.value()->Element(TC::KEY::tcno).value().get_utf8().value.to_string());
+                this->initSikayetlerBySahibi(tcitem.value()->Element(TC::KEY::tcno)->view().get_string().value.data());
                 wApp->instance()->root()->removeChild(mDialog);
             }
         }else{
@@ -475,7 +475,7 @@ void SikayetYonetimWidget::Sorgula()
                     _rContainer->setWidth(WLength("100%"));
 
                     {
-                        QString str = QString::fromStdString(_item->Element(TC::KEY::adsoyad)->get_utf8().value.to_string());
+                        QString str = QString::fromStdString(_item->Element(TC::KEY::adsoyad)->view().get_string().value.data());
                         str.replace(QString::fromStdString(tLineEdit->text().toUTF8()),"<mark><b>"+QString::fromStdString(tLineEdit->text().toUTF8())+"</b></mark>",Qt::CaseInsensitive);
                         auto _adItem = _rContainer->addWidget(cpp14::make_unique<WText>(str.toStdString()));
                         _adItem->addStyleClass(Bootstrap::Grid::Large::col_lg_6+
@@ -486,7 +486,7 @@ void SikayetYonetimWidget::Sorgula()
                     }
 
                     {
-                        auto _adItem = _rContainer->addWidget(cpp14::make_unique<WText>(_item->Element(TC::KEY::cepTelefonu)->get_utf8().value.to_string()));
+                        auto _adItem = _rContainer->addWidget(cpp14::make_unique<WText>(_item->Element(TC::KEY::cepTelefonu)->view().get_string().value.data()));
                         _adItem->addStyleClass(Bootstrap::Grid::Large::col_lg_6+
                                                Bootstrap::Grid::Medium::col_md_6+
                                                Bootstrap::Grid::Small::col_sm_6+
@@ -497,7 +497,7 @@ void SikayetYonetimWidget::Sorgula()
                     _rContainer->setMargin(5,Side::Top);
                     _rContainer->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
                     _rContainer->decorationStyle().setCursor(Cursor::PointingHand);
-                    _rContainer->setAttributeValue(Style::dataoid,_item->Element(TC::KEY::tcno)->get_utf8().value.to_string());
+                    _rContainer->setAttributeValue(Style::dataoid,_item->Element(TC::KEY::tcno)->view().get_string().value.data());
 
                     _rContainer->clicked().connect([=](){
 

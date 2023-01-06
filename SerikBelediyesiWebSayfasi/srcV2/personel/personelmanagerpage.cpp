@@ -355,7 +355,7 @@ void PersonelManagerPage::initNewPersonelWidget()
 
 
 
-        yeniPersonel->setFotoOid (val.get_oid ().value.to_string ().c_str ());
+        yeniPersonel->setFotoOid (val.view().get_oid ().value.to_string ().c_str ());
 
         auto insertedID = this->InsertItem (*yeniPersonel);
         if( insertedID.size () )
@@ -691,7 +691,7 @@ void PersonelPage::initHeader()
         if( fileManagerContainer->isUploaded () )
         {
             auto val = this->uploadfile (fileManagerContainer->fileLocation ());
-            this->setFotoOid (val.get_oid ().value.to_string ().c_str ());
+            this->setFotoOid (val.view().get_oid ().value.to_string ().c_str ());
             if( this->setField(SerikBLDCore::IK::Personel().setOid (this->oid ().value ().to_string ()),SerikBLDCore::IK::Personel::KeyFotoOid,val) ){
                 auto filePath = this->downloadFileWeb (this->FotoOid ());
                 container->setAttributeValue (Style::style,Style::background::url (filePath)+Style::background::size::contain+Style::background::repeat::norepeat+Style::background::position::center_center);
@@ -1336,8 +1336,8 @@ void PersonelPage::initContent()
                     if( upt )
                     {
                         auto __bOid = bsoncxx::oid{container2->attributeValue (Style::dataoid).toUTF8 ()};
-                        auto __valueOid = bsoncxx::types::value (bsoncxx::types::b_oid{__bOid});
-                        this->pullArray (SerikBLDCore::IK::Personel::KeyAltBirim,__valueOid);
+                        auto __valueOid = bsoncxx::types::bson_value::value (bsoncxx::types::b_oid{__bOid});
+                        this->pullArray (SerikBLDCore::IK::Personel::KeyAltBirim,bsoncxx::types::bson_value::value(__valueOid));
                         rAltBirimList->removeWidget(container1);
                         rAltBirimList->removeWidget(container2);
                         this->showPopUpMessage ("Servis Kaldırıldı");
@@ -1386,8 +1386,8 @@ void PersonelPage::initContent()
                         if( upt )
                         {
                             auto __bOid = bsoncxx::oid{container2->attributeValue (Style::dataoid).toUTF8 ()};
-                            auto __valueOid = bsoncxx::types::value (bsoncxx::types::b_oid{__bOid});
-                            this->pullArray (SerikBLDCore::IK::Personel::KeyAltBirim,__valueOid);
+                            auto __valueOid = bsoncxx::types::bson_value::value (bsoncxx::types::b_oid{__bOid});
+                            this->pullArray (SerikBLDCore::IK::Personel::KeyAltBirim,bsoncxx::types::bson_value::value(__valueOid));
                             rAltBirimList->removeWidget(container1);
                             rAltBirimList->removeWidget(container2);
                             this->showPopUpMessage ("Servis Kaldırıldı");

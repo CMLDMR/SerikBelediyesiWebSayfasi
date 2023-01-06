@@ -154,7 +154,7 @@ void v2::NostSerikManager::onList(const QVector<NostItem> *mlist)
 
                 if( fileUploadWidget->isUploaded() ){
                     auto uploadedFileOid = this->uploadfile(fileUploadWidget->fileLocation());
-                    changeItem.setFileOid(uploadedFileOid.get_oid().value.to_string());
+                    changeItem.setFileOid(uploadedFileOid.view().get_oid().value.to_string());
 
 
                     QImage img;
@@ -191,7 +191,7 @@ void v2::NostSerikManager::onList(const QVector<NostItem> *mlist)
 
 
                         auto fileOidValue = this->uploadfile(fileUploadWidget->fileLocation());
-                        changeItem.setThumbnail(fileOidValue.get_oid().value.to_string());
+                        changeItem.setThumbnail(fileOidValue.view().get_oid().value.to_string());
 
 
 
@@ -357,13 +357,13 @@ void v2::NostSerikManager::addNewFile()
 
            if( img.save(fileUploader->fileLocation()+"-----."+mimeType.preferredSuffix()) ){
                auto fileOidValue_ = this->uploadfile(fileUploader->fileLocation()+"-----."+mimeType.preferredSuffix());
-               thumbOid->setText(fileOidValue_.get_oid().value.to_string());
+               thumbOid->setText(fileOidValue_.view().get_oid().value.to_string());
 
            }
        }
 
        auto fileOidValue = this->uploadfile(fileUploader->fileLocation());
-       textOid->setText(fileOidValue.get_oid().value.to_string());
+       textOid->setText(fileOidValue.view().get_oid().value.to_string());
 
     });
 
@@ -476,8 +476,8 @@ std::string v2::NostItem::getAciklama() const
 {
     auto val = this->element(NostSerikKey::Aciklama);
     if( val ){
-        if( val->type() == bsoncxx::type::k_utf8 ){
-            return val->get_utf8().value.to_string();
+        if( val->view().type() == bsoncxx::type::k_utf8 ){
+            return val->view().get_string().value.data();
         }
         return "";
     }
@@ -488,8 +488,8 @@ std::string v2::NostItem::getTip() const
 {
     auto val = this->element(NostSerikKey::Tip);
     if( val ){
-        if( val->type() == bsoncxx::type::k_utf8 ){
-            return val->get_utf8().value.to_string();
+        if( val->view().type() == bsoncxx::type::k_utf8 ){
+            return val->view().get_string().value.data();
         }
         return "";
     }
@@ -500,8 +500,8 @@ std::string v2::NostItem::getFileOid() const
 {
     auto val = this->element(NostSerikKey::fileOid);
     if( val ){
-        if( val->type() == bsoncxx::type::k_oid ){
-            return val->get_oid().value.to_string();
+        if( val->view().type() == bsoncxx::type::k_oid ){
+            return val->view().get_oid().value.to_string();
         }
         return "";
     }
@@ -512,8 +512,8 @@ std::string v2::NostItem::getThumbNails() const
 {
     auto val = this->element(NostSerikKey::thumbNails);
     if( val ){
-        if( val->type() == bsoncxx::type::k_oid ){
-            return val->get_oid().value.to_string();
+        if( val->view().type() == bsoncxx::type::k_oid ){
+            return val->view().get_oid().value.to_string();
         }
         return "";
     }
@@ -524,7 +524,7 @@ int v2::NostItem::getWidth() const
 {
     auto val = this->element(NostSerikKey::width);
     if( val ){
-        return val->get_int32().value;
+        return val->view().get_int32().value;
     }
     return 0;
 }
@@ -533,7 +533,7 @@ int v2::NostItem::getHeight() const
 {
     auto val = this->element(NostSerikKey::height);
     if( val ){
-        return val->get_int32().value;
+        return val->view().get_int32().value;
     }
     return 0;
 }

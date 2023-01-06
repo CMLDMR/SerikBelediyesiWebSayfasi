@@ -1,9 +1,9 @@
-#include "donut.h"
+//#include "donut.h"
 
 
 
-chart::Donut::Donut()
-    :WContainerWidget()
-{
+//chart::Donut::Donut()
+//    :WContainerWidget()
+//{
 
-}
+//}

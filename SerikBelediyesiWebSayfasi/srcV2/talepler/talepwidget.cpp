@@ -94,7 +94,7 @@ void TalepWidget::TalepWidget::init()
 
         Talep talepItem;
 
-        talepItem.setTCOID (tcVal->oid ().get ().to_string ().c_str ());
+        talepItem.setTCOID (tcVal->oid ().value ().to_string ().c_str ());
         talepItem.setAy (QDate::currentDate ().toString ("MMMM"));
         talepItem.setYil (QDate::currentDate ().year ());
         talepItem.setSec (QDateTime::currentDateTime ().time ().msecsSinceStartOfDay ());
@@ -216,7 +216,7 @@ void TalepWidget::TCWidget::TCChanged()
 
         if( tcItem )
         {
-            mTCOid = tcItem.value ()->oid ().get ().to_string ();
+            mTCOid = tcItem.value ()->oid ().value ().to_string ();
             std::string isim = tcItem.value ()->AdSoyad ().toStdString ();
             for( decltype (isim.size()) i = 1 ; i < isim.size()-1 ; i++ )
             {
@@ -290,42 +290,42 @@ void TalepWidget::TCWidget::setDefault()
 
 }
 
-boost::optional<TC> TalepWidget::TCWidget::TCItem()
+std::optional<TC> TalepWidget::TCWidget::TCItem()
 {
 
     if( mTcNO->text ().toUTF8 ().size () != 11 )
     {
         setError ("TCNO Hatalaı");
         setErrorCode (errorCode::tcnoHatali);
-        return boost::none;
+        return std::nullopt;
     }
 
     if( mAdSoyad->text ().toUTF8 ().size () <= 5 )
     {
         setError ("Ad Soyad Çok Kısa");
         setErrorCode (errorCode::adsoyadHatali);
-        return boost::none;
+        return std::nullopt;
     }
 
     if( mMahalle->currentIndex () == 0 )
     {
         setError ("Mahalle Seçilmedi");
         setErrorCode (errorCode::mahalleHatali);
-        return boost::none;
+        return std::nullopt;
     }
 
     if( mTelefon->text ().toUTF8 ().size () != 11 )
     {
         setError ("Telefon Numarası Uygun Formatta Değil ( 05321234567) ");
         setErrorCode (errorCode::telefonHatali);
-        return boost::none;
+        return std::nullopt;
     }
 
     if( mTCOid.size () != 24 )
     {
         setError ("TC Kayıtlı Değil");
         setErrorCode (errorCode::tcoidHatali);
-        return boost::none;
+        return std::nullopt;
     }
 
     TC item;
@@ -338,7 +338,7 @@ boost::optional<TC> TalepWidget::TCWidget::TCItem()
     return std::move(item);
 }
 
-boost::optional<TC> TalepWidget::TCWidget::saveTCItem()
+std::optional<TC> TalepWidget::TCWidget::saveTCItem()
 {
 
     TC item;
@@ -354,7 +354,7 @@ boost::optional<TC> TalepWidget::TCWidget::saveTCItem()
         item.setOid (_oid.get_oid ().value.to_string ());
         return std::move(item);
     }else{
-        return boost::none;
+        return std::nullopt;
     }
 
 
@@ -507,7 +507,7 @@ std::string TalepWidget::TalepItemWidget::fotoOid() const
     if( mFileUploadManager->isUploaded () )
     {
         auto fileValue = this->mDB.uploadfile (mFileUploadManager->fileLocation ());
-        return fileValue.get_oid ().value.to_string ();
+        return fileValue.view().get_oid ().value.to_string ();
     }else{
         return "";
     }

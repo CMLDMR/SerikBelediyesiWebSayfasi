@@ -779,7 +779,7 @@ void v2::CalismaManagerContainer::initYeniCalismaEkle()
 
             for( auto imgOid : mUploadedPictureList ){
                 auto fileOid = this->uploadfile (imgOid.c_str ());
-                calismaItem.addPhoto (fileOid.get_oid ().value);
+                calismaItem.addPhoto (fileOid.view().get_oid ().value);
             }
 
             if( this->InsertItem (calismaItem).size () ){

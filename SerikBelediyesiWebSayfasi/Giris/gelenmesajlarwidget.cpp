@@ -267,7 +267,7 @@ void PersonelV2::GelenMesajlarWidget::addList(WContainerWidget *rContainer, bson
                 auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
                 container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
                 try {
-                    auto text = container->addWidget(cpp14::make_unique<WText>(doc[SBLDKeys::Yonetim::Baskan::MESAJ::saat].get_utf8().value.to_string()));
+                    auto text = container->addWidget(cpp14::make_unique<WText>(doc[SBLDKeys::Yonetim::Baskan::MESAJ::saat].get_string().value.data()));
                     text->setAttributeValue(Style::style,Style::font::size::s12px+Style::font::weight::bold);
                 } catch (bsoncxx::exception &e) {
                     auto text = container->addWidget(cpp14::make_unique<WText>("Saat Yok"));
@@ -281,7 +281,7 @@ void PersonelV2::GelenMesajlarWidget::addList(WContainerWidget *rContainer, bson
                 auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
                 container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
                 try {
-                    auto text = container->addWidget(cpp14::make_unique<WText>(doc[SBLDKeys::Yonetim::Baskan::MESAJ::ad].get_utf8().value.to_string()));
+                    auto text = container->addWidget(cpp14::make_unique<WText>(doc[SBLDKeys::Yonetim::Baskan::MESAJ::ad].get_string().value.data()));
                     text->setAttributeValue(Style::style,Style::font::size::s12px+Style::font::weight::bold);
                 } catch (bsoncxx::exception &e) {
                     auto text = container->addWidget(cpp14::make_unique<WText>("AdSoyad Yok"));
@@ -294,7 +294,7 @@ void PersonelV2::GelenMesajlarWidget::addList(WContainerWidget *rContainer, bson
                 auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
                 container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
                 try {
-                    auto text = container->addWidget(cpp14::make_unique<WText>(doc[SBLDKeys::Yonetim::Baskan::MESAJ::tel].get_utf8().value.to_string()));
+                    auto text = container->addWidget(cpp14::make_unique<WText>(doc[SBLDKeys::Yonetim::Baskan::MESAJ::tel].get_string().value.data()));
                     text->setAttributeValue(Style::style,Style::font::size::s12px+Style::font::weight::bold);
                 } catch (bsoncxx::exception &e) {
                     auto text = container->addWidget(cpp14::make_unique<WText>("Telefon Yok"));
@@ -307,7 +307,7 @@ void PersonelV2::GelenMesajlarWidget::addList(WContainerWidget *rContainer, bson
                 auto container = row->addWidget(cpp14::make_unique<WContainerWidget>());
                 container->addStyleClass(Bootstrap::Grid::Large::col_lg_4+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
                 try {
-                    auto text = container->addWidget(cpp14::make_unique<WText>(doc[SBLDKeys::Yonetim::Baskan::MESAJ::mesaj].get_utf8().value.to_string()));
+                    auto text = container->addWidget(cpp14::make_unique<WText>(doc[SBLDKeys::Yonetim::Baskan::MESAJ::mesaj].get_string().value.data()));
                     text->setAttributeValue(Style::style,Style::font::size::s12px+Style::font::weight::bold);
                 } catch (bsoncxx::exception &e) {
                     auto text = container->addWidget(cpp14::make_unique<WText>("Mesaj Yok"));
@@ -378,7 +378,7 @@ void PersonelV2::GelenMesajlarWidget::setDetail(std::string oid)
                     auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
                     container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
                     try {
-                        auto text = container->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Yonetim::Baskan::MESAJ::saat].get_utf8().value.to_string()));
+                        auto text = container->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Yonetim::Baskan::MESAJ::saat].get_string().value.data()));
                         text->addStyleClass(Bootstrap::Label::Primary);
                         text->setAttributeValue(Style::style,Style::font::size::s14px);
                     } catch (bsoncxx::exception &e) {
@@ -392,7 +392,7 @@ void PersonelV2::GelenMesajlarWidget::setDetail(std::string oid)
                     auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
                     container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
                     try {
-                        auto text = container->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Yonetim::Baskan::MESAJ::ad].get_utf8().value.to_string()));
+                        auto text = container->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Yonetim::Baskan::MESAJ::ad].get_string().value.data()));
                         text->addStyleClass(Bootstrap::Label::Primary);
                         text->setAttributeValue(Style::style,Style::font::size::s14px);
                     } catch (bsoncxx::exception &e) {
@@ -406,7 +406,7 @@ void PersonelV2::GelenMesajlarWidget::setDetail(std::string oid)
                     auto container = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
                     container->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
                     try {
-                        auto text = container->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Yonetim::Baskan::MESAJ::tel].get_utf8().value.to_string()));
+                        auto text = container->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Yonetim::Baskan::MESAJ::tel].get_string().value.data()));
                         text->addStyleClass(Bootstrap::Label::Primary);
                         text->setAttributeValue(Style::style,Style::font::size::s14px);
                     } catch (bsoncxx::exception &e) {
@@ -433,7 +433,7 @@ void PersonelV2::GelenMesajlarWidget::setDetail(std::string oid)
 
 
                     try {
-                        auto text = vLayout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Yonetim::Baskan::MESAJ::mesaj].get_utf8().value.to_string()));
+                        auto text = vLayout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Yonetim::Baskan::MESAJ::mesaj].get_string().value.data()));
                         text->setAttributeValue(Style::style,Style::color::color(Style::color::White::FloralWhite)+Style::font::size::s12px+Style::font::weight::bold);
                     } catch (bsoncxx::exception &e) {
                         auto text = vLayout->addWidget(cpp14::make_unique<WText>(e.what()));
@@ -450,7 +450,7 @@ void PersonelV2::GelenMesajlarWidget::setDetail(std::string oid)
                     container->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(),this->getRandom(),this->getRandom(),0.7));
                     container->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
                     try {
-                        auto text = container->addWidget(cpp14::make_unique<WText>("Görevli Birim: "+view[SBLDKeys::Yonetim::Baskan::MESAJ::birim].get_utf8().value.to_string()));
+                        auto text = container->addWidget(cpp14::make_unique<WText>(std::string("Görevli Birim: ")+view[SBLDKeys::Yonetim::Baskan::MESAJ::birim].get_string().value.data()));
                         text->addStyleClass(Bootstrap::Label::Warning);
                         text->setAttributeValue(Style::style,Style::color::color(Style::color::White::FloralWhite)+Style::font::size::s12px+Style::font::weight::bold);
                     } catch (bsoncxx::exception &e) {
@@ -492,17 +492,17 @@ void PersonelV2::GelenMesajlarWidget::setDetail(std::string oid)
                             TarihText->addStyleClass(Bootstrap::Grid::Large::col_lg_4+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
                         }
                         {
-                            auto SaatText = _rContainer_->addWidget(cpp14::make_unique<WText>("Saat: "+cevapDoc[SBLDKeys::Yonetim::Baskan::MESAJ::CEVAP::saat].get_utf8().value.to_string()));
+                            auto SaatText = _rContainer_->addWidget(cpp14::make_unique<WText>(std::string("Saat: ")+cevapDoc[SBLDKeys::Yonetim::Baskan::MESAJ::CEVAP::saat].get_string().value.data()));
                             SaatText->setAttributeValue(Style::style,Style::color::color(Style::color::White::FloralWhite)+Style::font::size::s10px+Style::font::weight::bold);
                             SaatText->addStyleClass(Bootstrap::Grid::Large::col_lg_4+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
                         }
                         {
-                            auto YazarText = _rContainer_->addWidget(cpp14::make_unique<WText>("Yazar: "+cevapDoc[SBLDKeys::Yonetim::Baskan::MESAJ::CEVAP::personelAdSoyad].get_utf8().value.to_string()));
+                            auto YazarText = _rContainer_->addWidget(cpp14::make_unique<WText>(std::string("Yazar: ")+cevapDoc[SBLDKeys::Yonetim::Baskan::MESAJ::CEVAP::personelAdSoyad].get_string().value.data()));
                             YazarText->setAttributeValue(Style::style,Style::color::color(Style::color::White::FloralWhite)+Style::font::size::s10px+Style::font::weight::bold);
                             YazarText->addStyleClass(Bootstrap::Grid::Large::col_lg_4+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
                         }
                         {
-                            auto CevapText = _rContainer_->addWidget(cpp14::make_unique<WText>(cevapDoc[SBLDKeys::Yonetim::Baskan::MESAJ::CEVAP::cevap].get_utf8().value.to_string()));
+                            auto CevapText = _rContainer_->addWidget(cpp14::make_unique<WText>(cevapDoc[SBLDKeys::Yonetim::Baskan::MESAJ::CEVAP::cevap].get_string().value.data()));
                             CevapText->setAttributeValue(Style::style,Style::color::color(Style::color::White::FloralWhite)+Style::font::size::s12px+Style::font::weight::bold);
                             CevapText->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
                             CevapText->setMargin(10,Side::Top|Side::Bottom);
@@ -636,7 +636,7 @@ PersonelV2::GelenMesajlarWidget::CevapYazWidget::CevapYazWidget(mongocxx::databa
         }
 
         try {
-            doc.append(kvp(SBLDKeys::Yonetim::Baskan::MESAJ::CEVAP::personelAdSoyad,this->User().view()[SBLDKeys::Personel::ad].get_utf8().value.to_string()));
+            doc.append(kvp(SBLDKeys::Yonetim::Baskan::MESAJ::CEVAP::personelAdSoyad,this->User().view()[SBLDKeys::Personel::ad].get_string().value.data()));
         } catch (bsoncxx::exception &e) {
 
         }

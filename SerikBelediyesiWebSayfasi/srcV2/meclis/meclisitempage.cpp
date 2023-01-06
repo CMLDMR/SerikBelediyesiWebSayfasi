@@ -104,7 +104,7 @@ void v2::MeclisItemPage::onList(const QVector<SerikBLDCore::Meclis::KararItem> *
     mKararContainer->setMargin (25,Side::Top);
     mKararContainer->addWidget (cpp14::make_unique<WText>("<b>Kararlar</b>",TextFormat::UnsafeXHTML))->addStyleClass (Bootstrap::Grid::col_full_12+Bootstrap::ContextualBackGround::bg_info);
 
-    for( auto item : *mlist )
+    for( const auto &item : *mlist )
     {
         {
             auto container = mKararContainer->addWidget (cpp14::make_unique<WContainerWidget>());
@@ -122,6 +122,7 @@ void v2::MeclisItemPage::onList(const QVector<SerikBLDCore::Meclis::KararItem> *
                 std::unique_ptr<Wt::WAnchor> anchor =
                         Wt::cpp14::make_unique<Wt::WAnchor>(link,
                                                             std::to_string (item.sayi ()) + " Sayılı Karar");
+
                 container->addWidget (std::move(anchor));
             }
         }
@@ -173,7 +174,7 @@ void v2::MeclisItemPage::onList(const QVector<SerikBLDCore::Meclis::YouTubeLink>
     mLinkContainer->setMargin (25,Side::Top);
     mLinkContainer->addWidget (cpp14::make_unique<WText>("<b>Videolar</b>",TextFormat::UnsafeXHTML))->addStyleClass (Bootstrap::Grid::col_full_12+Bootstrap::ContextualBackGround::bg_info);
 
-    for( auto item : *mlist )
+    for( const auto &item : *mlist )
     {
         auto imgContainer = mLinkContainer->addWidget (cpp14::make_unique<WContainerWidget>());
         imgContainer->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
@@ -238,7 +239,7 @@ void v2::MeclisItemPage::onList(const QVector<SerikBLDCore::Meclis::RaporItem> *
     mRaporContainer->setMargin (25,Side::Top);
     mRaporContainer->addWidget (cpp14::make_unique<WText>("<b>Raporlar</b>",TextFormat::UnsafeXHTML))->addStyleClass (Bootstrap::Grid::col_full_12+Bootstrap::ContextualBackGround::bg_info);
 
-    for( auto item : *mlist )
+    for( const auto &item : *mlist )
     {
         {
             auto container = mRaporContainer->addWidget (cpp14::make_unique<WContainerWidget>());
@@ -675,7 +676,7 @@ void v2::MeclisItemPage::addGundem()
         if( __gundemOidText->text ().toUTF8 ().size () != 0 )
         {
             auto kararOid__ = SerikBLDCore::Meclis::GundemManager::uploadfile (__gundemOidText->text ().toUTF8 ().c_str ());
-            item.setGundemDosyasi (kararOid__.get_oid ().value);
+            item.setGundemDosyasi (kararOid__.view().get_oid ().value);
         }
         item.setMeclisOid (this->oid ().value ().to_string ());
         item.setGundemAdi (__GundemAdi->text ().toUTF8 ());
@@ -763,7 +764,7 @@ void v2::MeclisItemPage::addKarar()
             __infoText->setAttributeValue (Style::style,Style::color::color (Style::color::Red::DarkRed));
         }else{
             auto kararOid__ = SerikBLDCore::Meclis::KararManager::uploadfile (__kararOidText->text ().toUTF8 ().c_str ());
-            item.setKararOid (kararOid__.get_oid ().value.to_string ());
+            item.setKararOid (kararOid__.view().get_oid ().value.to_string ());
             item.setMeclisOid (this->oid ().value ().to_string ());
             SerikBLDCore::Meclis::KararManager::InsertItem (item);
             SerikBLDCore::Meclis::KararManager::UpdateList (SerikBLDCore::Meclis::KararItem().setMeclisOid (this->oid ().value ().to_string ()));
@@ -893,7 +894,7 @@ void v2::MeclisItemPage::addRapor()
 
         SerikBLDCore::Meclis::RaporItem item;
         auto kararOid__ = SerikBLDCore::Meclis::RaporManager::uploadfile (__kararOidText->text ().toUTF8 ().c_str ());
-        item.setRaporOid (kararOid__.get_oid ().value.to_string ());
+        item.setRaporOid (kararOid__.view().get_oid ().value.to_string ());
         item.setMeclisOid (this->oid ().value ().to_string ());
         item.setRaporAdi (__RaporAdi->text ().toUTF8 ());
         item.setKimden (__RaporKimden->text ().toUTF8 ());
@@ -946,7 +947,7 @@ void v2::MeclisItemPage::addTeklif()
         }
         SerikBLDCore::Meclis::TeklifItem item;
         auto kararOid__ = SerikBLDCore::Meclis::TeklifManager::uploadfile (__kararOidText->text ().toUTF8 ().c_str ());
-        item.setTeklifOid (kararOid__.get_oid ().value.to_string ());
+        item.setTeklifOid (kararOid__.view().get_oid ().value.to_string ());
         item.setMeclisOid (this->oid ().value ().to_string ());
         item.setTeklifAdi (__RaporAdi->text ().toUTF8 ());
         item.setKimden (__RaporKimden->text ().toUTF8 ());

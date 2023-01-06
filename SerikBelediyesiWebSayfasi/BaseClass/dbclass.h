@@ -27,9 +27,9 @@ public:
     bsoncxx::document::value UserValue() const;
     UserClass User() const;
 
-    boost::optional<std::string> birim();
+    std::optional<std::string> birim();
 
-    boost::optional<std::string> adSoyad();
+    std::optional<std::string> adSoyad();
 
     bool yetki  (const std::string &yetkiAdi);
 

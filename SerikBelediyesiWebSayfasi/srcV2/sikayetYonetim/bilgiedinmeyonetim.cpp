@@ -17,7 +17,7 @@ BilgiEdinmeYonetim::BilgiEdinmeYonetim(mongocxx::database *_db, const bsoncxx::d
             {
                 auto container = addWidget(cpp14::make_unique<WContainerWidget>());
                 container->addStyleClass(Bootstrap::Grid::col_full_12);
-                container->addWidget(cpp14::make_unique<BilgiEdinmeListWidget>(item.get()))->ClickBilgiEdinme().connect(this,&BilgiEdinmeYonetim::initBilgiEdinme);
+                container->addWidget(cpp14::make_unique<BilgiEdinmeListWidget>(item.value()))->ClickBilgiEdinme().connect(this,&BilgiEdinmeYonetim::initBilgiEdinme);
             }
         }
     }else{
@@ -42,7 +42,7 @@ BilgiEdinmeYonetim::BilgiEdinmeYonetim(mongocxx::database *_db, const bsoncxx::d
                 {
                     auto container = addWidget(cpp14::make_unique<WContainerWidget>());
                     container->addStyleClass(Bootstrap::Grid::col_full_12);
-                    container->addWidget(cpp14::make_unique<BilgiEdinmeListWidget>(item.get()))->ClickBilgiEdinme().connect(this,&BilgiEdinmeYonetim::initBilgiEdinme);
+                    container->addWidget(cpp14::make_unique<BilgiEdinmeListWidget>(item.value()))->ClickBilgiEdinme().connect(this,&BilgiEdinmeYonetim::initBilgiEdinme);
                 }
             }
 
@@ -240,9 +240,9 @@ void BilgiEdinmeWidget::initWidget()
             std::string birim;
 
             try {
-                auto _int = std::stoi(_item["Haberleşme Kodu"].get_utf8().value.to_string());
+                auto _int = std::stoi(_item["Haberleşme Kodu"].get_string().value.data());
                 if( _int > 0 ){
-                    list.push_back(_item["Haberleşme Kodu"].get_utf8().value.to_string());
+                    list.push_back(_item["Haberleşme Kodu"].get_string().value.data());
                 }
             } catch (bsoncxx::exception &e) {
 
@@ -336,7 +336,7 @@ void BilgiEdinmeWidget::initWidget()
             cevap.mTarih = WDate::currentServerDate().toJulianDay();
 
             auto val = this->uploadfile(cContainer->fileLocation());
-            cevap.mCevapOid = val.get_oid().value.to_string();
+            cevap.mCevapOid = val.view().get_oid().value.to_string();
 
 
             if( mItem->setCevap(cevap) ){

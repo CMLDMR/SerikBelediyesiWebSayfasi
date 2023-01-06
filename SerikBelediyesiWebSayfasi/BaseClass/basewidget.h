@@ -133,7 +133,7 @@ public:
 
 
     std::string UserBirim(){
-        return this->User().view()[SBLDKeys::Personel::birimi].get_utf8().value.to_string();
+        return this->User().view()[SBLDKeys::Personel::birimi].get_string().value.data();
     }
 
 private:

@@ -79,7 +79,7 @@ void AnonsWidget::initDevices()
             std::string objstring = "var obj"+ std::to_string(count) +" = new Object;";
 
             try {
-                auto value = doc["cihazadi"].get_utf8().value.to_string();
+                auto value = doc["cihazadi"].get_string().value.data();
                 deviceWidget->setDeviceName(value);
                 objstring += "obj"+std::to_string(count)+"[\"name\"] = \"" + deviceWidget->deviceName()+"\";";
             } catch (bsoncxx::exception &e) {
@@ -88,7 +88,7 @@ void AnonsWidget::initDevices()
             }
 
             try {
-                auto value = doc["mahalle"].get_utf8().value.to_string();
+                auto value = doc["mahalle"].get_string().value.data();
                 deviceWidget->setMahalle(value);
                 objstring += "obj"+std::to_string(count)+"[\"mahalle\"] = \"" + value+"\";";
             } catch (bsoncxx::exception &e) {
@@ -119,7 +119,7 @@ void AnonsWidget::initDevices()
 
 
             try {
-                auto value = doc["durum"].get_utf8().value.to_string();
+                auto value = doc["durum"].get_string().value.data();
                 deviceWidget->setDurum(value);
             } catch (bsoncxx::exception &e) {
                 std::cout << "Line " << __LINE__ << "->in doc durum type is not " << "utf8() :"<< e.what() << std::endl;
@@ -203,7 +203,7 @@ void AnonsWidget::DeviceProperties(std::string deviceOid)
 
                 auto vLayout = adContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
 
-                auto text = vLayout->addWidget(cpp14::make_unique<WText>(doc["cihazadi"].get_utf8().value.to_string()),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+                auto text = vLayout->addWidget(cpp14::make_unique<WText>(doc["cihazadi"].get_string().value.data()),0,AlignmentFlag::Center|AlignmentFlag::Middle);
                 text->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::size::s12px+Style::font::weight::bold);
             }
 
@@ -216,7 +216,7 @@ void AnonsWidget::DeviceProperties(std::string deviceOid)
 
                 auto vLayout = adContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
 
-                auto text = vLayout->addWidget(cpp14::make_unique<WText>(doc["mahalle"].get_utf8().value.to_string()),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+                auto text = vLayout->addWidget(cpp14::make_unique<WText>(doc["mahalle"].get_string().value.data()),0,AlignmentFlag::Center|AlignmentFlag::Middle);
                 text->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::size::s12px+Style::font::weight::bold);
             }
 
@@ -250,7 +250,7 @@ void AnonsWidget::DeviceProperties(std::string deviceOid)
 
                 auto vLayout = adContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
 
-                auto text = vLayout->addWidget(cpp14::make_unique<WText>(doc["durum"].get_utf8().value.to_string()),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+                auto text = vLayout->addWidget(cpp14::make_unique<WText>(doc["durum"].get_string().value.data()),0,AlignmentFlag::Center|AlignmentFlag::Middle);
                 text->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::size::s12px+Style::font::weight::bold);
             }
 
@@ -286,7 +286,7 @@ void AnonsWidget::DeviceProperties(std::string deviceOid)
                 auto aciklamaEkle = vLayout->addWidget(cpp14::make_unique<WPushButton>("Açıklama Ekle"),0,AlignmentFlag::Center|AlignmentFlag::Middle);
                 aciklamaEkle->addStyleClass(Bootstrap::Button::Primary);
 
-                if( this->User().view()["Birimi"].get_utf8().value.to_string() != "Bilgi İşlem Müdürlüğü" )
+                if( this->User().view()["Birimi"].get_string().value.data() != "Bilgi İşlem Müdürlüğü" )
                 {
                     aciklamaEkle->setEnabled(false);
                 }
@@ -313,12 +313,12 @@ void AnonsWidget::DeviceProperties(std::string deviceOid)
                     text->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::size::s12px+Style::font::weight::bold);
                 }
                 auto selectBtn = vLayout->addWidget(cpp14::make_unique<WLineEdit>(),0,AlignmentFlag::Center);
-                selectBtn->setText(doc["cihazadi"].get_utf8().value.to_string());
+                selectBtn->setText(doc["cihazadi"].get_string().value.data());
 
                 auto degistir = vLayout->addWidget(cpp14::make_unique<WPushButton>("Değiştir"),0,AlignmentFlag::Center);
                 degistir->addStyleClass(Bootstrap::Button::Primary);
 
-                if( this->User().view()["Birimi"].get_utf8().value.to_string() != "Bilgi İşlem Müdürlüğü" )
+                if( this->User().view()["Birimi"].get_string().value.data() != "Bilgi İşlem Müdürlüğü" )
                 {
                     degistir->setEnabled(false);
                 }
@@ -388,14 +388,14 @@ void AnonsWidget::DeviceProperties(std::string deviceOid)
 
                 //Bilgi İşlem Müdürlüğü
 
-                if( this->User().view()["Birimi"].get_utf8().value.to_string() != "Bilgi İşlem Müdürlüğü" )
+                if( this->User().view()["Birimi"].get_string().value.data() != "Bilgi İşlem Müdürlüğü" )
                 {
                     selectBtn->setEnabled(false);
                 }
                 std::string mDurum;
 
                 try {
-                    mDurum = doc["durum"].get_utf8().value.to_string();
+                    mDurum = doc["durum"].get_string().value.data();
                 } catch (bsoncxx::exception &e) {
                     std::cout << "Line " << __LINE__ << "->in doc durum type is not " << "utf8() :"<< e.what() << std::endl;
                 }
@@ -503,7 +503,7 @@ void AnonsWidget::DeviceProperties(std::string deviceOid)
                         itemContainer->addStyleClass(Bootstrap::ImageShape::img_thumbnail+Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
                         auto itemLayout = itemContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
                         try {
-                            auto value = item.get_document().view()["saat"].get_utf8().value.to_string();
+                            auto value = item.get_document().view()["saat"].get_string().value.data();
                             itemLayout->addWidget( cpp14::make_unique<WText>( value , TextFormat::XHTML ) , 0 , AlignmentFlag::Center|AlignmentFlag::Middle);
                         } catch (bsoncxx::exception &e) {
                             std::cout << "Line " << __LINE__ << "->in item.get_document().v saat type is not " << "utf8() :"<< e.what() << std::endl;
@@ -514,7 +514,7 @@ void AnonsWidget::DeviceProperties(std::string deviceOid)
                         itemContainer->addStyleClass(Bootstrap::ImageShape::img_thumbnail+Bootstrap::Grid::col_full_12);
                         auto itemLayout = itemContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
                         try {
-                            auto value = item.get_document().view()["aciklama"].get_utf8().value.to_string();
+                            auto value = item.get_document().view()["aciklama"].get_string().value.data();
                             itemLayout->addWidget(cpp14::make_unique<WText>(value,TextFormat::XHTML),0,AlignmentFlag::Center|AlignmentFlag::Middle);
                         } catch (bsoncxx::exception &e) {
                             std::cout << "Line " << __LINE__ << "->in item.get_document().v aciklama type is not " << "utf8() :"<< e.what() << std::endl;
@@ -704,7 +704,7 @@ void AnonsWidget::showFoto(const std::string &deviceOid)
                     container->setAttributeValue(Style::style,Style::background::color::rgba(0,0,0));
                     container->setContentAlignment(AlignmentFlag::Center);
                     {
-                        auto text = container->addWidget(cpp14::make_unique<WText>(fotoitem.get_document().view()["saat"].get_utf8().value.to_string().c_str()));
+                        auto text = container->addWidget(cpp14::make_unique<WText>(fotoitem.get_document().view()["saat"].get_string().value.data()));
                         text->setAttributeValue(Style::style,Style::color::color(Style::color::White::AntiqueWhite)
                                                 +Style::font::size::s14px+Style::font::weight::bold);
                     }

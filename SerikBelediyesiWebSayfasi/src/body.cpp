@@ -297,10 +297,10 @@ void Body::Body::setNewsDetail(std::string oid)
 
                 auto gradientContainer = img->addWidget(cpp14::make_unique<WContainerWidget>());
                 gradientContainer->setHeight(150);
-                gradientContainer->addStyleClass("SliderDetailTextBackground");
+                gradientContainer->addStyleClass("img/SliderDetailTextBackground");
                 auto layout = gradientContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
                 layout->addStretch(1);
-                auto title = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Haberler::Baslik].get_utf8().value.to_string().c_str()),0,AlignmentFlag::Bottom|AlignmentFlag::Center);
+                auto title = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Haberler::Baslik].get_string().value.data()),0,AlignmentFlag::Bottom|AlignmentFlag::Center);
                 title->setAttributeValue(Style::style,Style::font::size::s36px+Style::color::color(Style::color::White::AliceBlue));
                 title->addStyleClass("NewsMainTitle");
                 wApp->setInternalPath("/"+title->text().toUTF8(),false);
@@ -336,7 +336,7 @@ void Body::Body::setNewsDetail(std::string oid)
 
 
                 auto layout = textContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
-                auto text = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Haberler::html].get_utf8().value.to_string().c_str(),TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
+                auto text = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Haberler::html].get_string().value.data(),TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
             }
 
             {
@@ -403,7 +403,7 @@ void Body::Body::setVideoDetail(std::string oid)
                 gradientContainer->addStyleClass("SliderDetailTextBackground");
                 auto layout = gradientContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
                 layout->addStretch(1);
-                auto title = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Video::title].get_utf8().value.to_string().c_str()),0,AlignmentFlag::Bottom|AlignmentFlag::Center);
+                auto title = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Video::title].get_string().value.data()),0,AlignmentFlag::Bottom|AlignmentFlag::Center);
                 title->setAttributeValue(Style::style,Style::font::size::s48px+Style::color::color(Style::color::White::AliceBlue));
                 wApp->setInternalPath("/"+title->text().toUTF8(),false);
             }
@@ -447,7 +447,7 @@ void Body::Body::setVideoDetail(std::string oid)
                                                  Style::background::color::color(Style::color::White::Snow));
 
                 auto layout = textContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
-                auto text = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Video::VideoExplain].get_utf8().value.to_string().c_str(),TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
+                auto text = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Video::VideoExplain].get_string().value.data(),TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
             }
 
             {
@@ -519,7 +519,7 @@ void Body::Body::setBaskanDetail(std::string oid)
                 layout->addStretch(1);
                 auto serik = layout->addWidget(cpp14::make_unique<WText>("Serik Belediye Başkanı"),0,AlignmentFlag::Bottom|AlignmentFlag::Center);
                 serik->setAttributeValue(Style::style,Style::font::size::s36px+Style::color::color(Style::color::White::AliceBlue));
-                auto title = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Yonetim::Baskan::baskan].get_utf8().value.to_string().c_str()),0,AlignmentFlag::Bottom|AlignmentFlag::Center);
+                auto title = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Yonetim::Baskan::baskan].get_string().value.data()),0,AlignmentFlag::Bottom|AlignmentFlag::Center);
                 title->setAttributeValue(Style::style,Style::font::size::s48px+Style::color::color(Style::color::White::AliceBlue));
                 wApp->setInternalPath("/"+title->text().toUTF8(),false);
             }
@@ -558,7 +558,7 @@ void Body::Body::setBaskanDetail(std::string oid)
 
 
                 auto layout = textContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
-                auto text = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Yonetim::Baskan::html].get_utf8().value.to_string().c_str(),TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
+                auto text = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Yonetim::Baskan::html].get_string().value.data(),TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
             }
 
 
@@ -646,7 +646,7 @@ void Body::Body::setEventDetail(std::string oid)
                 layout->addStretch(1);
                 auto serik = layout->addWidget(cpp14::make_unique<WText>("Etkinlikler"),0,AlignmentFlag::Bottom|AlignmentFlag::Center);
                 serik->setAttributeValue(Style::style,Style::font::size::s36px+Style::color::color(Style::color::White::AliceBlue));
-                auto title = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Etkinlik::title].get_utf8().value.to_string().c_str()),0,AlignmentFlag::Bottom|AlignmentFlag::Center);
+                auto title = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Etkinlik::title].get_string().value.data()),0,AlignmentFlag::Bottom|AlignmentFlag::Center);
                 title->setAttributeValue(Style::style,Style::font::size::s48px+Style::color::color(Style::color::White::AliceBlue));
                 wApp->setInternalPath("/"+title->text().toUTF8(),false);
             }
@@ -679,7 +679,7 @@ void Body::Body::setEventDetail(std::string oid)
                                                  Style::background::color::color(Style::color::White::Snow));
 
                 auto layout = textContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
-                auto text = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Etkinlik::html].get_utf8().value.to_string().c_str(),TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
+                auto text = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Etkinlik::html].get_string().value.data(),TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
             }
 
 
@@ -751,7 +751,7 @@ void Body::Body::setProjeDetail(std::string oid)
     {
         auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("<h2>{1}</h2>").arg(view[SBLDKeys::Projeler::title].get_utf8().value.to_string().c_str())),0,AlignmentFlag::Middle);
+        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("<h2>{1}</h2>").arg(view[SBLDKeys::Projeler::title].get_string().value.data())),0,AlignmentFlag::Middle);
         text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
 
     }
@@ -767,7 +767,7 @@ void Body::Body::setProjeDetail(std::string oid)
     {
         auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Durum {1}").arg(view[SBLDKeys::Projeler::durum].get_utf8().value.to_string().c_str())),0,AlignmentFlag::Middle);
+        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Durum {1}").arg(view[SBLDKeys::Projeler::durum].get_string().value.data())),0,AlignmentFlag::Middle);
         text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
 
     }
@@ -775,13 +775,13 @@ void Body::Body::setProjeDetail(std::string oid)
     {
         auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Birim {1}").arg(view[SBLDKeys::Projeler::birim].get_utf8().value.to_string().c_str())),0,AlignmentFlag::Middle);
+        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Birim {1}").arg(view[SBLDKeys::Projeler::birim].get_string().value.data())),0,AlignmentFlag::Middle);
         text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
 
     }
 
     {
-        auto text = TitleContainerColor->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(view[SBLDKeys::Projeler::mahalle].get_utf8().value.to_string().c_str())));
+        auto text = TitleContainerColor->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(view[SBLDKeys::Projeler::mahalle].get_string().value.data())));
         text->addStyleClass(Bootstrap::Label::Warning+Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
         text->setAttributeValue(Style::style,Style::font::weight::bold+Style::font::size::s16px);
     }
@@ -821,7 +821,7 @@ void Body::Body::setProjeDetail(std::string oid)
                 auto TextCOntainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
                 TextCOntainer->setPadding(15,Side::Bottom|Side::Top);
                 TextCOntainer->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(0,125),this->getRandom(0,125),this->getRandom(0,125),.75));
-                auto aciklamaText = TextCOntainer->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(doc[SBLDKeys::Projeler::slideItem::text].get_utf8().value.to_string().c_str())));
+                auto aciklamaText = TextCOntainer->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(doc[SBLDKeys::Projeler::slideItem::text].get_string().value.data())));
                 aciklamaText->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::weight::bold+Style::font::size::s16px);
             }
         } catch (bsoncxx::exception &e) {
@@ -881,7 +881,7 @@ void Body::Body::setCalismaDetail(std::string oid)
     {
         auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("<h2>{1}</h2>").arg(view[SBLDKeys::Calismalar::baslik].get_utf8().value.to_string().c_str())),0,AlignmentFlag::Middle);
+        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("<h2>{1}</h2>").arg(view[SBLDKeys::Calismalar::baslik].get_string().value.data())),0,AlignmentFlag::Middle);
         text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
 
     }
@@ -898,7 +898,7 @@ void Body::Body::setCalismaDetail(std::string oid)
     {
         auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Durum {1}").arg(view[SBLDKeys::Calismalar::durum].get_utf8().value.to_string().c_str())),0,AlignmentFlag::Middle);
+        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Durum {1}").arg(view[SBLDKeys::Calismalar::durum].get_string().value.data())),0,AlignmentFlag::Middle);
         text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
 
     }
@@ -906,7 +906,7 @@ void Body::Body::setCalismaDetail(std::string oid)
     {
         auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Kategori {1}").arg(view[SBLDKeys::Calismalar::kategori].get_utf8().value.to_string().c_str())),0,AlignmentFlag::Middle);
+        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Kategori {1}").arg(view[SBLDKeys::Calismalar::kategori].get_string().value.data())),0,AlignmentFlag::Middle);
         text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
 
     }
@@ -914,7 +914,7 @@ void Body::Body::setCalismaDetail(std::string oid)
     {
         auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Birim {1}").arg(view[SBLDKeys::Calismalar::birim].get_utf8().value.to_string().c_str())),0,AlignmentFlag::Middle);
+        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Birim {1}").arg(view[SBLDKeys::Calismalar::birim].get_string().value.data())),0,AlignmentFlag::Middle);
         text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
 
     }
@@ -922,7 +922,7 @@ void Body::Body::setCalismaDetail(std::string oid)
     {
         auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Tanım: <u>{1}</u>").arg(view[SBLDKeys::Calismalar::tanim].get_utf8().value.to_string().c_str())),0,AlignmentFlag::Middle);
+        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Tanım: <u>{1}</u>").arg(view[SBLDKeys::Calismalar::tanim].get_string().value.data())),0,AlignmentFlag::Middle);
         text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
     }
 
@@ -934,7 +934,7 @@ void Body::Body::setCalismaDetail(std::string oid)
         container->setPadding(10,AllSides);
         for( auto mah : view[SBLDKeys::Calismalar::mahalleler].get_array().value )
         {
-            auto text = container->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(mah.get_utf8().value.to_string().c_str())));
+            auto text = container->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(mah.get_string().value.data())));
             text->addStyleClass(Bootstrap::Label::Warning+Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
             text->setAttributeValue(Style::style,Style::font::weight::bold+Style::font::size::s16px);
             //            text->setMargin(5,AllSides);
@@ -1048,7 +1048,7 @@ void Body::Body::setCalismaDetail(std::string oid)
 
                 auto TextCOntainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
                 TextCOntainer->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(0,125),this->getRandom(0,125),this->getRandom(0,125)));
-                auto aciklamaText = TextCOntainer->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(doc[SBLDKeys::Calismalar::Asama::Aciklama].get_utf8().value.to_string().c_str())));
+                auto aciklamaText = TextCOntainer->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(doc[SBLDKeys::Calismalar::Asama::Aciklama].get_string().value.data())));
                 aciklamaText->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::weight::bold);
                 TextCOntainer->setPadding(10,Side::Top|Side::Bottom);
             }
@@ -1069,16 +1069,16 @@ std::string Body::Body::downloadifNotExist(bsoncxx::types::value oid, bool force
     auto file_length = downloader.file_length();
     auto bytes_counter = 0;
 
-    QFileInfo info( downloader.files_document()["filename"].get_utf8().value.to_string().c_str() );
+    QFileInfo info( downloader.files_document()["filename"].get_string().value.data() );
 
     QString fullFilename;
 
     if( forceFilename )
     {
-        fullFilename = QString("tempfile/%1").arg(downloader.files_document()["filename"].get_utf8().value.to_string().c_str());
+        fullFilename = QString("tempfile/%1").arg(downloader.files_document()["filename"].get_string().value.data());
     }else{
         fullFilename = QString("tempfile/%2.%1").arg(info.suffix())
-                .arg(downloader.files_document()["md5"].get_utf8().value.to_string().c_str());
+                .arg(downloader.files_document()["md5"].get_string().value.data());
     }
 
 
@@ -1122,16 +1122,16 @@ std::string Body::Body::downloadifNotExist(std::string oid, bool forceFilename)
     auto file_length = downloader.file_length();
     auto bytes_counter = 0;
 
-    QFileInfo info( downloader.files_document()["filename"].get_utf8().value.to_string().c_str() );
+    QFileInfo info( downloader.files_document()["filename"].get_string().value.data() );
 
     QString fullFilename;
 
     if( forceFilename )
     {
-        fullFilename = QString("tempfile/%1").arg(downloader.files_document()["filename"].get_utf8().value.to_string().c_str());
+        fullFilename = QString("tempfile/%1").arg(downloader.files_document()["filename"].get_string().value.data());
     }else{
         fullFilename = QString("tempfile/%2.%1").arg(info.suffix())
-                .arg(downloader.files_document()["md5"].get_utf8().value.to_string().c_str());
+                .arg(downloader.files_document()["md5"].get_string().value.data());
     }
 
     if( QFile::exists("docroot/"+fullFilename) )
@@ -1230,7 +1230,7 @@ void Body::ProjectPanel::setCurrentProject()
                     std::string path = SBLDKeys::downloadifNotExist(&bucket,element[SBLDKeys::Projeler::slideItem::img].get_oid().value.to_string().c_str());
                     CurrentItemKey itemKey;
                     itemKey.imgPath = path;
-                    itemKey.text = element[SBLDKeys::Projeler::slideItem::text].get_utf8().value.to_string();
+                    itemKey.text = element[SBLDKeys::Projeler::slideItem::text].get_string().value.data();
                     itemKey.index = currentIndex++;
                     pathList.push_back(itemKey);
                 }
@@ -1453,7 +1453,7 @@ void Body::ProjectPanel::refreshList()
 
                 ProjectHeader header;
                 header.oid = doc[SBLDKeys::Projeler::oid].get_oid().value.to_string().c_str();
-                header.title = doc[SBLDKeys::Projeler::title].get_utf8().value.to_string().c_str();
+                header.title = doc[SBLDKeys::Projeler::title].get_string().value.data();
                 header.img = path;
 
                 //                std::cout << "IMGPATH: " << path;
@@ -1939,9 +1939,9 @@ void Body::Proje::initMahallelereGoreDagilim()
         auto cursor = this->db()->collection(SBLDKeys::Mahalle::collection).find(filter.view());
         for( auto doc : cursor )
         {
-            if( doc[SBLDKeys::Mahalle::mahalle].get_utf8().value.to_string() != "NULL" )
+            if( doc[SBLDKeys::Mahalle::mahalle].get_string().value.data() != "NULL" )
             {
-                mahalleList.push_back(doc[SBLDKeys::Mahalle::mahalle].get_utf8().value.to_string());
+                mahalleList.push_back(doc[SBLDKeys::Mahalle::mahalle].get_string().value.data());
             }
         }
     } catch (mongocxx::exception &e) {
@@ -2060,9 +2060,9 @@ void Body::Proje::initBirimlereGoreDagilim()
         auto cursor = this->db()->collection(SBLDKeys::Birimler::collection).find(filter.view());
         for( auto doc : cursor )
         {
-            if( doc[SBLDKeys::Birimler::birim].get_utf8().value.to_string() != "NULL" )
+            if( doc[SBLDKeys::Birimler::birim].get_string().value.data() != "NULL" )
             {
-                birimList.push_back(doc[SBLDKeys::Birimler::birim].get_utf8().value.to_string());
+                birimList.push_back(doc[SBLDKeys::Birimler::birim].get_string().value.data());
             }
         }
     } catch (mongocxx::exception &e) {
@@ -2395,7 +2395,7 @@ void Body::Proje::initPage()
         {
             item _item;
             _item.oid = doc[SBLDKeys::Projeler::oid].get_oid().value.to_string();
-            _item.title = doc[SBLDKeys::Projeler::title].get_utf8().value.to_string();
+            _item.title = doc[SBLDKeys::Projeler::title].get_string().value.data();
 //            _item.iconPath = SBLDKeys::downloadifNotExist(&bucket,doc[SBLDKeys::Projeler::icon].get_oid().value.to_string());
             _item.iconPath = this->downloadFileWeb(doc[SBLDKeys::Projeler::icon].get_oid().value.to_string().c_str());
             list.push_back(_item);
@@ -2599,7 +2599,7 @@ void Body::Proje::setselectedProject(std::string oid)
     {
         auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("<h2>{1}</h2>").arg(view[SBLDKeys::Projeler::title].get_utf8().value.to_string().c_str())),0,AlignmentFlag::Middle);
+        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("<h2>{1}</h2>").arg(view[SBLDKeys::Projeler::title].get_string().value.data())),0,AlignmentFlag::Middle);
         text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
 
     }
@@ -2615,7 +2615,7 @@ void Body::Proje::setselectedProject(std::string oid)
     {
         auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Durum {1}").arg(view[SBLDKeys::Projeler::durum].get_utf8().value.to_string().c_str())),0,AlignmentFlag::Middle);
+        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Durum {1}").arg(view[SBLDKeys::Projeler::durum].get_string().value.data())),0,AlignmentFlag::Middle);
         text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
 
     }
@@ -2623,13 +2623,13 @@ void Body::Proje::setselectedProject(std::string oid)
     {
         auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Birim {1}").arg(view[SBLDKeys::Projeler::birim].get_utf8().value.to_string().c_str())),0,AlignmentFlag::Middle);
+        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Birim {1}").arg(view[SBLDKeys::Projeler::birim].get_string().value.data())),0,AlignmentFlag::Middle);
         text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
 
     }
 
     {
-        auto text = TitleContainerColor->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(view[SBLDKeys::Projeler::mahalle].get_utf8().value.to_string().c_str())));
+        auto text = TitleContainerColor->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(view[SBLDKeys::Projeler::mahalle].get_string().value.data())));
         text->addStyleClass(Bootstrap::Label::Warning+Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
         text->setAttributeValue(Style::style,Style::font::weight::bold+Style::font::size::s16px);
     }
@@ -2683,7 +2683,7 @@ void Body::Proje::setselectedProject(std::string oid)
                 auto TextCOntainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
                 TextCOntainer->setPadding(15,Side::Bottom|Side::Top);
                 TextCOntainer->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(0,125),this->getRandom(0,125),this->getRandom(0,125),.75));
-                auto aciklamaText = TextCOntainer->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(doc[SBLDKeys::Projeler::slideItem::text].get_utf8().value.to_string().c_str())));
+                auto aciklamaText = TextCOntainer->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(doc[SBLDKeys::Projeler::slideItem::text].get_string().value.data())));
                 aciklamaText->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::weight::bold+Style::font::size::s16px);
             }
         } catch (bsoncxx::exception &e) {
@@ -2856,7 +2856,7 @@ void Body::Haber::initPage()
         {
             item _item;
             _item.oid = doc[SBLDKeys::Haberler::oid].get_oid().value.to_string();
-            _item.title = doc[SBLDKeys::Haberler::Baslik].get_utf8().value.to_string();
+            _item.title = doc[SBLDKeys::Haberler::Baslik].get_string().value.data();
             _item.iconPath = SBLDKeys::downloadifNotExist(&bucket,doc[SBLDKeys::Haberler::icon].get_oid().value.to_string());
             list.push_back(_item);
         }
@@ -2986,7 +2986,7 @@ void Body::Haber::setNews(std::string oid)
                 gradientContainer->addStyleClass("SliderDetailTextBackground");
                 auto layout = gradientContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
                 layout->addStretch(1);
-                auto title = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Haberler::Baslik].get_utf8().value.to_string().c_str()),0,AlignmentFlag::Bottom|AlignmentFlag::Center);
+                auto title = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Haberler::Baslik].get_string().value.data()),0,AlignmentFlag::Bottom|AlignmentFlag::Center);
                 title->setAttributeValue(Style::style,Style::font::size::s36px+Style::color::color(Style::color::White::AliceBlue));
                 title->addStyleClass("NewsMainTitle");
             }
@@ -3017,7 +3017,7 @@ void Body::Haber::setNews(std::string oid)
 
 
                 auto layout = textContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
-                auto text = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Haberler::html].get_utf8().value.to_string().c_str(),TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
+                auto text = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Haberler::html].get_string().value.data(),TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
             }
 
 
@@ -3229,7 +3229,7 @@ void Body::Etkinlik::initPage()
         {
             item _item;
             _item.oid = doc[SBLDKeys::Etkinlik::oid].get_oid().value.to_string();
-            _item.title = doc[SBLDKeys::Etkinlik::title].get_utf8().value.to_string();
+            _item.title = doc[SBLDKeys::Etkinlik::title].get_string().value.data();
             _item.iconPath = SBLDKeys::downloadifNotExist(&bucket,doc[SBLDKeys::Etkinlik::iconFile].get_oid().value.to_string());
             list.push_back(_item);
         }
@@ -3343,7 +3343,7 @@ void Body::Etkinlik::setEtkinlik(std::string oid)
                 gradientContainer->addStyleClass("SliderDetailTextBackground");
                 auto layout = gradientContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
                 layout->addStretch(1);
-                auto title = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Etkinlik::title].get_utf8().value.to_string().c_str()),0,AlignmentFlag::Bottom|AlignmentFlag::Center);
+                auto title = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Etkinlik::title].get_string().value.data()),0,AlignmentFlag::Bottom|AlignmentFlag::Center);
                 title->setAttributeValue(Style::style,Style::font::size::s36px+Style::color::color(Style::color::White::AliceBlue));
             }
 
@@ -3368,7 +3368,7 @@ void Body::Etkinlik::setEtkinlik(std::string oid)
 
 
                 auto layout = textContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
-                auto text = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Etkinlik::html].get_utf8().value.to_string().c_str(),TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
+                auto text = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Etkinlik::html].get_string().value.data(),TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
             }
 
         }
@@ -3565,7 +3565,7 @@ void Body::Etkinlik::setEtkinlik(std::string oid)
 //        {
 //            item _item;
 //            _item.oid = doc[SBLDKeys::Video::oid].get_oid().value.to_string();
-//            _item.title = doc[SBLDKeys::Video::title].get_utf8().value.to_string();
+//            _item.title = doc[SBLDKeys::Video::title].get_string().value.data();
 //            _item.iconPath = SBLDKeys::downloadifNotExist(&bucket,doc[SBLDKeys::Video::VideoLabel].get_oid().value.to_string());
 //            list.push_back(_item);
 //        }
@@ -3681,7 +3681,7 @@ void Body::Etkinlik::setEtkinlik(std::string oid)
 //                gradientContainer->addStyleClass("SliderDetailTextBackground");
 //                auto layout = gradientContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
 //                layout->addStretch(1);
-//                auto title = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Video::title].get_utf8().value.to_string().c_str()),0,AlignmentFlag::Bottom|AlignmentFlag::Center);
+//                auto title = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Video::title].get_string().value.data().c_str()),0,AlignmentFlag::Bottom|AlignmentFlag::Center);
 //                title->setAttributeValue(Style::style,Style::font::size::s48px+Style::color::color(Style::color::White::AliceBlue));
 //            }
 
@@ -3727,7 +3727,7 @@ void Body::Etkinlik::setEtkinlik(std::string oid)
 //                                                 Style::background::color::color(Style::color::White::Snow));
 
 //                auto layout = textContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
-//                auto text = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Video::VideoExplain].get_utf8().value.to_string().c_str(),TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
+//                auto text = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Video::VideoExplain].get_string().value.data().c_str(),TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
 //            }
 
 
@@ -3831,7 +3831,7 @@ Body::Talep::Talep(mongocxx::database *_db)
 
                     for( auto doc : cursor )
                     {
-                        mMahalle->addItem(doc[SBLDKeys::Mahalle::mahalle].get_utf8().value.to_string().c_str());
+                        mMahalle->addItem(doc[SBLDKeys::Mahalle::mahalle].get_string().value.data());
                     }
 
                 } catch (mongocxx::exception &e) {
@@ -3873,7 +3873,7 @@ Body::Talep::Talep(mongocxx::database *_db)
 
                     for( auto doc : cursor )
                     {
-                        mTalepMahalle->addItem(doc[SBLDKeys::Mahalle::mahalle].get_utf8().value.to_string().c_str());
+                        mTalepMahalle->addItem(doc[SBLDKeys::Mahalle::mahalle].get_string().value.data());
                     }
 
                 } catch (mongocxx::exception &e) {
@@ -4120,13 +4120,13 @@ void Body::Talep::TCChanged()
             auto view = val.value().view();
 
 
-            oldadsoyad = view[SBLDKeys::TC::isimsoyisim].get_utf8().value.to_string();
-            oldmahalle = view[SBLDKeys::TC::mahalle].get_utf8().value.to_string();
-            oldtcno = view[SBLDKeys::TC::tcno].get_utf8().value.to_string();
-            oldtelefon = view[SBLDKeys::TC::cepTel].get_utf8().value.to_string();
+            oldadsoyad = view[SBLDKeys::TC::isimsoyisim].get_string().value.data();
+            oldmahalle = view[SBLDKeys::TC::mahalle].get_string().value.data();
+            oldtcno = view[SBLDKeys::TC::tcno].get_string().value.data();
+            oldtelefon = view[SBLDKeys::TC::cepTel].get_string().value.data();
 
 
-            std::string isim = view[SBLDKeys::TC::isimsoyisim].get_utf8().value.to_string();
+            std::string isim = view[SBLDKeys::TC::isimsoyisim].get_string().value.data();
 
             for( decltype (isim.size()) i = 1 ; i < isim.size()-1 ; i++ )
             {
@@ -4142,7 +4142,7 @@ void Body::Talep::TCChanged()
 
             mAdSoyad->setText(isim.c_str());
             for( int i = 0 ; i < mMahalle->count() ; i++ ){
-                if( mMahalle->itemText(i).toUTF8() == view[SBLDKeys::TC::mahalle].get_utf8().value.to_string() )
+                if( mMahalle->itemText(i).toUTF8() == view[SBLDKeys::TC::mahalle].get_string().value.data() )
                 {
                     mMahalle->setCurrentIndex(i);
                     break;
@@ -4150,7 +4150,7 @@ void Body::Talep::TCChanged()
             }
 
 
-            std::string tel = view[SBLDKeys::TC::cepTel].get_utf8().value.to_string();
+            std::string tel = view[SBLDKeys::TC::cepTel].get_string().value.data();
 
             for( decltype (tel.size()) i = 3 ; i < tel.size()-3 ; i++ )
             {
@@ -4867,7 +4867,7 @@ void Body::Serik::Hakkinda::initPage()
 
                 std::string catName;
                 try {
-                    catName = doc[SBLDKeys::Hakkinda::Kategori::KategoriName].get_utf8().value.to_string();
+                    catName = doc[SBLDKeys::Hakkinda::Kategori::KategoriName].get_string().value.data();
                 } catch (bsoncxx::exception &e) {
                     catName = std::string{"Error: "} + e.what() ;
                 }
@@ -4931,7 +4931,7 @@ void Body::Serik::Content::initContent()
             std::string oid;
 
             try {
-                itemName = doc[SBLDKeys::Hakkinda::Item::itemName].get_utf8().value.to_string();
+                itemName = doc[SBLDKeys::Hakkinda::Item::itemName].get_string().value.data();
             } catch (bsoncxx::exception &e) {
                 itemName = e.what();
             }
@@ -5028,7 +5028,7 @@ void Body::Serik::Content::selectedContent(std::string oid)
         }
 
         try {
-            auto text = cpp14::make_unique<WText>(view[SBLDKeys::Hakkinda::Item::itemName].get_utf8().value.to_string().c_str(),TextFormat::UnsafeXHTML);
+            auto text = cpp14::make_unique<WText>(view[SBLDKeys::Hakkinda::Item::itemName].get_string().value.data(),TextFormat::UnsafeXHTML);
             text->setAttributeValue(Style::style,Style::font::size::s24px+Style::font::weight::bold);
             ContentContainer->addWidget(std::move(text));
         } catch (bsoncxx::exception &e) {
@@ -5038,7 +5038,7 @@ void Body::Serik::Content::selectedContent(std::string oid)
 
 
         try {
-            auto text = cpp14::make_unique<WText>(view[SBLDKeys::Hakkinda::Item::html].get_utf8().value.to_string().c_str(),TextFormat::UnsafeXHTML);
+            auto text = cpp14::make_unique<WText>(view[SBLDKeys::Hakkinda::Item::html].get_string().value.data(),TextFormat::UnsafeXHTML);
             ContentContainer->addWidget(std::move(text));
         } catch (bsoncxx::exception &e) {
             auto text = cpp14::make_unique<WText>(WString("Error: {1}").arg(e.what()),TextFormat::UnsafeXHTML);
@@ -5269,7 +5269,7 @@ Body::Job::ProjectBlock::ProjectBlock(mongocxx::database *_db, bool _subPage)
                         if( !val.value().view().empty() )
                         {
                             try {
-                                text->setText("Son Başlanan: "+val.value().view()[SBLDKeys::Projeler::title].get_utf8().value.to_string());
+                                text->setText(std::string("Son Başlanan: ")+val.value().view()[SBLDKeys::Projeler::title].get_string().value.data());
                                 _container->setAttributeValue(Style::dataoid,val.value().view()[SBLDKeys::oid].get_oid().value.to_string().c_str());
                             } catch (bsoncxx::exception &e) {
                                 text->setText(e.what());
@@ -5745,7 +5745,7 @@ Body::Job::TaskBlock::TaskBlock(mongocxx::database *_db)
                     if( !val.value().view().empty() )
                     {
                         try {
-                            text->setText("Son Başlanan: " + val.value().view()[SBLDKeys::Calismalar::baslik].get_utf8().value.to_string());
+                            text->setText(std::string("Son Başlanan: ") + val.value().view()[SBLDKeys::Calismalar::baslik].get_string().value.data());
                             container_->setAttributeValue(Style::dataoid,val.value().view()[SBLDKeys::oid].get_oid().value.to_string());
                             container_->clicked().connect([=](){
                                 _clickTask.emit(container_->attributeValue(Style::dataoid).toUTF8());
@@ -6286,7 +6286,7 @@ void Body::Calisma::addCalismaItemToZamanTuneli(WContainerWidget *widget, bsoncx
     {
         auto textContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
         textContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12+Bootstrap::Grid::Medium::col_md_12+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
-        auto text = textContainer->addWidget(cpp14::make_unique<WText>(doc[SBLDKeys::Calismalar::baslik].get_utf8().value.to_string().c_str()));
+        auto text = textContainer->addWidget(cpp14::make_unique<WText>(doc[SBLDKeys::Calismalar::baslik].get_string().value.data()));
         text->setAttributeValue(Style::style,Style::font::weight::bold);
         text->setMargin(WLength::Auto,Side::Left|Side::Right);
     }
@@ -6298,7 +6298,7 @@ void Body::Calisma::addCalismaItemToZamanTuneli(WContainerWidget *widget, bsoncx
         {
             auto textContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
             textContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_4+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_12);
-            QString str = mah.get_utf8().value.to_string().c_str();
+            QString str = mah.get_string().value.data();
             str = str.remove(str.count()-9,9);
             auto text = textContainer->addWidget(cpp14::make_unique<WText>(str.toStdString().c_str()));
             text->addStyleClass(Bootstrap::Label::Warning);
@@ -6393,7 +6393,7 @@ void Body::Calisma::addCalismaItemToZamanTuneli(WContainerWidget *widget, bsoncx
             auto hLayout = _fluidContainer->setLayout(cpp14::make_unique<WHBoxLayout>());
             hLayout->setContentsMargins(0,0,0,0);
 
-            QString str = doc[SBLDKeys::Calismalar::birim].get_utf8().value.to_string().c_str();
+            QString str = doc[SBLDKeys::Calismalar::birim].get_string().value.data();
             str = str.mid(0,str.count()-9);
             auto text = hLayout->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(str.toStdString().c_str())));
             //            text->addStyleClass(Bootstrap::Label::Success);
@@ -6468,7 +6468,7 @@ void Body::Calisma::setCalismaDetail(std::string oid)
     {
         auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("<h2>{1}</h2>").arg(view[SBLDKeys::Calismalar::baslik].get_utf8().value.to_string().c_str())),0,AlignmentFlag::Middle);
+        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("<h2>{1}</h2>").arg(view[SBLDKeys::Calismalar::baslik].get_string().value.data())),0,AlignmentFlag::Middle);
         text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
 
     }
@@ -6485,7 +6485,7 @@ void Body::Calisma::setCalismaDetail(std::string oid)
     {
         auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Durum {1}").arg(view[SBLDKeys::Calismalar::durum].get_utf8().value.to_string().c_str())),0,AlignmentFlag::Middle);
+        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Durum {1}").arg(view[SBLDKeys::Calismalar::durum].get_string().value.data())),0,AlignmentFlag::Middle);
         text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
 
     }
@@ -6493,7 +6493,7 @@ void Body::Calisma::setCalismaDetail(std::string oid)
     {
         auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Kategori {1}").arg(view[SBLDKeys::Calismalar::kategori].get_utf8().value.to_string().c_str())),0,AlignmentFlag::Middle);
+        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Kategori {1}").arg(view[SBLDKeys::Calismalar::kategori].get_string().value.data())),0,AlignmentFlag::Middle);
         text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
 
     }
@@ -6501,7 +6501,7 @@ void Body::Calisma::setCalismaDetail(std::string oid)
     {
         auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Birim {1}").arg(view[SBLDKeys::Calismalar::birim].get_utf8().value.to_string().c_str())),0,AlignmentFlag::Middle);
+        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Birim {1}").arg(view[SBLDKeys::Calismalar::birim].get_string().value.data())),0,AlignmentFlag::Middle);
         text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
 
     }
@@ -6509,7 +6509,7 @@ void Body::Calisma::setCalismaDetail(std::string oid)
     {
         auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Tanım: <u>{1}</u>").arg(view[SBLDKeys::Calismalar::tanim].get_utf8().value.to_string().c_str())),0,AlignmentFlag::Middle);
+        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Tanım: <u>{1}</u>").arg(view[SBLDKeys::Calismalar::tanim].get_string().value.data())),0,AlignmentFlag::Middle);
         text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
     }
 
@@ -6521,7 +6521,7 @@ void Body::Calisma::setCalismaDetail(std::string oid)
         container->setPadding(10,AllSides);
         for( auto mah : view[SBLDKeys::Calismalar::mahalleler].get_array().value )
         {
-            auto text = container->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(mah.get_utf8().value.to_string().c_str())));
+            auto text = container->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(mah.get_string().value.data())));
             text->addStyleClass(Bootstrap::Label::Warning+Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
             text->setAttributeValue(Style::style,Style::font::weight::bold+Style::font::size::s16px);
             //            text->setMargin(5,AllSides);
@@ -6634,7 +6634,7 @@ void Body::Calisma::setCalismaDetail(std::string oid)
 
                 auto TextCOntainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
                 TextCOntainer->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(0,125),this->getRandom(0,125),this->getRandom(0,125)));
-                auto aciklamaText = TextCOntainer->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(doc[SBLDKeys::Calismalar::Asama::Aciklama].get_utf8().value.to_string().c_str())));
+                auto aciklamaText = TextCOntainer->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(doc[SBLDKeys::Calismalar::Asama::Aciklama].get_string().value.data())));
                 aciklamaText->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::weight::bold);
                 TextCOntainer->setPadding(10,Side::Top|Side::Bottom);
             }
@@ -6776,19 +6776,19 @@ void Body::Calisma::initTable(bsoncxx::document::view view)
             }
 
             try {
-                item.birim = doc[SBLDKeys::Calismalar::birim].get_utf8().value.to_string();
+                item.birim = doc[SBLDKeys::Calismalar::birim].get_string().value.data();
             } catch (bsoncxx::exception &e) {
                 std::cout << "Error: " << e.what() << std::endl;
             }
 
             try {
-                item.durum = doc[SBLDKeys::Calismalar::durum].get_utf8().value.to_string();
+                item.durum = doc[SBLDKeys::Calismalar::durum].get_string().value.data();
             } catch (bsoncxx::exception &e) {
                 std::cout << "Error: " << e.what() << std::endl;
             }
 
             try {
-                item.baslik = doc[SBLDKeys::Calismalar::baslik].get_utf8().value.to_string();
+                item.baslik = doc[SBLDKeys::Calismalar::baslik].get_string().value.data();
                 QString str = QString::fromStdString(item.baslik);
                 if( str.count() > 25 )
                 {
@@ -6812,7 +6812,7 @@ void Body::Calisma::initTable(bsoncxx::document::view view)
                 auto arlist = doc[SBLDKeys::Calismalar::mahalleler].get_array().value;
                 for( auto mah : arlist )
                 {
-                    item.mahalleList.push_back(mah.get_utf8().value.to_string());
+                    item.mahalleList.push_back(mah.get_string().value.data());
                 }
             } catch (bsoncxx::exception &e) {
                 std::cout << "Error: " << e.what() << std::endl;
@@ -6942,7 +6942,7 @@ void Body::Calisma::setSelectedCalisma(std::string oid)
     {
         auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("<h2>{1}</h2>").arg(view[SBLDKeys::Calismalar::baslik].get_utf8().value.to_string().c_str())),0,AlignmentFlag::Middle);
+        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("<h2>{1}</h2>").arg(view[SBLDKeys::Calismalar::baslik].get_string().value.data())),0,AlignmentFlag::Middle);
         text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
 
     }
@@ -6958,7 +6958,7 @@ void Body::Calisma::setSelectedCalisma(std::string oid)
     {
         auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Durum {1}").arg(view[SBLDKeys::Calismalar::durum].get_utf8().value.to_string().c_str())),0,AlignmentFlag::Middle);
+        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Durum {1}").arg(view[SBLDKeys::Calismalar::durum].get_string().value.data())),0,AlignmentFlag::Middle);
         text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
 
     }
@@ -6966,7 +6966,7 @@ void Body::Calisma::setSelectedCalisma(std::string oid)
     {
         auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Kategori {1}").arg(view[SBLDKeys::Calismalar::kategori].get_utf8().value.to_string().c_str())),0,AlignmentFlag::Middle);
+        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Kategori {1}").arg(view[SBLDKeys::Calismalar::kategori].get_string().value.data())),0,AlignmentFlag::Middle);
         text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
 
     }
@@ -6974,7 +6974,7 @@ void Body::Calisma::setSelectedCalisma(std::string oid)
     {
         auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Birim {1}").arg(view[SBLDKeys::Calismalar::birim].get_utf8().value.to_string().c_str())),0,AlignmentFlag::Middle);
+        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Birim {1}").arg(view[SBLDKeys::Calismalar::birim].get_string().value.data())),0,AlignmentFlag::Middle);
         text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
 
     }
@@ -6982,7 +6982,7 @@ void Body::Calisma::setSelectedCalisma(std::string oid)
     {
         auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
         auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
-        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Tanım: <u>{1}</u>").arg(view[SBLDKeys::Calismalar::tanim].get_utf8().value.to_string().c_str())),0,AlignmentFlag::Middle);
+        auto text = vLayout->addWidget(cpp14::make_unique<WText>(WString("Tanım: <u>{1}</u>").arg(view[SBLDKeys::Calismalar::tanim].get_string().value.data())),0,AlignmentFlag::Middle);
         text->setAttributeValue(Style::style,Style::font::size::s16px+Style::font::weight::bold+Style::color::color(Style::color::White::AliceBlue));
     }
 
@@ -6994,7 +6994,7 @@ void Body::Calisma::setSelectedCalisma(std::string oid)
         container->setPadding(10,AllSides);
         for( auto mah : view[SBLDKeys::Calismalar::mahalleler].get_array().value )
         {
-            auto text = container->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(mah.get_utf8().value.to_string().c_str())));
+            auto text = container->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(mah.get_string().value.data())));
             text->addStyleClass(Bootstrap::Label::Warning+Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_6);
             text->setAttributeValue(Style::style,Style::font::weight::bold+Style::font::size::s16px);
             //            text->setMargin(5,AllSides);
@@ -7107,7 +7107,7 @@ void Body::Calisma::setSelectedCalisma(std::string oid)
 
                 auto TextCOntainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
                 TextCOntainer->setAttributeValue(Style::style,Style::background::color::rgba(this->getRandom(0,125),this->getRandom(0,125),this->getRandom(0,125)));
-                auto aciklamaText = TextCOntainer->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(doc[SBLDKeys::Calismalar::Asama::Aciklama].get_utf8().value.to_string().c_str())));
+                auto aciklamaText = TextCOntainer->addWidget(cpp14::make_unique<WText>(WString("{1}").arg(doc[SBLDKeys::Calismalar::Asama::Aciklama].get_string().value.data())));
                 aciklamaText->setAttributeValue(Style::style,Style::color::color(Style::color::White::AliceBlue)+Style::font::weight::bold);
             }
         } catch (bsoncxx::exception &e) {
@@ -7610,7 +7610,7 @@ void Body::Calisma::initIstatisticBirimlereGore()
 
             for( auto doc : cursor )
             {
-                std::string str = doc[SBLDKeys::Birimler::birim].get_utf8().value.to_string();
+                std::string str = doc[SBLDKeys::Birimler::birim].get_string().value.data();
                 mBirimList.push_back(str);
             }
 
@@ -7756,7 +7756,7 @@ void Body::Calisma::initIstatisticMahallereGore()
 
             for( auto doc : cursor )
             {
-                std::string str = doc[SBLDKeys::Mahalle::mahalle].get_utf8().value.to_string();
+                std::string str = doc[SBLDKeys::Mahalle::mahalle].get_string().value.data();
                 mMahalleList.push_back(str);
             }
 
@@ -7904,7 +7904,7 @@ void Body::Calisma::initIstatisticBirimMahalle()
 
             for( auto doc : cursor )
             {
-                std::string str = doc[SBLDKeys::Birimler::birim].get_utf8().value.to_string();
+                std::string str = doc[SBLDKeys::Birimler::birim].get_string().value.data();
                 mBirimList.push_back(str);
             }
 

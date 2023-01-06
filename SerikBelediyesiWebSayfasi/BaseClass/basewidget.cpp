@@ -184,13 +184,13 @@ const std::string BaseClass::BaseWidget::downloadFile(const std::string &oid , c
     auto file_length = downloader.file_length();
     auto bytes_counter = 0;
 
-    QFileInfo info( downloader.files_document()["filename"].get_utf8().value.to_string().c_str() );
+    QFileInfo info( downloader.files_document()["filename"].get_string().value.data() );
 
     QString fullFilename;
 
     if( forceFilename )
     {
-        fullFilename = QString("tempfile/%1").arg(downloader.files_document()["filename"].get_utf8().value.to_string().c_str());
+        fullFilename = QString("tempfile/%1").arg(downloader.files_document()["filename"].get_string().value.data());
     }else{
         fullFilename = QString("tempfile/%2.%1").arg(info.suffix())
                     .arg(downloader.files_document()["_id"].get_oid().value.to_string().c_str());

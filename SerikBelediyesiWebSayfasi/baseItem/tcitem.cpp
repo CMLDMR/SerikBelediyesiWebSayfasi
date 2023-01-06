@@ -2,7 +2,7 @@
 
 
 
-boost::optional<TC::TCItem> TC::TCItem::Create_TC(mongocxx::database *_db)
+std::optional<TC::TCItem> TC::TCItem::Create_TC(mongocxx::database *_db)
 {
     TCItem item(_db);
 
@@ -10,10 +10,10 @@ boost::optional<TC::TCItem> TC::TCItem::Create_TC(mongocxx::database *_db)
     {
         return std::move(item);
     }
-    return boost::none;
+    return std::nullopt;
 }
 
-boost::optional<TC::TCItem *> TC::TCItem::LoadByTC(mongocxx::database *_db, const std::string &_tcno)
+std::optional<TC::TCItem *> TC::TCItem::LoadByTC(mongocxx::database *_db, const std::string &_tcno)
 {
     auto filter = document{};
 
@@ -30,12 +30,12 @@ boost::optional<TC::TCItem *> TC::TCItem::LoadByTC(mongocxx::database *_db, cons
     {
         return item;
     }else{
-        return boost::none;
+        return std::nullopt;
     }
 
 }
 
-boost::optional<TC::TCItem *> TC::TCItem::LoadByTel(mongocxx::database *_db, const std::string &_ceptel)
+std::optional<TC::TCItem *> TC::TCItem::LoadByTel(mongocxx::database *_db, const std::string &_ceptel)
 {
     auto filter = document{};
 
@@ -52,11 +52,11 @@ boost::optional<TC::TCItem *> TC::TCItem::LoadByTel(mongocxx::database *_db, con
     {
         return item;
     }else{
-        return boost::none;
+        return std::nullopt;
     }
 }
 
-boost::optional<TC::TCItem *> TC::TCItem::LoadByOid(mongocxx::database *_db, const std::string &_oid)
+std::optional<TC::TCItem *> TC::TCItem::LoadByOid(mongocxx::database *_db, const std::string &_oid)
 {
     auto filter = document{};
 
@@ -73,7 +73,7 @@ boost::optional<TC::TCItem *> TC::TCItem::LoadByOid(mongocxx::database *_db, con
     {
         return item;
     }else{
-        return boost::none;
+        return std::nullopt;
     }
 }
 

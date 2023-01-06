@@ -200,14 +200,14 @@ HEADERS += \
 
 
 
-INCLUDEPATH += C:/Mongo/msvc2022x64/include/bsoncxx/v_noabi
-DEPENDPATH += C:/Mongo/msvc2022x64/include/bsoncxx/v_noabi
+INCLUDEPATH += C:/Mongo/mongo-msvc2022x64-noBoost/include/bsoncxx/v_noabi
+DEPENDPATH += C:/Mongo/mongo-msvc2022x64-noBoost/include/bsoncxx/v_noabi
 
-win32: LIBS += -LC:/Mongo/msvc2022x64/lib/ -lmongocxx
-win32: LIBS += -LC:/Mongo/msvc2022x64/lib/ -lbsoncxx
+win32: LIBS += -LC:/Mongo/mongo-msvc2022x64-noBoost/lib/ -lmongocxx
+win32: LIBS += -LC:/Mongo/mongo-msvc2022x64-noBoost/lib/ -lbsoncxx
 
-INCLUDEPATH += C:/Mongo/msvc2022x64/include/mongocxx/v_noabi
-DEPENDPATH += C:/Mongo/msvc2022x64/include/mongocxx/v_noabi
+INCLUDEPATH += C:/Mongo/mongo-msvc2022x64-noBoost/include/mongocxx/v_noabi
+DEPENDPATH += C:/Mongo/mongo-msvc2022x64-noBoost/include/mongocxx/v_noabi
 
 
 
@@ -221,18 +221,18 @@ win32: LIBS += -LC:/Wt_4.7.0_msvs2022_x64/lib/ -lwthttp
 win32: LIBS += -LC:/Wt_4.7.0_msvs2022_x64/lib/ -llibhpdf
 
 
-win32: LIBS += -LC:/SerikBLDCoreRelease/MSVC2022x64/lib/ -lSerikBLDCore
+win32: LIBS += -LC:/SerikBLDCoreRelease/MSVC2022x64noBoost/lib/ -lSerikBLDCore
 
-INCLUDEPATH += C:/SerikBLDCoreRelease/MSVC2022x64/include
-DEPENDPATH += C:/SerikBLDCoreRelease/MSVC2022x64/include
-
-
-INCLUDEPATH += C:/SerikBLDCoreRelease/MSVC2022x64/include/bilgiEdinme
-DEPENDPATH += C:/SerikBLDCoreRelease/MSVC2022x64/include/bilgiEdinme
+INCLUDEPATH += C:/SerikBLDCoreRelease/MSVC2022x64noBoost/include
+DEPENDPATH += C:/SerikBLDCoreRelease/MSVC2022x64noBoost/include
 
 
-INCLUDEPATH += C:/boost/boost
-DEPENDPATH += C:/boost/boost
+INCLUDEPATH += C:/SerikBLDCoreRelease/MSVC2022x64noBoost/include/bilgiEdinme
+DEPENDPATH += C:/SerikBLDCoreRelease/MSVC2022x64noBoost/include/bilgiEdinme
+
+
+#INCLUDEPATH += C:/boost/boost
+#DEPENDPATH += C:/boost/boost
 
 
 

@@ -229,7 +229,7 @@ bool StokYardim::deleteKategoriName(const std::string &kategoriOid)
             auto view =val.value().view();
 
             try {
-                mKategoriName = view[mMalzemeAdiKEY].get_utf8().value.to_string();
+                mKategoriName = view[mMalzemeAdiKEY].get_string().value.data();
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
                 this->showPopUpMessage (str,"hata");
@@ -303,7 +303,7 @@ std::vector<StokYardim::StokKategoriDoc> StokYardim::getKategoriList()
             }
 
             try {
-                _doc.mKategoriName = doc[mKategoriKEY].get_utf8().value.to_string();
+                _doc.mKategoriName = doc[mKategoriKEY].get_string().value.data();
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
                 this->showPopUpMessage (str,"hata");
@@ -482,20 +482,20 @@ std::vector<StokYardim::StokMalzeme> StokYardim::getMalzemeList(const std::strin
                 this->showPopUpMessage (str,"hata");
             }
             try {
-                malzeme.mKategori = doc[this->mKategoriKEY].get_utf8().value.to_string();
+                malzeme.mKategori = doc[this->mKategoriKEY].get_string().value.data();
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
                 this->showPopUpMessage (str,"hata");
             }
             try {
-                malzeme.mMalzemeAdi = doc[this->mMalzemeAdiKEY].get_utf8().value.to_string();
+                malzeme.mMalzemeAdi = doc[this->mMalzemeAdiKEY].get_string().value.data();
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
                 this->showPopUpMessage (str,"hata");
 
             }
             try {
-                malzeme.mVerenTCNO = doc[this->mVerenTCNOKEY].get_utf8().value.to_string();
+                malzeme.mVerenTCNO = doc[this->mVerenTCNOKEY].get_string().value.data();
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
                 this->showPopUpMessage (str,"hata");
@@ -509,7 +509,7 @@ std::vector<StokYardim::StokMalzeme> StokYardim::getMalzemeList(const std::strin
 
             }
             try {
-                malzeme.mAlanTCNO = doc[this->mAlanTCNOKEY].get_utf8().value.to_string();
+                malzeme.mAlanTCNO = doc[this->mAlanTCNOKEY].get_string().value.data();
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
                 this->showPopUpMessage (str,"hata");
@@ -569,20 +569,20 @@ std::vector<StokYardim::StokMalzeme> StokYardim::getMalzemeAlanList(const std::s
                 this->showPopUpMessage (str,"hata");
             }
             try {
-                malzeme.mKategori = doc[this->mKategoriKEY].get_utf8().value.to_string();
+                malzeme.mKategori = doc[this->mKategoriKEY].get_string().value.data();
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
                 this->showPopUpMessage (str,"hata");
             }
             try {
-                malzeme.mMalzemeAdi = doc[this->mMalzemeAdiKEY].get_utf8().value.to_string();
+                malzeme.mMalzemeAdi = doc[this->mMalzemeAdiKEY].get_string().value.data();
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
                 this->showPopUpMessage (str,"hata");
 
             }
             try {
-                malzeme.mVerenTCNO = doc[this->mVerenTCNOKEY].get_utf8().value.to_string();
+                malzeme.mVerenTCNO = doc[this->mVerenTCNOKEY].get_string().value.data();
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
                 this->showPopUpMessage (str,"hata");
@@ -596,7 +596,7 @@ std::vector<StokYardim::StokMalzeme> StokYardim::getMalzemeAlanList(const std::s
 
             }
             try {
-                malzeme.mAlanTCNO = doc[this->mAlanTCNOKEY].get_utf8().value.to_string();
+                malzeme.mAlanTCNO = doc[this->mAlanTCNOKEY].get_string().value.data();
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
                 this->showPopUpMessage (str,"hata");
@@ -666,20 +666,20 @@ std::vector<StokYardim::StokMalzeme> StokYardim::getStoktaList( const std::strin
                 this->showPopUpMessage (str,"hata");
             }
             try {
-                malzeme.mKategori = doc[this->mKategoriKEY].get_utf8().value.to_string();
+                malzeme.mKategori = doc[this->mKategoriKEY].get_string().value.data();
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
                 this->showPopUpMessage (str,"hata");
             }
             try {
-                malzeme.mMalzemeAdi = doc[this->mMalzemeAdiKEY].get_utf8().value.to_string();
+                malzeme.mMalzemeAdi = doc[this->mMalzemeAdiKEY].get_string().value.data();
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
                 this->showPopUpMessage (str,"hata");
 
             }
             try {
-                malzeme.mVerenTCNO = doc[this->mVerenTCNOKEY].get_utf8().value.to_string();
+                malzeme.mVerenTCNO = doc[this->mVerenTCNOKEY].get_string().value.data();
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
                 this->showPopUpMessage (str,"hata");
@@ -693,7 +693,7 @@ std::vector<StokYardim::StokMalzeme> StokYardim::getStoktaList( const std::strin
 
             }
             try {
-                malzeme.mAlanTCNO = doc[this->mAlanTCNOKEY].get_utf8().value.to_string();
+                malzeme.mAlanTCNO = doc[this->mAlanTCNOKEY].get_string().value.data();
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
                 this->showPopUpMessage (str,"hata");
@@ -953,7 +953,7 @@ TCKayit::TCKayit(mongocxx::database *_db, bsoncxx::document::value _user)
             for( auto doc : cursor )
             {
                 try {
-                    mMahalle->addItem(doc["Mahalle"].get_utf8().value.to_string());
+                    mMahalle->addItem(doc["Mahalle"].get_string().value.data());
                 } catch (bsoncxx::exception &e) {
                     std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
                     //                    this->showPopUpMessage (str,"hata");
@@ -1090,7 +1090,7 @@ bool TC::LoadTC(std::string mTCno)
             mValid = true;
 
             try {
-                this->setIsimSoyisim(val.value().view()["İsimSoyisim"].get_utf8().value.to_string());
+                this->setIsimSoyisim(val.value().view()["İsimSoyisim"].get_string().value.data());
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
                 //                    this->showPopUpMessage (str,"hata");
@@ -1099,7 +1099,7 @@ bool TC::LoadTC(std::string mTCno)
 
 
             try {
-                this->setTel(val.value().view()["Cep Telefonu"].get_utf8().value.to_string());
+                this->setTel(val.value().view()["Cep Telefonu"].get_string().value.data());
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
                 //                    this->showPopUpMessage (str,"hata");
@@ -1108,7 +1108,7 @@ bool TC::LoadTC(std::string mTCno)
 
 
             try {
-                this->setTCNO(val.value().view()["TCNO"].get_utf8().value.to_string());
+                this->setTCNO(val.value().view()["TCNO"].get_string().value.data());
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
                 //                    this->showPopUpMessage (str,"hata");
@@ -1117,7 +1117,7 @@ bool TC::LoadTC(std::string mTCno)
 
 
             try {
-                this->setAddress(val.value().view()["Tam Adres"].get_utf8().value.to_string());
+                this->setAddress(val.value().view()["Tam Adres"].get_string().value.data());
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
                 //                    this->showPopUpMessage (str,"hata");
@@ -1126,7 +1126,7 @@ bool TC::LoadTC(std::string mTCno)
 
 
             try {
-                this->setMahalle(val.value().view()["Mahalle"].get_utf8().value.to_string());
+                this->setMahalle(val.value().view()["Mahalle"].get_string().value.data());
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
                 //                    this->showPopUpMessage (str,"hata");
@@ -1187,7 +1187,7 @@ bool TC::LoadTel(std::string mTelNo)
             mValid = false;
 
             try {
-                this->setIsimSoyisim(val.value().view()["İsimSoyisim"].get_utf8().value.to_string());
+                this->setIsimSoyisim(val.value().view()["İsimSoyisim"].get_string().value.data());
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
                 //                    this->showPopUpMessage (str,"hata");
@@ -1195,7 +1195,7 @@ bool TC::LoadTel(std::string mTelNo)
             }
 
             try {
-                this->setTel(val.value().view()["Cep Telefonu"].get_utf8().value.to_string());
+                this->setTel(val.value().view()["Cep Telefonu"].get_string().value.data());
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
                 //                    this->showPopUpMessage (str,"hata");
@@ -1203,7 +1203,7 @@ bool TC::LoadTel(std::string mTelNo)
             }
 
             try {
-                this->setTCNO(val.value().view()["TCNO"].get_utf8().value.to_string());
+                this->setTCNO(val.value().view()["TCNO"].get_string().value.data());
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
                 //                    this->showPopUpMessage (str,"hata");
@@ -1211,7 +1211,7 @@ bool TC::LoadTel(std::string mTelNo)
             }
 
             try {
-                this->setAddress(val.value().view()["Tam Adres"].get_utf8().value.to_string());
+                this->setAddress(val.value().view()["Tam Adres"].get_string().value.data());
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
                 //                    this->showPopUpMessage (str,"hata");
@@ -1268,7 +1268,7 @@ bool TC::LoadOid(bsoncxx::oid oid)
             mValid = false;
 
             try {
-                this->setIsimSoyisim(val.value().view()["İsimSoyisim"].get_utf8().value.to_string());
+                this->setIsimSoyisim(val.value().view()["İsimSoyisim"].get_string().value.data());
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
                 //                    this->showPopUpMessage (str,"hata");
@@ -1276,7 +1276,7 @@ bool TC::LoadOid(bsoncxx::oid oid)
             }
 
             try {
-                this->setTel(val.value().view()["Cep Telefonu"].get_utf8().value.to_string());
+                this->setTel(val.value().view()["Cep Telefonu"].get_string().value.data());
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
                 //                    this->showPopUpMessage (str,"hata");
@@ -1284,7 +1284,7 @@ bool TC::LoadOid(bsoncxx::oid oid)
             }
 
             try {
-                this->setTCNO(val.value().view()["TCNO"].get_utf8().value.to_string());
+                this->setTCNO(val.value().view()["TCNO"].get_string().value.data());
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
                 //                    this->showPopUpMessage (str,"hata");
@@ -1292,7 +1292,7 @@ bool TC::LoadOid(bsoncxx::oid oid)
             }
 
             try {
-                this->setAddress(val.value().view()["Tam Adres"].get_utf8().value.to_string());
+                this->setAddress(val.value().view()["Tam Adres"].get_string().value.data());
             } catch (bsoncxx::exception &e) {
                 std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
                 //                    this->showPopUpMessage (str,"hata");
