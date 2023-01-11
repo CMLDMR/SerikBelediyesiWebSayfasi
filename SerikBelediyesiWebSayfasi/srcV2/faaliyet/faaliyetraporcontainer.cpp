@@ -85,6 +85,22 @@ void v2::Faaliyet::FaaliyetRaporContainer::initFaaliyetRaporlari(const int64_t c
 
             auto mDialog = createDialog ("Yeni Faaliyet Ekle");
             mDialog->contents ()->setContentAlignment (AlignmentFlag::Center);
+            auto birimComboBox = mDialog->contents()->addNew<WComboBox>();
+
+            auto birimList = this->getBirimler();
+            for( const auto &item : birimList ){
+                birimComboBox->addItem(item.toStdString());
+                if( mUser->Birimi() == item.toStdString() ){
+                    birimComboBox->setCurrentIndex(birimComboBox->count());
+                }
+            }
+
+            if( mUser->Birimi() != "Yazı İşleri Müdürlüğü" ){
+                birimComboBox->setEnabled(false);
+            }
+
+            mDialog->contents ()->addWidget (cpp14::make_unique<WBreak>());
+
             mDialog->contents ()->addWidget (cpp14::make_unique<WText>("Yıl Seçiniz"));
 
             mDialog->contents ()->addWidget (cpp14::make_unique<WBreak>());
@@ -98,7 +114,7 @@ void v2::Faaliyet::FaaliyetRaporContainer::initFaaliyetRaporlari(const int64_t c
             savebtn->clicked ().connect ([=](){
 
                 SerikBLDCore::Faaliyet::FaaliyetItem item;
-                item.setBirim (mUser->Birimi ());
+                item.setBirim (birimComboBox->currentText().toUTF8());
                 item.setYil (yilSpinBoxContainer->value ());
                 item.setEnableViewMode(false);
 
