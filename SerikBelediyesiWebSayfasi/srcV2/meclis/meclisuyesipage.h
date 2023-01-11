@@ -70,7 +70,7 @@ public:
 
     void onList(const QVector<SerikBLDCore::Meclis::PartiItem> *mlist) override;
 
-    void yeniKayit();
+    void updateList();
 
 private:
     SerikBLDCore::Meclis::UyeManager* mUyeManager;

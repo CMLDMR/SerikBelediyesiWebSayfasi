@@ -570,13 +570,22 @@ v2::PartiManagerPage::PartiManagerPage(SerikBLDCore::DB *_db)
         auto mDialog = createDialog ("Yeni Parti Ekle");
         auto lineEdit = mDialog->contents ()->addWidget (cpp14::make_unique<WLineEdit>());
         lineEdit->setPlaceholderText ("Parti Adını Giriniz");
+
+        mDialog->contents()->addNew<WBreak>();
+
+        auto spinBox = mDialog->contents()->addNew<WSpinBox>();
+        spinBox->setMinimum(0);
+        spinBox->setMaximum(100);
+        spinBox->setValue(0);
+
         auto svBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet"));
         svBtn->addStyleClass (Bootstrap::Button::Primary);
         svBtn->clicked ().connect ([=](){
             if( this->InsertItem (SerikBLDCore::Meclis::PartiItem()
-                                  .setParti ( lineEdit->text ().toUTF8 ())).size () )
+                                  .setParti ( lineEdit->text ().toUTF8 ()) // Parti Adı
+                                  .setSira(spinBox->value())).size () ) // Parti Sırası
             {
-                SerikBLDCore::Meclis::PartiManager::UpdateList (SerikBLDCore::Meclis::PartiItem());
+                this->updateList();
                 removeDialog (mDialog);
             }
         });
@@ -586,11 +595,11 @@ v2::PartiManagerPage::PartiManagerPage(SerikBLDCore::DB *_db)
     auto guncelle = Header ()->addWidget (cpp14::make_unique<WPushButton>("Guncelle"));
     btn->addStyleClass (Bootstrap::Button::Primary);
     guncelle->clicked ().connect ([=](){
-        SerikBLDCore::Meclis::PartiManager::UpdateList (SerikBLDCore::Meclis::PartiItem());
+        this->updateList();
     });
 
 
-    SerikBLDCore::Meclis::PartiManager::UpdateList (SerikBLDCore::Meclis::PartiItem());
+    this->updateList();
 }
 
 void v2::PartiManagerPage::onList(const QVector<SerikBLDCore::Meclis::PartiItem> *mlist)
@@ -605,16 +614,25 @@ void v2::PartiManagerPage::onList(const QVector<SerikBLDCore::Meclis::PartiItem>
         container->addStyleClass (Bootstrap::Grid::row + Bootstrap::ContextualBackGround::bg_success);
         container->setMargin (7,Side::Top);
         auto text = container->addWidget (cpp14::make_unique<WText>(item.parti ().toStdString ()));
-        text->addStyleClass (Bootstrap::Grid::Large::col_lg_11+
-                             Bootstrap::Grid::Medium::col_md_11+
-                             Bootstrap::Grid::Small::col_sm_11+
-                             Bootstrap::Grid::ExtraSmall::col_xs_10);
+        text->addStyleClass (Bootstrap::Grid::Large::col_lg_9+
+                             Bootstrap::Grid::Medium::col_md_9+
+                             Bootstrap::Grid::Small::col_sm_9+
+                             Bootstrap::Grid::ExtraSmall::col_xs_8);
+
+        auto siraText = container->addWidget (cpp14::make_unique<WText>("<b>"+std::to_string(item.Sira())+"</b>",TextFormat::UnsafeXHTML));
+        siraText->addStyleClass (Bootstrap::Grid::Large::col_lg_1+
+                                Bootstrap::Grid::Medium::col_md_1+
+                                Bootstrap::Grid::Small::col_sm_1+
+                                Bootstrap::Grid::ExtraSmall::col_xs_1);
+        siraText->addStyleClass(Bootstrap::Label::Success);
+
 
         auto delText = container->addWidget (cpp14::make_unique<WText>("<b>X</b>",TextFormat::UnsafeXHTML));
         delText->addStyleClass (Bootstrap::Grid::Large::col_lg_1+
                                 Bootstrap::Grid::Medium::col_md_1+
                                 Bootstrap::Grid::Small::col_sm_1+
                                 Bootstrap::Grid::ExtraSmall::col_xs_2);
+        delText->addStyleClass(Bootstrap::Label::Danger);
 
         delText->decorationStyle ().setCursor (Cursor::PointingHand);
         delText->clicked ().connect ([=](){
@@ -646,7 +664,7 @@ void v2::PartiManagerPage::onList(const QVector<SerikBLDCore::Meclis::PartiItem>
                     if( delResult.value ().deleted_count () )
                     {
                         this->showPopUpMessage ("Silindi","msg");
-                        SerikBLDCore::Meclis::PartiManager::UpdateList (SerikBLDCore::Meclis::PartiItem());
+                        this->updateList();
                     }else{
                         this->showPopUpMessage ("Silme İşlemi Başarısız Oldu. " + SerikBLDCore::Meclis::PartiManager::getLastError ().toStdString (),"hata");
                     }
@@ -655,12 +673,59 @@ void v2::PartiManagerPage::onList(const QVector<SerikBLDCore::Meclis::PartiItem>
                 }
 
             });
+        });
 
 
+        auto degistirText = container->addWidget (cpp14::make_unique<WText>("<b>Değiştir</b>",TextFormat::UnsafeXHTML));
+        degistirText->addStyleClass (Bootstrap::Grid::Large::col_lg_1+
+                                Bootstrap::Grid::Medium::col_md_1+
+                                Bootstrap::Grid::Small::col_sm_1+
+                                Bootstrap::Grid::ExtraSmall::col_xs_1);
+        degistirText->addStyleClass(Bootstrap::Label::Primary);
+        degistirText->clicked().connect([=](){
+
+            auto mDialog = createDialog (text->text().toUTF8()+" Değiştir");
+            auto lineEdit = mDialog->contents ()->addWidget (cpp14::make_unique<WLineEdit>());
+            lineEdit->setText(text->text().toUTF8());
+
+            mDialog->contents()->addNew<WBreak>();
+
+            auto spinBox = mDialog->contents()->addNew<WSpinBox>();
+            spinBox->setMinimum(0);
+            spinBox->setMaximum(100);
+            spinBox->setValue(spinBox->value());
+
+            auto svBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet"));
+            svBtn->addStyleClass (Bootstrap::Button::Primary);
+            svBtn->clicked ().connect ([=](){
+                SerikBLDCore::Meclis::PartiItem filter;
+                filter.setOid(item.oid().value().to_string());
+                filter.setSira(spinBox->value());
+                filter.setParti(lineEdit->text().toUTF8());
+
+                if( this->UpdateItem(filter) )// Parti Sırası
+                {
+                    this->updateList();
+                    removeDialog (mDialog);
+                }
+            });
 
         });
 
     }
+}
+
+void v2::PartiManagerPage::updateList()
+{
+
+    SerikBLDCore::FindOptions options;
+
+    SerikBLDCore::Item updateFilter("");
+    updateFilter.append(SerikBLDCore::Meclis::PartiKey::sira,std::int32_t{1});
+
+    options.setSort(updateFilter);
+
+    SerikBLDCore::Meclis::PartiManager::UpdateList (SerikBLDCore::Meclis::PartiItem(),options);
 }
 
 v2::KomisyonManagerPage::KomisyonManagerPage(SerikBLDCore::DB *_db)

@@ -387,7 +387,7 @@ void Giris::GirisWidget::initSivil()
         filter.append(SerikBLDCore::Imar::MimariProje::BaseProject::keyOwnerOid,User.view ()["_id"].get_oid ().value);
 
         auto count = firmaManager->find (filter);
-        if( count ){
+        if( false ){
 
 
             auto messageBox = this->addChild(
@@ -1823,7 +1823,7 @@ void Giris::SivilWidget::initMenu()
     });
 
 
-    menu->addItem(WString::tr ("Yeni Başvuru"))->clicked ().connect ([=](){
+    menu->addItem( ("Yeni Başvuru"))->clicked ().connect ([=](){
         this->Content ()->clear();
         this->Content ()->addWidget (Wt::cpp14::make_unique<BilgiEdinmeBasvuruWidget>(new SerikBLDCore::DB(db),&mTCUser));
     });
@@ -2430,14 +2430,14 @@ void Giris::Personel::PersonelWidget::initMenu()
     }
 
 
-    if(this->mUser->Statu () == SerikBLDCore::User::Baskan ||
-            this->mUser->Birimi ()  == "Bilgi İşlem Müdürlüğü" )
-    {
-        menu->addItem(WString::fromUTF8("Anons Sistemi"))->clicked ().connect ([&](){
-            this->Content ()->clear ();
-            this->Content ()->addWidget (Wt::cpp14::make_unique<AnonsWidget>(mUser->db (),mUser->Value ()));
-        });
-    }
+//    if(this->mUser->Statu () == SerikBLDCore::User::Baskan ||
+//            this->mUser->Birimi ()  == "Bilgi İşlem Müdürlüğü" )
+//    {
+//        menu->addItem(WString::fromUTF8("Anons Sistemi"))->clicked ().connect ([&](){
+//            this->Content ()->clear ();
+//            this->Content ()->addWidget (Wt::cpp14::make_unique<AnonsWidget>(mUser->db (),mUser->Value ()));
+//        });
+//    }
 
     if(this->mUser->Statu () == SerikBLDCore::User::Baskan ||
             this->mUser->Statu () == SerikBLDCore::User::BaskanYardimcisi ||
@@ -2462,7 +2462,7 @@ void Giris::Personel::PersonelWidget::initMenu()
 
     if(this->mUser->Statu () == SerikBLDCore::User::Baskan ||
             this->mUser->Statu () == SerikBLDCore::User::BaskanYardimcisi ||
-            this->mUser->Birimi () == "İnsan Kaynakları ve Eğitim Müdürlüğü" )
+            this->mUser->Birimi () == "İnsan Kaynakları ve Eğitim Müdürlüğü" || this->mUser->Birimi ()  == "Bilgi İşlem Müdürlüğü")
     {
         menu->addItem(WString::fromUTF8("IK"))->clicked ().connect ([&](){
             this->Content ()->clear ();
@@ -2577,14 +2577,14 @@ void Giris::Personel::PersonelWidget::initMobilMenu()
     }
 
 
-    if(this->mUser->Statu () == SerikBLDCore::User::Baskan ||
-            this->mUser->Birimi ()  == "Bilgi İşlem Müdürlüğü" )
-    {
-        menu->addItem(WString::fromUTF8("Anons Sistemi"))->clicked ().connect ([&](){
-            this->Content ()->clear ();
-            this->Content ()->addWidget (Wt::cpp14::make_unique<AnonsWidget>(mUser->db (),mUser->Value ()));
-        });
-    }
+//    if(this->mUser->Statu () == SerikBLDCore::User::Baskan ||
+//            this->mUser->Birimi ()  == "Bilgi İşlem Müdürlüğü" )
+//    {
+//        menu->addItem(WString::fromUTF8("Anons Sistemi"))->clicked ().connect ([&](){
+//            this->Content ()->clear ();
+//            this->Content ()->addWidget (Wt::cpp14::make_unique<AnonsWidget>(mUser->db (),mUser->Value ()));
+//        });
+//    }
 
     if(this->mUser->Statu () == SerikBLDCore::User::Baskan ||
             this->mUser->Statu () == SerikBLDCore::User::BaskanYardimcisi ||
@@ -2601,7 +2601,7 @@ void Giris::Personel::PersonelWidget::initMobilMenu()
 
     if(this->mUser->Statu () == SerikBLDCore::User::Baskan ||
             this->mUser->Statu () == SerikBLDCore::User::BaskanYardimcisi ||
-            this->mUser->Birimi () == "İnsan Kaynakları ve Eğitim Müdürlüğü" )
+            this->mUser->Birimi () == "İnsan Kaynakları ve Eğitim Müdürlüğü" || this->mUser->Birimi ()  == "Bilgi İşlem Müdürlüğü")
     {
         menu->addItem(WString::fromUTF8("IK"))->clicked ().connect ([&](){
             this->Content ()->clear ();
