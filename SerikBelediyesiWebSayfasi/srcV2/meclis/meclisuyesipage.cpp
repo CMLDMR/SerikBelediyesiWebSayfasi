@@ -567,20 +567,22 @@ v2::PartiManagerPage::PartiManagerPage(SerikBLDCore::DB *_db)
     auto btn = Footer ()->addWidget (cpp14::make_unique<WPushButton>("Yeni Parti Ekle"));
     btn->addStyleClass (Bootstrap::Button::Primary);
     btn->clicked ().connect ([=](){
-        auto mDialog = createDialog ("Yeni Parti Ekle");
-        auto lineEdit = mDialog->contents ()->addWidget (cpp14::make_unique<WLineEdit>());
+        auto mDialog = createFlatDialog("Yeni Parti Ekle");
+        mDialog->Content()->setPadding(10,AllSides);
+
+        auto lineEdit = mDialog->Content()->addWidget (cpp14::make_unique<WLineEdit>());
         lineEdit->setPlaceholderText ("Parti Adını Giriniz");
 
-        mDialog->contents()->addNew<WBreak>();
+        mDialog->Content()->addNew<WBreak>();
 
-        auto spinBox = mDialog->contents()->addNew<WSpinBox>();
+        auto spinBox = mDialog->Content()->addNew<WSpinBox>();
         spinBox->setMinimum(0);
         spinBox->setMaximum(100);
         spinBox->setValue(0);
 
-        auto svBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet"));
-        svBtn->addStyleClass (Bootstrap::Button::Primary);
-        svBtn->clicked ().connect ([=](){
+//        auto svBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet"));
+//        svBtn->addStyleClass (Bootstrap::Button::Primary);
+        mDialog->Accepted().connect ([=](){
             if( this->InsertItem (SerikBLDCore::Meclis::PartiItem()
                                   .setParti ( lineEdit->text ().toUTF8 ()) // Parti Adı
                                   .setSira(spinBox->value())).size () ) // Parti Sırası
@@ -627,7 +629,7 @@ void v2::PartiManagerPage::onList(const QVector<SerikBLDCore::Meclis::PartiItem>
         siraText->addStyleClass(Bootstrap::Label::Success);
 
 
-        auto delText = container->addWidget (cpp14::make_unique<WText>("<b>X</b>",TextFormat::UnsafeXHTML));
+        auto delText = container->addWidget (cpp14::make_unique<WText>("<b>Sil</b>",TextFormat::UnsafeXHTML));
         delText->addStyleClass (Bootstrap::Grid::Large::col_lg_1+
                                 Bootstrap::Grid::Medium::col_md_1+
                                 Bootstrap::Grid::Small::col_sm_1+
@@ -684,20 +686,19 @@ void v2::PartiManagerPage::onList(const QVector<SerikBLDCore::Meclis::PartiItem>
         degistirText->addStyleClass(Bootstrap::Label::Primary);
         degistirText->clicked().connect([=](){
 
-            auto mDialog = createDialog (text->text().toUTF8()+" Değiştir");
-            auto lineEdit = mDialog->contents ()->addWidget (cpp14::make_unique<WLineEdit>());
+            auto mDialog = createFlatDialog("Parti Adını Değiştir");
+            auto lineEdit = mDialog->Content()->addWidget (cpp14::make_unique<WLineEdit>());
             lineEdit->setText(text->text().toUTF8());
 
-            mDialog->contents()->addNew<WBreak>();
+            mDialog->Content()->addNew<WBreak>();
 
-            auto spinBox = mDialog->contents()->addNew<WSpinBox>();
+            auto spinBox = mDialog->Content()->addNew<WSpinBox>();
             spinBox->setMinimum(0);
             spinBox->setMaximum(100);
-            spinBox->setValue(spinBox->value());
+            spinBox->setValue(item.Sira());
 
-            auto svBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet"));
-            svBtn->addStyleClass (Bootstrap::Button::Primary);
-            svBtn->clicked ().connect ([=](){
+
+            mDialog->Accepted().connect ([=](){
                 SerikBLDCore::Meclis::PartiItem filter;
                 filter.setOid(item.oid().value().to_string());
                 filter.setSira(spinBox->value());
