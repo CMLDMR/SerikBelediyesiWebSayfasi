@@ -89,7 +89,16 @@ private:
 
 
 
+class BirimWidget : public ContainerWidget , public SerikBLDCore::IK::BirimItem
+{
+public:
+    explicit BirimWidget(const SerikBLDCore::IK::BirimItem &other );
 
+
+    Signal<std::string,std::string,std::int32_t> &ChangedClicked();
+private:
+    Signal<std::string,std::string,std::int32_t> _ChangedClicked;
+};
 
 
 class BirimManagerPage : public SerikBLDCore::BirimManager , public ContainerWidget
@@ -98,7 +107,10 @@ public:
     explicit BirimManagerPage( SerikBLDCore::DB* _db );
     void onList(const QVector<SerikBLDCore::IK::BirimItem> *mlist) override;
 
+    [[deprecated("Burası Artık Kullanılmayacak")]]
     void initAltBirimler( const std::string &birimOid , const std::string &birimAdi );
+
+    void initBirim( const SerikBLDCore::IK::BirimItem &birimItem );
 private:
     Signal<std::string> Error;
     Signal<std::string> Succes;
@@ -110,7 +122,7 @@ class AltBirimManagerPage : public SerikBLDCore::AltBirimManager , public Contai
 {
 public:
     explicit AltBirimManagerPage( SerikBLDCore::DB* _db , const bsoncxx::oid& birimOid , const std::string& birimAdi );
-
+    AltBirimManagerPage( SerikBLDCore::DB* _db , const SerikBLDCore::IK::BirimItem &_birimItem );
 
     void onList(const QVector<SerikBLDCore::IK::AltBirimItem> *mlist) override;
 
@@ -118,6 +130,7 @@ public:
 private:
     bsoncxx::oid mBirimOid;
     std::string mBirimAdi;
+    SerikBLDCore::IK::BirimItem mCurrentBirimItem;
 };
 
 
