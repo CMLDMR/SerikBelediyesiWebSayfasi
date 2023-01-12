@@ -3,6 +3,8 @@
 #include <QTime>
 
 
+using namespace SerikBLDCore;
+
 IKManagerPage::IKManagerPage(SerikBLDCore::DB *_db)
     :ContainerWidget ("İnsan Kaynakları Yönetimi"),mDB(_db)
 {
@@ -378,6 +380,8 @@ BirimManagerPage::BirimManagerPage(SerikBLDCore::DB *_db)
       ContainerWidget ("Birim Yönetimi"),
       mPersonelManager( new SerikBLDCore::PersonelManager(_db))
 {
+    this->Footer()->removeStyleClass(CSSStyle::Shadows::shadow8px);
+    this->Footer()->setMargin(25,Side::Top|Side::Bottom);
 
     Succes.connect ([=](const std::string &msg){
         this->showPopUpMessage (msg);
@@ -404,16 +408,29 @@ BirimManagerPage::BirimManagerPage(SerikBLDCore::DB *_db)
     auto newBirimLineEdit = newBirimContainer->addWidget (cpp14::make_unique<WLineEdit>());
     newBirimLineEdit->setPlaceholderText ("Yeni Birim Adını Giriniz");
 
+
+    auto newBirimSiraContainer = Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
+    newBirimSiraContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                                      Bootstrap::Grid::Medium::col_md_2+
+                                      Bootstrap::Grid::Small::col_sm_3+
+                                      Bootstrap::Grid::ExtraSmall::col_xs_3);
+    auto newBirimSiraNoSpinBox = newBirimSiraContainer->addWidget (cpp14::make_unique<WSpinBox>());
+    newBirimSiraNoSpinBox->setMaximum(100);
+    newBirimSiraNoSpinBox->setMinimum(-1);
+
+
+
     auto newBirimSaveContainer = Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
-    newBirimSaveContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
-                                          Bootstrap::Grid::Medium::col_md_5+
-                                          Bootstrap::Grid::Small::col_sm_6+
-                                          Bootstrap::Grid::ExtraSmall::col_xs_6);
-    auto newBirimKaydet = newBirimSaveContainer->addWidget (cpp14::make_unique<WPushButton>("Kaydet"));
+    newBirimSaveContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                                          Bootstrap::Grid::Medium::col_md_3+
+                                          Bootstrap::Grid::Small::col_sm_3+
+                                          Bootstrap::Grid::ExtraSmall::col_xs_3);
+    auto newBirimKaydet = newBirimSaveContainer->addWidget (cpp14::make_unique<WPushButton>("Yeni Ekle+"));
     newBirimKaydet->addStyleClass (Bootstrap::Button::Primary);
     newBirimKaydet->clicked ().connect ([=](){
 
-        auto count = this->countItem (SerikBLDCore::IK::BirimItem().setBirimAdi (newBirimLineEdit->text ().toUTF8 ().c_str ()));
+        auto count = this->countItem (SerikBLDCore::IK::BirimItem().setBirimAdi (newBirimLineEdit->text ().toUTF8 ().c_str ())
+                                      .setSiraNo(newBirimSiraNoSpinBox->value()));
 
         if( count )
         {
@@ -421,7 +438,8 @@ BirimManagerPage::BirimManagerPage(SerikBLDCore::DB *_db)
             return;
         }
 
-        if( this->InsertItem (SerikBLDCore::IK::BirimItem().setBirimAdi (newBirimLineEdit->text ().toUTF8 ().c_str ())).size () ){
+        if( this->InsertItem (SerikBLDCore::IK::BirimItem().setBirimAdi (newBirimLineEdit->text ().toUTF8 ().c_str ())
+                              .setSiraNo(newBirimSiraNoSpinBox->value())).size () ){
             this->showPopUpMessage ("Yeni Birim Başarılı Bir Şekilde Kayıt Edildi");
             this->UpdateList ();
         }
@@ -439,9 +457,9 @@ void BirimManagerPage::onList(const QVector<SerikBLDCore::IK::BirimItem> *mlist)
 
         auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
         container->addStyleClass (Bootstrap::ImageShape::img_thumbnail+
-                                  Bootstrap::Grid::Large::col_lg_2+
-                                  Bootstrap::Grid::Medium::col_md_3+
-                                  Bootstrap::Grid::Small::col_sm_4+
+                                  Bootstrap::Grid::Large::col_lg_3+
+                                  Bootstrap::Grid::Medium::col_md_4+
+                                  Bootstrap::Grid::Small::col_sm_6+
                                   Bootstrap::Grid::ExtraSmall::col_xs_6+
                                   Bootstrap::ContextualBackGround::bg_warning);
         container->setContentAlignment (AlignmentFlag::Center);
@@ -450,19 +468,30 @@ void BirimManagerPage::onList(const QVector<SerikBLDCore::IK::BirimItem> *mlist)
         text->setMargin (5,Side::Top|Side::Bottom);
         container->setPositionScheme (PositionScheme::Relative);
         container->setHeight (55);
-        container->decorationStyle ().setCursor (Cursor::PointingHand);
+        text->decorationStyle ().setCursor (Cursor::PointingHand);
         container->setAttributeValue (Style::dataoid,item.oid ().value ().to_string ());
-        container->clicked ().connect ([=](){
-            this->initAltBirimler (item.oid ().value ().to_string (),item.birimAdi ().toStdString ());
+        text->clicked ().connect ([=](){
+            this->initBirim( item );
         });
+
+        auto SiraContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
+        SiraContainer->setPositionScheme (PositionScheme::Absolute);
+        auto siraText = SiraContainer->addWidget (cpp14::make_unique<WText>("SıraNO: "+std::to_string(item.SiraNo())));
+        siraText->setAttributeValue (Style::style,Style::color::color (Style::color::Grey::DimGray)+
+                                     Style::font::size::s10px);
+        siraText->setPadding (1,Side::Left|Side::Right);
+        SiraContainer->setOffsets (0,Side::Bottom|Side::Right);
+
+
 
         auto xContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
         xContainer->setPositionScheme (PositionScheme::Absolute);
         xContainer->addStyleClass ("boxShadow");
-        xContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::Red::IndianRed));
+        xContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::Red::Red));
         auto deleteText = xContainer->addWidget (cpp14::make_unique<WText>("<b>X</b>"));
         deleteText->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow)+
-                                       Style::font::weight::bold);
+                                       Style::font::weight::bold+
+                                       Style::font::size::s10px);
         deleteText->setPadding (5,Side::Left|Side::Right);
         xContainer->setOffsets (0,Side::Top|Side::Right);
         xContainer->decorationStyle ().setCursor (Cursor::PointingHand);
@@ -502,6 +531,33 @@ void BirimManagerPage::initAltBirimler( const std::string &birimOid , const std:
 {
     this->Footer ()->clear ();
     this->Footer ()->addWidget (cpp14::make_unique<AltBirimManagerPage>(this->getDB (),bsoncxx::oid{birimOid},birimAdi));
+}
+
+void BirimManagerPage::initBirim(const SerikBLDCore::IK::BirimItem &birimItem)
+{
+    this->Footer ()->clear ();
+    auto birimWidget = this->Footer ()->addNew<BirimWidget>(birimItem);
+    birimWidget->addStyleClass(Bootstrap::Grid::col_full_12);
+
+
+    birimWidget->ChangedClicked().connect([=]( const std::string &oid,
+                                          const std::string &birimAdi,
+                                          const std::int32_t &siraNo){
+
+        SerikBLDCore::IK::BirimItem __item;
+        __item.setBirimAdi(birimAdi.c_str());
+        __item.setSiraNo(siraNo);
+        __item.setOid(oid);
+
+        if( this->UpdateItem(__item) ){
+            this->UpdateList();
+            this->Footer()->clear();
+        }
+
+    });
+
+    auto __container = this->Footer ()->addWidget (cpp14::make_unique<AltBirimManagerPage>(this->getDB (),birimItem.oid().value(),birimItem.birimAdi().toStdString()));
+    __container->setMargin(25,Side::Top|Side::Bottom);
 }
 
 
@@ -1729,17 +1785,13 @@ AltBirimManagerPage::AltBirimManagerPage(SerikBLDCore::DB *_db, const bsoncxx::o
       mBirimAdi(birimAdi)
 {
 
-    this->setMargin (25,Side::Top|Side::Bottom);
-    this->setPadding (25,Side::Top|Side::Bottom);
+//    this->setMargin (25,Side::Top|Side::Bottom);
+//    this->setPadding (25,Side::Top|Side::Bottom);
 
-    this->addStyleClass ("boxShadow");
+//    this->addStyleClass ("boxShadow");
 
     Header ()->addWidget (cpp14::make_unique<WText>("Alt Birim Yönetimi"));
     Header ()->addWidget (cpp14::make_unique<WBreak>());
-    Header ()->addWidget (cpp14::make_unique<WText>(WString("<b>{1}</b> {2}").arg (birimAdi).arg (birimOid.to_string ())));
-    Header ()->addWidget (cpp14::make_unique<WBreak>());
-
-
 
     {
         auto container = Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
@@ -1787,6 +1839,15 @@ AltBirimManagerPage::AltBirimManagerPage(SerikBLDCore::DB *_db, const bsoncxx::o
     Content ()->setMargin ( 25 , Side::Top|Side::Bottom );
 
 
+}
+
+AltBirimManagerPage::AltBirimManagerPage(DB *_db, const IK::BirimItem &_birimItem)
+    :SerikBLDCore::AltBirimManager (_db),
+      mBirimOid(_birimItem.oid().value()),
+      mBirimAdi(_birimItem.birimAdi().toStdString())
+{
+    mCurrentBirimItem.clear();
+    mCurrentBirimItem.setDocumentView(_birimItem.view());
 }
 
 void AltBirimManagerPage::onList(const QVector<SerikBLDCore::IK::AltBirimItem> *mlist)
@@ -1842,4 +1903,67 @@ void AltBirimManagerPage::updateAltBirimList()
     SerikBLDCore::IK::AltBirimItem __item;
     __item.setBirimOid (mBirimOid);
     this->UpdateList (__item);
+}
+
+BirimWidget::BirimWidget(const BirimItem &other)
+{
+    this->::SerikBLDCore::IK::BirimItem::clear();
+    this->setDocumentView(other.view());
+
+    auto birimAdiText = this->Content()->addNew<WText>("<b>"+this->birimAdi().toStdString()+"</b>");
+    birimAdiText->addStyleClass(Bootstrap::Grid::col_full_12);
+
+    auto birimSiraText = this->Content()->addNew<WText>("SıraNO: "+std::to_string(this->SiraNo()));
+    birimSiraText->addStyleClass(Bootstrap::Grid::col_full_12);
+
+    auto degisContainer = this->Content()->addNew<WContainerWidget>();
+    degisContainer->addStyleClass(CSSStyle::Button::blueButton);
+    degisContainer->addNew<WText>("Değiştir");
+    degisContainer->setPadding(5,Side::Top|Side::Bottom);
+
+    degisContainer->clicked().connect([=](){
+        auto mDialog = this->createFlatDialog("Birim Bilgilerini Değiştir");
+
+        auto text = mDialog->Content()->addNew<WText>();
+        text->addStyleClass(Bootstrap::Grid::col_full_12);
+        text->setText("Birim Adını Değiştir");
+
+        auto birimAdiLineEdit = mDialog->Content()->addNew<WLineEdit>();
+        birimAdiLineEdit->addStyleClass(Bootstrap::Grid::col_full_12);
+        birimAdiLineEdit->setPlaceholderText("Birim Bilgilerini Değiştir");
+        birimAdiLineEdit->setText(this->birimAdi().toStdString());
+
+        auto textSiraNo = mDialog->Content()->addNew<WText>("Sıra NO");
+        textSiraNo->addStyleClass(Bootstrap::Grid::Large::col_lg_6+
+                                  Bootstrap::Grid::Medium::col_md_6+
+                                  Bootstrap::Grid::Small::col_sm_6+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_6);
+        textSiraNo->setPadding(6,Side::Top|Side::Bottom);
+
+        auto siraNoContainer = mDialog->Content()->addNew<WContainerWidget>();
+        siraNoContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_6+
+                                  Bootstrap::Grid::Medium::col_md_6+
+                                  Bootstrap::Grid::Small::col_sm_6+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_6);
+        auto siraNoSpinBox = siraNoContainer->addNew<WSpinBox>();
+        siraNoSpinBox->setMaximum(100);
+        siraNoSpinBox->setMinimum(-1);
+        siraNoSpinBox->setValue(this->SiraNo());
+
+        mDialog->Content()->setPadding(25,Side::Top|Side::Bottom);
+
+        mDialog->Accepted().connect([=](){
+            _ChangedClicked.emit(this->oid().value().to_string(),
+                                 birimAdiLineEdit->text().toUTF8(),
+                                 siraNoSpinBox->value());
+            this->removeDialog(mDialog);
+        });
+
+    });
+
+}
+
+Signal<std::string, std::string, int32_t> &BirimWidget::ChangedClicked()
+{
+    return _ChangedClicked;
 }

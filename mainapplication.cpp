@@ -68,6 +68,7 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
     WApplication::useStyleSheet(WLink("css/v2.css"));
     WApplication::useStyleSheet(WLink("css/nost.css"));
     WApplication::useStyleSheet(WLink("css/CSSCustom.css"));
+    WApplication::useStyleSheet(WLink("css/newDialog.css"));
 
 
     Wt::WApplication::instance()->useStyleSheet("resources/themes/bootstrap/3/bootstrap-theme.min.css");

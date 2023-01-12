@@ -17,6 +17,8 @@ constexpr int COM = 542;
 #define LOG std::cout <<"\n"<< __LINE__ << " " << __FUNCTION__ << " -> "
 #define LOGN std::cout << "\n"<<__LINE__ << " " << __FUNCTION__ << "\n"
 
+class DialogContainerWidget;
+
 
 class ControllerWidget : public WContainerWidget
 {
@@ -129,6 +131,10 @@ public:
 
     void removeDialog( WDialog* mDialog );
 
+
+    DialogContainerWidget *createFlatDialog(const std::string &title = "");
+    void removeDialog(DialogContainerWidget *removedContainer );
+
     enum ContainerStyleType
     {
         ROW = 0,
@@ -199,6 +205,26 @@ private:
     ContainerWidget::ContentType mContainerStyle;
     ControllerWidget* mController = nullptr;
 
+};
+
+
+
+class DialogContainerWidget : public WContainerWidget
+{
+public:
+    explicit DialogContainerWidget(const std::string &title);
+
+    WContainerWidget* Content();
+
+
+
+    Signal<NoClass> &Accepted();
+    Signal<NoClass> &Rejected();
+private:
+    WContainerWidget* mContent;
+
+    Signal<NoClass> _Accepted;
+    Signal<NoClass> _Rejected;
 };
 
 
