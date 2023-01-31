@@ -3,65 +3,117 @@
 v2::Faaliyet::FaaliyetRaporContainer::FaaliyetRaporContainer( SerikBLDCore::User *_mUser )
     :SerikBLDCore::Faaliyet::Manager ( _mUser->getDB () ),mUser(_mUser),mPersonelManager(new SerikBLDCore::PersonelManager(_mUser->getDB ()))
 {
+    mGirisBilgiManager = new SerikBLDCore::Faaliyet::GirisBilgileri::GirisBilgileriManager(this->getDB());
+    this->initMenu(MenuPage::Raporlar);
+}
+
+void v2::Faaliyet::FaaliyetRaporContainer::initMenu(const MenuPage &currentPage)
+{
+
+    this->Header()->clear();
 
 
+    auto RaporlarMenuBtn = this->Header()->addNew<WContainerWidget>();
+    RaporlarMenuBtn->addStyleClass(Bootstrap::Grid::Large::col_lg_6+
+                                   Bootstrap::Grid::Medium::col_md_6+
+                                   Bootstrap::Grid::Small::col_sm_6+
+                                   Bootstrap::Grid::ExtraSmall::col_xs_6);
+    RaporlarMenuBtn->addNew<WText>("<h4>Raporlar</h4>",TextFormat::UnsafeXHTML);
+    RaporlarMenuBtn->addStyleClass(Bootstrap::ContextualBackGround::bg_info);
+    RaporlarMenuBtn->setPadding(5,Side::Top|Side::Bottom);
+    RaporlarMenuBtn->decorationStyle ().setCursor (Cursor::PointingHand);
 
+    RaporlarMenuBtn->setMargin(15,Side::Bottom);
+    RaporlarMenuBtn->clicked().connect([=](){
+        this->initMenu(MenuPage::Raporlar);
+    });
 
+    auto GirisMenuBtn = this->Header()->addNew<WContainerWidget>();
+    GirisMenuBtn->addStyleClass(Bootstrap::Grid::Large::col_lg_6+
+                                Bootstrap::Grid::Medium::col_md_6+
+                                Bootstrap::Grid::Small::col_sm_6+
+                                Bootstrap::Grid::ExtraSmall::col_xs_6);
+    GirisMenuBtn->addNew<WText>("<h4>Giriş Bilgileri</h4>",TextFormat::UnsafeXHTML);
+    GirisMenuBtn->addStyleClass(Bootstrap::ContextualBackGround::bg_primary);
+    GirisMenuBtn->setPadding(5,Side::Top|Side::Bottom);
+    GirisMenuBtn->setMargin(15,Side::Bottom);
+    GirisMenuBtn->decorationStyle ().setCursor (Cursor::PointingHand);
 
-    if( this->mUser->Statu () == SerikBLDCore::IK::Statu::Baskan
-            || this->mUser->Statu () == SerikBLDCore::IK::Statu::BaskanYardimcisi
-            || this->mUser->Birimi () == "Yazı İşleri Müdürlüğü"){
+    GirisMenuBtn->clicked().connect([=](){
+        //TODO: Giriş Bilgileri Eklenecek
+        this->showPopUpMessage("Yapım Aşamasında","warn");
+//        this->initMenu(MenuPage::GirisBilgileri);
+    });
 
-        auto container = Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass (Bootstrap::Grid::col_full_12);
-        container->addStyleClass (CSSStyle::Gradient::grayGradient90);
+    if( currentPage == MenuPage::Raporlar ){
 
-        auto hLayout = container->setLayout (cpp14::make_unique<WHBoxLayout>());
-        auto text = hLayout->addWidget(cpp14::make_unique<WText>("Yıl Seç"));
-        text->setWidth (WLength("50%"));
-        text->setAttributeValue (Style::style,Style::color::color (Style::color::Grey::Black));
-        text->setMargin (6,Side::Top|Side::Bottom);
+        if( this->mUser->Statu () == SerikBLDCore::IK::Statu::Baskan
+                || this->mUser->Statu () == SerikBLDCore::IK::Statu::BaskanYardimcisi
+                || this->mUser->Birimi () == "Yazı İşleri Müdürlüğü"){
 
+            auto container = Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
+            container->addStyleClass (Bootstrap::Grid::col_full_12);
+            container->addStyleClass (CSSStyle::Gradient::grayGradient90);
 
+            auto hLayout = container->setLayout (cpp14::make_unique<WHBoxLayout>());
+            auto text = hLayout->addWidget(cpp14::make_unique<WText>("Yıl Seç"));
+            text->setWidth (WLength("50%"));
+            text->setAttributeValue (Style::style,Style::color::color (Style::color::Grey::Black));
+            text->setMargin (6,Side::Top|Side::Bottom);
 
-        mYillar = hLayout->addWidget (cpp14::make_unique<WComboBox>());
-        mYillar->setWidth(WLength("50%"));
+            mYillar = hLayout->addWidget (cpp14::make_unique<WComboBox>());
+            mYillar->setWidth(WLength("50%"));
 
-        mYillar->addItem("2020");
-        mYillar->addItem("2021");
-        mYillar->addItem("2022");
-        mYillar->addItem("2023");
-        mYillar->addItem("2024");
-        mYillar->addItem("2025");
-        mYillar->addItem("2026");
-        mYillar->addItem("2027");
-        mYillar->addItem("2028");
-        mYillar->addItem("2029");
-        mYillar->addItem("2030");
-        mYillar->addItem("2031");
-        mYillar->addItem("2032");
+            mYillar->addItem("2020");
+            mYillar->addItem("2021");
+            mYillar->addItem("2022");
+            mYillar->addItem("2023");
+            mYillar->addItem("2024");
+            mYillar->addItem("2025");
+            mYillar->addItem("2026");
+            mYillar->addItem("2027");
+            mYillar->addItem("2028");
+            mYillar->addItem("2029");
+            mYillar->addItem("2030");
+            mYillar->addItem("2031");
+            mYillar->addItem("2032");
 
+            mYillar->activated ().connect ([=](const int &value ){
+                this->initFaaliyetRaporlari ();
+            });
 
-
-        mYillar->activated ().connect ([=](const int &value ){
-            this->initFaaliyetRaporlari ();
-        });
-
-        auto mBtn2020 = hLayout->addWidget(cpp14::make_unique<WPushButton>("Listeye Dön"));
-        mBtn2020->addStyleClass(Bootstrap::Button::Primary);
-        mBtn2020->clicked().connect([=](){
-            this->initFaaliyetRaporlari ();
-        });
+            auto mBtn2020 = hLayout->addWidget(cpp14::make_unique<WPushButton>("Listeye Dön"));
+            mBtn2020->addStyleClass(Bootstrap::Button::Primary);
+            mBtn2020->clicked().connect([=](){
+                this->initFaaliyetRaporlari ();
+            });
+        }
+        this->initFaaliyetRaporlari ();
     }
 
 
+    if( currentPage == MenuPage::GirisBilgileri ){
+        if( this->mUser->Statu () == SerikBLDCore::IK::Statu::Baskan
+                || this->mUser->Statu () == SerikBLDCore::IK::Statu::BaskanYardimcisi
+                || this->mUser->Birimi () == "Yazı İşleri Müdürlüğü"){
+            auto container = Header()->addWidget (cpp14::make_unique<WContainerWidget>());
 
-    this->initFaaliyetRaporlari ();
+
+            container->addStyleClass (Bootstrap::Grid::col_full_12+Bootstrap::ContextualBackGround::bg_primary);
+
+            container->addWidget (cpp14::make_unique<WText>("Yeni Faaliyet Girişi Ekle<b>+</b>"));
+            container->addStyleClass (CSSStyle::Shadows::shadow8px);
+            container->setPadding (5,Side::Top|Side::Bottom);
+            container->setMargin (50,Side::Top|Side::Bottom);
+            container->decorationStyle ().setCursor (Cursor::PointingHand);
+
+            container->clicked().connect(this,&v2::Faaliyet::FaaliyetRaporContainer::initNewFaaliyetGiris);
+
+            initFaaliyetGirisBilgileri();
 
 
-
-
-
+        }
+    }
 }
 
 void v2::Faaliyet::FaaliyetRaporContainer::initFaaliyetRaporlari(const int64_t currentYear)
@@ -196,25 +248,42 @@ void v2::Faaliyet::FaaliyetRaporContainer::initFaaliyetRaporlari(const int64_t c
                 filter.setEnableViewMode(false);
             }
 
-            setEnableDisableBtnContainer->clicked().connect([=](){
-                SerikBLDCore::Faaliyet::FaaliyetItem filter;
-                filter.setOid(container->attributeValue (Style::dataoid).toUTF8());
-                if( item.ViewModeisEnabled() ){
-                    filter.setEnableViewMode(false);
-                }else{
+            if( item.getYil() < QDate::currentDate().year()-1 ){
+                if( !item.ViewModeisEnabled() ){
+                    SerikBLDCore::Faaliyet::FaaliyetItem filter;
+                    filter.setOid(container->attributeValue (Style::dataoid).toUTF8());
                     filter.setEnableViewMode(true);
-                }
-
-                auto upt = this->updateItem(filter);
-
-                if( upt ){
-                    if( upt.value().modified_count() ){
-                        this->initFaaliyetRaporlari();
-                        return;
+                    auto upt = this->updateItem(filter);
+                    if( upt ){
+                        if( upt.value().modified_count() ){
+                            this->initFaaliyetRaporlari();
+                            return;
+                        }
                     }
                 }
+                setEnableDisableBtnContainer->setDisabled(true);
+                setEnableDisableBtnContainer->clear();
+                setEnableDisableBtnContainer->addWidget(cpp14::make_unique<WText>("Kilitli"));
 
-            });
+            }else{
+                setEnableDisableBtnContainer->clicked().connect([=](){
+                    SerikBLDCore::Faaliyet::FaaliyetItem filter;
+                    filter.setOid(container->attributeValue (Style::dataoid).toUTF8());
+                    if( item.ViewModeisEnabled() ){
+                        filter.setEnableViewMode(false);
+                    }else{
+                        filter.setEnableViewMode(true);
+                    }
+                    auto upt = this->updateItem(filter);
+                    if( upt ){
+                        if( upt.value().modified_count() ){
+                            this->initFaaliyetRaporlari();
+                            return;
+                        }
+                    }
+                });
+            }
+
 
 
 
@@ -266,6 +335,9 @@ void v2::Faaliyet::FaaliyetRaporContainer::initFaaliyetRaporlari(const int64_t c
         auto list = this->ListFaaliyetItem (this->mUser->Birimi ());
 
         for( const auto &item : list ){
+
+            LOG << item.oid().value().to_string()<<"\n";
+
             auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
             container->addStyleClass (Bootstrap::Grid::col_full_12);
 
@@ -282,6 +354,7 @@ void v2::Faaliyet::FaaliyetRaporContainer::initFaaliyetRaporlari(const int64_t c
             container->addStyleClass (CSSStyle::Button::blueButton);
 
             text->clicked ().connect ([=](){
+                this->itemList.clearItems();
                 this->testPage (text->text ().toUTF8 (),container->attributeValue (Style::dataoid).toUTF8());
             });
         }
@@ -289,6 +362,81 @@ void v2::Faaliyet::FaaliyetRaporContainer::initFaaliyetRaporlari(const int64_t c
 
 
 
+
+
+}
+
+void v2::Faaliyet::FaaliyetRaporContainer::initFaaliyetGirisBilgileri()
+{
+    this->Content()->clear();
+}
+
+void v2::Faaliyet::FaaliyetRaporContainer::initNewFaaliyetGiris()
+{
+
+    this->Content()->clear();
+
+    auto createContainer = [=](const std::string &title){
+        auto container = cpp14::make_unique<WContainerWidget>();
+        container->setPadding(10,AllSides);
+        container->addStyleClass(Bootstrap::Grid::col_full_6);
+        container->setAttributeValue(Style::style,Style::background::color::rgb(this->getRandom(175,225),
+                                                                                this->getRandom(225,255),
+                                                                                this->getRandom(225,255)));
+        container->addNew<WText>("<b>"+title+"</b>",TextFormat::UnsafeXHTML);
+        container->addNew<WBreak>();
+        container->setMargin(15,Side::Top|Side::Bottom);
+        return container;
+    };
+
+    auto yilContainer = createContainer("Yıl Seçimi");
+    auto yilSpinBox = yilContainer->addNew<WSpinBox>();
+    yilSpinBox->setMaximum(2050);
+    yilSpinBox->setMinimum(WDate::currentDate().year()-1);
+    yilSpinBox->setValue(WDate::currentDate().year());
+    Content()->addWidget(std::move(yilContainer));
+
+
+
+    auto logoPathContainer = createContainer("Belediye Logo Seçimi");
+    auto logoImgContainer = logoPathContainer->addNew<WImage>();
+    logoImgContainer->setWidth(WLength("100%"));
+    auto logoContainer = logoPathContainer->addNew<FileUploaderWidget>("Resim Yükle");
+    logoContainer->Uploaded().connect([=](){
+        logoImgContainer->setImageLink(WLink(logoContainer->doocRootLocation().toStdString()));
+        logoImgContainer->setHeight(350);
+    });
+    Content()->addWidget(std::move(logoPathContainer));
+
+
+    auto AtaturkPathContainer = createContainer("Ataturk Giriş Resmi Seçimi");
+
+    Content()->addWidget(std::move(AtaturkPathContainer));
+
+
+    auto CumhurBaskaniPathContainer = createContainer("Cumhurbaşkanı Giriş Resmi Seçimi");
+
+    Content()->addWidget(std::move(CumhurBaskaniPathContainer));
+
+
+    auto BelediyeBaskaniPathContainer = createContainer("Belediye Başkanı Giriş Resmi Seçimi");
+
+    Content()->addWidget(std::move(BelediyeBaskaniPathContainer));
+
+
+
+    auto ustYoneticiBaskanSunumContainer = createContainer("Üst Yönetici Sunumu");
+    auto ustYoneticiBaskanSunumTextEdit = ustYoneticiBaskanSunumContainer->addNew<WTextArea>();
+    ustYoneticiBaskanSunumTextEdit->setHeight(300);
+    Content()->addWidget(std::move(ustYoneticiBaskanSunumContainer));
+
+
+
+
+    auto ustYoneticiIcKontrolGuvenceContainer = createContainer("İç Kontrol Güvence Beyanı");
+    auto ustYoneticiKontrolBeyaniTextEdit = ustYoneticiIcKontrolGuvenceContainer->addNew<WTextArea>();
+    ustYoneticiKontrolBeyaniTextEdit->setHeight(300);
+    Content()->addWidget(std::move(ustYoneticiIcKontrolGuvenceContainer));
 
 
 }
@@ -324,6 +472,8 @@ void v2::Faaliyet::FaaliyetRaporContainer::testPage( const std::string &faaliyet
         SerikBLDCore::Faaliyet::FaaliyetItem filter;
         filter.setOid (faaliyetOid);
 
+        LOG << bsoncxx::to_json(filter.view()) << "\n";
+
 
         auto val = this->findOneItem (filter);
 
@@ -332,7 +482,6 @@ void v2::Faaliyet::FaaliyetRaporContainer::testPage( const std::string &faaliyet
             if( val.value ().view ().empty () ){
 
                 this->showPopUpMessage ("Empty view:","err");
-
 
             }else{
                 try{
@@ -376,7 +525,6 @@ void v2::Faaliyet::FaaliyetRaporContainer::testPage( const std::string &faaliyet
 
     {
         this->addKaydetButon (faaliyetOid,false);
-
     }
 
     if( itemList.count () == 0 ){
