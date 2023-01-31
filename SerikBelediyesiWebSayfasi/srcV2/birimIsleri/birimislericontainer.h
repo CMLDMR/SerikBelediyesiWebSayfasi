@@ -27,6 +27,8 @@ public:
 
     void initFireWallLog();
 
+    void initStok();
+
 private:
     SerikBLDCore::User* mUser;
 

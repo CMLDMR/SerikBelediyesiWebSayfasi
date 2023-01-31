@@ -103,7 +103,6 @@ public:
     void initWidget();
 
 
-
     WPushButton *askConfirm( const std::string& question );
 
     void warnDialog( const std::string &warnMessage );

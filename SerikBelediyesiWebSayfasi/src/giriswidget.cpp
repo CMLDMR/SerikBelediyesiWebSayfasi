@@ -26,14 +26,14 @@
 #include "SerikBelediyesiWebSayfasi/srcV2/meclis/meclispage.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/personel/personelmanagerpage.h"
 
-#include "SerikBelediyesiWebSayfasi/srcV2/stok/stokkategoripage.h"
+//#include "SerikBelediyesiWebSayfasi/srcV2/stok/stokkategoripage.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/birimIsleri/birimislericontainer.h"
 
 #include "firma/firmaitem.h"
 #include "firma/firmamanager.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/imar/yenimimariproje.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/imar/mimariprojemanagerpage.h"
-#include "SerikBelediyesiWebSayfasi/srcV2/stok/stokcontainerwidget.h"
+//#include "SerikBelediyesiWebSayfasi/srcV2/stok/stokcontainerwidget.h"
 
 
 

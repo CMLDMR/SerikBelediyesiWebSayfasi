@@ -8,6 +8,8 @@
 #include "SerikBelediyesiWebSayfasi/srcV2/nostserik.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/bilgiislem/firewallcontainer.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/duyuruyonetim.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/stok/stokkategoripage.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/stok/stokcontainerwidget.h"
 
 v2::BirimIsleriContainer::BirimIsleriContainer(SerikBLDCore::User *_user)
     :ContainerWidget ("Birim İşleri"),mUser(_user)
@@ -50,6 +52,14 @@ v2::BirimIsleriContainer::BirimIsleriContainer(SerikBLDCore::User *_user)
         Header ()->addWidget (std::move(menuFirma));
     }
 
+    //Depo Yönetimi
+    {
+        auto menuFirma = createMenu ( "Stok" , Cursor::PointingHand );
+        menuFirma->clicked ().connect ( [=](){
+            this->initStok();
+        } );
+        Header ()->addWidget (std::move(menuFirma));
+    }
 
     //Çalışma Yönetimi
     {
@@ -154,6 +164,12 @@ void v2::BirimIsleriContainer::initFireWallLog()
     Content ()->clear ();
     Content ()->addWidget (cpp14::make_unique<FireWallContainer>());
 
+}
+
+void v2::BirimIsleriContainer::initStok()
+{
+    this->Content ()->clear ();
+    this->Content ()->addWidget (Wt::cpp14::make_unique<v2::StokWidget::StokContainerWidget>(mUser));
 }
 
 std::unique_ptr<WContainerWidget>  v2::BirimIsleriContainer::createMenu(const std::string &menuName , Cursor cursor )
