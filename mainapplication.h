@@ -54,6 +54,8 @@ public:
 
     void LoadDeviceStatus();
 
+    void bakim( const std::string &message );
+
 
 
 

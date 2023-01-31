@@ -29,7 +29,10 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
 
     wApp->addMetaHeader("description","Serik Belediyesi Resmi Web Sayfası","text/html; charset=utf-8");
 
-
+    Wt::WApplication::instance()->setTitle("Serik Belediyesi Resmi Web Sayfası");
+    Wt::WApplication::instance()->addMetaLink("icon/20180126113337667.ico","shortcut icon","","","image/x-icon","16x16",false);
+//    this->bakim("Şuanda Bakım Aşamasında...");
+//    return;
 
 
     try {
@@ -57,8 +60,7 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
 
     Wt::WApplication::instance()->setTheme(p_wtTheme);
 
-    Wt::WApplication::instance()->setTitle("Serik Belediyesi Resmi Web Sayfası");
-    Wt::WApplication::instance()->addMetaLink("icon/20180126113337667.ico","shortcut icon","","","image/x-icon","16x16",false);
+
 
     WApplication::useStyleSheet(WLink("css/mainPage.css"));
     WApplication::useStyleSheet(WLink("css/slider.css"));
@@ -120,6 +122,24 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
 
     if( mapList.contains ("type") )
     {
+
+        if( mapList["type"] == "faultUrl" )
+        {
+            auto container = root()->addWidget(cpp14::make_unique<WContainerWidget>());
+            container->setPositionScheme(PositionScheme::Fixed);
+            container->setWidth(WLength("100%"));
+            container->setHeight(WLength("100%"));
+            container->setAttributeValue(Style::style,Style::background::color::rgba(255,0,0,.75));
+            container->setZIndex(1000);
+
+            auto hLayout = container->setLayout(cpp14::make_unique<WHBoxLayout>());
+            hLayout->addStretch(1);
+            auto text = hLayout->addWidget(cpp14::make_unique<WText>("<h4><p>Sitede Zararlı İçerik Tespit Edildi.</p></h4>"),0,AlignmentFlag::Middle);
+            hLayout->addStretch(1);
+            return;
+
+        }
+
         if( mapList["type"] == "dilekce" )
         {
             auto oid = mapList["_id"];
@@ -144,22 +164,6 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
             showSpecLink = this->loadGundem (oid.toStdString ());
         }
 
-        if( mapList["type"] == "faultUrl" )
-        {
-            auto container = root()->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->setPositionScheme(PositionScheme::Fixed);
-            container->setWidth(WLength("100%"));
-            container->setHeight(WLength("100%"));
-            container->setAttributeValue(Style::style,Style::background::color::rgba(255,0,0,.75));
-            container->setZIndex(1000);
-
-            auto hLayout = container->setLayout(cpp14::make_unique<WHBoxLayout>());
-            hLayout->addStretch(1);
-            auto text = hLayout->addWidget(cpp14::make_unique<WText>("<h4><p>Sitede Zararlı İçerik Tespit Edildi.</p></h4>"),0,AlignmentFlag::Middle);
-            hLayout->addStretch(1);
-            return;
-
-        }
 
     }
 
@@ -695,6 +699,34 @@ void MainApplication::LoadDeviceStatus()
 
 //    }
 
+}
+
+void MainApplication::bakim(const std::string &message)
+{
+
+
+    auto container = root()->addNew<WContainerWidget>();
+
+    container->setPositionScheme(PositionScheme::Fixed);
+    container->setOffsets(0,AllSides);
+
+    auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
+
+    vLayout->addStretch(1);
+
+    auto text = vLayout->addWidget(cpp14::make_unique<WText>("<h3>Sistemlerimiz Şuan da Bakım Aşamasında </h3>",TextFormat::UnsafeXHTML),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+
+    Wt::WLink link = Wt::WLink("https://webportal.serik.bel.tr/web/guest/2");
+    link.setTarget(Wt::LinkTarget::NewWindow);
+    std::unique_ptr<Wt::WAnchor> anchor =
+            Wt::cpp14::make_unique<Wt::WAnchor>(link,
+                                                std::string("E-Belediye Hizmetleri İçin Tıklayınız"));
+    vLayout->addWidget (std::move(anchor),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+
+    vLayout->addStretch(1);
+
+
+    return;
 }
 
 

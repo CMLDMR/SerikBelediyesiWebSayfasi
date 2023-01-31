@@ -87,7 +87,18 @@ class FaaliyetRaporContainer : public ContainerWidget, public SerikBLDCore::Faal
 public:
     explicit FaaliyetRaporContainer( SerikBLDCore::User* _mUser );
 
+    enum class MenuPage{
+        Raporlar,
+        GirisBilgileri
+    };
+
+    void initMenu( const MenuPage &currentPage = MenuPage::Raporlar );
+
     void initFaaliyetRaporlari( const std::int64_t currentYear = 2020 );
+
+    void initFaaliyetGirisBilgileri();
+
+    void initNewFaaliyetGiris();
 
     void testPage(const std::string &faaliyetTitle , const std::string &faaliyetOid);
 
@@ -114,6 +125,8 @@ private:
     WComboBox* mYillar = nullptr;
 
     SerikBLDCore::PersonelManager* mPersonelManager;
+
+    SerikBLDCore::Faaliyet::GirisBilgileri::GirisBilgileriManager* mGirisBilgiManager;
 };
 
 
