@@ -89,6 +89,7 @@ void ContainerWidget::initWidget()
 
 }
 
+
 WPushButton* ContainerWidget::askConfirm(const std::string &question)
 {
     auto mDialog = wApp->instance()->root()->addChild (cpp14::make_unique<WDialog>());
@@ -478,18 +479,20 @@ DialogContainerWidget::DialogContainerWidget(const std::string &title)
     vLayout->addStretch(1);
 
     auto mTitleContainer = vLayout->addWidget(cpp14::make_unique<WContainerWidget>());
-    mTitleContainer->addNew<WText>(title);
+    mTitleContainer->addNew<WText>(title)->setMargin(0,Side::Bottom);
     mTitleContainer->addStyleClass(Bootstrap::ContextualBackGround::bg_primary);
 
     mContent = vLayout->addWidget(cpp14::make_unique<WContainerWidget>());
     mContent->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::AliceBlue));
     mContent->setMaximumSize(WLength::Auto,WLength::Auto);
     mContent->addStyleClass(Bootstrap::Grid::row);
+    mContent->setMargin(0,Side::Top);
+    mContent->setPadding(15,Side::Top|Side::Bottom);
 
 
     auto footer = vLayout->addWidget(cpp14::make_unique<WContainerWidget>());
     footer->setMaximumSize(WLength::Auto,50);
-    footer->setAttributeValue(Style::style,Style::background::color::rgba(255,255,255,0.65));
+    footer->setAttributeValue(Style::style,Style::background::color::rgba(255,255,255,0.75));
 
     auto hLayout = footer->setLayout(cpp14::make_unique<WHBoxLayout>());
 

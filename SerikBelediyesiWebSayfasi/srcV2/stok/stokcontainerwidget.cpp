@@ -210,16 +210,19 @@ void v2::StokWidget::StokContainerWidget::initMenuBar()
         });
     }
 
-    //    {
-    //        auto container = this->Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
-    //        container->addWidget (cpp14::make_unique<WText>("İstatistik"));
-    //        container->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
-    //                                  Bootstrap::Grid::Medium::col_md_2+
-    //                                  Bootstrap::Grid::Small::col_sm_3+
-    //                                  Bootstrap::Grid::ExtraSmall::col_xs_3+
-    //                                  CSSStyle::Button::blueButton);
-    //        container->setPadding (10,Side::Top|Side::Bottom);
-    //    }
+        {
+            auto container = this->Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
+            container->addWidget (cpp14::make_unique<WText>("İstatistik"));
+            container->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                                      Bootstrap::Grid::Medium::col_md_2+
+                                      Bootstrap::Grid::Small::col_sm_3+
+                                      Bootstrap::Grid::ExtraSmall::col_xs_3+
+                                      CSSStyle::Button::blueButton);
+            container->setPadding (10,Side::Top|Side::Bottom);
+            container->clicked().connect([=](){
+                this->showPopUpMessage("Modul Daha Sonra Eklenecek","warn");
+            });
+        }
 
 
 
@@ -235,7 +238,7 @@ void v2::StokWidget::StokContainerWidget::initMenuBar()
         container->clicked ().connect (this,&v2::StokWidget::StokContainerWidget::initAyarlar);
     }
 
-    if( this->mUser->Birimi () == "Park ve Bahçeler Müdürlüğü"){
+    if( /*this->mUser->Birimi () == "Park ve Bahçeler Müdürlüğü"*/ true ){
         auto container = this->Header ()->addWidget (cpp14::make_unique<WContainerWidget>());
         container->addWidget (cpp14::make_unique<WText>("Yerler"));
         container->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
@@ -540,16 +543,16 @@ void v2::StokWidget::StokContainerWidget::initYerler()
 
         container->clicked ().connect ([=](){
 
-            auto mDialog = this->createDialog ("Yeni Yer Adı Ekle");
+            auto mDialog = this->createFlatDialog("Yeni Yer Adı Ekle");
 
-            auto yeniLineEdit = mDialog->contents ()->addWidget (cpp14::make_unique<WLineEdit>());
+            auto yeniLineEdit = mDialog->Content()->addWidget (cpp14::make_unique<WLineEdit>());
             yeniLineEdit->setPlaceholderText ("Yeni Yer Adını Giriniz!");
 
 
-            auto saveBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet"));
-            saveBtn->addStyleClass(Bootstrap::Button::Primary);
+//            auto saveBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet"));
+//            saveBtn->addStyleClass(Bootstrap::Button::Primary);
 
-            saveBtn->clicked().connect([=](){
+            mDialog->Accepted().connect([=](){
 
                 if( yeniLineEdit->text ().toUTF8 ().size () < 3 ){
                     this->showPopUpMessage ("Yer Adı Yeterli Değil!");
@@ -640,19 +643,19 @@ void v2::StokWidget::StokContainerWidget::importMazeleme()
 
     this->Content ()->clear ();
 
-    auto mDialog = createDialog ("Yeni Malzeme Girişi");
-    mDialog->setWidth (WLength(500));
+    auto mDialog = createFlatDialog("Yeni Malzeme Girişi");
 
-    auto _kategoriList = this->::SerikBLDCore::ListItem<SerikBLDCore::Stokv2::Kategori>::List (SerikBLDCore::Stokv2::Kategori().setBirim (mUser->Birimi ()),SerikBLDCore::FindOptions ().setLimit (9999));
+    auto _kategoriList = this->::SerikBLDCore::ListItem<SerikBLDCore::Stokv2::Kategori>::List (SerikBLDCore::Stokv2::Kategori().setBirim (mUser->Birimi ()),
+                                                                                               SerikBLDCore::FindOptions ().setLimit (9999));
 
-    auto girisObj = mDialog->contents ()->addWidget (cpp14::make_unique<MalzemeGirisDialog>(this->mUser,_kategoriList));
+    auto girisObj = mDialog->Content()->addWidget (cpp14::make_unique<MalzemeGirisDialog>(this->mUser,_kategoriList));
     girisObj->addStyleClass (Bootstrap::Grid::container_fluid);
 
-    auto saveBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Girişi Yap"));
-    saveBtn->clicked ().connect ([=](){
+//    auto saveBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Girişi Yap"));
+    mDialog->Accepted().connect ([=](){
 
         if( girisObj->getCurrentGirenMiktar () <= 0 ){
-            warnDialog ("Giren Malzeme Miktarı <b>0</b> veya  <b>Altında</b> Olamaz");
+            criticDialog ("Giren Malzeme Miktarı <b>0</b> veya  <b>Altında</b> Olamaz");
             return;
         }
 
@@ -662,7 +665,7 @@ void v2::StokWidget::StokContainerWidget::importMazeleme()
         }
 
         if( girisObj->getCurrentGirenFiyat () <= 0 ){
-            warnDialog ("Giren Malzeme Fiyatı <b>0</b> veya <b>Altında</b> Olamaz");
+            criticDialog ("Giren Malzeme Fiyatı <b>0</b> veya <b>Altında</b> Olamaz");
             return;
         }
 
@@ -1416,45 +1419,52 @@ void v2::StokWidget::MalzemeGirisDialog::initWidget()
 {
 
 
+    auto gridLayoutContainer = this->Content()->addNew<WContainerWidget>();
+    gridLayoutContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+
+    auto gridLayout = gridLayoutContainer->setLayout(cpp14::make_unique<WGridLayout>());
+
+
+    auto createMenuItem = [gridLayout]<typename T>(const std::string &text , std::unique_ptr<T> &&widget){
+            auto row = gridLayout->rowCount();
+            auto containerText = gridLayout->addWidget(cpp14::make_unique<WContainerWidget>(),row,0);
+            containerText->addWidget(cpp14::make_unique<WText>(text));
+            containerText->setPadding(5);
+            containerText->setContentAlignment(AlignmentFlag::Right);
+
+            auto containerWidget = gridLayout->addWidget(cpp14::make_unique<WContainerWidget>(),row,1);
+            auto ptr = widget.get();
+            containerWidget->addWidget(std::move(widget));
+            return ptr;
+        };
+
     {
-        mKalemComboBox = this->Content ()->addWidget (cpp14::make_unique<WComboBox>());
-        mKalemComboBox->addStyleClass (Bootstrap::Grid::col_full_12);
+        mKalemComboBox = createMenuItem("Kalem/Kategori",std::make_unique<WComboBox>());
         for( const auto &item : mKategoriList ){
             mKalemComboBox->addItem (item.getKategoriAdi ());
         }
-
     }
 
     {
-        mGirenMiktarSpinBoxValue = this->Content ()->addWidget (cpp14::make_unique<WDoubleSpinBox>());
-        mGirenMiktarSpinBoxValue->addStyleClass (Bootstrap::Grid::col_full_12);
+        mGirenMiktarSpinBoxValue = createMenuItem("Miktar",std::make_unique<WDoubleSpinBox>());
         mGirenMiktarSpinBoxValue->setMaximum (9999999);
     }
 
-    {
-        mDateEditWidget = this->Content ()->addWidget (cpp14::make_unique<WDateEdit>());
-        mDateEditWidget->addStyleClass (Bootstrap::Grid::col_full_12);
 
+    {
+        mDateEditWidget = createMenuItem("Giriş Tarihi",std::make_unique<WDateEdit>());
+        mDateEditWidget->setDate(WDate::currentDate());
     }
 
     {
-        mGirenFiyatSpinBoxValue = this->Content ()->addWidget (cpp14::make_unique<WDoubleSpinBox>());
-        mGirenFiyatSpinBoxValue->addStyleClass (Bootstrap::Grid::col_full_12);
+        mGirenFiyatSpinBoxValue = createMenuItem("Giriş Fiyatı",std::make_unique<WDoubleSpinBox>());
         mGirenFiyatSpinBoxValue->setMaximum (9999999);
     }
 
-
     {
-        auto textContainer = this->Content ()->addWidget (cpp14::make_unique<WText>("Giren Personel"));
-        textContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
-                                      Bootstrap::Grid::Medium::col_md_6+
-                                      Bootstrap::Grid::Small::col_sm_6+
-                                      Bootstrap::Grid::ExtraSmall::col_xs_6);
-        mCurrentGirenOid = this->Content ()->addWidget (cpp14::make_unique<WText>(mUser->oid ().value ().to_string ()));
-        mCurrentGirenOid->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
-                                         Bootstrap::Grid::Medium::col_md_6+
-                                         Bootstrap::Grid::Small::col_sm_6+
-                                         Bootstrap::Grid::ExtraSmall::col_xs_6);
+        mCurrentGirenOid = createMenuItem("Giren Personel Oid",std::make_unique<WText>());
+        mCurrentGirenOid->setText(mUser->oid ().value ().to_string ());
+        mCurrentGirenOid->setPadding(5);
     }
 
 }

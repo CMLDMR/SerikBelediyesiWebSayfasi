@@ -123,7 +123,8 @@ private:
 class MalzemeGirisDialog : public ContainerWidget, public SerikBLDCore::PersonelManager
 {
 public:
-    explicit MalzemeGirisDialog( SerikBLDCore::User *_mUser , const QVector<SerikBLDCore::Stokv2::Kategori> &_mKategoriList);
+    explicit MalzemeGirisDialog( SerikBLDCore::User *_mUser ,
+                                 const QVector<SerikBLDCore::Stokv2::Kategori> &_mKategoriList);
 
     void initWidget();
 
