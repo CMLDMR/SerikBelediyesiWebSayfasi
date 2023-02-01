@@ -99,7 +99,7 @@ namespace Body {
         mongocxx::collection DuyurularCollection;
         mongocxx::collection VideolarCollection;
 
-        std::string downloadifNotExist(bsoncxx::types::value oid, bool forceFilename = false);
+        std::string downloadifNotExist(bsoncxx::types::bson_value::value oid, bool forceFilename = false);
         std::string downloadifNotExist(std::string oid, bool forceFilename = false);
 
 

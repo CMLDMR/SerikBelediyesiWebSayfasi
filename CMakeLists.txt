@@ -62,6 +62,11 @@ set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/ignore:4251")
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Comman)
 
 
+if(WIN32)
+  add_definitions("/wd4251")
+endif(WIN32)
+
+
 
 
 

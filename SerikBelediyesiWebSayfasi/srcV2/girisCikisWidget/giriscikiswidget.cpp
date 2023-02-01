@@ -5,17 +5,20 @@ GirisCikisWidget::GirisCikisWidget(mongocxx::database *_db, bsoncxx::document::v
 {
 
     setPadding(20,Side::Bottom);
-    if( this->User().view()["Statü"].get_string().value.data() == "Personel" )
+    std::string _statu;
+    try {
+        _statu = this->User().view()["Statü"].get_string().value.data();
+    } catch (bsoncxx::exception &e) {
+        std::cout << __LINE__ << " " << __FUNCTION__ << " " << e.what();
+    }
+    if( _statu == "Personel" )
     {
         this->initPersonelMenu();
-    }else if ( this->User().view()["Statü"].get_string().value.data() == "Müdür" ) {
+    }else if ( _statu == "Müdür" ) {
         this->initPersonelMenu();
-    }else if ( this->User().view()["Statü"].get_string().value.data() == "Başkan Yardımcısı" || this->User().view()["Statü"].get_string().value.data() == "Başkan" ) {
+    }else if ( _statu == "Başkan Yardımcısı" || _statu == "Başkan" ) {
         this->initBaskanMenu();
     }
-
-
-
 
 }
 
@@ -25,7 +28,6 @@ void GirisCikisWidget::initGirisCikis()
 
     auto year = QString::fromStdString(mYearSelect->currentText().toUTF8()).toInt();
     auto mounth = mMounthSelect->currentIndex()+1;
-
 
     QDate date;
     date.setDate(year,mounth,1);
@@ -106,32 +108,19 @@ void GirisCikisWidget::initBaskanMenu()
         mCurrentBirim->addItem("Tüm Birim");
 
         try {
-
             auto cursor = this->db()->collection("Müdürlükler").find(document{}.view());
-
             for( auto doc : cursor )
             {
                 try {
                     mCurrentBirim->addItem(doc["Birim"].get_string().value.data());
                 } catch (bsoncxx::exception &e) {
-
+                    std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
                 }
             }
-
         } catch (mongocxx::exception &e) {
-
+            std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
         }
-
-
     }
-
-    //    {
-    //        auto container = this->getRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
-    //        container->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_2+Bootstrap::Grid::ExtraSmall::col_xs_2);
-    //        mBugunBtn = container->addWidget(cpp14::make_unique<WPushButton>("Bugün"));
-    //        mBugunBtn->clicked().connect(this,&GirisCikisWidget::initBugun);
-    //    }
-
 
     {
         auto container = this->getContentRowContainer()->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -157,7 +146,6 @@ void GirisCikisWidget::initBaskanMenu()
         mContentContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
     }
 
-
 }
 
 void GirisCikisWidget::initBugun()
@@ -167,6 +155,7 @@ void GirisCikisWidget::initBugun()
     try {
         filter.append(kvp("day",bsoncxx::types::b_int64{QDate::currentDate().toJulianDay()}));
     } catch (bsoncxx::exception &e) {
+        std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
     }
 
@@ -175,10 +164,9 @@ void GirisCikisWidget::initBugun()
         try {
             filter.append(kvp("Birimi",mCurrentBirim->currentText().toUTF8()));
         } catch (bsoncxx::exception &e) {
-
+            std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
         }
     }
-
 
     QStringList poillist;
 
@@ -188,22 +176,20 @@ void GirisCikisWidget::initBugun()
 
         for( auto doc : cursor )
         {
-
             try {
                 poillist.push_back(doc["personeloid"].get_oid().value.to_string().c_str());
             } catch (bsoncxx::exception &e) {
-
+                std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
             }
-
         }
 
         poillist.removeDuplicates();
 
     } catch (mongocxx::exception &e) {
-
+        std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
     }
     mContentContainer->clear();
-    for( auto oid : poillist )
+    for( const auto &oid : poillist )
     {
         this->addRow( oid , QDate::currentDate().toJulianDay() );
     }
@@ -216,6 +202,7 @@ void GirisCikisWidget::initSelectedDay(qint64 julianDay)
     try {
         filter.append(kvp("day",bsoncxx::types::b_int64{julianDay}));
     } catch (bsoncxx::exception &e) {
+        std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
     }
 
@@ -224,6 +211,7 @@ void GirisCikisWidget::initSelectedDay(qint64 julianDay)
         try {
             filter.append(kvp("Birimi",mCurrentBirim->currentText().toUTF8()));
         } catch (bsoncxx::exception &e) {
+            std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
         }
     }
@@ -241,6 +229,7 @@ void GirisCikisWidget::initSelectedDay(qint64 julianDay)
             try {
                 poillist.push_back(doc["personeloid"].get_oid().value.to_string().c_str());
             } catch (bsoncxx::exception &e) {
+                std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
             }
 
@@ -249,6 +238,7 @@ void GirisCikisWidget::initSelectedDay(qint64 julianDay)
         poillist.removeDuplicates();
 
     } catch (mongocxx::exception &e) {
+        std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
     }
     mContentContainer->clear();
@@ -260,7 +250,7 @@ void GirisCikisWidget::initSelectedDay(qint64 julianDay)
         container->setHeight(20);
         container->setAttributeValue(Style::style,Style::background::color::rgb(125,175,125));
     }
-    for( auto oid : poillist )
+    for( const auto &oid : poillist )
     {
         this->addRow( oid , julianDay );
     }
@@ -273,6 +263,7 @@ void GirisCikisWidget::initSelectedDay(qint64 julianDay)
         try {
             filter.append(kvp("Birimi",mCurrentBirim->currentText().toUTF8()));
         } catch (bsoncxx::exception &e) {
+            std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
         }
     }
@@ -280,11 +271,12 @@ void GirisCikisWidget::initSelectedDay(qint64 julianDay)
 
     auto oidlist = array{};
 
-    for( auto oid : poillist )
+    for( const auto &oid : poillist )
     {
         try {
             oidlist.append(bsoncxx::oid{oid.toStdString()});
         } catch (bsoncxx::exception &e) {
+            std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
         }
     }
@@ -293,6 +285,7 @@ void GirisCikisWidget::initSelectedDay(qint64 julianDay)
         try {
             filter.append(kvp("_id",make_document(kvp("$nin",oidlist))));
         } catch (bsoncxx::exception &e) {
+        std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
         }
 
@@ -300,6 +293,7 @@ void GirisCikisWidget::initSelectedDay(qint64 julianDay)
     try {
         filter.append(kvp("Büro Personeli",true));
     } catch (bsoncxx::exception &e) {
+        std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
     }
 
@@ -322,17 +316,22 @@ void GirisCikisWidget::initSelectedDay(qint64 julianDay)
             try {
                 perbirim = QString(doc["Birimi"].get_string().value.data());
             } catch (bsoncxx::exception &e) {
+                std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
+
             }
 
             try {
                 pername = QString(doc["ad soyad"].get_string().value.data());
             } catch (bsoncxx::exception &e) {
+                std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
+
             }
 
             this->addNinRow( pername , perbirim );
 
         }
     } catch (mongocxx::exception &e) {
+        std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
     }
 
@@ -359,7 +358,7 @@ void GirisCikisWidget::addRow(QDate date)
     dayContainer->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
 
     auto layout = dayContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
-    auto text = layout->addWidget(cpp14::make_unique<WText>(date.toString("dddd dd/MMMM/yyyy").toStdString()),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+    layout->addWidget(cpp14::make_unique<WText>(date.toString("dddd dd/MMMM/yyyy").toStdString()),0,AlignmentFlag::Center|AlignmentFlag::Middle);
 
 
     auto filter = document{};
@@ -367,13 +366,13 @@ void GirisCikisWidget::addRow(QDate date)
     try {
         filter.append(kvp("personeloid",this->User().view()["_id"].get_oid().value));
     } catch (bsoncxx::exception &e) {
-
+        std::cout << __LINE__ << " " << __FILE__ << e.what() << "\n";
     }
 
     try {
         filter.append(kvp("day",bsoncxx::types::b_int64{date.toJulianDay()}));
     } catch (bsoncxx::exception &e) {
-
+        std::cout << __LINE__ << " " << __FILE__ << e.what() << "\n";
     }
 
     mongocxx::options::find findOptions;
@@ -383,7 +382,7 @@ void GirisCikisWidget::addRow(QDate date)
     try {
         sortDoc.append(kvp("time",1));
     } catch (bsoncxx::exception &e) {
-
+        std::cout << __LINE__ << " " << __FILE__ << e.what() << "\n";
     }
 
     findOptions.sort(sortDoc.view());
@@ -403,16 +402,14 @@ void GirisCikisWidget::addRow(QDate date)
 
             auto layout = dContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
             try {
-                auto text = layout->addWidget(cpp14::make_unique<WText>(QTime::fromMSecsSinceStartOfDay(doc["time"].get_int32().value).toString("hh:mm").toStdString()),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+                layout->addWidget(cpp14::make_unique<WText>(QTime::fromMSecsSinceStartOfDay(doc["time"].get_int32().value).toString("hh:mm").toStdString()),0,AlignmentFlag::Center|AlignmentFlag::Middle);
             } catch (bsoncxx::exception &e) {
-                auto text = layout->addWidget(cpp14::make_unique<WText>(e.what()),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+                layout->addWidget(cpp14::make_unique<WText>(e.what()),0,AlignmentFlag::Center|AlignmentFlag::Middle);
             }
-
         }
 
-
     } catch (mongocxx::exception &e) {
-
+        std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
     }
 
 
@@ -426,6 +423,7 @@ void GirisCikisWidget::addRow(QString personeloid, qint64 julianDay)
     try {
         filter.append(kvp("personeloid",bsoncxx::oid{personeloid.toStdString()}));
     } catch (bsoncxx::exception &e) {
+        std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
     }
 
@@ -438,16 +436,19 @@ void GirisCikisWidget::addRow(QString personeloid, qint64 julianDay)
         try {
             PersonelName = val.value().view()["ad soyad"].get_string().value.data();
         } catch (bsoncxx::exception &e) {
+            std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
         }
 
         try {
             BirimName = val.value().view()["Birimi"].get_string().value.data();
         } catch (bsoncxx::exception &e) {
+            std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
         }
 
     } catch (mongocxx::exception &e) {
+        std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
     }
 
@@ -480,12 +481,14 @@ void GirisCikisWidget::addRow(QString personeloid, qint64 julianDay)
     try {
         filter.append(kvp("personeloid",bsoncxx::oid{personeloid.toStdString()}));
     } catch (bsoncxx::exception &e) {
+        std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
     }
 
     try {
         filter.append(kvp("day",bsoncxx::types::b_int64{julianDay}));
     } catch (bsoncxx::exception &e) {
+        std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
     }
 
@@ -570,12 +573,14 @@ void GirisCikisWidget::addRow(QString personeloid, qint64 julianDay)
             try {
                 msecValue = doc["time"].get_int32().value;
             } catch (bsoncxx::exception &e) {
+                std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
             }
 
             try {
                 imgoid = doc["imgoid"].get_oid().value.to_string();
             } catch (bsoncxx::exception &e) {
+                std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
             }
 
@@ -644,6 +649,7 @@ void GirisCikisWidget::addRow(QString personeloid, qint64 julianDay)
 
 
     } catch (mongocxx::exception &e) {
+        std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
     }
 
@@ -669,12 +675,8 @@ void GirisCikisWidget::addNinRow( QString PersonelName , QString BirimName )
 
     auto layout = dayContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
 
-
     layout->addWidget(cpp14::make_unique<WText>(PersonelName.toStdString()),0,AlignmentFlag::Center|AlignmentFlag::Middle);
     layout->addWidget(cpp14::make_unique<WText>(BirimName.toStdString()),0,AlignmentFlag::Center|AlignmentFlag::Middle);
-
-
-
 
     auto sabahinContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     sabahinContainer->setHeight(80);
@@ -692,7 +694,6 @@ void GirisCikisWidget::addNinRow( QString PersonelName , QString BirimName )
     sabahoutimgContainer->setHeight(65);
     sabahoutContainer->addWidget(cpp14::make_unique<WText>("Yok"));
 
-
     auto aksaminContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     aksaminContainer->setHeight(80);
     aksaminContainer->setAttributeValue(Style::style,Style::Border::border("1px solid black"));
@@ -708,7 +709,5 @@ void GirisCikisWidget::addNinRow( QString PersonelName , QString BirimName )
     auto aksamoutimgContainer = aksamoutContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     aksamoutimgContainer->setHeight(65);
     aksamoutContainer->addWidget(cpp14::make_unique<WText>("Yok"));
-
-
 
 }

@@ -195,10 +195,10 @@ bool SMSManager::checkRapor(const SerikBLDCore::SMS::SMSItem &item)
             wApp->instance ()->enableUpdates (false);
         });
         _mHttpClient->post("http://processor.smsorigin.com/xml/process.aspx",msg);
+        return true;
+    }else{
+        return false;
     }
-
-
-
 }
 
 Signal<std::string> &SMSManager::smsSended()

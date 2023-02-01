@@ -8,7 +8,6 @@
 #include "SerikBelediyesiWebSayfasi/srcV2/nostserik.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/bilgiislem/firewallcontainer.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/duyuruyonetim.h"
-#include "SerikBelediyesiWebSayfasi/srcV2/stok/stokkategoripage.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/stok/stokcontainerwidget.h"
 
 v2::BirimIsleriContainer::BirimIsleriContainer(SerikBLDCore::User *_user)
@@ -16,6 +15,7 @@ v2::BirimIsleriContainer::BirimIsleriContainer(SerikBLDCore::User *_user)
 {
 
     Header ()->setMargin (10,Side::Bottom);
+    Header()->setMargin(15,Side::Bottom);
 
     if( this->mUser->Birimi () == "İmar ve Şehircilik Müdürlüğü" ){
         this->initImar ();
@@ -65,11 +65,7 @@ v2::BirimIsleriContainer::BirimIsleriContainer(SerikBLDCore::User *_user)
     {
         auto menuFirma = this->createButton ( "Faaliyet Raporu" , Cursor::PointingHand );
         menuFirma->clicked ().connect ( [=](){
-
-
             this->initFaaliyetRaporlari ();
-
-
         } );
         Header ()->addWidget (std::move(menuFirma));
     }
@@ -135,7 +131,6 @@ void v2::BirimIsleriContainer::initCalismalar()
 {
 
     Content ()->clear ();
-
     Content ()->addWidget (cpp14::make_unique<v2::CalismaManagerContainer>(this->mUser));
 
 }
@@ -143,12 +138,8 @@ void v2::BirimIsleriContainer::initCalismalar()
 void v2::BirimIsleriContainer::initFaaliyetRaporlari()
 {
 
-
-//    LOG << "\n";
     Content ()->clear ();
     Content ()->addWidget (cpp14::make_unique<v2::Faaliyet::FaaliyetRaporContainer>(this->mUser));
-
-//    LOG << "\n";
 
 }
 

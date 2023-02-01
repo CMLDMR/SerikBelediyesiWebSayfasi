@@ -235,7 +235,7 @@ const std::string BaseClass::BaseWidget::downloadFile(const std::string &oid , c
     return fullFilename.toStdString();
 }
 
-const bsoncxx::types::value BaseClass::BaseWidget::uploadfile(QString filepath)
+const bsoncxx::types::bson_value::value BaseClass::BaseWidget::uploadfile(QString filepath)
 {
     QFile file( filepath );
     if( file.open( QIODevice::ReadOnly ) )
@@ -246,7 +246,7 @@ const bsoncxx::types::value BaseClass::BaseWidget::uploadfile(QString filepath)
         uploader.write((std::uint8_t*)ar.data(),ar.size());
         auto res = uploader.close();
         file.close();
-        return res.id();
+        return bsoncxx::types::bson_value::value(res.id());
     }else{
         this->showMessage("Uyarı","Dosya Açılamadı");
     }
