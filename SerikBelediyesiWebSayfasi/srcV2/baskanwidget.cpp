@@ -43,13 +43,13 @@ BaskanWidget::BaskanWidget(mongocxx::database *_db)
         try {
             filter.append(kvp("type","Başkan"));
         } catch (bsoncxx::exception &e) {
-
+            LOG << e.what();
         }
 
         try {
             filter.append(kvp("baskan","Enver APUTKAN"));
         } catch (bsoncxx::exception &e) {
-
+            LOG << e.what();
         }
 
 
@@ -59,11 +59,11 @@ BaskanWidget::BaskanWidget(mongocxx::database *_db)
             if( !val.value().view().empty() )
             {
                 auto str = val.value().view()["html"].get_string().value.data();
-                auto text = textWidget->addWidget(cpp14::make_unique<WText>(str,TextFormat::UnsafeXHTML));
+                textWidget->addWidget(cpp14::make_unique<WText>(str,TextFormat::UnsafeXHTML));
             }
 
         } catch (mongocxx::exception &e) {
-
+            LOG << e.what();
         }
 
 

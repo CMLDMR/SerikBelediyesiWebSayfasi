@@ -40,7 +40,7 @@ void PersonelV2::GelenMesajlarWidget::initHeader()
             try {
                 filter.append(kvp(SBLDKeys::Yonetim::Baskan::MESAJ::birim,this->UserBirim()));
             } catch (bsoncxx::exception &e) {
-
+                std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
             }
 
 
@@ -72,12 +72,14 @@ void PersonelV2::GelenMesajlarWidget::initHeader()
             try {
                 filter.append(kvp(SBLDKeys::Yonetim::Baskan::MESAJ::birim,this->UserBirim()));
             } catch (bsoncxx::exception &e) {
+                std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
             }
 
             try {
                 filter.append(kvp(SBLDKeys::Yonetim::Baskan::MESAJ::cevap,make_document(kvp("$exists",false))));
             } catch (bsoncxx::exception &e) {
+                std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
             }
 
@@ -109,12 +111,14 @@ void PersonelV2::GelenMesajlarWidget::initHeader()
             try {
                 filter.append(kvp(SBLDKeys::Yonetim::Baskan::MESAJ::birim,this->UserBirim()));
             } catch (bsoncxx::exception &e) {
+                std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
             }
 
             try {
                 filter.append(kvp(SBLDKeys::Yonetim::Baskan::MESAJ::cevap,make_document(kvp("$exists",true))));
             } catch (bsoncxx::exception &e) {
+                std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
             }
 
@@ -157,11 +161,13 @@ void PersonelV2::GelenMesajlarWidget::addList(WContainerWidget *rContainer, bson
     try {
         sortDoc.append(kvp(SBLDKeys::Yonetim::Baskan::MESAJ::julianDate,-1));
     } catch (bsoncxx::exception &e) {
+        std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
     }
     try {
         sortDoc.append(kvp(SBLDKeys::oid,-1));
     } catch (bsoncxx::exception &e) {
+        std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
     }
 
@@ -259,6 +265,7 @@ void PersonelV2::GelenMesajlarWidget::addList(WContainerWidget *rContainer, bson
                     auto text = container->addWidget(cpp14::make_unique<WText>("Tarih Yok"));
                     text->addStyleClass(Bootstrap::Label::Warning);
                     text->setAttributeValue(Style::style,Style::font::size::s12px+Style::font::weight::bold);
+                    std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
                 }
 
             }
@@ -273,6 +280,8 @@ void PersonelV2::GelenMesajlarWidget::addList(WContainerWidget *rContainer, bson
                     auto text = container->addWidget(cpp14::make_unique<WText>("Saat Yok"));
                     text->addStyleClass(Bootstrap::Label::Warning);
                     text->setAttributeValue(Style::style,Style::font::size::s12px+Style::font::weight::bold);
+                    std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
+
                 }
 
             }
@@ -287,6 +296,8 @@ void PersonelV2::GelenMesajlarWidget::addList(WContainerWidget *rContainer, bson
                     auto text = container->addWidget(cpp14::make_unique<WText>("AdSoyad Yok"));
                     text->addStyleClass(Bootstrap::Label::Warning);
                     text->setAttributeValue(Style::style,Style::font::size::s12px+Style::font::weight::bold);
+                    std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
+
                 }
             }
             // Telefon
@@ -300,6 +311,8 @@ void PersonelV2::GelenMesajlarWidget::addList(WContainerWidget *rContainer, bson
                     auto text = container->addWidget(cpp14::make_unique<WText>("Telefon Yok"));
                     text->addStyleClass(Bootstrap::Label::Warning);
                     text->setAttributeValue(Style::style,Style::font::size::s12px+Style::font::weight::bold);
+                    std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
+
                 }
             }
             // Mesaj
@@ -313,6 +326,8 @@ void PersonelV2::GelenMesajlarWidget::addList(WContainerWidget *rContainer, bson
                     auto text = container->addWidget(cpp14::make_unique<WText>("Mesaj Yok"));
                     text->addStyleClass(Bootstrap::Label::Warning);
                     text->setAttributeValue(Style::style,Style::font::size::s12px+Style::font::weight::bold);
+                    std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
+
                 }
             }
 
@@ -345,6 +360,7 @@ void PersonelV2::GelenMesajlarWidget::setDetail(std::string oid)
     try {
         filter.append(kvp(SBLDKeys::oid,bsoncxx::oid{oid}));
     } catch (bsoncxx::exception &e) {
+        std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
     }
 
@@ -456,6 +472,8 @@ void PersonelV2::GelenMesajlarWidget::setDetail(std::string oid)
                     } catch (bsoncxx::exception &e) {
                         auto text = container->addWidget(cpp14::make_unique<WText>("Birime Yönlendirilmemiş"));
                         text->addStyleClass(Bootstrap::Label::Danger);
+                        std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
+
                     }
                 }
 
@@ -511,6 +529,8 @@ void PersonelV2::GelenMesajlarWidget::setDetail(std::string oid)
                         auto text = container->addWidget(cpp14::make_unique<WText>("Cevaplanmamış Mesaj"));
                         text->addStyleClass(Bootstrap::Label::Danger);
                         text->setAttributeValue(Style::style,Style::font::size::s14px);
+                        std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
+
                     }
                 }
 
@@ -580,6 +600,7 @@ void PersonelV2::GelenMesajlarWidget::setDetail(std::string oid)
 
 
     } catch (mongocxx::exception &e) {
+        std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
     }
 
@@ -611,6 +632,7 @@ PersonelV2::GelenMesajlarWidget::CevapYazWidget::CevapYazWidget(mongocxx::databa
         try {
             filter.append(kvp(SBLDKeys::oid,bsoncxx::oid{mesajOid}));
         } catch (bsoncxx::exception &e) {
+            std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
         }
 
@@ -618,12 +640,14 @@ PersonelV2::GelenMesajlarWidget::CevapYazWidget::CevapYazWidget(mongocxx::databa
         try {
             doc.append(kvp(SBLDKeys::Yonetim::Baskan::MESAJ::CEVAP::cevap,textEdit->text().toUTF8()));
         } catch (bsoncxx::exception &e) {
+            std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
         }
 
         try {
             doc.append(kvp(SBLDKeys::Yonetim::Baskan::MESAJ::CEVAP::julianDate,bsoncxx::types::b_int64{WDate::currentDate().toJulianDay()}));
         } catch (bsoncxx::exception &e) {
+            std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
         }
 
@@ -632,12 +656,14 @@ PersonelV2::GelenMesajlarWidget::CevapYazWidget::CevapYazWidget(mongocxx::databa
         try {
             doc.append(kvp(SBLDKeys::Yonetim::Baskan::MESAJ::CEVAP::saat,WTime::currentTime().toString("hh:mm").toUTF8()));
         } catch (bsoncxx::exception &e) {
+            std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
         }
 
         try {
             doc.append(kvp(SBLDKeys::Yonetim::Baskan::MESAJ::CEVAP::personelAdSoyad,this->User().view()[SBLDKeys::Personel::ad].get_string().value.data()));
         } catch (bsoncxx::exception &e) {
+            std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
         }
 
@@ -646,6 +672,7 @@ PersonelV2::GelenMesajlarWidget::CevapYazWidget::CevapYazWidget(mongocxx::databa
         try {
             setDoc.append(kvp("$set",make_document(kvp(SBLDKeys::Yonetim::Baskan::MESAJ::cevap,doc))));
         } catch (bsoncxx::exception &e) {
+            std::cout << __LINE__ << " " << __FILE__ << " "<< e.what() << "\n";
 
         }
 

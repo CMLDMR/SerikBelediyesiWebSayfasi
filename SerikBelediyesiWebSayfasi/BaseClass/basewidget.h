@@ -129,7 +129,7 @@ public:
 
     const std::string downloadFile(const std::string &oid , const bool &forceFilename = false);
 
-    const bsoncxx::types::value uploadfile( QString filepath );
+    const bsoncxx::types::bson_value::value uploadfile( QString filepath );
 
 
     std::string UserBirim(){

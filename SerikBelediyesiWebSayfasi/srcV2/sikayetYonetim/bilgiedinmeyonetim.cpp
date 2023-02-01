@@ -245,12 +245,9 @@ void BilgiEdinmeWidget::initWidget()
                     list.push_back(_item["Haberleşme Kodu"].get_string().value.data());
                 }
             } catch (bsoncxx::exception &e) {
-
+                LOG << e.what();
             }
-
         }
-
-
 
 //        auto list = this->getDB().;
         int _index = 0;

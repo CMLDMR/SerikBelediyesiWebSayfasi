@@ -77,7 +77,7 @@ void Body::Body::initEtkinlikler()
 void Body::Body::initBilgiEdin()
 {
     mMainContainer->clear();
-    auto bilgiEdin = mMainContainer->addWidget(cpp14::make_unique<BilgiEdin::BilgiEdin>(db));
+    mMainContainer->addWidget(cpp14::make_unique<BilgiEdin::BilgiEdin>(db));
 }
 
 void Body::Body::initiletisim()
@@ -259,9 +259,10 @@ void Body::Body::setNewsDetail(std::string oid)
     }
 
     auto update = document{};
-    bool updateOperatorError = false;
+    bool updateOperatorError;
     try {
         update.append(kvp("$inc",make_document(kvp(SBLDKeys::Haberler::OkunmaSayisi,bsoncxx::types::b_double{1}))));
+        updateOperatorError=true;
     } catch (bsoncxx::exception &e) {
         updateOperatorError = true;
     }
@@ -336,7 +337,7 @@ void Body::Body::setNewsDetail(std::string oid)
 
 
                 auto layout = textContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
-                auto text = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Haberler::html].get_string().value.data(),TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
+                layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Haberler::html].get_string().value.data(),TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
             }
 
             {
@@ -447,7 +448,7 @@ void Body::Body::setVideoDetail(std::string oid)
                                                  Style::background::color::color(Style::color::White::Snow));
 
                 auto layout = textContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
-                auto text = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Video::VideoExplain].get_string().value.data(),TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
+                layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Video::VideoExplain].get_string().value.data(),TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
             }
 
             {
@@ -546,7 +547,7 @@ void Body::Body::setBaskanDetail(std::string oid)
                             QFile,
                             QByteArray,
                             QIODevice,
-                            bsoncxx::types::value>(Bucket,bsoncxx::types::value(doc.get_oid()),true);
+                            bsoncxx::types::value>(Bucket,bsoncxx::types::bson_value::value(doc.get_oid()),true);
                 }
             }
 
@@ -558,7 +559,7 @@ void Body::Body::setBaskanDetail(std::string oid)
 
 
                 auto layout = textContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
-                auto text = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Yonetim::Baskan::html].get_string().value.data(),TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
+                layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Yonetim::Baskan::html].get_string().value.data(),TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
             }
 
 
@@ -679,7 +680,7 @@ void Body::Body::setEventDetail(std::string oid)
                                                  Style::background::color::color(Style::color::White::Snow));
 
                 auto layout = textContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
-                auto text = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Etkinlik::html].get_string().value.data(),TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
+                layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Etkinlik::html].get_string().value.data(),TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
             }
 
 
@@ -788,7 +789,7 @@ void Body::Body::setProjeDetail(std::string oid)
 
     {
         auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
-        auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
+        container->setLayout(cpp14::make_unique<WVBoxLayout>());
         auto bucket = this->db->gridfs_bucket();
         std::string iconPaht = SBLDKeys::downloadifNotExist(&bucket,view[SBLDKeys::Projeler::icon].get_oid().value.to_string());
         TitleContainer->setAttributeValue(Style::style,Style::background::url(iconPaht)+Style::background::size::cover+Style::background::repeat::norepeat+Style::background::position::center_center);
@@ -944,7 +945,7 @@ void Body::Body::setCalismaDetail(std::string oid)
 
     {
         auto container = TitleContainerColor->addWidget(cpp14::make_unique<WContainerWidget>());
-        auto vLayout = container->setLayout(cpp14::make_unique<WVBoxLayout>());
+        container->setLayout(cpp14::make_unique<WVBoxLayout>());
         auto bucket = this->db->gridfs_bucket();
         std::string iconPaht = SBLDKeys::downloadifNotExist(&bucket,view[SBLDKeys::Calismalar::icon].get_oid().value.to_string());
         TitleContainer->setAttributeValue(Style::style,Style::background::url(iconPaht)+Style::background::size::cover+Style::background::repeat::norepeat+Style::background::position::center_center);
@@ -1053,16 +1054,12 @@ void Body::Body::setCalismaDetail(std::string oid)
                 TextCOntainer->setPadding(10,Side::Top|Side::Bottom);
             }
         } catch (bsoncxx::exception &e) {
-
+            std::cout << __LINE__ << " " << __FUNCTION__ << "\n";
         }
-
-
     }
-
-
 }
 
-std::string Body::Body::downloadifNotExist(bsoncxx::types::value oid, bool forceFilename)
+std::string Body::Body::downloadifNotExist(bsoncxx::types::bson_value::value oid, bool forceFilename)
 {
 
     auto downloader = Bucket->open_download_stream(oid);
@@ -2944,7 +2941,7 @@ void Body::Haber::setNews(std::string oid)
     try {
         update.append(kvp("$inc",make_document(kvp(SBLDKeys::Haberler::OkunmaSayisi,bsoncxx::types::b_double{1}))));
     } catch (bsoncxx::exception &e) {
-
+        std::cout << __LINE__ << " " << __FUNCTION__ << "\n";
     }
 
 
@@ -2969,17 +2966,13 @@ void Body::Haber::setNews(std::string oid)
                 img->setHeight(150);
                 img->setPadding(0,AllSides);
 
-
                 auto backimg = img->addWidget(cpp14::make_unique<WContainerWidget>());
                 backimg->setPositionScheme(PositionScheme::Absolute);
                 backimg->setHeight(WLength("100%"));
                 backimg->setWidth(WLength("100%"));
 
-
-
                 backimg->setAttributeValue(Style::style,Style::background::url(path)+Style::background::size::cover+Style::background::repeat::norepeat+Style::background::position::center_center+"z-index:  -99;");
                 backimg->addStyleClass("CommanFilter");
-
 
                 auto gradientContainer = img->addWidget(cpp14::make_unique<WContainerWidget>());
                 gradientContainer->setHeight(150);
@@ -2999,15 +2992,13 @@ void Body::Haber::setNews(std::string oid)
                 }
             }
 
-
             {
                 auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
                 _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-                auto _layout = _container->setLayout(cpp14::make_unique<WHBoxLayout>());
+                _container->setLayout(cpp14::make_unique<WHBoxLayout>());
                 _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
                                               Style::background::color::color(Style::color::Grey::Gainsboro));
             }
-
 
             {
                 auto textContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -3015,16 +3006,14 @@ void Body::Haber::setNews(std::string oid)
                 textContainer->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
                                                  Style::background::color::color(Style::color::White::Snow));
 
-
                 auto layout = textContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
-                auto text = layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Haberler::html].get_string().value.data(),TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
+                layout->addWidget(cpp14::make_unique<WText>(view[SBLDKeys::Haberler::html].get_string().value.data(),TextFormat::UnsafeXHTML),0,AlignmentFlag::Top);
             }
-
 
             {
                 auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
                 _container->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-                auto _layout = _container->setLayout(cpp14::make_unique<WHBoxLayout>());
+                _container->setLayout(cpp14::make_unique<WHBoxLayout>());
 
                 _container->setAttributeValue(Style::style,Style::Border::border("1px solid gray")+
                                               Style::background::color::color(Style::color::Grey::Gainsboro));
@@ -3035,7 +3024,6 @@ void Body::Haber::setNews(std::string oid)
         mMainContainer->addWidget(cpp14::make_unique<WText>(WString("Error: {1}").arg(e.what())));
         return;
     }
-
 
 }
 

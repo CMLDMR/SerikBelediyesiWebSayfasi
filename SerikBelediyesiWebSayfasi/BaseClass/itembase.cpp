@@ -134,6 +134,7 @@ bool ItemBase::reLoad()
             {
                 try {
                     mOid = this->doc.view()["_id"].get_oid().value;
+                    return true;
                 } catch (bsoncxx::exception &e) {
                     std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << e.what() << std::endl;
                     mIsValid = false;
@@ -148,13 +149,9 @@ bool ItemBase::reLoad()
 
     } catch (mongocxx::exception &e) {
         std::string str = "ERROR: " + std::to_string(__LINE__) + " " + __FUNCTION__ + " " + e.what();
-        std::cout << str << std::endl;
+        std::cout << str << "\n";
         return false;
     }
-
-
-
-
 
 }
 
