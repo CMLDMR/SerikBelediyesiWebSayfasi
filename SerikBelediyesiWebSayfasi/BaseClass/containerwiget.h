@@ -192,6 +192,9 @@ public:
         return mController;
     }
 
+
+    std::string doubleToString( const double &value , const int &precision );
+
 private:
     WContainerWidget* mHeaderContainer;
     WContainerWidget* mContentContainer;

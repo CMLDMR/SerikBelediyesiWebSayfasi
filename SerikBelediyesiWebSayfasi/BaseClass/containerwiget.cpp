@@ -3,7 +3,8 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QUuid>
-
+#include <ostream>
+#include <iomanip>
 
 
 ContainerWidget::ContainerWidget(const std::string &title, ContainerWidget::ContentType _contentType)
@@ -358,6 +359,15 @@ void ContainerWidget::removeTitleBar()
 WContainerWidget *ContainerWidget::titleBar() const
 {
     return mTitleBar;
+}
+
+std::string ContainerWidget::doubleToString(const double &value, const int &precision)
+{
+    std::ostringstream ss;
+    ss << std::fixed;
+    ss << std::setprecision(precision);
+    ss << value;
+    return ss.str();
 }
 
 

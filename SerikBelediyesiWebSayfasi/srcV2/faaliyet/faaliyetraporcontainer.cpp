@@ -283,10 +283,6 @@ void v2::Faaliyet::FaaliyetRaporContainer::initFaaliyetRaporlari(const int64_t c
                     }
                 });
             }
-
-
-
-
         }
 
         {
@@ -295,7 +291,6 @@ void v2::Faaliyet::FaaliyetRaporContainer::initFaaliyetRaporlari(const int64_t c
             container->setMargin(50,Side::Top);
             container->setContentAlignment (AlignmentFlag::Center);
             container->addWidget (cpp14::make_unique<WText>("Sisteme Girmeyen Birimler"));
-
         }
 
         QVector<QString> newExistList;
@@ -307,7 +302,6 @@ void v2::Faaliyet::FaaliyetRaporContainer::initFaaliyetRaporlari(const int64_t c
             }else{
                 newExistList.append(birimItem);
             }
-
         }
 
 
@@ -1514,6 +1508,7 @@ void v2::Faaliyet::ItemContainer<T>::addTablePre(const bool &addPre)
     table->setEditTriggers(EditTrigger::SelectedClicked);
     table->setSelectionBehavior(SelectionBehavior::Items);
     table->setSortingEnabled(false);
+
 
 
     table->setOverflow(Overflow::Scroll);
