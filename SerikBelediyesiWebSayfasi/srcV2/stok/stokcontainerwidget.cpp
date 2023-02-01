@@ -1,5 +1,6 @@
 #include "stokcontainerwidget.h"
-
+#include <sstream>
+#include <iomanip>
 
 
 v2::StokWidget::StokContainerWidget::StokContainerWidget(SerikBLDCore::User *_mUser)
@@ -916,44 +917,7 @@ void v2::StokWidget::StokContainerWidget::initlastState()
         return newItem;
     });
 
-//    std::for_each(girisItemList.begin (),girisItemList.end (),[&cikisItemList,&lastStateList](PipeLineStokItem item){
-//        for( const auto &cikisItem : cikisItemList ){
-//            if( item.kategoriOid == cikisItem.kategoriOid ) {
-//                PipeLineStokItem newItem;
-//                newItem.setValues (item);
-//                newItem.miktarGiris = newItem.miktarGiris - cikisItem.miktarCikis;
-//                lastStateList.push_back (newItem);
-//            }
-//        }
-//    });
 
-
-//    std::for_each(girisItemList.begin (),girisItemList.end (),[&girisItemList,&cikisItemList](PipeLineStokItem item){
-//        for( auto cikisItem : cikisItemList ){
-//            if( item.kategoriOid == cikisItem.kategoriOid ) {
-//                PipeLineStokItem newItem;
-//                newItem.setValues (item);
-//                newItem.miktarGiris = newItem.miktarGiris - cikisItem.miktarCikis;
-//                std::replace(girisItemList.begin (),girisItemList.end (),item,newItem);
-//                break;
-//            }
-//        }
-//    });
-
-
-
-
-//    std::for_each(girisItemList.begin (),girisItemList.end (),[](PipeLineStokItem item){
-//        LOG << "Giris: "<<item.kategoriOid <<  " : " << item.miktarGiris <<  " : " << item.name << " : " << item.metric << std::endl;
-//    });
-
-//    std::for_each(cikisItemList.begin (),cikisItemList.end (),[](PipeLineStokItem item){
-//        LOG << "Cikis: "<<item.kategoriOid <<  " : " << item.miktarGiris <<  " : " << item.name << " : " << item.metric << std::endl;
-//    });
-
-//    std::for_each(lastStateList.begin (),lastStateList.end (),[](PipeLineStokItem item){
-//        LOG << "Last: "<<item.kategoriOid <<  " : " << item.miktarGiris <<  " : " << item.name << " : " << item.metric << std::endl;
-//    });
 
     this->Content ()->clear ();
 
@@ -961,81 +925,87 @@ void v2::StokWidget::StokContainerWidget::initlastState()
     {
         auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
         container->addStyleClass (Bootstrap::Grid::col_full_12);
-        container->setPadding (10,AllSides);
-
-        auto titleText = container->addWidget (cpp14::make_unique<WText>("Malzeme Son Durum"));
-        titleText->setMargin (10,Side::Top|Side::Bottom);
-        container->addStyleClass (CSSStyle::Gradient::blueGradient);
+        container->setMargin(15,Side::Bottom);
+        container->addWidget (cpp14::make_unique<WText>("<h4>Son Stoklar</h4>",TextFormat::UnsafeXHTML));
+        container->setAttributeValue(Style::style,Style::Border::top::border("1px solid dimgray"));
     }
 
+    {
+        auto rContainer = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        rContainer->addStyleClass (Bootstrap::Grid::col_full_12);
+        rContainer->setAttributeValue (Style::style,Style::background::color::color(Style::color::Grey::DimGray)+Style::color::color(Style::color::White::Snow));
 
+        {
+            auto nameContainer = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+            nameContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
+                                          Bootstrap::Grid::Medium::col_md_6+
+                                          Bootstrap::Grid::Small::col_sm_6+
+                                          Bootstrap::Grid::ExtraSmall::col_xs_6);
+            nameContainer->addWidget (cpp14::make_unique<WText>("<h5>#Malzeme Adı</h5>",TextFormat::UnsafeXHTML));
+            nameContainer->setContentAlignment(AlignmentFlag::Left);
+        }
+
+
+        {
+            auto nameContainer = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+            nameContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
+                                          Bootstrap::Grid::Medium::col_md_6+
+                                          Bootstrap::Grid::Small::col_sm_6+
+                                          Bootstrap::Grid::ExtraSmall::col_xs_6);
+            nameContainer->addWidget (cpp14::make_unique<WText>("<h5>#Kalan Miktar</h5>",TextFormat::UnsafeXHTML));
+            nameContainer->setContentAlignment(AlignmentFlag::Left);
+        }
+
+    }
+
+    bool colorInvert = true;
     for(const auto &item : lastStateList ){
 
-        auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass (Bootstrap::Grid::col_full_12);
-        container->setPositionScheme (PositionScheme::Relative);
-        container->setHeight (25);
-        container->setAttributeValue (Style::style,Style::background::color::rgb (this->getRandom (150,180),this->getRandom (150,180),this->getRandom (150,180))+
-                                      Style::color::color (Style::color::White::AliceBlue));
-        container->setMargin (10,Side::Top);
-        container->addStyleClass (CSSStyle::Shadows::shadow8px);
+        auto rContainer = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        rContainer->addStyleClass (Bootstrap::Grid::col_full_12);
 
-//        auto percentBar = container->addWidget (cpp14::make_unique<WContainerWidget>());
-//        percentBar->setHeight (25);
-//        percentBar->setOffsets (0,Side::Top|Side::Left);
-//        percentBar->setWidth (WLength(WString("{1}%").arg(item.miktarGiris).toUTF8 ()));
-//        percentBar->setAttributeValue (Style::style,Style::background::color::rgb (this->getRandom (),this->getRandom (),this->getRandom ()));
 
-        auto rContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
-        rContainer->setPositionScheme (PositionScheme::Absolute);
-        rContainer->setWidth (WLength("100%"));
-        rContainer->setHeight (WLength("100%"));
-        rContainer->setOffsets (0,Side::Top|Side::Left);
-        rContainer->addStyleClass (Bootstrap::Grid::row);
+        auto _colorName = colorInvert ? ( "SkyBlue" ) : ( Style::color::White::White );
+        colorInvert = !colorInvert;
+        rContainer->setAttributeValue (Style::style,Style::background::color::color(_colorName));
 
 
         {
             auto nameContainer = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
-            nameContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
-                                          Bootstrap::Grid::Medium::col_md_3+
-                                          Bootstrap::Grid::Small::col_sm_3+
-                                          Bootstrap::Grid::ExtraSmall::col_xs_3);
-            auto nametext = nameContainer->addWidget (cpp14::make_unique<WText>(item.name));
-            nameContainer->setHeight (25);
+            nameContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
+                                          Bootstrap::Grid::Medium::col_md_6+
+                                          Bootstrap::Grid::Small::col_sm_6+
+                                          Bootstrap::Grid::ExtraSmall::col_xs_6);
+            nameContainer->addWidget (cpp14::make_unique<WText>(item.name));
+            nameContainer->setHeight (20);
+            nameContainer->setContentAlignment(AlignmentFlag::Left);
         }
 
-
         {
             auto nameContainer = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
-            nameContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
-                                          Bootstrap::Grid::Medium::col_md_3+
-                                          Bootstrap::Grid::Small::col_sm_3+
-                                          Bootstrap::Grid::ExtraSmall::col_xs_3);
-            auto nametext = nameContainer->addWidget (cpp14::make_unique<WText>("Kalan Miktar: "+std::to_string (item.miktarGiris)+" "+item.metric));
-            nameContainer->setHeight (25);
+            nameContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
+                                          Bootstrap::Grid::Medium::col_md_4+
+                                          Bootstrap::Grid::Small::col_sm_4+
+                                          Bootstrap::Grid::ExtraSmall::col_xs_4);
+            nameContainer->addWidget (cpp14::make_unique<WText>(doubleToString(item.miktarGiris,2)+" "+item.metric));
+            nameContainer->setHeight (20);
+            nameContainer->setContentAlignment(AlignmentFlag::Left);
         }
 
-
         {
             auto nameContainer = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
-            nameContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
-                                          Bootstrap::Grid::Medium::col_md_3+
-                                          Bootstrap::Grid::Small::col_sm_3+
-                                          Bootstrap::Grid::ExtraSmall::col_xs_3+
-                                          Bootstrap::Grid::Offset::Large::col_lg_3+
-                                          Bootstrap::Grid::Offset::Medium::col_md_3+
-                                          Bootstrap::Grid::Offset::Small::col_sm_3+
-                                          Bootstrap::Grid::Offset::ExtraSmall::col_xs_3);
-            auto nametext = nameContainer->addWidget (cpp14::make_unique<WText>("Malzeme Çıkışı Yap"));
+            nameContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                                          Bootstrap::Grid::Medium::col_md_2+
+                                          Bootstrap::Grid::Small::col_sm_2+
+                                          Bootstrap::Grid::ExtraSmall::col_xs_2);
+            nameContainer->addWidget (cpp14::make_unique<WText>("Malzeme Çıkışı Yap"));
             nameContainer->addStyleClass (CSSStyle::Button::blueButton);
-            nameContainer->setHeight (25);
+            nameContainer->setHeight (20);
             nameContainer->clicked ().connect ([=](){
                 this->exportMalzeme (item.miktarGiris,item);
             } );
+            nameContainer->setContentAlignment(AlignmentFlag::Right);
         }
-
-
-
     }
 
 
@@ -1044,66 +1014,70 @@ void v2::StokWidget::StokContainerWidget::initlastState()
     {
         auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
         container->addStyleClass (Bootstrap::Grid::col_full_12);
-        container->setMargin (50,Side::Top);
-        container->setPadding (10,AllSides);
-
-        auto titleText = container->addWidget (cpp14::make_unique<WText>("Malzeme Giriş Miktarı"));
-        titleText->setMargin (10,Side::Top|Side::Bottom);
-        container->addStyleClass (CSSStyle::Gradient::greenGradient);
+        container->setMargin(15,Side::Bottom);
+        container->setMargin(35,Side::Top);
+        container->addWidget (cpp14::make_unique<WText>("<h4>Malzeme Giriş Miktarı</h4>",TextFormat::UnsafeXHTML));
+        container->setAttributeValue(Style::style,Style::Border::top::border("1px solid dimgray"));
     }
 
+    {
+        auto rContainer = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        rContainer->addStyleClass (Bootstrap::Grid::col_full_12);
+        rContainer->setAttributeValue (Style::style,Style::background::color::color(Style::color::Grey::DimGray)+Style::color::color(Style::color::White::Snow));
+
+        {
+            auto nameContainer = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+            nameContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
+                                          Bootstrap::Grid::Medium::col_md_6+
+                                          Bootstrap::Grid::Small::col_sm_6+
+                                          Bootstrap::Grid::ExtraSmall::col_xs_6);
+            nameContainer->addWidget (cpp14::make_unique<WText>("<h5>#Malzeme Adı</h5>",TextFormat::UnsafeXHTML));
+            nameContainer->setContentAlignment(AlignmentFlag::Left);
+        }
+
+
+        {
+            auto nameContainer = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+            nameContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
+                                          Bootstrap::Grid::Medium::col_md_6+
+                                          Bootstrap::Grid::Small::col_sm_6+
+                                          Bootstrap::Grid::ExtraSmall::col_xs_6);
+            nameContainer->addWidget (cpp14::make_unique<WText>("<h5>#Toplam Giriş Miktarı</h5>",TextFormat::UnsafeXHTML));
+            nameContainer->setContentAlignment(AlignmentFlag::Left);
+        }
+
+    }
 
     for(const auto &item : girisItemList ){
 
-        auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass (Bootstrap::Grid::col_full_12);
-        container->setPositionScheme (PositionScheme::Relative);
-        container->setHeight (25);
-        container->setAttributeValue (Style::style,Style::background::color::rgb (this->getRandom (150,180),this->getRandom (150,180),this->getRandom (150,180))+
-                                      Style::color::color (Style::color::White::AliceBlue));
-        container->setMargin (10,Side::Top);
-        container->addStyleClass (CSSStyle::Shadows::shadow8px);
+        auto rContainer = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        rContainer->addStyleClass (Bootstrap::Grid::col_full_12);
 
-//        auto percentBar = container->addWidget (cpp14::make_unique<WContainerWidget>());
-//        percentBar->setHeight (25);
-//        percentBar->setOffsets (0,Side::Top|Side::Left);
-//        percentBar->setWidth (WLength(WString("{1}%").arg(item.miktarGiris).toUTF8 ()));
-//        percentBar->setAttributeValue (Style::style,Style::background::color::rgb (this->getRandom (),this->getRandom (),this->getRandom ()));
 
-        auto rContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
-        rContainer->setPositionScheme (PositionScheme::Absolute);
-        rContainer->setWidth (WLength("100%"));
-        rContainer->setHeight (WLength("100%"));
-        rContainer->setOffsets (0,Side::Top|Side::Left);
-        rContainer->addStyleClass (Bootstrap::Grid::row);
-
+        auto _colorName = colorInvert ? ( "SkyBlue" ) : ( Style::color::White::White );
+        colorInvert = !colorInvert;
+        rContainer->setAttributeValue (Style::style,Style::background::color::color(_colorName));
 
         {
             auto nameContainer = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
-            nameContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
-                                          Bootstrap::Grid::Medium::col_md_3+
-                                          Bootstrap::Grid::Small::col_sm_3+
-                                          Bootstrap::Grid::ExtraSmall::col_xs_3);
-            auto nametext = nameContainer->addWidget (cpp14::make_unique<WText>(item.name));
-            nameContainer->setHeight (25);
+            nameContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
+                                          Bootstrap::Grid::Medium::col_md_6+
+                                          Bootstrap::Grid::Small::col_sm_6+
+                                          Bootstrap::Grid::ExtraSmall::col_xs_6);
+            nameContainer->addWidget (cpp14::make_unique<WText>(item.name));
+            nameContainer->setContentAlignment(AlignmentFlag::Left);
         }
 
 
         {
             auto nameContainer = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
-            nameContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
-                                          Bootstrap::Grid::Medium::col_md_3+
-                                          Bootstrap::Grid::Small::col_sm_3+
-                                          Bootstrap::Grid::ExtraSmall::col_xs_3);
-            auto nametext = nameContainer->addWidget (cpp14::make_unique<WText>("Giren Miktar: "+std::to_string (item.miktarGiris)+" "+item.metric));
-            nameContainer->setHeight (25);
+            nameContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
+                                          Bootstrap::Grid::Medium::col_md_6+
+                                          Bootstrap::Grid::Small::col_sm_6+
+                                          Bootstrap::Grid::ExtraSmall::col_xs_6);
+            nameContainer->addWidget (cpp14::make_unique<WText>(doubleToString(item.miktarGiris,2)+" "+item.metric));
+            nameContainer->setContentAlignment(AlignmentFlag::Left);
         }
-
-
-
-
-
-
     }
 
 
@@ -1112,70 +1086,73 @@ void v2::StokWidget::StokContainerWidget::initlastState()
     {
         auto container = Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
         container->addStyleClass (Bootstrap::Grid::col_full_12);
-        container->setMargin (25,Side::Top);
-        container->setPadding (10,AllSides);
-
-        auto titleText = container->addWidget (cpp14::make_unique<WText>("Malzeme Çıkış Miktarı"));
-        titleText->setMargin (10,Side::Top|Side::Bottom);
-        container->addStyleClass (CSSStyle::Gradient::redGradient);
+        container->setMargin(15,Side::Bottom);
+        container->setMargin(35,Side::Top);
+        container->addWidget (cpp14::make_unique<WText>("<h4>Malzeme Çıkış Miktarı</h4>",TextFormat::UnsafeXHTML));
+        container->setAttributeValue(Style::style,Style::Border::top::border("1px solid dimgray"));
     }
 
+    {
+        auto rContainer = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        rContainer->addStyleClass (Bootstrap::Grid::col_full_12);
+        rContainer->setAttributeValue (Style::style,Style::background::color::color(Style::color::Grey::DimGray)+Style::color::color(Style::color::White::Snow));
+
+        {
+            auto nameContainer = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+            nameContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
+                                          Bootstrap::Grid::Medium::col_md_6+
+                                          Bootstrap::Grid::Small::col_sm_6+
+                                          Bootstrap::Grid::ExtraSmall::col_xs_6);
+            nameContainer->addWidget (cpp14::make_unique<WText>("<h5>#Malzeme Adı</h5>",TextFormat::UnsafeXHTML));
+            nameContainer->setContentAlignment(AlignmentFlag::Left);
+        }
+
+
+        {
+            auto nameContainer = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+            nameContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
+                                          Bootstrap::Grid::Medium::col_md_6+
+                                          Bootstrap::Grid::Small::col_sm_6+
+                                          Bootstrap::Grid::ExtraSmall::col_xs_6);
+            nameContainer->addWidget (cpp14::make_unique<WText>("<h5>#Toplam Çıkan Miktar</h5>",TextFormat::UnsafeXHTML));
+            nameContainer->setContentAlignment(AlignmentFlag::Left);
+        }
+
+    }
 
     for(const auto &item : cikisItemList ){
 
-        auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass (Bootstrap::Grid::col_full_12);
-        container->setPositionScheme (PositionScheme::Relative);
-        container->setHeight (25);
-        container->setAttributeValue (Style::style,Style::background::color::rgb (this->getRandom (150,180),this->getRandom (150,180),this->getRandom (150,180))+
-                                      Style::color::color (Style::color::White::AliceBlue));
-        container->setMargin (10,Side::Top);
-        container->addStyleClass (CSSStyle::Shadows::shadow8px);
+        auto rContainer = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
+        rContainer->addStyleClass (Bootstrap::Grid::col_full_12);
 
-//        auto percentBar = container->addWidget (cpp14::make_unique<WContainerWidget>());
-//        percentBar->setHeight (25);
-//        percentBar->setOffsets (0,Side::Top|Side::Left);
-//        percentBar->setWidth (WLength(WString("{1}%").arg(item.miktarGiris).toUTF8 ()));
-//        percentBar->setAttributeValue (Style::style,Style::background::color::rgb (this->getRandom (),this->getRandom (),this->getRandom ()));
-
-        auto rContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
-        rContainer->setPositionScheme (PositionScheme::Absolute);
-        rContainer->setWidth (WLength("100%"));
-        rContainer->setHeight (WLength("100%"));
-        rContainer->setOffsets (0,Side::Top|Side::Left);
-        rContainer->addStyleClass (Bootstrap::Grid::row);
-
+        auto _colorName = colorInvert ? ( "SkyBlue" ) : ( Style::color::White::White );
+        colorInvert = !colorInvert;
+        rContainer->setAttributeValue (Style::style,Style::background::color::color(_colorName));
 
         {
             auto nameContainer = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
-            nameContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
-                                          Bootstrap::Grid::Medium::col_md_3+
-                                          Bootstrap::Grid::Small::col_sm_3+
-                                          Bootstrap::Grid::ExtraSmall::col_xs_3);
-            auto nametext = nameContainer->addWidget (cpp14::make_unique<WText>(item.name));
-            nameContainer->setHeight (25);
-        }
+            nameContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
+                                          Bootstrap::Grid::Medium::col_md_6+
+                                          Bootstrap::Grid::Small::col_sm_6+
+                                          Bootstrap::Grid::ExtraSmall::col_xs_6);
+            nameContainer->addWidget (cpp14::make_unique<WText>(item.name));
+            nameContainer->setHeight (20);
+            nameContainer->setContentAlignment(AlignmentFlag::Left);
 
+        }
 
         {
             auto nameContainer = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
-            nameContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
-                                          Bootstrap::Grid::Medium::col_md_3+
-                                          Bootstrap::Grid::Small::col_sm_3+
-                                          Bootstrap::Grid::ExtraSmall::col_xs_3);
-            auto nametext = nameContainer->addWidget (cpp14::make_unique<WText>("Çıkan Miktar: "+std::to_string (item.miktarCikis)+" "+item.metric));
-            nameContainer->setHeight (25);
+            nameContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
+                                          Bootstrap::Grid::Medium::col_md_6+
+                                          Bootstrap::Grid::Small::col_sm_6+
+                                          Bootstrap::Grid::ExtraSmall::col_xs_6);
+            nameContainer->addWidget (cpp14::make_unique<WText>(doubleToString(item.miktarCikis,2)+" "+item.metric));
+            nameContainer->setHeight (20);
+            nameContainer->setContentAlignment(AlignmentFlag::Left);
+
         }
-
-
-
-
-
-
     }
-
-
-
 }
 
 void v2::StokWidget::StokContainerWidget::initimportMenu()
