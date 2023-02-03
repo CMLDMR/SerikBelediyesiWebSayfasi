@@ -541,3 +541,8 @@ Signal<NoClass> &DialogContainerWidget::Rejected()
 {
     return _Rejected;
 }
+
+ControllerWidget::ControllerWidget()
+{
+
+}

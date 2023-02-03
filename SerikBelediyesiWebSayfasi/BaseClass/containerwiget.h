@@ -22,51 +22,14 @@ class DialogContainerWidget;
 
 class ControllerWidget : public WContainerWidget
 {
-
     WContainerWidget* mBackContainer;
     WContainerWidget* mInfoContainer;
     WContainerWidget* mNextContainer;
     WText* mText;
-
     Signal<NoClass> _backClicked;
     Signal<NoClass> _nextClicked;
-
-
-
 public:
-    ControllerWidget(){
-
-        mBackContainer = this->addNew<WContainerWidget>();
-        mBackContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_2+
-                                      Bootstrap::Grid::Medium::col_md_2+
-                                      Bootstrap::Grid::Small::col_sm_2+
-                                      Bootstrap::Grid::ExtraSmall::col_xs_2);
-        mBackContainer->addStyleClass(Bootstrap::Button::Primary);
-        mBackContainer->addNew<WText>("Geri");
-        mBackContainer->clicked().connect([=](){ _backClicked.emit(NoClass());});
-        mBackContainer->setPadding(5,Side::Top|Side::Bottom);
-        mBackContainer->decorationStyle().setCursor(Cursor::PointingHand);
-
-        mInfoContainer = this->addNew<WContainerWidget>();
-        mInfoContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_8+
-                                      Bootstrap::Grid::Medium::col_md_8+
-                                      Bootstrap::Grid::Small::col_sm_8+
-                                      Bootstrap::Grid::ExtraSmall::col_xs_8);
-        mInfoContainer->addStyleClass(Bootstrap::Label::info);
-        mText = mInfoContainer->addNew<WText>("Info");
-        mInfoContainer->setPadding(5,Side::Top|Side::Bottom);
-
-        mNextContainer = this->addNew<WContainerWidget>();
-        mNextContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_2+
-                                      Bootstrap::Grid::Medium::col_md_2+
-                                      Bootstrap::Grid::Small::col_sm_2+
-                                      Bootstrap::Grid::ExtraSmall::col_xs_2);
-        mNextContainer->addStyleClass(Bootstrap::Button::Primary);
-        mNextContainer->addNew<WText>("İleri");
-        mNextContainer->clicked().connect([=](){ _nextClicked.emit(NoClass());});
-        mNextContainer->setPadding(5,Side::Top|Side::Bottom);
-        mNextContainer->decorationStyle().setCursor(Cursor::PointingHand);
-    }
+    ControllerWidget();
 
     void setText( const std::string &text ){
         this->mText->setText(text);
@@ -79,7 +42,6 @@ public:
     Signal<NoClass> &NextClicked(){
         return _nextClicked;
     }
-
 
 };
 
@@ -121,11 +83,7 @@ public:
 
     std::unique_ptr<WContainerWidget> createButton( const std::string &menuName , const Cursor cursor = Cursor::Auto);
 
-
-    /**
-     * @brief createDialog:  WDialog Oluşturur ve Geri ptr Geri Döndürür.
-     * @return
-     */
+    [[deprecated("createFlatDialog Kullan")]]
     WDialog* createDialog( const std::string& title = "" );
 
     void removeDialog( WDialog* mDialog );
