@@ -1174,319 +1174,319 @@ void Body::Body::showMessage(std::string title, std::string msg)
 
 
 
-Body::ProjectPanel::ProjectPanel(mongocxx::database *_db)
-    :WContainerWidget(),
-      db(_db)
-{
-    setAttributeValue(Style::style,Style::background::color::color(Style::color::Grey::Black));
-    mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
-    mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
-    this->refreshList();
-    CurrentIndex = 2;
-    this->setCurrentProject();
-}
-
-void Body::ProjectPanel::setCurrentProject()
-{
-
-    mMainContainer->clear();
-
-    auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-    row->addStyleClass(Bootstrap::Grid::row);
-    row->setMargin(15,Side::Top|Side::Bottom);
-
-    auto collection = db->collection(SBLDKeys::Projeler::collection);
-    auto bucket = db->gridfs_bucket();
-
-    auto Currentview = document{}.view();
-
-    std::vector<CurrentItemKey> pathList;
-
-    auto filter = document{};
-
-    try {
-        filter.append(kvp(SBLDKeys::Projeler::oid,bsoncxx::oid{list.at(CurrentIndex).oid}));
-    } catch (bsoncxx::exception &e) {
-        setstatus(e);
-        return;
-    }
-
-    try {
-        auto val = collection.find_one(filter.view());
-        if( !val )
-        {
-            setstatus("Empty Document");
-        }else{
-            auto Currentview = val.value().view();
-            try {
-                auto arlist = Currentview[SBLDKeys::Projeler::slide].get_array().value;
-
-                int currentIndex = 0;
-                for( auto element : arlist )
-                {
-                    std::string path = SBLDKeys::downloadifNotExist(&bucket,element[SBLDKeys::Projeler::slideItem::img].get_oid().value.to_string().c_str());
-                    CurrentItemKey itemKey;
-                    itemKey.imgPath = path;
-                    itemKey.text = element[SBLDKeys::Projeler::slideItem::text].get_string().value.data();
-                    itemKey.index = currentIndex++;
-                    pathList.push_back(itemKey);
-                }
-
-            } catch (bsoncxx::exception &e) {
-                setstatus(e);
-                return;
-            }
-        }
-    } catch (mongocxx::exception &e) {
-        setstatus(e);
-        return;
-    }
-
-    // Proje Başlığı
-    {
-
-        auto titleContainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
-        auto title = titleContainer->addWidget(cpp14::make_unique<WText>(list.at(CurrentIndex).title));
-        title->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-        title->setAttributeValue(Style::style,Style::font::size::s24px+Style::color::color(Style::color::White::FloralWhite));
-
-    }
-
-
-    {
-        auto sliderContainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
-        sliderContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
-
-        auto container = sliderContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass(Bootstrap::Grid::container_fluid);
-
-        auto _row = container->addWidget(cpp14::make_unique<WContainerWidget>());
-        _row->addStyleClass(Bootstrap::Grid::row);
-
-        {
-            auto blackLine = _row->addWidget(cpp14::make_unique<WContainerWidget>());
-            blackLine->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
-            blackLine->setAttributeValue(Style::style,Style::Border::border("0px solid "+Style::color::Green::DarkOliveGreen)+
-                                         Style::background::color::color(Style::color::Grey::LightGray));
-            //            blackLine->setHeight(550);
-            blackLine->addStyleClass("blackLine");
-
-            auto layout = blackLine->setLayout(cpp14::make_unique<WVBoxLayout>());
-
-            auto imgContainer = layout->addWidget(cpp14::make_unique<WContainerWidget>());
-            //            imgContainer->setAttributeValue(Style::style,Style::background::url("img/2.jpg"));
-            imgContainer->addStyleClass("ProjectSliderButtonBackground");
-            auto _layout = imgContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
-
-            auto text = _layout->addWidget(cpp14::make_unique<WText>("<"),0,AlignmentFlag::Middle);
-            text->addStyleClass("ProjectSliderButton");
-            text->clicked().connect([=](){
-                CurrentIndex--;
-                int count = list.size();
-                if( CurrentIndex < 0 )
-                {
-                    CurrentIndex = count-1;
-                }
-                this->setCurrentProject();
-            });
-
-
-            auto title = _layout->addWidget(cpp14::make_unique<WText>("Yayla Suyu Projesi"));
-            title->setAttributeValue(Style::style,Style::color::color(Style::color::Grey::Black)
-                                     +Style::font::weight::bold+Style::font::size::s24px);
-
-            int count = list.size();
-            if( CurrentIndex == 0 )
-            {
-                title->setText(list.at(count-1).title);
-                imgContainer->setAttributeValue(Style::style,Style::background::url(list.at(count-1).img)+Style::background::size::cover);
-            }else{
-                title->setText(list.at(CurrentIndex-1).title);
-                imgContainer->setAttributeValue(Style::style,Style::background::url(list.at(CurrentIndex-1).img)+Style::background::size::cover);
-            }
-        }
-
-        {
-            SubCurrentIndex = 0;
-            auto sliderArena = _row->addWidget(cpp14::make_unique<WContainerWidget>());
-            sliderArena->addStyleClass(Bootstrap::Grid::Large::col_lg_8 +Bootstrap::Grid::Medium::col_md_8+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
-            sliderArena->setPadding(0,AllSides);
-
-            auto imgContainer = sliderArena->addWidget(cpp14::make_unique<WContainerWidget>());
-            imgContainer->addStyleClass(Bootstrap::Grid::container_fluid);
-            imgContainer->setHeight(550);
-            imgContainer->setPadding(0,AllSides);
-            imgContainer->setMargin(0,AllSides);
-
-            {
-                auto imgRow = imgContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-                imgRow->addStyleClass("ProjectIMGRow");
-
-                auto sliderStackedWidget = imgRow->addWidget(cpp14::make_unique<WStackedWidget>());
-                {
-                    int row = 0;
-                    for( auto doc : pathList )
-                    {
-                        auto imgContainerWidget = cpp14::make_unique<WContainerWidget>();
-                        imgContainerWidget->setAttributeValue(Style::style,Style::background::url(doc.imgPath)+Style::background::size::cover+Style::background::origin::border_box);
-                        imgContainerWidget->setHeight(550);
-                        sliderStackedWidget->insertWidget(row++,std::move(imgContainerWidget));
-                    }
-                    sliderStackedWidget->setCurrentIndex(0);
-                }
-
-                auto backBtn = imgRow->addWidget(cpp14::make_unique<WContainerWidget>());
-                backBtn->addStyleClass("ProjectIMGSlideBack");
-                backBtn->addWidget(cpp14::make_unique<WText>("<"));
-
-                auto NextBtn = imgRow->addWidget(cpp14::make_unique<WContainerWidget>());
-                NextBtn->addStyleClass("ProjectIMGSlideNext");
-                NextBtn->addWidget(cpp14::make_unique<WText>(">"));
-
-                NextBtn->clicked().connect([=](){
-
-                    SubCurrentIndex++;
-                    if( SubCurrentIndex >= pathList.size() )
-                    {
-                        SubCurrentIndex = 0;
-                    }
-                    sliderStackedWidget->setCurrentIndex(SubCurrentIndex,WAnimation(AnimationEffect::Fade,TimingFunction::EaseInOut,250));
-
-                });
-
-                backBtn->clicked().connect([=](){
-                    SubCurrentIndex--;
-                    if( SubCurrentIndex < 0 )
-                    {
-                        SubCurrentIndex = pathList.size()-1;
-                    }
-                    sliderStackedWidget->setCurrentIndex(SubCurrentIndex,WAnimation(AnimationEffect::Fade,TimingFunction::EaseInOut,250));
-
-                    // Proje Slide Alt Yazı Tanım
-                    //                    textTitle->setText(WString("{1}/{2} - ").arg(SubCurrentIndex).arg(pathList.size()-1).toUTF8()+pathList.at(SubCurrentIndex).text);
-                });
-
-
-
-            }
-        }
-
-        {
-            auto blackLine = _row->addWidget(cpp14::make_unique<WContainerWidget>());
-            blackLine->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
-            blackLine->setAttributeValue(Style::style,Style::Border::border("0px solid "+Style::color::Green::DarkOliveGreen)+
-                                         Style::background::color::color(Style::color::Grey::LightGray));
-            //            blackLine->setHeight(550);
-            blackLine->addStyleClass("blackLine");
-            auto layout = blackLine->setLayout(cpp14::make_unique<WVBoxLayout>());
-
-            auto imgContainer = layout->addWidget(cpp14::make_unique<WContainerWidget>());
-            imgContainer->setAttributeValue(Style::style,Style::background::url("img/4.jpg")+Style::background::size::cover);
-            imgContainer->addStyleClass("ProjectSliderButtonBackground");
-            auto _layout = imgContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
-
-            auto text = _layout->addWidget(cpp14::make_unique<WText>(">"),0,AlignmentFlag::Middle);
-            text->addStyleClass("ProjectSliderButton");
-
-            text->clicked().connect([=](){
-                CurrentIndex++;
-                int count = list.size();
-                if( CurrentIndex >= count )
-                {
-                    CurrentIndex = 0;
-                }
-                this->setCurrentProject();
-            });
-
-
-            auto title = _layout->addWidget(cpp14::make_unique<WText>("**"));
-            title->setAttributeValue(Style::style,Style::color::color(Style::color::Grey::Black)
-                                     +Style::font::weight::bold+Style::font::size::s24px);
-            int count = list.size();
-
-            if( CurrentIndex == count-1 )
-            {
-                title->setText(list.at(0).title);
-                imgContainer->setAttributeValue(Style::style,Style::background::url(list.at(0).img)+Style::background::size::cover);
-            }else{
-                title->setText(list.at(CurrentIndex+1).title);
-                imgContainer->setAttributeValue(Style::style,Style::background::url(list.at(CurrentIndex+1).img)+Style::background::size::cover);
-            }
-        }
-    }
-
-
-}
-
-void Body::ProjectPanel::refreshList()
-{
-
-    auto collection = db->collection(SBLDKeys::Projeler::collection);
-    auto bucket = db->gridfs_bucket();
-
-    list.clear();
-    try {
-        auto cursor = collection.find(document{}.view());
-
-        for( auto doc : cursor )
-        {
-
-            try {
-
-                std::string path;
-
-                auto array = doc[SBLDKeys::Projeler::slide].get_array().value;
-
-                int itemCount = std::distance(array.begin(),array.end());
-
-                if( itemCount )
-                {
-                    for( auto element : array )
-                    {
-                        path = SBLDKeys::downloadifNotExist(&bucket,element[SBLDKeys::Projeler::slideItem::img].get_oid().value.to_string());
-                        break;
-                    }
-                }
-
-                ProjectHeader header;
-                header.oid = doc[SBLDKeys::Projeler::oid].get_oid().value.to_string().c_str();
-                header.title = doc[SBLDKeys::Projeler::title].get_string().value.data();
-                header.img = path;
-
-                //                std::cout << "IMGPATH: " << path;
-
-                list.push_back(header);
-
-            } catch (bsoncxx::exception &e) {
-                setstatus(e);
-            }
-        }
-    } catch (mongocxx::exception &e) {
-        setstatus(e);
-    }
-
-}
-
-void Body::ProjectPanel::setstatus(bsoncxx::exception &e)
-{
-    mMainContainer->clear();
-    auto error = mMainContainer->addWidget(cpp14::make_unique<WText>(WString("<h2>{1}</h2>").arg(e.what())));
-    error->setAttributeValue(Style::style,Style::font::size::s18px);
-}
-
-void Body::ProjectPanel::setstatus(mongocxx::exception &e)
-{
-    mMainContainer->clear();
-    auto error = mMainContainer->addWidget(cpp14::make_unique<WText>(WString("<h2>{1}</h2>").arg(e.what())));
-    error->setAttributeValue(Style::style,Style::font::size::s18px);
-}
-
-void Body::ProjectPanel::setstatus(WString e)
-{
-    mMainContainer->clear();
-    auto error = mMainContainer->addWidget(cpp14::make_unique<WText>(WString("<h2>{1}</h2>").arg(e.toUTF8().c_str())));
-    error->setAttributeValue(Style::style,Style::font::size::s18px);
-}
+//Body::ProjectPanel::ProjectPanel(mongocxx::database *_db)
+//    :WContainerWidget(),
+//      db(_db)
+//{
+//    setAttributeValue(Style::style,Style::background::color::color(Style::color::Grey::Black));
+//    mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
+//    mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
+//    this->refreshList();
+//    CurrentIndex = 2;
+//    this->setCurrentProject();
+//}
+
+//void Body::ProjectPanel::setCurrentProject()
+//{
+
+//    mMainContainer->clear();
+
+//    auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//    row->addStyleClass(Bootstrap::Grid::row);
+//    row->setMargin(15,Side::Top|Side::Bottom);
+
+//    auto collection = db->collection(SBLDKeys::Projeler::collection);
+//    auto bucket = db->gridfs_bucket();
+
+//    auto Currentview = document{}.view();
+
+//    std::vector<CurrentItemKey> pathList;
+
+//    auto filter = document{};
+
+//    try {
+//        filter.append(kvp(SBLDKeys::Projeler::oid,bsoncxx::oid{list.at(CurrentIndex).oid}));
+//    } catch (bsoncxx::exception &e) {
+//        setstatus(e);
+//        return;
+//    }
+
+//    try {
+//        auto val = collection.find_one(filter.view());
+//        if( !val )
+//        {
+//            setstatus("Empty Document");
+//        }else{
+//            auto Currentview = val.value().view();
+//            try {
+//                auto arlist = Currentview[SBLDKeys::Projeler::slide].get_array().value;
+
+//                int currentIndex = 0;
+//                for( auto element : arlist )
+//                {
+//                    std::string path = SBLDKeys::downloadifNotExist(&bucket,element[SBLDKeys::Projeler::slideItem::img].get_oid().value.to_string().c_str());
+//                    CurrentItemKey itemKey;
+//                    itemKey.imgPath = path;
+//                    itemKey.text = element[SBLDKeys::Projeler::slideItem::text].get_string().value.data();
+//                    itemKey.index = currentIndex++;
+//                    pathList.push_back(itemKey);
+//                }
+
+//            } catch (bsoncxx::exception &e) {
+//                setstatus(e);
+//                return;
+//            }
+//        }
+//    } catch (mongocxx::exception &e) {
+//        setstatus(e);
+//        return;
+//    }
+
+//    // Proje Başlığı
+//    {
+
+//        auto titleContainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
+//        auto title = titleContainer->addWidget(cpp14::make_unique<WText>(list.at(CurrentIndex).title));
+//        title->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+//        title->setAttributeValue(Style::style,Style::font::size::s24px+Style::color::color(Style::color::White::FloralWhite));
+
+//    }
+
+
+//    {
+//        auto sliderContainer = row->addWidget(cpp14::make_unique<WContainerWidget>());
+//        sliderContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_12);
+
+//        auto container = sliderContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//        container->addStyleClass(Bootstrap::Grid::container_fluid);
+
+//        auto _row = container->addWidget(cpp14::make_unique<WContainerWidget>());
+//        _row->addStyleClass(Bootstrap::Grid::row);
+
+//        {
+//            auto blackLine = _row->addWidget(cpp14::make_unique<WContainerWidget>());
+//            blackLine->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
+//            blackLine->setAttributeValue(Style::style,Style::Border::border("0px solid "+Style::color::Green::DarkOliveGreen)+
+//                                         Style::background::color::color(Style::color::Grey::LightGray));
+//            //            blackLine->setHeight(550);
+//            blackLine->addStyleClass("blackLine");
+
+//            auto layout = blackLine->setLayout(cpp14::make_unique<WVBoxLayout>());
+
+//            auto imgContainer = layout->addWidget(cpp14::make_unique<WContainerWidget>());
+//            //            imgContainer->setAttributeValue(Style::style,Style::background::url("img/2.jpg"));
+//            imgContainer->addStyleClass("ProjectSliderButtonBackground");
+//            auto _layout = imgContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
+
+//            auto text = _layout->addWidget(cpp14::make_unique<WText>("<"),0,AlignmentFlag::Middle);
+//            text->addStyleClass("ProjectSliderButton");
+//            text->clicked().connect([=](){
+//                CurrentIndex--;
+//                int count = list.size();
+//                if( CurrentIndex < 0 )
+//                {
+//                    CurrentIndex = count-1;
+//                }
+//                this->setCurrentProject();
+//            });
+
+
+//            auto title = _layout->addWidget(cpp14::make_unique<WText>("Yayla Suyu Projesi"));
+//            title->setAttributeValue(Style::style,Style::color::color(Style::color::Grey::Black)
+//                                     +Style::font::weight::bold+Style::font::size::s24px);
+
+//            int count = list.size();
+//            if( CurrentIndex == 0 )
+//            {
+//                title->setText(list.at(count-1).title);
+//                imgContainer->setAttributeValue(Style::style,Style::background::url(list.at(count-1).img)+Style::background::size::cover);
+//            }else{
+//                title->setText(list.at(CurrentIndex-1).title);
+//                imgContainer->setAttributeValue(Style::style,Style::background::url(list.at(CurrentIndex-1).img)+Style::background::size::cover);
+//            }
+//        }
+
+//        {
+//            SubCurrentIndex = 0;
+//            auto sliderArena = _row->addWidget(cpp14::make_unique<WContainerWidget>());
+//            sliderArena->addStyleClass(Bootstrap::Grid::Large::col_lg_8 +Bootstrap::Grid::Medium::col_md_8+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
+//            sliderArena->setPadding(0,AllSides);
+
+//            auto imgContainer = sliderArena->addWidget(cpp14::make_unique<WContainerWidget>());
+//            imgContainer->addStyleClass(Bootstrap::Grid::container_fluid);
+//            imgContainer->setHeight(550);
+//            imgContainer->setPadding(0,AllSides);
+//            imgContainer->setMargin(0,AllSides);
+
+//            {
+//                auto imgRow = imgContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//                imgRow->addStyleClass("ProjectIMGRow");
+
+//                auto sliderStackedWidget = imgRow->addWidget(cpp14::make_unique<WStackedWidget>());
+//                {
+//                    int row = 0;
+//                    for( auto doc : pathList )
+//                    {
+//                        auto imgContainerWidget = cpp14::make_unique<WContainerWidget>();
+//                        imgContainerWidget->setAttributeValue(Style::style,Style::background::url(doc.imgPath)+Style::background::size::cover+Style::background::origin::border_box);
+//                        imgContainerWidget->setHeight(550);
+//                        sliderStackedWidget->insertWidget(row++,std::move(imgContainerWidget));
+//                    }
+//                    sliderStackedWidget->setCurrentIndex(0);
+//                }
+
+//                auto backBtn = imgRow->addWidget(cpp14::make_unique<WContainerWidget>());
+//                backBtn->addStyleClass("ProjectIMGSlideBack");
+//                backBtn->addWidget(cpp14::make_unique<WText>("<"));
+
+//                auto NextBtn = imgRow->addWidget(cpp14::make_unique<WContainerWidget>());
+//                NextBtn->addStyleClass("ProjectIMGSlideNext");
+//                NextBtn->addWidget(cpp14::make_unique<WText>(">"));
+
+//                NextBtn->clicked().connect([=](){
+
+//                    SubCurrentIndex++;
+//                    if( SubCurrentIndex >= pathList.size() )
+//                    {
+//                        SubCurrentIndex = 0;
+//                    }
+//                    sliderStackedWidget->setCurrentIndex(SubCurrentIndex,WAnimation(AnimationEffect::Fade,TimingFunction::EaseInOut,250));
+
+//                });
+
+//                backBtn->clicked().connect([=](){
+//                    SubCurrentIndex--;
+//                    if( SubCurrentIndex < 0 )
+//                    {
+//                        SubCurrentIndex = pathList.size()-1;
+//                    }
+//                    sliderStackedWidget->setCurrentIndex(SubCurrentIndex,WAnimation(AnimationEffect::Fade,TimingFunction::EaseInOut,250));
+
+//                    // Proje Slide Alt Yazı Tanım
+//                    //                    textTitle->setText(WString("{1}/{2} - ").arg(SubCurrentIndex).arg(pathList.size()-1).toUTF8()+pathList.at(SubCurrentIndex).text);
+//                });
+
+
+
+//            }
+//        }
+
+//        {
+//            auto blackLine = _row->addWidget(cpp14::make_unique<WContainerWidget>());
+//            blackLine->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_12+Bootstrap::Grid::ExtraSmall::col_xs_12);
+//            blackLine->setAttributeValue(Style::style,Style::Border::border("0px solid "+Style::color::Green::DarkOliveGreen)+
+//                                         Style::background::color::color(Style::color::Grey::LightGray));
+//            //            blackLine->setHeight(550);
+//            blackLine->addStyleClass("blackLine");
+//            auto layout = blackLine->setLayout(cpp14::make_unique<WVBoxLayout>());
+
+//            auto imgContainer = layout->addWidget(cpp14::make_unique<WContainerWidget>());
+//            imgContainer->setAttributeValue(Style::style,Style::background::url("img/4.jpg")+Style::background::size::cover);
+//            imgContainer->addStyleClass("ProjectSliderButtonBackground");
+//            auto _layout = imgContainer->setLayout(cpp14::make_unique<WVBoxLayout>());
+
+//            auto text = _layout->addWidget(cpp14::make_unique<WText>(">"),0,AlignmentFlag::Middle);
+//            text->addStyleClass("ProjectSliderButton");
+
+//            text->clicked().connect([=](){
+//                CurrentIndex++;
+//                int count = list.size();
+//                if( CurrentIndex >= count )
+//                {
+//                    CurrentIndex = 0;
+//                }
+//                this->setCurrentProject();
+//            });
+
+
+//            auto title = _layout->addWidget(cpp14::make_unique<WText>("**"));
+//            title->setAttributeValue(Style::style,Style::color::color(Style::color::Grey::Black)
+//                                     +Style::font::weight::bold+Style::font::size::s24px);
+//            int count = list.size();
+
+//            if( CurrentIndex == count-1 )
+//            {
+//                title->setText(list.at(0).title);
+//                imgContainer->setAttributeValue(Style::style,Style::background::url(list.at(0).img)+Style::background::size::cover);
+//            }else{
+//                title->setText(list.at(CurrentIndex+1).title);
+//                imgContainer->setAttributeValue(Style::style,Style::background::url(list.at(CurrentIndex+1).img)+Style::background::size::cover);
+//            }
+//        }
+//    }
+
+
+//}
+
+//void Body::ProjectPanel::refreshList()
+//{
+
+//    auto collection = db->collection(SBLDKeys::Projeler::collection);
+//    auto bucket = db->gridfs_bucket();
+
+//    list.clear();
+//    try {
+//        auto cursor = collection.find(document{}.view());
+
+//        for( auto doc : cursor )
+//        {
+
+//            try {
+
+//                std::string path;
+
+//                auto array = doc[SBLDKeys::Projeler::slide].get_array().value;
+
+//                int itemCount = std::distance(array.begin(),array.end());
+
+//                if( itemCount )
+//                {
+//                    for( auto element : array )
+//                    {
+//                        path = SBLDKeys::downloadifNotExist(&bucket,element[SBLDKeys::Projeler::slideItem::img].get_oid().value.to_string());
+//                        break;
+//                    }
+//                }
+
+//                ProjectHeader header;
+//                header.oid = doc[SBLDKeys::Projeler::oid].get_oid().value.to_string().c_str();
+//                header.title = doc[SBLDKeys::Projeler::title].get_string().value.data();
+//                header.img = path;
+
+//                //                std::cout << "IMGPATH: " << path;
+
+//                list.push_back(header);
+
+//            } catch (bsoncxx::exception &e) {
+//                setstatus(e);
+//            }
+//        }
+//    } catch (mongocxx::exception &e) {
+//        setstatus(e);
+//    }
+
+//}
+
+//void Body::ProjectPanel::setstatus(bsoncxx::exception &e)
+//{
+//    mMainContainer->clear();
+//    auto error = mMainContainer->addWidget(cpp14::make_unique<WText>(WString("<h2>{1}</h2>").arg(e.what())));
+//    error->setAttributeValue(Style::style,Style::font::size::s18px);
+//}
+
+//void Body::ProjectPanel::setstatus(mongocxx::exception &e)
+//{
+//    mMainContainer->clear();
+//    auto error = mMainContainer->addWidget(cpp14::make_unique<WText>(WString("<h2>{1}</h2>").arg(e.what())));
+//    error->setAttributeValue(Style::style,Style::font::size::s18px);
+//}
+
+//void Body::ProjectPanel::setstatus(WString e)
+//{
+//    mMainContainer->clear();
+//    auto error = mMainContainer->addWidget(cpp14::make_unique<WText>(WString("<h2>{1}</h2>").arg(e.toUTF8().c_str())));
+//    error->setAttributeValue(Style::style,Style::font::size::s18px);
+//}
 
 
 Body::Iletisim::Iletisim()
@@ -1672,12 +1672,12 @@ void Body::Iletisim::showMessage(std::string title, std::string msg)
     messageBox->show();
 }
 
-Body::IstatistikAnket::IstatistikAnket()
-{
-    setAttributeValue(Style::style,Style::background::color::color(Style::color::White::AliceBlue));
-    setHeight(350);
-    addWidget(cpp14::make_unique<WContainerWidget>());
-}
+//Body::IstatistikAnket::IstatistikAnket()
+//{
+//    setAttributeValue(Style::style,Style::background::color::color(Style::color::White::AliceBlue));
+//    setHeight(350);
+//    addWidget(cpp14::make_unique<WContainerWidget>());
+//}
 
 
 Body::Proje::Proje(mongocxx::database *_db)

@@ -121,50 +121,50 @@ namespace Body {
 
 
 
-    class IstatistikAnket : public WContainerWidget
-    {
-    public:
-        IstatistikAnket();
-    };
+//    class IstatistikAnket : public WContainerWidget
+//    {
+//    public:
+//        IstatistikAnket();
+//    };
 
-    class ProjectPanel : public WContainerWidget
-    {
-    public:
-        ProjectPanel(mongocxx::database* _db);
+//    class ProjectPanel : public WContainerWidget
+//    {
+//    public:
+////        ProjectPanel(mongocxx::database* _db);
 
-        struct ProjectHeader
-        {
-            std::string oid;
-            std::string title;
-            std::string img;
-        };
+//        struct ProjectHeader
+//        {
+//            std::string oid;
+//            std::string title;
+//            std::string img;
+//        };
 
-        struct CurrentItemKey
-        {
-            std::string imgPath;
-            std::string text;
-            int index;
-        };
-
-
-        void setCurrentProject();
-        void refreshList();
-
-    private:
-        mongocxx::database* db;
-
-        WContainerWidget* mMainContainer;
-
-        void setstatus(bsoncxx::exception &e);
-        void setstatus(mongocxx::exception &e);
-        void setstatus(WString e);
-        std::vector<ProjectHeader> list;
-
-        int CurrentIndex;
-        int SubCurrentIndex;
+//        struct CurrentItemKey
+//        {
+//            std::string imgPath;
+//            std::string text;
+//            int index;
+//        };
 
 
-    };
+////        void setCurrentProject();
+////        void refreshList();
+
+//    private:
+//        mongocxx::database* db;
+
+//        WContainerWidget* mMainContainer;
+
+//        void setstatus(bsoncxx::exception &e);
+//        void setstatus(mongocxx::exception &e);
+//        void setstatus(WString e);
+//        std::vector<ProjectHeader> list;
+
+//        int CurrentIndex;
+//        int SubCurrentIndex;
+
+
+//    };
 
     class BaskanaMesajWidget : public ContainerWidget, public SerikBLDCore::DB
     {
