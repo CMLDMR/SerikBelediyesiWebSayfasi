@@ -237,7 +237,10 @@ void ContainerWidget::removeDialog(WDialog *mDialog)
 DialogContainerWidget* ContainerWidget::createFlatDialog(const std::string &title)
 {
     auto container = Wt::WApplication::instance()->root()->addNew<DialogContainerWidget>(title);
+    container->setId("flatDialog");
     container->setPositionScheme(PositionScheme::Fixed);
+    container->setWidth(WLength("100%"));
+    container->setHeight(WLength("100%"));
     container->addStyleClass(CSSStyle::NewDialog::newDialog);
     container->setContentAlignment(AlignmentFlag::Center);
 
@@ -479,7 +482,7 @@ DialogContainerWidget::DialogContainerWidget(const std::string &title)
 {
 
     auto contentContainer = this->addNew<WContainerWidget>();
-    contentContainer->setMaximumSize(768,WLength::Auto);
+    contentContainer->setMaximumSize(1024,WLength::Auto);
     contentContainer->setPositionScheme(PositionScheme::Relative);
     contentContainer->setHeight(WLength("100%"));
     contentContainer->setWidth(WLength("100%"));
