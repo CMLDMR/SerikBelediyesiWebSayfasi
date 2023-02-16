@@ -42,7 +42,7 @@ void v2::Faaliyet::FaaliyetRaporContainer::initMenu(const MenuPage &currentPage)
     GirisMenuBtn->clicked().connect([=](){
         //TODO: Giriş Bilgileri Eklenecek
         this->showPopUpMessage("Yapım Aşamasında","warn");
-//        this->initMenu(MenuPage::GirisBilgileri);
+        //        this->initMenu(MenuPage::GirisBilgileri);
     });
 
     if( currentPage == MenuPage::Raporlar ){
@@ -451,6 +451,7 @@ void v2::Faaliyet::FaaliyetRaporContainer::testPage( const std::string &faaliyet
                                   Bootstrap::Grid::Medium::col_md_3+
                                   Bootstrap::Grid::Small::col_sm_3+
                                   Bootstrap::Grid::ExtraSmall::col_xs_3);
+    onayContainer->setAttributeValue(Style::style,Style::background::color::rgb(this->getRandom(0,50),this->getRandom(0,50),this->getRandom(0,50)));
 
 
     auto baslikText = baslikContainer->addWidget (cpp14::make_unique<WText>(""));
@@ -466,17 +467,10 @@ void v2::Faaliyet::FaaliyetRaporContainer::testPage( const std::string &faaliyet
         SerikBLDCore::Faaliyet::FaaliyetItem filter;
         filter.setOid (faaliyetOid);
 
-        LOG << bsoncxx::to_json(filter.view()) << "\n";
-
-
         auto val = this->findOneItem (filter);
-
         if( val ){
-
             if( val.value ().view ().empty () ){
-
                 this->showPopUpMessage ("Empty view:","err");
-
             }else{
                 try{
                     auto arrayView = val->view ()["faaliyet"].get_array ().value;
@@ -1061,7 +1055,6 @@ void v2::Faaliyet::SquencedRaporItem::addBaslikBack(const int& type , const std:
 
     std::string newBaslik = QString::fromStdString (baslik).toUpper ().toStdString ();
 
-
     switch (type) {
     case 1:
         item = new SerikBLDCore::Faaliyet::BaslikItem;
@@ -1091,16 +1084,10 @@ void v2::Faaliyet::SquencedRaporItem::addBaslikBack(const int& type , const std:
         break;
     }
 
-
-
     if( this->mList.count () <= 0 ){
         this->mList.append (item);
         return;
     }
-
-
-
-
 
     int currentBaslikindex = 0;
 
@@ -1171,8 +1158,6 @@ void v2::Faaliyet::SquencedRaporItem::addTableNext(const std::string &currentUui
         item->setCell (cell.row,cell.col,cell.value);
     }
 
-
-
     int currentBaslikindex = 0;
 
     for( int i = 0 ; i < this->mList.count (); i++ ){
@@ -1194,8 +1179,6 @@ void v2::Faaliyet::SquencedRaporItem::addTableBack(const std::string &currentUui
     for( const auto &cell : cells ){
         item->setCell (cell.row,cell.col,cell.value);
     }
-
-
 
     int currentBaslikindex = 0;
 
@@ -1247,8 +1230,6 @@ void v2::Faaliyet::SquencedRaporItem::changeItem(const std::string &uuid, const 
 void v2::Faaliyet::SquencedRaporItem::changeItem(const std::string &uuid, const std::string &title, const std::string &imgOid, const bool &deleteImgOid)
 {
     SerikBLDCore::Faaliyet::ImgItem *item = new SerikBLDCore::Faaliyet::ImgItem;
-
-    //    LOGN << "Change imgOid: "<<std::boolalpha << deleteImgOid << "\n";
 
     for( int i = 0 ; i < this->mList.count (); i++ ){
         if( uuid == this->mList.at (i)->uuid () ){
@@ -1313,7 +1294,6 @@ WContainerWidget *v2::Faaliyet::ItemContainer<T>::addNewButton(const std::string
     tempContainter->setPadding(10,Side::Left|Side::Right);
     tempContainter->addStyleClass("gra");
 
-    //    return std::move(tempContainter);
     return tempContainter;
 
 }
@@ -1321,23 +1301,21 @@ WContainerWidget *v2::Faaliyet::ItemContainer<T>::addNewButton(const std::string
 template<typename T>
 void v2::Faaliyet::ItemContainer<T>::addBaslikPre(const bool &addPre)
 {
-    auto mDialog = createDialog ("Başlık Ekle");
+    auto mDialog = createFlatDialog("Başlık Ekle");
 
-    auto baslikLineEdit = mDialog->contents ()->addWidget (cpp14::make_unique<WLineEdit>());
+    auto baslikLineEdit = mDialog->Content ()->addWidget (cpp14::make_unique<WLineEdit>());
     baslikLineEdit->setPlaceholderText ("Başlık Adını Giriniz");
     baslikLineEdit->setText ("Başlık");
 
-    auto saveBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Ekle+"));
-    saveBtn->addStyleClass (Bootstrap::Button::Primary);
-
-    saveBtn->clicked ().connect ([=](){
-        if( !addPre ){
-            mAddAftereSignal(1,this->uuid(),baslikLineEdit->text().toUTF8());
-        }else{
-            mAddBeforeSignal(1,this->uuid(),baslikLineEdit->text().toUTF8());
+    mDialog->Accepted ().connect ([=](){
+        if( baslikLineEdit->text().toUTF8().size() > 3 ){
+            if( !addPre ){
+                mAddAftereSignal(1,this->uuid(),baslikLineEdit->text().toUTF8());
+            }else{
+                mAddBeforeSignal(1,this->uuid(),baslikLineEdit->text().toUTF8());
+            }
+            removeDialog (mDialog);
         }
-        removeDialog (mDialog);
-
     });
 
     mDialog->show ();
@@ -1347,23 +1325,21 @@ void v2::Faaliyet::ItemContainer<T>::addBaslikPre(const bool &addPre)
 template<typename T>
 void v2::Faaliyet::ItemContainer<T>::addAltBaslikPre(const bool &addPre)
 {
-    auto mDialog = createDialog ("Öncesine Alt Başlık Ekle");
+    auto mDialog = createFlatDialog( "Öncesine Alt Başlık Ekle");
 
-    auto baslikLineEdit = mDialog->contents ()->addWidget (cpp14::make_unique<WLineEdit>());
+    auto baslikLineEdit = mDialog->Content ()->addWidget (cpp14::make_unique<WLineEdit>());
     baslikLineEdit->setPlaceholderText ("Alt Başlık Adını Giriniz");
-    baslikLineEdit->setText ("Alt bAşlık");
+    baslikLineEdit->setText ("Alt Başlık");
 
-    auto saveBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Ekle+"));
-    saveBtn->addStyleClass (Bootstrap::Button::Primary);
-
-    saveBtn->clicked ().connect ([=](){
-        if( !addPre ){
-            mAddAftereSignal(2,this->uuid(),baslikLineEdit->text().toUTF8());
-        }else{
-            mAddBeforeSignal(2,this->uuid(),baslikLineEdit->text().toUTF8());
+    mDialog->Accepted ().connect ([=](){
+        if( baslikLineEdit->text().toUTF8().size() > 3 ){
+            if( !addPre ){
+                mAddAftereSignal(2,this->uuid(),baslikLineEdit->text().toUTF8());
+            }else{
+                mAddBeforeSignal(2,this->uuid(),baslikLineEdit->text().toUTF8());
+            }
+            removeDialog (mDialog);
         }
-        removeDialog (mDialog);
-
     });
 
     mDialog->show ();
@@ -1373,31 +1349,27 @@ void v2::Faaliyet::ItemContainer<T>::addAltBaslikPre(const bool &addPre)
 template<typename T>
 void v2::Faaliyet::ItemContainer<T>::addParagrafPre(const bool &addPre)
 {
-    auto mDialog = createDialog ("Parağraf Ekle");
+    auto mDialog = createFlatDialog("Parağraf Ekle");
 
-    auto baslikLineEdit = mDialog->contents ()->addWidget (cpp14::make_unique<WTextEdit>());
+    auto baslikLineEdit = mDialog->Content ()->addWidget (cpp14::make_unique<WTextEdit>());
     baslikLineEdit->setExtraPlugins("lists");
     baslikLineEdit->setToolBar(0,"numlist,bullist");
     baslikLineEdit->setConfigurationSetting("language","tr");
 
     baslikLineEdit->setHeight (450);
 
-    auto saveBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Ekle+"));
-    saveBtn->addStyleClass (Bootstrap::Button::Primary);
+    mDialog->Accepted ().connect ([=](){
+        if( baslikLineEdit->text().toUTF8().size() > 10 ){
+            if( !addPre ){
+                mAddAftereSignal(3,this->uuid(),baslikLineEdit->text().toUTF8());
+            }else{
+                mAddBeforeSignal(3,this->uuid(),baslikLineEdit->text().toUTF8());
+            }
 
-    saveBtn->clicked ().connect ([=](){
-        if( !addPre ){
-            mAddAftereSignal(3,this->uuid(),baslikLineEdit->text().toUTF8());
-        }else{
-            mAddBeforeSignal(3,this->uuid(),baslikLineEdit->text().toUTF8());
+            removeDialog (mDialog);
         }
 
-        removeDialog (mDialog);
-
     });
-
-    mDialog->setHeight(600);
-    mDialog->setWidth(1000);
 
 
     mDialog->show ();
@@ -1407,22 +1379,22 @@ void v2::Faaliyet::ItemContainer<T>::addParagrafPre(const bool &addPre)
 template<typename T>
 void v2::Faaliyet::ItemContainer<T>::addImgPre(const bool &addPre)
 {
-    auto mDialog = createDialog ("Sonrasına Resim Ekle");
+    auto mDialog = createFlatDialog("Sonrasına Resim Ekle");
 
 
 
-    auto baslikLineEdit = mDialog->contents ()->addWidget (cpp14::make_unique<WLineEdit>());
+    auto baslikLineEdit = mDialog->Content ()->addWidget (cpp14::make_unique<WLineEdit>());
     baslikLineEdit->setPlaceholderText ("Resim Bilgisi Ekleyiniz");
 
-    mDialog->contents ()->addWidget(cpp14::make_unique<WBreak>());
+    mDialog->Content ()->addWidget(cpp14::make_unique<WBreak>());
 
 
-    auto imgContainer = mDialog->contents ()->addWidget(cpp14::make_unique<WContainerWidget>());
+    auto imgContainer = mDialog->Content ()->addWidget(cpp14::make_unique<WContainerWidget>());
     imgContainer->setWidth(WLength("100%"));
     imgContainer->setHeight(150);
     imgContainer->setMinimumSize(WLength::Auto,150);
 
-    auto fileUploader = mDialog->contents ()->addWidget(cpp14::make_unique<FileUploaderWidget>("Resim Yükle"));
+    auto fileUploader = mDialog->Content ()->addWidget(cpp14::make_unique<FileUploaderWidget>("Resim Yükle"));
     fileUploader->setType(FileUploaderWidget::FilterType::Image);
 
     fileUploader->Uploaded().connect([=](){
@@ -1439,10 +1411,10 @@ void v2::Faaliyet::ItemContainer<T>::addImgPre(const bool &addPre)
             }
 
             if( qimg.save(fileUploader->fileLocation()) ){
-                LOG << "file Can not Save..........\n";
+                this->showPopUpMessage("File Can Not Be Saved","warn");
             }
         }else{
-            LOG << "FİLE CAN NOT OPEN\n";
+            this->showPopUpMessage("File Can Not Be Open","warn");
         }
 
         imgContainer->setAttributeValue(Style::style,Style::background::url (fileUploader->doocRootLocation().toStdString())+Style::background::repeat::norepeat+
@@ -1451,10 +1423,7 @@ void v2::Faaliyet::ItemContainer<T>::addImgPre(const bool &addPre)
         imgContainer->setMinimumSize(WLength::Auto,150);
     });
 
-    auto saveBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Ekle+"));
-    saveBtn->addStyleClass (Bootstrap::Button::Primary);
-
-    saveBtn->clicked ().connect ([=](){
+    mDialog->Accepted ().connect ([=](){
         if( fileUploader->isUploaded() ){
             if( baslikLineEdit->text().toUTF8().size() ){
                 auto val = mDB->uploadfile (fileUploader->fileLocation());
@@ -1481,20 +1450,20 @@ void v2::Faaliyet::ItemContainer<T>::addImgPre(const bool &addPre)
 template<typename T>
 void v2::Faaliyet::ItemContainer<T>::addTablePre(const bool &addPre)
 {
-    auto mDialog = createDialog ("Tablo Ekle");
+    auto mDialog = createFlatDialog("Tablo Ekle");
 
-    auto baslikLineEdit = mDialog->contents ()->addWidget (cpp14::make_unique<WLineEdit>());
+    auto baslikLineEdit = mDialog->Content ()->addWidget (cpp14::make_unique<WLineEdit>());
     baslikLineEdit->setPlaceholderText ("Tablo Bilgisi. (Örn: Gider İstatistikleri)");
 
-    mDialog->contents ()->addWidget(cpp14::make_unique<WBreak>());
+    mDialog->Content ()->addWidget(cpp14::make_unique<WBreak>());
 
-    auto tableContainer = mDialog->contents ()->addWidget(cpp14::make_unique<WContainerWidget>());
+    auto tableContainer = mDialog->Content ()->addWidget(cpp14::make_unique<WContainerWidget>());
     tableContainer->setWidth(WLength("100%"));
     tableContainer->setMinimumSize(WLength::Auto,250);
 
     auto table = tableContainer->addWidget(Wt::cpp14::make_unique<Wt::WTableView>());
 
-    auto infoText = mDialog->contents()->addWidget(cpp14::make_unique<WText>(""));
+    auto infoText = mDialog->Content()->addWidget(cpp14::make_unique<WText>(""));
     infoText->setAttributeValue(Style::style,Style::color::color (Style::color::Red::Crimson));
 
 
@@ -1510,7 +1479,6 @@ void v2::Faaliyet::ItemContainer<T>::addTablePre(const bool &addPre)
     table->setSortingEnabled(false);
 
 
-
     table->setOverflow(Overflow::Scroll);
     table->setMaximumSize (WLength::Auto,WLength(400));
 
@@ -1519,8 +1487,7 @@ void v2::Faaliyet::ItemContainer<T>::addTablePre(const bool &addPre)
     table->setModel(model);
 
 
-
-    auto rowEkleContainer = mDialog->contents()->addWidget(cpp14::make_unique<WContainerWidget>());
+    auto rowEkleContainer = mDialog->Content()->addWidget(cpp14::make_unique<WContainerWidget>());
     rowEkleContainer->addStyleClass(Bootstrap::Grid::row);
 
     auto rowEkleBtn = rowEkleContainer->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -1562,9 +1529,6 @@ void v2::Faaliyet::ItemContainer<T>::addTablePre(const bool &addPre)
 
 
     rowEkleBtn->clicked().connect([=](){
-
-
-
 
         Wt::WStandardItem *root = model->invisibleRootItem();
 
@@ -1629,13 +1593,7 @@ void v2::Faaliyet::ItemContainer<T>::addTablePre(const bool &addPre)
 
     });
 
-
-    auto saveBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Ekle+"));
-    saveBtn->addStyleClass (Bootstrap::Button::Primary);
-
-
-
-    saveBtn->clicked ().connect ([=](){
+    mDialog->Accepted().connect ([=](){
 
         if( baslikLineEdit->text().toUTF8().size() == 0 ){
             infoText->setText("Başlık Girmediniz!");
@@ -1666,9 +1624,6 @@ void v2::Faaliyet::ItemContainer<T>::addTablePre(const bool &addPre)
 
         removeDialog (mDialog);
     });
-
-    mDialog->setWidth(1100);
-    mDialog->setMaximumSize (WLength::Auto,WLength(640));
 
     mDialog->show ();
 }
@@ -1817,14 +1772,9 @@ void v2::Faaliyet::ItemContainer<T>::initWidgetType()
                             qimg = qimg.copy (0,qimg.height ()/2-300,1000,600);
                         }
 
-
-
-
-
                         if( qimg.save(QString("docroot/")+imgPath.c_str()) ){
                             LOG << "file Can not Save..........\n";
                         }
-
 
                         auto val = mDB->uploadfile (QString("docroot/")+imgPath.c_str());
 
@@ -3056,20 +3006,20 @@ void v2::Faaliyet::ItemContainer<T>::refreshWidget()
 
     tabloEkleMenu->addItem( ("Mali Tablo Ekle"))->triggered().connect([=] {
 
-        auto mDialog = createDialog ("Mali Tablo Ekle");
+        auto mDialog = createFlatDialog("Mali Tablo Ekle");
 
-        auto baslikLineEdit = mDialog->contents ()->addWidget (cpp14::make_unique<WLineEdit>());
-        baslikLineEdit->setPlaceholderText ("Tablo Bilgisi. (Örn: 2020 Mali Yılı Bütçe Harcama Raporu)");
+        auto baslikLineEdit = mDialog->Content ()->addWidget (cpp14::make_unique<WLineEdit>());
+        baslikLineEdit->setPlaceholderText ("Tablo Bilgisi. (Örn: 2022 Mali Yılı Bütçe Harcama Raporu)");
+        baslikLineEdit->setText(WString("{1} Mali Yılı Bütçe Harcama Raporu").arg(WDate::currentDate().year()-1));
+        mDialog->Content ()->addWidget(cpp14::make_unique<WBreak>());
 
-        mDialog->contents ()->addWidget(cpp14::make_unique<WBreak>());
-
-        auto tableContainer = mDialog->contents ()->addWidget(cpp14::make_unique<WContainerWidget>());
+        auto tableContainer = mDialog->Content ()->addWidget(cpp14::make_unique<WContainerWidget>());
         tableContainer->setWidth(WLength("100%"));
         tableContainer->setMinimumSize(WLength::Auto,250);
 
         auto table = tableContainer->addWidget(Wt::cpp14::make_unique<Wt::WTableView>());
 
-        auto infoText = mDialog->contents()->addWidget(cpp14::make_unique<WText>("Bilgi: <b>Sadece Gerekli Alanları Doldurunuz.</b>"));
+        auto infoText = mDialog->Content()->addWidget(cpp14::make_unique<WText>("Bilgi: <b>Sadece Gerekli Alanları Doldurunuz.</b>"));
         infoText->setAttributeValue(Style::style,Style::color::color (Style::color::Red::Crimson));
 
 
@@ -3083,7 +3033,17 @@ void v2::Faaliyet::ItemContainer<T>::refreshWidget()
         table->setEditTriggers(EditTrigger::SelectedClicked);
         table->setSelectionBehavior(SelectionBehavior::Items);
         table->setSortingEnabled(false);
-        auto model = std::make_shared<WStandardItemModel>(0,7);
+
+
+        const std::vector<std::string> headers{"#","Verilen Ödenek","Eklenen(+)","Düşülen(-)","Ek Ödenek","Net Ödenek","Ödenen","İptal Edilen"};
+        const std::vector<std::string> headersCol{"Personel Giderleri",
+                                               "Sosyal Güv. Kur. Dev. Pir. Giderleri",
+                                               "Mal ve Hizmet Alım Giderleri",
+                                               "Faiz Giderleri",
+                                               "Sermaye Giderleri","Yedek Ödenekler","Genel Toplam"};
+
+
+        auto model = std::make_shared<WStandardItemModel>(0,headers.size());
 
         table->setModel(model);
 
@@ -3099,24 +3059,13 @@ void v2::Faaliyet::ItemContainer<T>::refreshWidget()
         });
 
 
+        for( int i = 0 ; i < headers.size() ; i++ ){
+            model->setHeaderData (i,Orientation::Horizontal,headers[i],ItemDataRole::Display);
+        }
 
-        model->setHeaderData (0,Orientation::Horizontal,"#",ItemDataRole::Display);
-        model->setHeaderData (1,Orientation::Horizontal,"Verilen Ödenek",ItemDataRole::Display);
-        model->setHeaderData (2,Orientation::Horizontal,"Eklenen(+)",ItemDataRole::Display);
-        model->setHeaderData (3,Orientation::Horizontal,"Düşülen(+)",ItemDataRole::Display);
-        model->setHeaderData (4,Orientation::Horizontal,"Net Ödenek",ItemDataRole::Display);
-        model->setHeaderData (5,Orientation::Horizontal,"Ödenen",ItemDataRole::Display);
-        model->setHeaderData (6,Orientation::Horizontal,"İptal Edilen",ItemDataRole::Display);
-
-        model->insertRow (0,std::make_unique<WStandardItem>("Personel Giderleri"));
-        model->insertRow (1,std::make_unique<WStandardItem>("Sosyal Güv. Kur. Dev. Pir. Giderleri"));
-        model->insertRow (2,std::make_unique<WStandardItem>("Mal ve Hizmet Alım Giderleri"));
-        model->insertRow (3,std::make_unique<WStandardItem>("Faiz Giderleri"));
-        model->insertRow (4,std::make_unique<WStandardItem>("Sermaye Giderleri"));
-        model->insertRow (5,std::make_unique<WStandardItem>("Yedek Ödenekler"));
-        model->insertRow (6,std::make_unique<WStandardItem>("Genel Toplam"));
-
-
+        for( int i = 0 ; i < headersCol.size() ; i++ ){
+            model->insertRow (i,std::make_unique<WStandardItem>(headersCol[i]));
+        }
 
         for( int i = 0 ; i < model->rowCount () ; i++ ){
             for( int j = 1 ; j < model->columnCount () ; j++ ){
@@ -3126,13 +3075,7 @@ void v2::Faaliyet::ItemContainer<T>::refreshWidget()
             }
         }
 
-
-        auto saveBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Ekle+"));
-        saveBtn->addStyleClass (Bootstrap::Button::Primary);
-
-
-
-        saveBtn->clicked ().connect ([=](){
+        mDialog->Accepted().connect ([=](){
 
             if( baslikLineEdit->text().toUTF8().size() == 0 ){
                 infoText->setText("Başlık Girmediniz!");
@@ -3140,31 +3083,15 @@ void v2::Faaliyet::ItemContainer<T>::refreshWidget()
             }
 
             std::vector<TableCell> cells;
-
-            std::vector<std::string> headers;
-            headers.push_back ("#");
-            headers.push_back ("Verilen Ödenek");
-            headers.push_back ("Eklenen(+)");
-            headers.push_back ("Düşülen(+)");
-            headers.push_back ("Net Ödenek");
-            headers.push_back ("Ödenen");
-            headers.push_back ("İptal Edilen");
-
             for( int i = 0 ; i < model->rowCount (); i++ ){
                 for( int j = 0 ; j < model->columnCount (); j++ ){
                     TableCell cell{i,j,model->item (i,j)->text ().toUTF8 ()};
                     cells.push_back (cell);
                 }
             }
-
-
             mAddTableAftereSignal(baslikLineEdit->text().toUTF8(),headers,cells);
-
             removeDialog (mDialog);
         });
-        mDialog->setWidth(1100);
-        mDialog->setMaximumSize (WLength::Auto,WLength(640));
-
         mDialog->show ();
     });
 
@@ -3172,377 +3099,11 @@ void v2::Faaliyet::ItemContainer<T>::refreshWidget()
 
 
     tabloEkleMenu->addItem( ("Öncesine Tablo Ekle"))->triggered().connect([=] {
-
         this->addTablePre ();
-
-        //        auto mDialog = createDialog ("Tablo Ekle");
-
-        //        auto baslikLineEdit = mDialog->contents ()->addWidget (cpp14::make_unique<WLineEdit>());
-        //        baslikLineEdit->setPlaceholderText ("Tablo Bilgisi. (Örn: Gider İstatistikleri)");
-
-        //        mDialog->contents ()->addWidget(cpp14::make_unique<WBreak>());
-
-        //        auto tableContainer = mDialog->contents ()->addWidget(cpp14::make_unique<WContainerWidget>());
-        //        tableContainer->setWidth(WLength("100%"));
-        //        tableContainer->setMinimumSize(WLength::Auto,250);
-
-        //        auto table = tableContainer->addWidget(Wt::cpp14::make_unique<Wt::WTableView>());
-
-        //        auto infoText = mDialog->contents()->addWidget(cpp14::make_unique<WText>(""));
-        //        infoText->setAttributeValue(Style::style,Style::color::color (Style::color::Red::Crimson));
-
-
-        //        table->setColumnResizeEnabled(true);
-        //        table->setColumnAlignment(0, AlignmentFlag::Center);
-        //        table->setHeaderAlignment(0, AlignmentFlag::Center);
-        //        table->setAlternatingRowColors(true);
-        //        table->setRowHeight(28);
-        //        table->setHeaderHeight(28);
-        //        table->setSelectionMode(SelectionMode::Single);
-        //        table->setEditTriggers(EditTrigger::SelectedClicked);
-        //        table->setSelectionBehavior(SelectionBehavior::Items);
-        //        table->setSortingEnabled(false);
-
-
-        //        table->setOverflow(Overflow::Scroll);
-        //        table->setMaximumSize (WLength::Auto,WLength(400));
-
-
-        //        auto model = std::make_shared<WStandardItemModel>(0,0);
-        //        table->setModel(model);
-
-
-
-        //        auto rowEkleContainer = mDialog->contents()->addWidget(cpp14::make_unique<WContainerWidget>());
-        //        rowEkleContainer->addStyleClass(Bootstrap::Grid::row);
-
-        //        auto rowEkleBtn = rowEkleContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-        //        rowEkleBtn->setContentAlignment(AlignmentFlag::Center);
-        //        rowEkleBtn->addStyleClass(Bootstrap::Grid::Large::col_lg_2+
-        //                                  Bootstrap::Grid::Medium::col_md_2+
-        //                                  Bootstrap::Grid::Small::col_sm_2+
-        //                                  Bootstrap::Grid::ExtraSmall::col_xs_2);
-        //        rowEkleBtn->addStyleClass(CSSStyle::Button::blueButton);
-        //        rowEkleBtn->addWidget(cpp14::make_unique<WText>("Satır Ekle+"));
-        //        rowEkleBtn->setPadding(7,Side::Top|Side::Bottom);
-
-
-
-        //        auto colBaslik = rowEkleContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-        //        colBaslik->addStyleClass(Bootstrap::Grid::Large::col_lg_3+
-        //                                 Bootstrap::Grid::Medium::col_md_3+
-        //                                 Bootstrap::Grid::Small::col_sm_3+
-        //                                 Bootstrap::Grid::ExtraSmall::col_xs_3);
-        //        colBaslik->addStyleClass(Bootstrap::Grid::Offset::Large::col_lg_5+
-        //                                 Bootstrap::Grid::Offset::Medium::col_md_5+
-        //                                 Bootstrap::Grid::Offset::Small::col_sm_5+
-        //                                 Bootstrap::Grid::Offset::ExtraSmall::col_xs_5);
-
-        //        auto sutunBaslikLineEdit = colBaslik->addWidget(cpp14::make_unique<WLineEdit>());
-        //        sutunBaslikLineEdit->setPlaceholderText("Sütun Başlığını Girniz");
-
-
-        //        auto colEkleBtn = rowEkleContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-        //        colEkleBtn->setContentAlignment(AlignmentFlag::Center);
-        //        colEkleBtn->addStyleClass(Bootstrap::Grid::Large::col_lg_2+
-        //                                  Bootstrap::Grid::Medium::col_md_2+
-        //                                  Bootstrap::Grid::Small::col_sm_2+
-        //                                  Bootstrap::Grid::ExtraSmall::col_xs_2);
-        //        colEkleBtn->addStyleClass(CSSStyle::Button::blueButton);
-        //        colEkleBtn->addWidget(cpp14::make_unique<WText>("Sütun Ekle+"));
-        //        colEkleBtn->setPadding(7,Side::Top|Side::Bottom);
-
-
-
-        //        rowEkleBtn->clicked().connect([=](){
-
-
-
-
-        //            Wt::WStandardItem *root = model->invisibleRootItem();
-
-        //            if( root->columnCount () <= 0 ){
-        //                infoText->setText("<b>ilk Önce Sütun Ekleyiniz</b>");
-        //                return;
-        //            }
-
-        //            infoText->setText("");
-
-
-        //            std::vector<std::unique_ptr<WStandardItem>> list;
-
-        //            for (int row = 0; row < root->columnCount (); ++row) {
-        //                auto topLevel = std::make_unique<Wt::WStandardItem>();
-        //                topLevel->setText("");
-        //                topLevel->setEditable (true);
-        //                list.push_back (std::move(topLevel));
-
-        //            }
-        //            root->insertRow (root->rowCount (),std::move(list));
-
-        //            for( int i = 0 ; i < root->rowCount () ; i++ ){
-        //                for( int j = 0 ; j < root->columnCount () ; j++ ){
-        //                    if( !model->index (i,j).data ().has_value () ){
-        //                        auto item = std::make_unique<WStandardItem>("");
-        //                        item->setEditable (true);
-        //                        model->setItem (i,j,std::move(item));
-        //                    }
-        //                }
-        //            }
-
-        //        });
-
-
-
-        //        colEkleBtn->clicked().connect([=](){
-
-        //            infoText->setText("");
-
-        //            Wt::WStandardItem *root = model->invisibleRootItem();
-
-        //            auto topLevel = std::make_unique<Wt::WStandardItem>();
-        //            topLevel->setText("");
-        //            topLevel->setEditable (true);
-        //            std::vector<std::unique_ptr<WStandardItem>> list;
-        //            list.push_back (std::move(topLevel));
-        //            root->insertColumn (root->columnCount (),std::move(list));
-
-        //            model->setHeaderData (root->columnCount ()-1,Orientation::Horizontal,sutunBaslikLineEdit->text().toUTF8(),ItemDataRole::Display);
-
-        //            for( int i = 0 ; i < root->rowCount () ; i++ ){
-        //                for( int j = 0 ; j < root->columnCount () ; j++ ){
-        //                    if( !model->index (i,j).data ().has_value () ){
-        //                        auto item = std::make_unique<WStandardItem>("");
-        //                        item->setEditable (true);
-        //                        model->setItem (i,j,std::move(item));
-        //                    }
-        //                }
-        //            }
-
-
-        //        });
-
-
-        //        auto saveBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Ekle+"));
-        //        saveBtn->addStyleClass (Bootstrap::Button::Primary);
-
-
-
-        //        saveBtn->clicked ().connect ([=](){
-
-        //            if( baslikLineEdit->text().toUTF8().size() == 0 ){
-        //                infoText->setText("Başlık Girmediniz!");
-        //                return;
-        //            }
-
-        //            std::vector<TableCell> cells;
-
-        //            std::vector<std::string> headers;
-        //            for( int i = 0 ; i < model->columnCount () ; i++ ){
-        //                auto val = cpp17::any_cast<std::string>(model->headerData (i));
-        //                headers.push_back (val);
-        //            }
-
-
-        //            for( int i = 0 ; i < model->rowCount (); i++ ){
-        //                for( int j = 0 ; j < model->columnCount (); j++ ){
-        //                    TableCell cell{i,j,model->item (i,j)->text ().toUTF8 ()};
-        //                    cells.push_back (cell);
-        //                }
-        //            }
-
-        //            mAddTableBeforeSignal(baslikLineEdit->text().toUTF8(),headers,cells);
-        //            removeDialog (mDialog);
-        //        });
-
-        //        mDialog->setWidth(1100);
-        //        mDialog->setMaximumSize (WLength::Auto,WLength(640));
-
-        //        mDialog->show ();
-    });
+      });
 
     tabloEkleMenu->addItem( ("Sonrasına Tablo Ekle"))->triggered().connect([=] {
-
         this->addTablePre (false);
-        //        auto mDialog = createDialog ("Tablo Ekle");
-
-        //        auto baslikLineEdit = mDialog->contents ()->addWidget (cpp14::make_unique<WLineEdit>());
-        //        baslikLineEdit->setPlaceholderText ("Tablo Bilgisi. (Örn: Gider İstatistikleri)");
-
-        //        mDialog->contents ()->addWidget(cpp14::make_unique<WBreak>());
-
-        //        auto tableContainer = mDialog->contents ()->addWidget(cpp14::make_unique<WContainerWidget>());
-        //        tableContainer->setWidth(WLength("100%"));
-        //        tableContainer->setMinimumSize(WLength::Auto,250);
-
-        //        auto table = tableContainer->addWidget(Wt::cpp14::make_unique<Wt::WTableView>());
-
-        //        auto infoText = mDialog->contents()->addWidget(cpp14::make_unique<WText>(""));
-        //        infoText->setAttributeValue(Style::style,Style::color::color (Style::color::Red::Crimson));
-
-
-        //        table->setColumnResizeEnabled(true);
-        //        table->setColumnAlignment(0, AlignmentFlag::Center);
-        //        table->setHeaderAlignment(0, AlignmentFlag::Center);
-        //        table->setAlternatingRowColors(true);
-        //        table->setRowHeight(28);
-        //        table->setHeaderHeight(28);
-        //        table->setSelectionMode(SelectionMode::Single);
-        //        table->setEditTriggers(EditTrigger::SelectedClicked);
-        //        table->setSelectionBehavior(SelectionBehavior::Items);
-        //        table->setSortingEnabled(false);
-
-
-        //        table->setOverflow(Overflow::Scroll);
-        //        table->setMaximumSize (WLength::Auto,WLength(400));
-
-
-        //        auto model = std::make_shared<WStandardItemModel>(0,0);
-        //        table->setModel(model);
-
-
-
-        //        auto rowEkleContainer = mDialog->contents()->addWidget(cpp14::make_unique<WContainerWidget>());
-        //        rowEkleContainer->addStyleClass(Bootstrap::Grid::row);
-
-        //        auto rowEkleBtn = rowEkleContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-        //        rowEkleBtn->setContentAlignment(AlignmentFlag::Center);
-        //        rowEkleBtn->addStyleClass(Bootstrap::Grid::Large::col_lg_2+
-        //                                  Bootstrap::Grid::Medium::col_md_2+
-        //                                  Bootstrap::Grid::Small::col_sm_2+
-        //                                  Bootstrap::Grid::ExtraSmall::col_xs_2);
-        //        rowEkleBtn->addStyleClass(CSSStyle::Button::blueButton);
-        //        rowEkleBtn->addWidget(cpp14::make_unique<WText>("Satır Ekle+"));
-        //        rowEkleBtn->setPadding(7,Side::Top|Side::Bottom);
-
-
-
-        //        auto colBaslik = rowEkleContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-        //        colBaslik->addStyleClass(Bootstrap::Grid::Large::col_lg_3+
-        //                                 Bootstrap::Grid::Medium::col_md_3+
-        //                                 Bootstrap::Grid::Small::col_sm_3+
-        //                                 Bootstrap::Grid::ExtraSmall::col_xs_3);
-        //        colBaslik->addStyleClass(Bootstrap::Grid::Offset::Large::col_lg_5+
-        //                                 Bootstrap::Grid::Offset::Medium::col_md_5+
-        //                                 Bootstrap::Grid::Offset::Small::col_sm_5+
-        //                                 Bootstrap::Grid::Offset::ExtraSmall::col_xs_5);
-
-        //        auto sutunBaslikLineEdit = colBaslik->addWidget(cpp14::make_unique<WLineEdit>());
-        //        sutunBaslikLineEdit->setPlaceholderText("Sütun Başlığını Girniz");
-
-
-        //        auto colEkleBtn = rowEkleContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-        //        colEkleBtn->setContentAlignment(AlignmentFlag::Center);
-        //        colEkleBtn->addStyleClass(Bootstrap::Grid::Large::col_lg_2+
-        //                                  Bootstrap::Grid::Medium::col_md_2+
-        //                                  Bootstrap::Grid::Small::col_sm_2+
-        //                                  Bootstrap::Grid::ExtraSmall::col_xs_2);
-        //        colEkleBtn->addStyleClass(CSSStyle::Button::blueButton);
-        //        colEkleBtn->addWidget(cpp14::make_unique<WText>("Sütun Ekle+"));
-        //        colEkleBtn->setPadding(7,Side::Top|Side::Bottom);
-
-
-        //        rowEkleBtn->clicked().connect([=](){
-
-
-
-
-        //            Wt::WStandardItem *root = model->invisibleRootItem();
-
-        //            if( root->columnCount () <= 0 ){
-        //                infoText->setText("<b>ilk Önce Sütun Ekleyiniz</b>");
-        //                return;
-        //            }
-
-        //            infoText->setText("");
-
-
-        //            std::vector<std::unique_ptr<WStandardItem>> list;
-
-        //            for (int row = 0; row < root->columnCount (); ++row) {
-        //                auto topLevel = std::make_unique<Wt::WStandardItem>();
-        //                topLevel->setText("");
-        //                topLevel->setEditable (true);
-        //                list.push_back (std::move(topLevel));
-
-        //            }
-        //            root->insertRow (root->rowCount (),std::move(list));
-
-        //            for( int i = 0 ; i < root->rowCount () ; i++ ){
-        //                for( int j = 0 ; j < root->columnCount () ; j++ ){
-        //                    if( !model->index (i,j).data ().has_value () ){
-        //                        auto item = std::make_unique<WStandardItem>("");
-        //                        item->setEditable (true);
-        //                        model->setItem (i,j,std::move(item));
-        //                    }
-        //                }
-        //            }
-
-        //        });
-
-
-        //        colEkleBtn->clicked().connect([=](){
-
-        //            infoText->setText("");
-
-        //            Wt::WStandardItem *root = model->invisibleRootItem();
-
-        //            auto topLevel = std::make_unique<Wt::WStandardItem>();
-        //            topLevel->setText("");
-        //            topLevel->setEditable (true);
-        //            std::vector<std::unique_ptr<WStandardItem>> list;
-        //            list.push_back (std::move(topLevel));
-        //            root->insertColumn (root->columnCount (),std::move(list));
-
-        //            model->setHeaderData (root->columnCount ()-1,Orientation::Horizontal,sutunBaslikLineEdit->text().toUTF8(),ItemDataRole::Display);
-
-        //            for( int i = 0 ; i < root->rowCount () ; i++ ){
-        //                for( int j = 0 ; j < root->columnCount () ; j++ ){
-        //                    if( !model->index (i,j).data ().has_value () ){
-        //                        auto item = std::make_unique<WStandardItem>("");
-        //                        item->setEditable (true);
-        //                        model->setItem (i,j,std::move(item));
-        //                    }
-        //                }
-        //            }
-
-
-        //        });
-
-        //        auto saveBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Ekle+"));
-        //        saveBtn->addStyleClass (Bootstrap::Button::Primary);
-
-        //        saveBtn->clicked ().connect ([=](){
-
-        //            if( baslikLineEdit->text().toUTF8().size() == 0 ){
-        //                infoText->setText("Başlık Girmediniz!");
-        //                return;
-        //            }
-
-        //            std::vector<TableCell> cells;
-
-        //            std::vector<std::string> headers;
-        //            for( int i = 0 ; i < model->columnCount () ; i++ ){
-        //                auto val = cpp17::any_cast<std::string>(model->headerData (i));
-        //                headers.push_back (val);
-        //            }
-
-
-        //            for( int i = 0 ; i < model->rowCount (); i++ ){
-        //                for( int j = 0 ; j < model->columnCount (); j++ ){
-        //                    TableCell cell{i,j,model->item (i,j)->text ().toUTF8 ()};
-        //                    cells.push_back (cell);
-        //                }
-        //            }
-
-        //            mAddTableAftereSignal(baslikLineEdit->text().toUTF8(),headers,cells);
-        //            removeDialog (mDialog);
-        //        });
-
-        //        mDialog->setWidth(1100);
-        //        mDialog->setMaximumSize (WLength::Auto,WLength(640));
-
-        //        mDialog->show ();
     });
 
     popupPtr->addMenu( ("Tablo Ekle"), std::move(tabloEkleMenu));
