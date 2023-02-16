@@ -174,7 +174,7 @@ const std::string BaseClass::BaseWidget::downloadFile(const std::string &oid , c
     mongocxx::gridfs::downloader downloader;
 
     try {
-        downloader = this->db()->gridfs_bucket().open_download_stream(bsoncxx::types::value(bsoncxx::types::b_oid{bsoncxx::oid{oid}}));
+        downloader = this->db()->gridfs_bucket().open_download_stream(bsoncxx::types::bson_value::value(bsoncxx::types::b_oid{bsoncxx::oid{oid}}));
     } catch (mongocxx::gridfs_exception &e) {
         std::cout << "ERROR: " << __LINE__ << " " << __FILE__ << " " << e.what() << std::endl;
         return "img/error.png";
@@ -249,6 +249,7 @@ const bsoncxx::types::bson_value::value BaseClass::BaseWidget::uploadfile(QStrin
         return bsoncxx::types::bson_value::value(res.id());
     }else{
         this->showMessage("Uyarı","Dosya Açılamadı");
+        return bsoncxx::types::bson_value::value(bsoncxx::types::b_null());
     }
 }
 
