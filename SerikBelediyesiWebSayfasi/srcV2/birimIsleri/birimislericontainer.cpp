@@ -153,7 +153,7 @@ void v2::BirimIsleriContainer::initFireWallLog()
 {
 
     Content ()->clear ();
-    Content ()->addWidget (cpp14::make_unique<FireWallContainer>());
+    Content ()->addWidget (cpp14::make_unique<FireWall::FireWallContainer>());
 
 }
 

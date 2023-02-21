@@ -14,6 +14,23 @@
 
 #include <map>
 #include <list>
+#include <QDebug>
+
+
+namespace FireWall{
+
+
+class LogFile
+{
+public:
+    LogFile( const std::string &logFile);
+
+
+
+private:
+    std::string mFilePath;
+};
+
 
 class FireWallContainer : public ContainerWidget
 {
@@ -70,7 +87,40 @@ public:
     void ListMacBySaat();
 
 
+    QList<QDate> mDateList;
+
+    struct MonthItem{
+        std::string mName;
+        std::int64_t mCompareValue;
+        std::int64_t julianDate;
+        std::int64_t month;
+        std::int64_t year;
+
+        bool operator<( const MonthItem &item) const{
+            return item.mCompareValue > this->mCompareValue;
+        }
+
+        friend QDebug operator<<( QDebug debug , const MonthItem &item ){
+            debug << item.mName.c_str() << item.mCompareValue <<item.julianDate ;
+            return debug;
+        }
+
+        const bool operator==( const MonthItem &item ){
+            return item.mName == mName;
+        }
+    };
+
+    WContainerWidget* mMonthContainer;
+    WContainerWidget* mDayContainer;
+
+
+
 
 };
+
+
+}
+
+
 
 #endif // FIREWALLCONTAINER_H
