@@ -1,6 +1,9 @@
 #include "firewallcontainer.h"
 
-FireWallContainer::FireWallContainer()
+#include <set>
+#include <filesystem>
+
+FireWall::FireWallContainer::FireWallContainer()
     :ContainerWidget("FireWallLog")
 {
 
@@ -14,34 +17,97 @@ FireWallContainer::FireWallContainer()
     }
 
 
-    for( const auto &item : dir.entryInfoList(QDir::Filter::Files) ){
+    mDateList.clear();
 
-        auto btnContainer = this->Header()->addWidget(cpp14::make_unique<WContainerWidget>());
+    mMonthContainer = this->Header()->addNew<WContainerWidget>();
+    mMonthContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+
+    mDayContainer = this->Header()->addNew<WContainerWidget>();
+    mDayContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+
+
+
+    auto pathList = std::filesystem::path("firewalllog/log");
+
+
+
+    for( const auto &item : dir.entryInfoList(QDir::Filter::Files) ){
+        mDateList.push_back(QDate::fromJulianDay(item.fileName().toInt()));
+    }
+
+    std::set<MonthItem> mMonthList;
+
+    for( const auto &date : mDateList ){
+        mMonthList.insert(MonthItem{date.toString("MMMM yyyy").toStdString(),
+                                    date.toString("yyyyMM").toInt(),
+                                    date.toJulianDay(),
+                                    date.month(),
+                                    date.year()});
+    }
+
+    for( const auto &date : mMonthList ){
+        qDebug() << date;
+    }
+
+    for( const auto &month : mMonthList ){
+        auto btnContainer = mMonthContainer->addWidget(cpp14::make_unique<WContainerWidget>());
         btnContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_3+
                                     Bootstrap::Grid::Medium::col_md_3+
                                     Bootstrap::Grid::Small::col_sm_4+
                                     Bootstrap::Grid::ExtraSmall::col_xs_6);
         btnContainer->addStyleClass(CSSStyle::Button::blueButton);
-        btnContainer->setAttributeValue(Style::dataoid,item.fileName().toStdString());
+        btnContainer->setAttributeValue(Style::dataoid,std::to_string(month.julianDate));
         btnContainer->setPadding(5,Side::Top|Side::Bottom);
 
-
-        auto btn = btnContainer->addNew<WText>(WDate::fromJulianDay(item.fileName().toInt()).toString("dd/MM/yy"));
-
-
+        btnContainer->addNew<WText>(month.mName.c_str());
 
         btnContainer->clicked().connect([=](){
-            this->AnalysysDay(item.absoluteFilePath());
+            mDayContainer->clear();
+            mDayContainer->setMargin(5,Side::Top|Side::Bottom);
+            for( const auto &item : dir.entryInfoList(QDir::Filter::Files) ){
+
+                qDebug() << item.fileName() << month;
+
+                QDate date;
+                date.setDate(month.year,month.month,1);
+                int days = date.daysInMonth();
+
+                QDate dateBaslangic;
+                dateBaslangic.setDate(month.year,month.month,days);
+
+                if( item.fileName().toInt() > date.toJulianDay() && item.fileName().toInt() < dateBaslangic.toJulianDay() ){
+                    auto btnContainer_ = mDayContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+                    btnContainer_->addStyleClass(Bootstrap::Grid::Large::col_lg_3+
+                                                Bootstrap::Grid::Medium::col_md_3+
+                                                Bootstrap::Grid::Small::col_sm_4+
+                                                Bootstrap::Grid::ExtraSmall::col_xs_6);
+                    btnContainer_->addStyleClass(CSSStyle::Button::grayButton);
+                    btnContainer_->setAttributeValue(Style::dataoid,item.fileName().toStdString());
+                    btnContainer_->setPadding(5,Side::Top|Side::Bottom);
+
+                    btnContainer_->addNew<WText>(WDate::fromJulianDay(item.fileName().toInt()).toString("dd/MMMM/yy"));
+
+                    btnContainer_->clicked().connect([=](){
+                        this->AnalysysDay(item.absoluteFilePath());
+                    });
+                }
+            }
         });
+
+
+
 
     }
 
 
 
 
+
+
+
 }
 
-void FireWallContainer::AnalysysDay(const QString &dayLogFile)
+void FireWall::FireWallContainer::AnalysysDay(const QString &dayLogFile)
 {
 
 
@@ -148,7 +214,7 @@ void FireWallContainer::AnalysysDay(const QString &dayLogFile)
 }
 
 
-void FireWallContainer::ListItem(const QMap<QString, int> &mList)
+void FireWall::FireWallContainer::ListItem(const QMap<QString, int> &mList)
 {
     this->Footer()->clear();
 
@@ -248,7 +314,7 @@ void FireWallContainer::ListItem(const QMap<QString, int> &mList)
 
 
 
-void FireWallContainer::ListItemClicked(const QString &mUrl)
+void FireWall::FireWallContainer::ListItemClicked(const QString &mUrl)
 {
     this->Footer()->clear();
 
@@ -346,7 +412,7 @@ void FireWallContainer::ListItemClicked(const QString &mUrl)
 
 }
 
-void FireWallContainer::ListBySaat()
+void FireWall::FireWallContainer::ListBySaat()
 {
     this->Footer()->clear();
 
@@ -432,7 +498,7 @@ void FireWallContainer::ListBySaat()
 
 }
 
-void FireWallContainer::ListMacBySaat()
+void FireWall::FireWallContainer::ListMacBySaat()
 {
     this->Footer()->clear();
 
@@ -514,5 +580,11 @@ void FireWallContainer::ListMacBySaat()
 
     }
 
+
+}
+
+FireWall::LogFile::LogFile(const std::string &logFile)
+    :mFilePath(logFile)
+{
 
 }
