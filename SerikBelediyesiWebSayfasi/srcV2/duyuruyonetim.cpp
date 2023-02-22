@@ -205,26 +205,27 @@ void v2::Duyuru::DuyuruYonetim::yeniDuyuruEkle()
         fileListContainer->addNew<WText>("Silinmemiş Dosyalar Var. Önce Onları Siliniz");
     }else{
 
-
-        auto mFileTitleLineEdit = Content()->addNew<WLineEdit>();
-        mFileTitleLineEdit->addStyleClass(Bootstrap::Grid::col_full_12);
-        mFileTitleLineEdit->setPlaceholderText("Dosya Adını Giriniz");
-
-
         auto mFileUploaderWidget = Content()->addNew<FileUploaderWidget>("PDF Dosya Yükle");
         mFileUploaderWidget->addStyleClass(Bootstrap::Grid::col_full_12);
         mFileUploaderWidget->setType(FileUploaderWidget::Pdf);
 
         mFileUploaderWidget->Uploaded().connect([=](){
 
-            if( mFileTitleLineEdit->text().toUTF8().size() < 5 ){
-                this->showMessage("Uyarı","Dosya Açıklaması Çok Az");
-                return;
-            }
+            auto mDialog = createFlatDialog("Dosya Adı");
+                auto fileTitleText = mDialog->Content()->addNew<WLineEdit>();
 
-            auto fileOid = this->uploadfile(mFileUploaderWidget->fileLocation());
+            mDialog->Accepted().connect([=](){
 
-            addFileContainer(fileOid.view().get_oid().value.to_string(),mFileTitleLineEdit->text().toUTF8());
+                    if( fileTitleText->text().toUTF8().size() < 5 ){
+                        this->showPopUpMessage("Yetersiz Dosya Adı");
+                            return;
+                    }
+
+                    auto fileOid = this->uploadfile(mFileUploaderWidget->fileLocation());
+                    addFileContainer(fileOid.view().get_oid().value.to_string(),fileTitleText->text().toUTF8());
+                    removeDialog(mDialog);
+                });
+            mDialog->show();
 
         });
 
