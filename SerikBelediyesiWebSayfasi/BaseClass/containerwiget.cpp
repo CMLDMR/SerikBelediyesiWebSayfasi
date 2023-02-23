@@ -481,7 +481,7 @@ Signal<NoClass> &FileUploaderWidget::Uploaded()
 DialogContainerWidget::DialogContainerWidget(const std::string &title)
 {
 
-    auto contentContainer = this->addNew<WContainerWidget>();
+    contentContainer = this->addNew<WContainerWidget>();
     contentContainer->setMaximumSize(1024,WLength::Auto);
     contentContainer->setPositionScheme(PositionScheme::Relative);
     contentContainer->setHeight(WLength("100%"));
@@ -501,6 +501,7 @@ DialogContainerWidget::DialogContainerWidget(const std::string &title)
     mContent->addStyleClass(Bootstrap::Grid::row);
     mContent->setMargin(0,Side::Top);
     mContent->setPadding(15,Side::Top|Side::Bottom);
+    mContent->setContentAlignment(AlignmentFlag::Center);
 
 
     auto footer = vLayout->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -533,6 +534,11 @@ DialogContainerWidget::DialogContainerWidget(const std::string &title)
 WContainerWidget *DialogContainerWidget::Content()
 {
     return mContent;
+}
+
+void DialogContainerWidget::setContentWidth(const WLength &value)
+{
+    contentContainer->setWidth(value);
 }
 
 Signal<NoClass> &DialogContainerWidget::Accepted()

@@ -151,7 +151,7 @@ public:
     }
 
 
-    std::string doubleToString( const double &value , const int &precision );
+    std::string doubleToString( const double &value , const int &precision = 2 );
 
 private:
     WContainerWidget* mHeaderContainer;
@@ -176,12 +176,16 @@ public:
 
     WContainerWidget* Content();
 
+    void setContentWidth( const WLength &value );
+
 
 
     Signal<NoClass> &Accepted();
     Signal<NoClass> &Rejected();
 private:
     WContainerWidget* mContent;
+    WContainerWidget* contentContainer;
+
 
     Signal<NoClass> _Accepted;
     Signal<NoClass> _Rejected;

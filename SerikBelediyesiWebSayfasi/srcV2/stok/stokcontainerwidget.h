@@ -133,6 +133,7 @@ public:
     double getCurrentGirenMiktar() const;
     double getCurrentGirenFiyat() const;
     std::string getCurrentKategoriOid() const;
+    void extracted(std::string &currentMalzemeAdi) const;
     std::string getCurrentMalzemeAdi() const;
     std::string getCurruntMalzemeMetric() const;
 

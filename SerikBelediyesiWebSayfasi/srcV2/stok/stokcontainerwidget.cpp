@@ -289,11 +289,15 @@ void v2::StokWidget::StokContainerWidget::onList(const QVector<SerikBLDCore::Sto
         break;
     }
 
+    bool colorInvert = true;
 
     for( auto item : *mlist ){
         auto container = this->Content ()->addWidget (cpp14::make_unique<MalzemeGirisWidget>(item));
         container->addStyleClass (Bootstrap::Grid::col_full_12);
         container->asListItem ();
+        auto _colorName = colorInvert ? ( "SkyBlue" ) : ( Style::color::White::White );
+        colorInvert = !colorInvert;
+        container->setAttributeValue (Style::style,Style::background::color::color(_colorName));
     }
 
 
@@ -307,7 +311,7 @@ void v2::StokWidget::StokContainerWidget::onList(const QVector<SerikBLDCore::Sto
     this->Content ()->clear ();
 
     auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-    auto titleText = container->addWidget (cpp14::make_unique<WText>("<b>Kategoriler</b>"));
+    container->addWidget (cpp14::make_unique<WText>("<b>Kategoriler</b>"));
     container->setPadding (5,Side::Top|Side::Bottom);
     container->setMargin (15,Side::Top|Side::Bottom);
     container->addStyleClass (Bootstrap::Grid::col_full_12+
@@ -315,35 +319,103 @@ void v2::StokWidget::StokContainerWidget::onList(const QVector<SerikBLDCore::Sto
                               CSSStyle::Shadows::shadow8px);
 
 
+    bool colorInvert = true;
     for( auto item : *mlist ){
 
-        auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        auto text = container->addWidget (cpp14::make_unique<WText>(item.getKategoriAdi ()));
+        auto _colorName = colorInvert ? ( "SkyBlue" ) : ( Style::color::White::White );
+        colorInvert = !colorInvert;
+
+        auto container = this->Content()->addWidget (cpp14::make_unique<WContainerWidget>());
+        container->addWidget (cpp14::make_unique<WText>(item.getKategoriAdi ()));
         container->setPadding (5,Side::Top|Side::Bottom);
-        container->setMargin (5,Side::Top|Side::Bottom);
+        container->setMargin (1,Side::Top|Side::Bottom);
         container->addStyleClass (Bootstrap::Grid::Large::col_lg_6+
                                   Bootstrap::Grid::Medium::col_md_6+
                                   Bootstrap::Grid::Small::col_sm_6+
                                   Bootstrap::Grid::ExtraSmall::col_xs_6+
-                                  CSSStyle::Gradient::blueGradient+
+//                                  CSSStyle::Gradient::blueGradient+
                                   CSSStyle::Shadows::shadow8px);
+        container->setAttributeValue (Style::style,Style::background::color::color(_colorName));
 
-        auto metriccontainer = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        auto metrictext = metriccontainer->addWidget (cpp14::make_unique<WText>(item.getMetric ()));
+
+        auto metriccontainer = this->Content()->addWidget (cpp14::make_unique<WContainerWidget>());
+        metriccontainer->addWidget (cpp14::make_unique<WText>(item.getMetric ()));
         metriccontainer->setPadding (5,Side::Top|Side::Bottom);
-        metriccontainer->setMargin (5,Side::Top|Side::Bottom);
+        metriccontainer->setMargin (1,Side::Top|Side::Bottom);
 
-        metriccontainer->addStyleClass (Bootstrap::Grid::Large::col_lg_5+
-                                        Bootstrap::Grid::Medium::col_md_5+
-                                        Bootstrap::Grid::Small::col_sm_5+
-                                        Bootstrap::Grid::ExtraSmall::col_xs_5+
-                                        CSSStyle::Gradient::blueGradient+
+        metriccontainer->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
+                                        Bootstrap::Grid::Medium::col_md_4+
+                                        Bootstrap::Grid::Small::col_sm_4+
+                                        Bootstrap::Grid::ExtraSmall::col_xs_4+
+//                                        CSSStyle::Gradient::blueGradient+
                                         CSSStyle::Shadows::shadow8px);
+        metriccontainer->setAttributeValue (Style::style,Style::background::color::color(_colorName));
 
-        auto delcontainer = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        auto deltext = delcontainer->addWidget (cpp14::make_unique<WText>("<b>X</b>"));
+
+        auto changeContainer = this->Content()->addWidget (cpp14::make_unique<WContainerWidget>());
+        changeContainer->addWidget (cpp14::make_unique<WText>("<b>Değiştir</b>"));
+        changeContainer->setPadding (5,Side::Top|Side::Bottom);
+        changeContainer->setMargin (1,Side::Top|Side::Bottom);
+        changeContainer->setAttributeValue (Style::dataoid,item.oid ().value ().to_string ());
+
+        changeContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_1+
+                                        Bootstrap::Grid::Medium::col_md_1+
+                                        Bootstrap::Grid::Small::col_sm_1+
+                                        Bootstrap::Grid::ExtraSmall::col_xs_1+
+                                        CSSStyle::Gradient::greenGradient+
+                                        CSSStyle::Shadows::shadow8px);
+        changeContainer->decorationStyle ().setCursor (Cursor::PointingHand);
+
+
+        changeContainer->clicked ().connect ([=](){
+
+            auto askDialog = this->createFlatDialog("Kategori Adı Değiştir?");
+            askDialog->setContentWidth(450);
+
+            auto newKategoriNameLineEdit = askDialog->Content()->addNew<WLineEdit>();
+            newKategoriNameLineEdit->setPlaceholderText("Yeni Kategori Adını Giriniz");
+            auto newKategoriMetricLineEdit = askDialog->Content()->addNew<WLineEdit>();
+            newKategoriMetricLineEdit->setPlaceholderText("Yeni Kategori Birimini Giriniz( Örnek: KG, Adet, Ton ...)");
+
+            askDialog->Accepted().connect ([=](){
+
+                if( !newKategoriNameLineEdit->text().toUTF8().size() ){
+                    this->showPopUpMessage("Kategori Adı Girmediniz","warn");
+                    return;
+                }
+
+                if( !newKategoriMetricLineEdit->text().toUTF8().size() ){
+                    this->showPopUpMessage("Kategori Birimi Girmediniz","warn");
+                    return;
+                }
+
+
+
+                SerikBLDCore::Stokv2::Kategori filter;
+                filter.setOid (changeContainer->attributeValue (Style::dataoid).toUTF8 ());
+                filter.setKategoriAdi(newKategoriNameLineEdit->text().toUTF8());
+                filter.setMetric(newKategoriMetricLineEdit->text().toUTF8());
+
+
+                if( !this->::SerikBLDCore::ListItem<SerikBLDCore::Stokv2::Kategori>::UpdateItem(filter) ){
+                    this->warnDialog ("Değiştirilemedi");
+                }else{
+                    this->informDialog ("Değiştirildi");
+                    filter.clear ();
+                    filter.setBirim (mUser->Birimi ());
+                    this->updateStokKategoriList (filter,SerikBLDCore::FindOptions().setLimit(99999));
+                }
+
+            });
+
+
+        });
+
+
+        auto delcontainer = this->Content()->addWidget (cpp14::make_unique<WContainerWidget>());
+        delcontainer->addWidget (cpp14::make_unique<WText>("<b>X</b>"));
         delcontainer->setPadding (5,Side::Top|Side::Bottom);
-        delcontainer->setMargin (5,Side::Top|Side::Bottom);
+        delcontainer->setMargin (1,Side::Top|Side::Bottom);
         delcontainer->setAttributeValue (Style::dataoid,item.oid ().value ().to_string ());
 
         delcontainer->addStyleClass (Bootstrap::Grid::Large::col_lg_1+
@@ -702,7 +774,6 @@ void v2::StokWidget::StokContainerWidget::exportMalzeme(const double &maxMiktar,
 {
 
     auto mDialog = createFlatDialog("Yeni Malzeme Çıkışı");
-//    mDialog->setWidth (WLength(700));
 
     auto _kategoriList = this->::SerikBLDCore::ListItem<SerikBLDCore::Stokv2::Kategori>::List (SerikBLDCore::Stokv2::Kategori().setBirim (mUser->Birimi ()),SerikBLDCore::FindOptions ().setLimit (99999));
 
@@ -724,19 +795,16 @@ void v2::StokWidget::StokContainerWidget::exportMalzeme(const double &maxMiktar,
 
     auto valueContianer = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
     valueContianer->addStyleClass (Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_2+Bootstrap::Grid::ExtraSmall::col_xs_2);
-//    valueContianer->setPadding (5,AllSides);
     auto valueSpinBox = valueContianer->addWidget (cpp14::make_unique<WDoubleSpinBox>());
     valueSpinBox->setMaximum (9999999);
 
 
     auto dateContainer = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
     dateContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_4+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_4);
-//    dateContainer->setPadding (5,AllSides);
     auto dateEdit = dateContainer->addWidget (cpp14::make_unique<WDateEdit>());
 
     auto yerContainer = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
     yerContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_4+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_4);
-//    yerContainer->setPadding (5,AllSides);
     auto birimComboBox = yerContainer->addWidget (cpp14::make_unique<WComboBox>());
 
     auto birimList = this->::SerikBLDCore::ListItem<SerikBLDCore::Stokv2::Stok>::getBirimler();
@@ -748,7 +816,6 @@ void v2::StokWidget::StokContainerWidget::exportMalzeme(const double &maxMiktar,
 
     auto personelNameFilterContainer = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
     personelNameFilterContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_2+Bootstrap::Grid::ExtraSmall::col_xs_2);
-//    personelNameFilterContainer->setPadding (5,AllSides);
     auto personelNameFilterLineEdit = personelNameFilterContainer->addWidget (cpp14::make_unique<WLineEdit>());
     personelNameFilterLineEdit->setPlaceholderText("Personel Adı Filtrele ( en az 3 harf )");
 
@@ -769,7 +836,8 @@ void v2::StokWidget::StokContainerWidget::exportMalzeme(const double &maxMiktar,
     auto personelOid = selectedPersonelOidContainer->addWidget (cpp14::make_unique<WText>(""));
 
 
-    personelNameFilterLineEdit->changed().connect([=](){
+
+    auto personelListFunc = [=](){
 
         personelRContainer->clear();
         auto list = mPersonelManager->List (SerikBLDCore::IK::Personel().setBirim (birimComboBox->currentText().toUTF8().c_str()),SerikBLDCore::FindOptions().setLimit (1000));
@@ -790,7 +858,7 @@ void v2::StokWidget::StokContainerWidget::exportMalzeme(const double &maxMiktar,
                                           Bootstrap::Grid::ExtraSmall::col_xs_4+CSSStyle::Shadows::shadow8px);
                 container->setMargin (5,Side::Top|Side::Bottom);
                 container->decorationStyle ().setCursor (Cursor::PointingHand);
-                auto text = container->addWidget (cpp14::make_unique<WText>(personelItem.AdSoyad ().toStdString ()));
+                container->addWidget (cpp14::make_unique<WText>(personelItem.AdSoyad ().toStdString ()));
                 container->setPadding (3,AllSides);
                 if( personelItem.statu ().toStdString ()== SerikBLDCore::IK::Statu::Mudur ){
                     container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Grey::DimGray)+Style::color::color (Style::color::White::AliceBlue));
@@ -805,43 +873,11 @@ void v2::StokWidget::StokContainerWidget::exportMalzeme(const double &maxMiktar,
             }
         }
 
-    });
+    };
 
-    birimComboBox->changed().connect([=](){
-        personelRContainer->clear();
-        auto list = mPersonelManager->List (SerikBLDCore::IK::Personel().setBirim (birimComboBox->currentText().toUTF8().c_str()),SerikBLDCore::FindOptions().setLimit (1000));
-        for( const auto &personelItem : list ){
+    personelNameFilterLineEdit->changed().connect(personelListFunc);
 
-            bool addFull = true;
-            if( personelNameFilterLineEdit->text().empty() ){
-                addFull = true;
-            }else{
-                addFull = personelItem.AdSoyad().contains(personelNameFilterLineEdit->text().toUTF8().c_str());
-            }
-
-            if( addFull ){
-                auto container = personelRContainer->addWidget (cpp14::make_unique<WContainerWidget>());
-                container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
-                                          Bootstrap::Grid::Medium::col_md_4+
-                                          Bootstrap::Grid::Small::col_sm_4+
-                                          Bootstrap::Grid::ExtraSmall::col_xs_4+CSSStyle::Shadows::shadow8px);
-                container->setMargin (5,Side::Top|Side::Bottom);
-                container->decorationStyle ().setCursor (Cursor::PointingHand);
-                auto text = container->addWidget (cpp14::make_unique<WText>(personelItem.AdSoyad ().toStdString ()));
-                container->setPadding (3,AllSides);
-                if( personelItem.statu ().toStdString ()== SerikBLDCore::IK::Statu::Mudur ){
-                    container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Grey::DimGray)+Style::color::color (Style::color::White::AliceBlue));
-                }else{
-                    container->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::Linen));
-                }
-
-                container->clicked ().connect ([=]() {
-                   personelNameText->setText (personelItem.AdSoyad ().toStdString ());
-                   personelOid->setText (personelItem.oid ().value ().to_string ());
-                });
-            }
-        }
-    });
+    birimComboBox->changed().connect(personelListFunc);
 
 
     auto aciklamaContainer = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
@@ -852,12 +888,6 @@ void v2::StokWidget::StokContainerWidget::exportMalzeme(const double &maxMiktar,
     aciklamaTextEdit->setHeight (150);
 
 
-
-
-
-//    auto saveBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet & Çık"));
-//    saveBtn->clicked ().connect ([=](){
-//    auto saveBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet & Çık"));
     mDialog->Accepted().connect ([=](){
 
         if( valueSpinBox->value () > maxMiktar ) {
@@ -910,7 +940,6 @@ void v2::StokWidget::StokContainerWidget::exportMalzeme(const double &maxMiktar,
         }
 
 
-//        mDialog->setWidth (700);
     });
 
 }
@@ -1212,7 +1241,7 @@ void v2::StokWidget::StokContainerWidget::initimportMenu()
 
     {
         auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        auto titleText = container->addWidget (cpp14::make_unique<WText>("<b>Malzeme Giriş Listesi</b>"));
+        container->addWidget (cpp14::make_unique<WText>("<b>Malzeme Giriş Listesi</b>"));
         container->setPadding (5,Side::Top|Side::Bottom);
         container->setMargin (15,Side::Top|Side::Bottom);
         container->addStyleClass (Bootstrap::Grid::Large::col_lg_9+
@@ -1225,7 +1254,7 @@ void v2::StokWidget::StokContainerWidget::initimportMenu()
 
     {
         auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        auto titleText = container->addWidget (cpp14::make_unique<WText>("<b>Yeni Girişi</b>"));
+        container->addWidget (cpp14::make_unique<WText>("<b>Yeni Girişi</b>"));
         container->setPadding (5,Side::Top|Side::Bottom);
         container->setMargin (15,Side::Top|Side::Bottom);
         container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
@@ -1246,7 +1275,7 @@ void v2::StokWidget::StokContainerWidget::initexportMenu()
 {
     {
         auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        auto titleText = container->addWidget (cpp14::make_unique<WText>("<b>Malzeme Çıkış Listesi</b>"));
+        container->addWidget (cpp14::make_unique<WText>("<b>Malzeme Çıkış Listesi</b>"));
         container->setPadding (5,Side::Top|Side::Bottom);
         container->setMargin (15,Side::Top|Side::Bottom);
         container->addStyleClass (Bootstrap::Grid::col_full_12+
@@ -1528,7 +1557,7 @@ std::string v2::StokWidget::MalzemeGirisDialog::getCurrentKategoriOid() const
 std::string v2::StokWidget::MalzemeGirisDialog::getCurrentMalzemeAdi() const
 {
     std::string currentMalzemeAdi;
-    for( auto item : mKategoriList ){
+    for(const auto &item : mKategoriList ){
         if( item.getKategoriAdi () == mKalemComboBox->currentText ().toUTF8 () ){
             currentMalzemeAdi = item.getKategoriAdi ();
             break;
@@ -1567,7 +1596,7 @@ void v2::StokWidget::MalzemeGirisWidget::asListItem()
     if( cikisObj ){
         {
             auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-            auto text = container->addWidget (cpp14::make_unique<WText>(cikisObj->getMalzemeAdi ()));
+            container->addWidget (cpp14::make_unique<WText>(cikisObj->getMalzemeAdi ()));
             container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
                                       Bootstrap::Grid::Medium::col_md_3+
                                       Bootstrap::Grid::Small::col_sm_3+
@@ -1576,7 +1605,7 @@ void v2::StokWidget::MalzemeGirisWidget::asListItem()
 
         {
             auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-            auto text = container->addWidget (cpp14::make_unique<WText>(std::to_string (cikisObj->getMiktar ())+" "+this->getMetric () + " : " + std::to_string (this->getBirimFiyat ()*this->getMiktar ()) + " TL"));
+            container->addWidget (cpp14::make_unique<WText>(doubleToString(cikisObj->getMiktar(),2)+" "+this->getMetric () + " : " + doubleToString(this->getBirimFiyat ()*this->getMiktar (),2) + " TL"));
             container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
                                       Bootstrap::Grid::Medium::col_md_3+
                                       Bootstrap::Grid::Small::col_sm_3+
@@ -1585,7 +1614,7 @@ void v2::StokWidget::MalzemeGirisWidget::asListItem()
 
         {
             auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-            auto text = container->addWidget (cpp14::make_unique<WText>(WDate::fromJulianDay (cikisObj->getTeslimEtJulianDay ()).toString ("dd/MM/yyyy")));
+            container->addWidget (cpp14::make_unique<WText>(WDate::fromJulianDay (cikisObj->getTeslimEtJulianDay ()).toString ("dd/MM/yyyy")));
             container->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
                                       Bootstrap::Grid::Medium::col_md_2+
                                       Bootstrap::Grid::Small::col_sm_2+
@@ -1595,7 +1624,7 @@ void v2::StokWidget::MalzemeGirisWidget::asListItem()
         {
             auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
             container->setOverflow (Overflow::Hidden);
-            auto text = container->addWidget (cpp14::make_unique<WText>("cikisObj->getCikisYeri ()"));
+            container->addWidget (cpp14::make_unique<WText>("cikisObj->getCikisYeri ()"));
             container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
                                       Bootstrap::Grid::Medium::col_md_4+
                                       Bootstrap::Grid::Small::col_sm_4+
@@ -1605,7 +1634,7 @@ void v2::StokWidget::MalzemeGirisWidget::asListItem()
     }else{
         {
             auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-            auto text = container->addWidget (cpp14::make_unique<WText>(this->getMalzemeAdi ()));
+            container->addWidget (cpp14::make_unique<WText>(this->getMalzemeAdi ()));
             container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
                                       Bootstrap::Grid::Medium::col_md_4+
                                       Bootstrap::Grid::Small::col_sm_4+
@@ -1614,7 +1643,7 @@ void v2::StokWidget::MalzemeGirisWidget::asListItem()
 
         {
             auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-            auto text = container->addWidget (cpp14::make_unique<WText>(std::to_string (this->getMiktar ())+" "+this->getMetric () + " : " + std::to_string (this->getBirimFiyat ()*this->getMiktar ()) + " TL"));
+            container->addWidget (cpp14::make_unique<WText>(doubleToString (this->getMiktar ())+" "+this->getMetric () + " : " + doubleToString (this->getBirimFiyat ()*this->getMiktar ()) + " TL"));
             container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
                                       Bootstrap::Grid::Medium::col_md_4+
                                       Bootstrap::Grid::Small::col_sm_4+
@@ -1623,7 +1652,7 @@ void v2::StokWidget::MalzemeGirisWidget::asListItem()
 
         {
             auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-            auto text = container->addWidget (cpp14::make_unique<WText>(WDate::fromJulianDay (this->getTeslimAlimJulianDay ()).toString ("dd/MM/yyyy")));
+            container->addWidget (cpp14::make_unique<WText>(WDate::fromJulianDay (this->getTeslimAlimJulianDay ()).toString ("dd/MM/yyyy")));
             container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
                                       Bootstrap::Grid::Medium::col_md_4+
                                       Bootstrap::Grid::Small::col_sm_4+
