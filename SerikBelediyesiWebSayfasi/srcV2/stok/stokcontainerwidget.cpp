@@ -701,50 +701,56 @@ void v2::StokWidget::StokContainerWidget::importMazeleme()
 void v2::StokWidget::StokContainerWidget::exportMalzeme(const double &maxMiktar, const PipeLineStokItem &item)
 {
 
-    auto mDialog = createDialog ("Yeni Malzeme Çıkışı");
-    mDialog->setWidth (WLength(700));
+    auto mDialog = createFlatDialog("Yeni Malzeme Çıkışı");
+//    mDialog->setWidth (WLength(700));
 
     auto _kategoriList = this->::SerikBLDCore::ListItem<SerikBLDCore::Stokv2::Kategori>::List (SerikBLDCore::Stokv2::Kategori().setBirim (mUser->Birimi ()),SerikBLDCore::FindOptions ().setLimit (99999));
 
-    auto mContainer = mDialog->contents ()->addWidget (cpp14::make_unique<WContainerWidget>());
+    auto mContainer = mDialog->Content()->addWidget (cpp14::make_unique<WContainerWidget>());
     mContainer->addStyleClass (Bootstrap::Grid::col_full_12);
 
     auto rContainer = mContainer->addWidget (cpp14::make_unique<WContainerWidget>());
     rContainer->addStyleClass (Bootstrap::Grid::row);
 
     auto nameContainer = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-    nameContainer->addStyleClass (Bootstrap::Grid::col_full_12);
+    nameContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
     nameContainer->setPadding (5,AllSides);
-    auto nameText = nameContainer->addWidget (cpp14::make_unique<WText>(item.name + "Maximum Çıkış Miktari:"+std::to_string (item.miktarGiris)));
+    auto nameText = nameContainer->addWidget (cpp14::make_unique<WText>(item.name + ": <b>Maximum Çıkış Miktari </b> "+std::to_string (item.miktarGiris),TextFormat::UnsafeXHTML));
 
     auto oidContianer = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
-    oidContianer->addStyleClass (Bootstrap::Grid::col_full_12);
+    oidContianer->addStyleClass (Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_6+Bootstrap::Grid::ExtraSmall::col_xs_6);
     oidContianer->setPadding (5,AllSides);
     auto oidText = oidContianer->addWidget (cpp14::make_unique<WText>(item.kategoriOid));
 
     auto valueContianer = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
-    oidContianer->addStyleClass (Bootstrap::Grid::col_full_12);
-    oidContianer->setPadding (5,AllSides);
+    valueContianer->addStyleClass (Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_2+Bootstrap::Grid::ExtraSmall::col_xs_2);
+//    valueContianer->setPadding (5,AllSides);
     auto valueSpinBox = valueContianer->addWidget (cpp14::make_unique<WDoubleSpinBox>());
     valueSpinBox->setMaximum (9999999);
 
 
     auto dateContainer = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
-    dateContainer->addStyleClass (Bootstrap::Grid::col_full_12);
-    dateContainer->setPadding (5,AllSides);
+    dateContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_4+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_4);
+//    dateContainer->setPadding (5,AllSides);
     auto dateEdit = dateContainer->addWidget (cpp14::make_unique<WDateEdit>());
 
     auto yerContainer = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
-    yerContainer->addStyleClass (Bootstrap::Grid::col_full_12);
-    yerContainer->setPadding (5,AllSides);
-    auto yerComboBox = yerContainer->addWidget (cpp14::make_unique<WComboBox>());
+    yerContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_4+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_4);
+//    yerContainer->setPadding (5,AllSides);
+    auto birimComboBox = yerContainer->addWidget (cpp14::make_unique<WComboBox>());
 
-//    auto __yerlist = mYerManager->List (SerikBLDCore::Stokv2::Yer().setBirim (mUser->Birimi ()));
+    auto birimList = this->::SerikBLDCore::ListItem<SerikBLDCore::Stokv2::Stok>::getBirimler();
 
-//    for( const auto &item : __yerlist ){
-//        yerComboBox->addItem (item.getYerAdi ());
-//    }
+    for( const auto &item : birimList ){
+        birimComboBox->addItem (item.toStdString());
+    }
 
+
+    auto personelNameFilterContainer = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+    personelNameFilterContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_2+Bootstrap::Grid::ExtraSmall::col_xs_2);
+//    personelNameFilterContainer->setPadding (5,AllSides);
+    auto personelNameFilterLineEdit = personelNameFilterContainer->addWidget (cpp14::make_unique<WLineEdit>());
+    personelNameFilterLineEdit->setPlaceholderText("Personel Adı Filtrele ( en az 3 harf )");
 
 
     auto personelContainer = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
@@ -763,32 +769,79 @@ void v2::StokWidget::StokContainerWidget::exportMalzeme(const double &maxMiktar,
     auto personelOid = selectedPersonelOidContainer->addWidget (cpp14::make_unique<WText>(""));
 
 
-    {
-        auto list = mPersonelManager->List (SerikBLDCore::IK::Personel().setBirim (mUser->Birimi ().c_str ()),SerikBLDCore::FindOptions().setLimit (1000));
+    personelNameFilterLineEdit->changed().connect([=](){
+
+        personelRContainer->clear();
+        auto list = mPersonelManager->List (SerikBLDCore::IK::Personel().setBirim (birimComboBox->currentText().toUTF8().c_str()),SerikBLDCore::FindOptions().setLimit (1000));
         for( const auto &personelItem : list ){
 
-            auto container = personelRContainer->addWidget (cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
-                                      Bootstrap::Grid::Medium::col_md_4+
-                                      Bootstrap::Grid::Small::col_sm_4+
-                                      Bootstrap::Grid::ExtraSmall::col_xs_4+CSSStyle::Shadows::shadow8px);
-            container->setMargin (5,Side::Top|Side::Bottom);
-            container->decorationStyle ().setCursor (Cursor::PointingHand);
-            auto text = container->addWidget (cpp14::make_unique<WText>(personelItem.AdSoyad ().toStdString ()));
-            container->setPadding (3,AllSides);
-            if( personelItem.statu ().toStdString ()== SerikBLDCore::IK::Statu::Mudur ){
-                container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Grey::DimGray)+Style::color::color (Style::color::White::AliceBlue));
+            bool addFull = true;
+            if( personelNameFilterLineEdit->text().empty() ){
+                addFull = true;
             }else{
-                container->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::Linen));
+                addFull = personelItem.AdSoyad().contains(personelNameFilterLineEdit->text().toUTF8().c_str());
             }
 
-            container->clicked ().connect ([=]() {
-               personelNameText->setText (personelItem.AdSoyad ().toStdString ());
-               personelOid->setText (personelItem.oid ().value ().to_string ());
-            });
+            if( addFull ){
+                auto container = personelRContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+                container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
+                                          Bootstrap::Grid::Medium::col_md_4+
+                                          Bootstrap::Grid::Small::col_sm_4+
+                                          Bootstrap::Grid::ExtraSmall::col_xs_4+CSSStyle::Shadows::shadow8px);
+                container->setMargin (5,Side::Top|Side::Bottom);
+                container->decorationStyle ().setCursor (Cursor::PointingHand);
+                auto text = container->addWidget (cpp14::make_unique<WText>(personelItem.AdSoyad ().toStdString ()));
+                container->setPadding (3,AllSides);
+                if( personelItem.statu ().toStdString ()== SerikBLDCore::IK::Statu::Mudur ){
+                    container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Grey::DimGray)+Style::color::color (Style::color::White::AliceBlue));
+                }else{
+                    container->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::Linen));
+                }
 
+                container->clicked ().connect ([=]() {
+                   personelNameText->setText (personelItem.AdSoyad ().toStdString ());
+                   personelOid->setText (personelItem.oid ().value ().to_string ());
+                });
+            }
         }
-    }
+
+    });
+
+    birimComboBox->changed().connect([=](){
+        personelRContainer->clear();
+        auto list = mPersonelManager->List (SerikBLDCore::IK::Personel().setBirim (birimComboBox->currentText().toUTF8().c_str()),SerikBLDCore::FindOptions().setLimit (1000));
+        for( const auto &personelItem : list ){
+
+            bool addFull = true;
+            if( personelNameFilterLineEdit->text().empty() ){
+                addFull = true;
+            }else{
+                addFull = personelItem.AdSoyad().contains(personelNameFilterLineEdit->text().toUTF8().c_str());
+            }
+
+            if( addFull ){
+                auto container = personelRContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+                container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
+                                          Bootstrap::Grid::Medium::col_md_4+
+                                          Bootstrap::Grid::Small::col_sm_4+
+                                          Bootstrap::Grid::ExtraSmall::col_xs_4+CSSStyle::Shadows::shadow8px);
+                container->setMargin (5,Side::Top|Side::Bottom);
+                container->decorationStyle ().setCursor (Cursor::PointingHand);
+                auto text = container->addWidget (cpp14::make_unique<WText>(personelItem.AdSoyad ().toStdString ()));
+                container->setPadding (3,AllSides);
+                if( personelItem.statu ().toStdString ()== SerikBLDCore::IK::Statu::Mudur ){
+                    container->setAttributeValue (Style::style,Style::background::color::color (Style::color::Grey::DimGray)+Style::color::color (Style::color::White::AliceBlue));
+                }else{
+                    container->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::Linen));
+                }
+
+                container->clicked ().connect ([=]() {
+                   personelNameText->setText (personelItem.AdSoyad ().toStdString ());
+                   personelOid->setText (personelItem.oid ().value ().to_string ());
+                });
+            }
+        }
+    });
 
 
     auto aciklamaContainer = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
@@ -802,9 +855,10 @@ void v2::StokWidget::StokContainerWidget::exportMalzeme(const double &maxMiktar,
 
 
 
-    auto saveBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet & Çık"));
-    saveBtn->clicked ().connect ([=](){
-
+//    auto saveBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet & Çık"));
+//    saveBtn->clicked ().connect ([=](){
+//    auto saveBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Kaydet & Çık"));
+    mDialog->Accepted().connect ([=](){
 
         if( valueSpinBox->value () > maxMiktar ) {
             this->showPopUpMessage ("Kullanılacak Miktar Stoktakinden Fazla Olamaz","err");
@@ -873,7 +927,6 @@ void v2::StokWidget::StokContainerWidget::initlastState()
 
 
     std::for_each(girisItemList.begin (),girisItemList.end (),[&girisItemList,&kategoriList](PipeLineStokItem item){
-//        LOG << item.kategoriOid <<  " : " << item.miktarGiris <<  " : " << item.name << " : " << item.metric << std::endl;
         for( auto kategoriItem : kategoriList ){
             if( item.kategoriOid == kategoriItem.oid ().value ().to_string () ){
                 PipeLineStokItem newItem;
@@ -888,7 +941,6 @@ void v2::StokWidget::StokContainerWidget::initlastState()
 
 
     std::for_each(cikisItemList.begin (),cikisItemList.end (),[&cikisItemList,&kategoriList](PipeLineStokItem item){
-//        LOG << item.kategoriOid <<  " : " << item.miktarGiris <<  " : " << item.name << " : " << item.metric << std::endl;
         for( auto kategoriItem : kategoriList ){
             if( item.kategoriOid == kategoriItem.oid ().value ().to_string () ){
                 PipeLineStokItem newItem;
