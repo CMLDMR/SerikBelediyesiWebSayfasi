@@ -91,6 +91,8 @@ private:
 
     void initViewMalzeme(const bsoncxx::oid &malzemeOid );
 
+    void initImportList();
+
     CurrentPage mCurrentPage = CurrentPage::SonDurumPage;
 
 
