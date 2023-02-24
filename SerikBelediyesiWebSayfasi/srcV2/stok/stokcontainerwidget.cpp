@@ -43,80 +43,7 @@ void v2::StokWidget::StokContainerWidget::initMenuBar()
                                   CSSStyle::Button::blueButton);
         container->setPadding (10,Side::Top|Side::Bottom);
         container->decorationStyle ().setCursor (Cursor::PointingHand);
-        container->clicked ().connect ([=](){
-            mCurrentPage = CurrentPage::MalzemeGirisPage;
-            SerikBLDCore::Stokv2::Giris filter;
-            filter.setMudurluk (mUser->Birimi ());
-            this->::SerikBLDCore::ListItem<SerikBLDCore::Stokv2::Stok>::UpdateList (filter);
-
-            this->Footer ()->clear ();
-            this->Footer ()->setMargin (15,Side::Top|Side::Bottom);
-
-            auto backContainer = this->Footer ()->addWidget (cpp14::make_unique<WContainerWidget>());
-            backContainer->addStyleClass (Bootstrap::Button::Primary);
-            backContainer->addWidget (cpp14::make_unique<WText>("Geri"));
-            backContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_5+
-                                          Bootstrap::Grid::Medium::col_md_5+
-                                          Bootstrap::Grid::Small::col_sm_5+
-                                          Bootstrap::Grid::ExtraSmall::col_xs_5);
-            backContainer->setPadding(5,Side::Top|Side::Bottom);
-            backContainer->decorationStyle ().setCursor (Cursor::PointingHand);
-
-
-
-            auto pageContainer = this->Footer ()->addWidget (cpp14::make_unique<WContainerWidget>());
-            pageContainer->addStyleClass (Bootstrap::Button::info);
-
-            auto currentPage = this->::SerikBLDCore::ListItem<SerikBLDCore::Stokv2::Stok>::currentPage (filter);
-            auto totalPage = this->::SerikBLDCore::ListItem<SerikBLDCore::Stokv2::Stok>::totalPage (filter);
-
-
-            auto pageText = pageContainer->addWidget (cpp14::make_unique<WText>(WString("{1}/{2}").arg (currentPage+1).arg(totalPage+1)));
-            pageContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
-                                          Bootstrap::Grid::Medium::col_md_2+
-                                          Bootstrap::Grid::Small::col_sm_2+
-                                          Bootstrap::Grid::ExtraSmall::col_xs_2);
-            pageContainer->setPadding(5,Side::Top|Side::Bottom);
-
-
-            auto nextContainer = this->Footer ()->addWidget (cpp14::make_unique<WContainerWidget>());
-            nextContainer->addStyleClass (Bootstrap::Button::Primary);
-            nextContainer->addWidget (cpp14::make_unique<WText>("İleri"));
-            nextContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_5+
-                                          Bootstrap::Grid::Medium::col_md_5+
-                                          Bootstrap::Grid::Small::col_sm_5+
-                                          Bootstrap::Grid::ExtraSmall::col_xs_5);
-            nextContainer->setPadding(5,Side::Top|Side::Bottom);
-            nextContainer->decorationStyle ().setCursor (Cursor::PointingHand);
-
-
-
-
-            backContainer->clicked ().connect ([=](){
-                SerikBLDCore::Stokv2::Giris filter;
-                filter.setMudurluk (mUser->Birimi ());
-                this->::SerikBLDCore::ListItem<SerikBLDCore::Stokv2::Stok>::back (filter);
-
-                auto currentPage = this->::SerikBLDCore::ListItem<SerikBLDCore::Stokv2::Stok>::currentPage (filter);
-                auto totalPage = this->::SerikBLDCore::ListItem<SerikBLDCore::Stokv2::Stok>::totalPage (filter);
-
-                pageText->setText (WString("{1}/{2}").arg (currentPage+1).arg(totalPage+1));
-            });
-
-
-
-            nextContainer->clicked ().connect ([=](){
-                SerikBLDCore::Stokv2::Giris filter;
-                filter.setMudurluk (mUser->Birimi ());
-                this->::SerikBLDCore::ListItem<SerikBLDCore::Stokv2::Stok>::next (filter);
-
-                auto currentPage = this->::SerikBLDCore::ListItem<SerikBLDCore::Stokv2::Stok>::currentPage (filter);
-                auto totalPage = this->::SerikBLDCore::ListItem<SerikBLDCore::Stokv2::Stok>::totalPage (filter);
-
-                pageText->setText (WString("{1}/{2}").arg (currentPage+1).arg(totalPage+1));
-            });
-
-        });
+        container->clicked ().connect (this,&v2::StokWidget::StokContainerWidget::initImportList);
     }
 
 
@@ -923,7 +850,10 @@ void v2::StokWidget::StokContainerWidget::exportMalzeme(const double &maxMiktar,
         cikisItem.setMiktar (valueSpinBox->value ());
         cikisItem.setTeslimAlanPersonel (personelOid->text ().toUTF8 (),personelNameText->text ().toUTF8 ());
         cikisItem.setMudurluk (mUser->Birimi ());
-        cikisItem.setTeslimEtJulianDay (dateEdit->date ().toJulianDay ());
+        cikisItem.setTeslimEtJulianDay (dateEdit->date().toJulianDay());
+
+        qDebug() << "Current Date: "<<dateEdit->date().day() << dateEdit->date().month() << dateEdit->date().year() << dateEdit->date().toJulianDay();
+
         cikisItem.setAciklama (aciklamaTextEdit->text ().toUTF8 ());
 //        cikisItem.setCikisYeri (yerComboBox->currentText ().toUTF8 ());
 
@@ -1300,6 +1230,85 @@ void v2::StokWidget::StokContainerWidget::initViewMalzeme(const bsoncxx::oid &ma
     }
 }
 
+void v2::StokWidget::StokContainerWidget::initImportList()
+{
+
+
+    mCurrentPage = CurrentPage::MalzemeGirisPage;
+    SerikBLDCore::Stokv2::Giris filter;
+    filter.setMudurluk (mUser->Birimi ());
+    this->::SerikBLDCore::ListItem<SerikBLDCore::Stokv2::Stok>::UpdateList (filter);
+
+    this->Footer ()->clear ();
+    this->Footer ()->setMargin (15,Side::Top|Side::Bottom);
+
+    auto backContainer = this->Footer ()->addWidget (cpp14::make_unique<WContainerWidget>());
+    backContainer->addStyleClass (Bootstrap::Button::Primary);
+    backContainer->addWidget (cpp14::make_unique<WText>("Geri"));
+    backContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_5+
+                                  Bootstrap::Grid::Medium::col_md_5+
+                                  Bootstrap::Grid::Small::col_sm_5+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_5);
+    backContainer->setPadding(5,Side::Top|Side::Bottom);
+    backContainer->decorationStyle ().setCursor (Cursor::PointingHand);
+
+
+
+    auto pageContainer = this->Footer ()->addWidget (cpp14::make_unique<WContainerWidget>());
+    pageContainer->addStyleClass (Bootstrap::Button::info);
+
+    auto currentPage = this->::SerikBLDCore::ListItem<SerikBLDCore::Stokv2::Stok>::currentPage (filter);
+    auto totalPage = this->::SerikBLDCore::ListItem<SerikBLDCore::Stokv2::Stok>::totalPage (filter);
+
+
+    auto pageText = pageContainer->addWidget (cpp14::make_unique<WText>(WString("{1}/{2}").arg (currentPage+1).arg(totalPage+1)));
+    pageContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+                                  Bootstrap::Grid::Medium::col_md_2+
+                                  Bootstrap::Grid::Small::col_sm_2+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_2);
+    pageContainer->setPadding(5,Side::Top|Side::Bottom);
+
+
+    auto nextContainer = this->Footer ()->addWidget (cpp14::make_unique<WContainerWidget>());
+    nextContainer->addStyleClass (Bootstrap::Button::Primary);
+    nextContainer->addWidget (cpp14::make_unique<WText>("İleri"));
+    nextContainer->addStyleClass (Bootstrap::Grid::Large::col_lg_5+
+                                  Bootstrap::Grid::Medium::col_md_5+
+                                  Bootstrap::Grid::Small::col_sm_5+
+                                  Bootstrap::Grid::ExtraSmall::col_xs_5);
+    nextContainer->setPadding(5,Side::Top|Side::Bottom);
+    nextContainer->decorationStyle ().setCursor (Cursor::PointingHand);
+
+
+
+
+    backContainer->clicked ().connect ([=](){
+        SerikBLDCore::Stokv2::Giris filter;
+        filter.setMudurluk (mUser->Birimi ());
+        this->::SerikBLDCore::ListItem<SerikBLDCore::Stokv2::Stok>::back (filter);
+
+        auto currentPage = this->::SerikBLDCore::ListItem<SerikBLDCore::Stokv2::Stok>::currentPage (filter);
+        auto totalPage = this->::SerikBLDCore::ListItem<SerikBLDCore::Stokv2::Stok>::totalPage (filter);
+
+        pageText->setText (WString("{1}/{2}").arg (currentPage+1).arg(totalPage+1));
+    });
+
+
+
+    nextContainer->clicked ().connect ([=](){
+        SerikBLDCore::Stokv2::Giris filter;
+        filter.setMudurluk (mUser->Birimi ());
+        this->::SerikBLDCore::ListItem<SerikBLDCore::Stokv2::Stok>::next (filter);
+
+        auto currentPage = this->::SerikBLDCore::ListItem<SerikBLDCore::Stokv2::Stok>::currentPage (filter);
+        auto totalPage = this->::SerikBLDCore::ListItem<SerikBLDCore::Stokv2::Stok>::totalPage (filter);
+
+        pageText->setText (WString("{1}/{2}").arg (currentPage+1).arg(totalPage+1));
+    });
+
+
+}
+
 std::vector<v2::StokWidget::PipeLineStokItem> v2::StokWidget::StokContainerWidget::getGirisList()
 {
     std::vector<PipeLineStokItem> itemList;
@@ -1624,7 +1633,8 @@ void v2::StokWidget::MalzemeGirisWidget::asListItem()
         {
             auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
             container->setOverflow (Overflow::Hidden);
-            container->addWidget (cpp14::make_unique<WText>("cikisObj->getCikisYeri ()"));
+            //cikisObj->getCikisYeri ()
+            container->addWidget (cpp14::make_unique<WText>(cikisObj->getPersonelAdSoyad()));
             container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
                                       Bootstrap::Grid::Medium::col_md_4+
                                       Bootstrap::Grid::Small::col_sm_4+
@@ -1670,6 +1680,12 @@ void v2::StokWidget::MalzemeGirisWidget::asListItem()
 
 void v2::StokWidget::MalzemeGirisWidget::asFullPage()
 {
+    auto mDialog = createFlatDialog("Malzeme Detayı");
+
+    mDialog->setContentWidth(768);
+
+    mDialog->show();
+
 
 }
 
