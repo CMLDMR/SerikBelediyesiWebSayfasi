@@ -124,55 +124,86 @@ void v2::MeclisPageManager::onList(const QVector<SerikBLDCore::Meclis::MeclisIte
     }
 
 
-    std::int64_t year = 0;
+    std::int64_t year = mlist->first().yil();
     std::string _color;
+
+    auto contentContainer = this->Content()->addNew<WContainerWidget>();
+    contentContainer->addStyleClass (Bootstrap::Grid::col_full_12);
+
     for( auto item : *mlist )
     {
-        auto container = this->Content ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        container->addStyleClass (Bootstrap::Grid::col_full_12);
+
+
+        if( year != item.yil () )
+        {
+//            _color = Style::background::color::rgb (this->getRandom (240,255),this->getRandom (240,255),this->getRandom (240,255));
+//            container->setMargin (25,Side::Top);
+            year = item.yil ();
+
+            contentContainer = this->Content()->addNew<WContainerWidget>();
+            contentContainer->addStyleClass (Bootstrap::Grid::col_full_12);
+//            contentContainer->setAttributeValue (Style::style,_color);
+            contentContainer->setMargin (25,Side::Top);
+            contentContainer->setPadding(5,Side::Top|Side::Bottom);
+
+            _color = Style::background::color::rgb (this->getRandom (200,225),this->getRandom (200,225),this->getRandom (200,225));
+
+            auto containerYear = contentContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+            containerYear->addStyleClass (Bootstrap::Grid::col_full_12);
+            containerYear->addNew<WText>(WString("<b>{1}</b>").arg(item.yil()));
+            containerYear->setContentAlignment(AlignmentFlag::Center);
+
+        }
+
+        auto container = contentContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+        if( WDate::currentDate().year() == year ){
+            container->addStyleClass (Bootstrap::Grid::col_full_12);
+
+        }else{
+            container->addStyleClass (Bootstrap::Grid::col_full_6);
+
+        }
         container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
         container->decorationStyle ().setCursor (Cursor::PointingHand);
         container->setAttributeValue (Style::dataoid,item.oid ().value ().to_string ());
+        container->setAttributeValue (Style::style,_color);
 
         container->clicked ().connect ([=](){
             this->initMeclisPage (item);
         });
 
-        auto _Container = container->addWidget (cpp14::make_unique<WContainerWidget>());
-        _Container->addStyleClass (Bootstrap::Grid::row);
-        _Container->setMargin (5,Side::Top|Side::Bottom);
-
-        if( year != item.yil () )
-        {
-            _color = Style::background::color::rgb (this->getRandom (200,225),this->getRandom (200,225),this->getRandom (200,225));
-            container->setMargin (25,Side::Top);
-            year = item.yil ();
-        }
-        container->setAttributeValue (Style::style,_color);
+//        auto _Container = container->addWidget (cpp14::make_unique<WContainerWidget>());
+//        _Container->addStyleClass (Bootstrap::Grid::row);
+//        _Container->setMargin (5,Side::Top|Side::Bottom);
 
 
-        {
-            auto __container = _Container->addWidget (cpp14::make_unique<WContainerWidget>());
-            __container->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
-                                        Bootstrap::Grid::Medium::col_md_2+
-                                        Bootstrap::Grid::Small::col_sm_2+
-                                        Bootstrap::Grid::ExtraSmall::col_xs_6);
-            __container->addWidget (cpp14::make_unique<WText>("<b>"+std::to_string (item.yil ())+"</b>"));
-        }
+//        {
+//            auto __container = _Container->addWidget (cpp14::make_unique<WContainerWidget>());
+//            __container->addStyleClass (Bootstrap::Grid::Large::col_lg_2+
+//                                        Bootstrap::Grid::Medium::col_md_2+
+//                                        Bootstrap::Grid::Small::col_sm_2+
+//                                        Bootstrap::Grid::ExtraSmall::col_xs_6);
+//            __container->addWidget (cpp14::make_unique<WText>("<b>"+std::to_string (item.yil ())+"</b>"));
+//        }
 
         {
-            auto __container = _Container->addWidget (cpp14::make_unique<WContainerWidget>());
-            __container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
-                                        Bootstrap::Grid::Medium::col_md_3+
-                                        Bootstrap::Grid::Small::col_sm_3+
-                                        Bootstrap::Grid::ExtraSmall::col_xs_6);
-            __container->addWidget (cpp14::make_unique<WText>(item.ay ().toStdString ()));
+            auto __container = container->addWidget (cpp14::make_unique<WContainerWidget>());
+            __container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
+                                        Bootstrap::Grid::Medium::col_md_4+
+                                        Bootstrap::Grid::Small::col_sm_4+
+                                        Bootstrap::Grid::ExtraSmall::col_xs_8);
+            auto meclisAdi = item.ay().toStdString();
+            if( meclisAdi.size() >18 ){
+                meclisAdi = meclisAdi.substr(0,17);
+                meclisAdi += "...";
+            }
+            __container->addWidget (cpp14::make_unique<WText>(meclisAdi));
         }
 
 
 
         {
-            auto __container = _Container->addWidget (cpp14::make_unique<WContainerWidget>());
+            auto __container = container->addWidget (cpp14::make_unique<WContainerWidget>());
             __container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
                                         Bootstrap::Grid::Medium::col_md_3+
                                         Bootstrap::Grid::Small::col_sm_3+
@@ -190,23 +221,23 @@ void v2::MeclisPageManager::onList(const QVector<SerikBLDCore::Meclis::MeclisIte
 
 
         {
-            auto __container = _Container->addWidget (cpp14::make_unique<WContainerWidget>());
-            __container->addStyleClass (Bootstrap::Grid::Large::col_lg_3+
-                                        Bootstrap::Grid::Medium::col_md_3+
-                                        Bootstrap::Grid::Small::col_sm_3+
-                                        Bootstrap::Grid::ExtraSmall::col_xs_5);
-            __container->addWidget (cpp14::make_unique<WText>(QDate::fromJulianDay (item.julianDay ()).toString ("dd/MM/yyyy dddd").toStdString ()));
+            auto __container = container->addWidget (cpp14::make_unique<WContainerWidget>());
+            __container->addStyleClass (Bootstrap::Grid::Large::col_lg_5+
+                                        Bootstrap::Grid::Medium::col_md_5+
+                                        Bootstrap::Grid::Small::col_sm_5+
+                                        Bootstrap::Grid::ExtraSmall::col_xs_11);
+            __container->addWidget (cpp14::make_unique<WText>(QDate::fromJulianDay (item.julianDay ()).toString ("dd/MM/yyyy ddd").toStdString () + " " + QTime::fromMSecsSinceStartOfDay (item.saat ()).toString ("hh:mm").toStdString ()));
         }
 
 
-        {
-            auto __container = _Container->addWidget (cpp14::make_unique<WContainerWidget>());
-            __container->addStyleClass (Bootstrap::Grid::Large::col_lg_1+
-                                        Bootstrap::Grid::Medium::col_md_1+
-                                        Bootstrap::Grid::Small::col_sm_1+
-                                        Bootstrap::Grid::ExtraSmall::col_xs_2);
-            __container->addWidget (cpp14::make_unique<WText>(QTime::fromMSecsSinceStartOfDay (item.saat ()).toString ("hh:mm").toStdString ()));
-        }
+//        {
+//            auto __container = _Container->addWidget (cpp14::make_unique<WContainerWidget>());
+//            __container->addStyleClass (Bootstrap::Grid::Large::col_lg_1+
+//                                        Bootstrap::Grid::Medium::col_md_1+
+//                                        Bootstrap::Grid::Small::col_sm_1+
+//                                        Bootstrap::Grid::ExtraSmall::col_xs_2);
+//            __container->addWidget (cpp14::make_unique<WText>(QTime::fromMSecsSinceStartOfDay (item.saat ()).toString ("hh:mm").toStdString ()));
+//        }
 
     }
 
