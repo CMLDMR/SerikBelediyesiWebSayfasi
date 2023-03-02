@@ -75,17 +75,17 @@ FireWall::FireWallContainer::FireWallContainer()
                 QDate dateBaslangic;
                 dateBaslangic.setDate(month.year,month.month,days);
 
-                if( item.fileName().toInt() > date.toJulianDay() && item.fileName().toInt() < dateBaslangic.toJulianDay() ){
+                if( item.fileName().toInt() >= date.toJulianDay() && item.fileName().toInt() <= dateBaslangic.toJulianDay() ){
                     auto btnContainer_ = mDayContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-                    btnContainer_->addStyleClass(Bootstrap::Grid::Large::col_lg_3+
-                                                Bootstrap::Grid::Medium::col_md_3+
-                                                Bootstrap::Grid::Small::col_sm_4+
-                                                Bootstrap::Grid::ExtraSmall::col_xs_6);
+                    btnContainer_->addStyleClass(Bootstrap::Grid::Large::col_lg_2+
+                                                Bootstrap::Grid::Medium::col_md_2+
+                                                Bootstrap::Grid::Small::col_sm_3+
+                                                Bootstrap::Grid::ExtraSmall::col_xs_4);
                     btnContainer_->addStyleClass(CSSStyle::Button::grayButton);
                     btnContainer_->setAttributeValue(Style::dataoid,item.fileName().toStdString());
                     btnContainer_->setPadding(5,Side::Top|Side::Bottom);
 
-                    btnContainer_->addNew<WText>(WDate::fromJulianDay(item.fileName().toInt()).toString("dd/MMMM/yy"));
+                    btnContainer_->addNew<WText>(WDate::fromJulianDay(item.fileName().toInt()).toString("dd/MMM/yy"));
 
                     btnContainer_->clicked().connect([=](){
                         this->AnalysysDay(item.absoluteFilePath());
