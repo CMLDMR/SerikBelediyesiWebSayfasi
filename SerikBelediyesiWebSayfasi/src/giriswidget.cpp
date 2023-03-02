@@ -2439,15 +2439,15 @@ void Giris::Personel::PersonelWidget::initMenu()
 //        });
 //    }
 
-    if(this->mUser->Statu () == SerikBLDCore::User::Baskan ||
-            this->mUser->Statu () == SerikBLDCore::User::BaskanYardimcisi ||
-            this->mUser->Birimi ()  == "Kadın ve Aile Hizmetleri Müdürlüğü" )
-    {
-        menu->addItem(WString::fromUTF8("Stok Yardım"))->clicked ().connect ([&](){
-            this->Content ()->clear ();
-            this->Content ()->addWidget (Wt::cpp14::make_unique<KadinAileStock>(mUser->db (),mUser->Value ()));
-        });
-    }
+//    if(this->mUser->Statu () == SerikBLDCore::User::Baskan ||
+//            this->mUser->Statu () == SerikBLDCore::User::BaskanYardimcisi ||
+//            this->mUser->Birimi ()  == "Kadın ve Aile Hizmetleri Müdürlüğü" )
+//    {
+//        menu->addItem(WString::fromUTF8("Stok Yardım"))->clicked ().connect ([&](){
+//            this->Content ()->clear ();
+//            this->Content ()->addWidget (Wt::cpp14::make_unique<KadinAileStock>(mUser->db (),mUser->Value ()));
+//        });
+//    }
 
 
 //    menu->addItem(WString::fromUTF8("Stok"))->clicked ().connect ([&](){
@@ -2586,15 +2586,15 @@ void Giris::Personel::PersonelWidget::initMobilMenu()
 //        });
 //    }
 
-    if(this->mUser->Statu () == SerikBLDCore::User::Baskan ||
-            this->mUser->Statu () == SerikBLDCore::User::BaskanYardimcisi ||
-            this->mUser->Birimi ()  == "Kadın ve Aile Hizmetleri Müdürlüğü" )
-    {
-        menu->addItem(WString::fromUTF8("Stok Yardım"))->clicked ().connect ([&](){
-            this->Content ()->clear ();
-            this->Content ()->addWidget (Wt::cpp14::make_unique<KadinAileStock>(mUser->db (),mUser->Value ()));
-        });
-    }
+//    if(this->mUser->Statu () == SerikBLDCore::User::Baskan ||
+//            this->mUser->Statu () == SerikBLDCore::User::BaskanYardimcisi ||
+//            this->mUser->Birimi ()  == "Kadın ve Aile Hizmetleri Müdürlüğü" )
+//    {
+//        menu->addItem(WString::fromUTF8("Stok Yardım"))->clicked ().connect ([&](){
+//            this->Content ()->clear ();
+//            this->Content ()->addWidget (Wt::cpp14::make_unique<KadinAileStock>(mUser->db (),mUser->Value ()));
+//        });
+//    }
 
 
 
