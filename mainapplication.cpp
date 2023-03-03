@@ -7,7 +7,6 @@
 #include "SerikBelediyesiWebSayfasi/srcV2/mainpage.h"
 
 #include <Wt/WOverlayLoadingIndicator.h>
-#include "SerikBelediyesiWebSayfasi/srcV2/dilekce/dilekceview.h"
 
 #include "SerikBelediyesiWebSayfasi/srcV2/talepler/talepview.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/meclis/meclisitempage.h"
@@ -138,12 +137,6 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
             hLayout->addStretch(1);
             return;
 
-        }
-
-        if( mapList["type"] == "dilekce" )
-        {
-            auto oid = mapList["_id"];
-            showSpecLink = this->loadDilekce (oid.toStdString ());
         }
 
         if( mapList["type"] == "deviceStatus" )
@@ -565,31 +558,31 @@ void MainApplication::ShowForeGround()
 
 }
 
-bool MainApplication::loadDilekce(const std::string &oid)
-{
+//bool MainApplication::loadDilekce(const std::string &oid)
+//{
 
 
 
-    SerikBLDCore::DilekceManager* dManager = new SerikBLDCore::DilekceManager(&this->db);
+//    SerikBLDCore::DilekceManager* dManager = new SerikBLDCore::DilekceManager(&this->db);
 
-    auto dilekce = dManager->LoadDilekce (oid);
+//    auto dilekce = dManager->LoadDilekce (oid);
 
-    if( dilekce )
-    {
-        root()->clear();
-        root()->addStyleClass("rootBody");
-        root ()->setContentAlignment (AlignmentFlag::Center);
-        auto rContainer = root ()->addWidget (cpp14::make_unique<WContainerWidget>());
-        rContainer->addStyleClass (Bootstrap::Grid::row);
-        rContainer->setMaximumSize (WLength(1024),WLength::Auto);
+//    if( dilekce )
+//    {
+//        root()->clear();
+//        root()->addStyleClass("rootBody");
+//        root ()->setContentAlignment (AlignmentFlag::Center);
+//        auto rContainer = root ()->addWidget (cpp14::make_unique<WContainerWidget>());
+//        rContainer->addStyleClass (Bootstrap::Grid::row);
+//        rContainer->setMaximumSize (WLength(1024),WLength::Auto);
 
-        rContainer->addWidget (cpp14::make_unique<DilekceView>(dilekce.value (),&this->db,nullptr,true));
-        return true;
-    }
+//        rContainer->addWidget (cpp14::make_unique<DilekceView>(dilekce.value (),&this->db,nullptr,true));
+//        return true;
+//    }
 
-    return false;
+//    return false;
 
-}
+//}
 
 bool MainApplication::loadTalep(const std::string &oid)
 {
