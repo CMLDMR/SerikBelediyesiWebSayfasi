@@ -46,7 +46,7 @@ public:
 
     void ShowForeGround();
 
-    bool loadDilekce( const std::string &oid );
+//    bool loadDilekce( const std::string &oid );
 
     bool loadTalep( const std::string &oid );
 
