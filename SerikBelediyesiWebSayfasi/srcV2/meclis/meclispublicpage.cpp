@@ -187,55 +187,44 @@ void v2::MeclisPublicPage::onList(const QVector<SerikBLDCore::Meclis::MeclisUyes
     Content()->clear ();
     Content ()->setMargin (25,Side::Top);
     Content()->setContentAlignment(AlignmentFlag::Center);
-    auto mContent = Content()->addNew<WContainerWidget>();
-    mContent->addStyleClass(Bootstrap::Grid::row);
-    mContent->setMaximumSize(1024,WLength::Auto);
-
-//    {
-//        auto container = Content ()->addWidget (cpp14::make_unique<ContainerWidget>("Meclis Üyeleri"));
-//        container->addStyleClass (Bootstrap::Grid::col_full_12);
-//    }
-
 
     std::string currentParti = "";
 
     std::string currentBackColor = Style::background::color::rgb (this->getRandom (245,255),this->getRandom (200,255),this->getRandom (220,255));
 
+    WContainerWidget* mContent = nullptr;
+
     for( const auto &item : *mlist )
     {
 
+        if( currentParti != item.partiAdi ().toStdString () || !mContent){
 
-        if( currentParti != item.partiAdi ().toStdString () ){
+            mContent = Content()->addNew<WContainerWidget>();
+            mContent->addStyleClass(Bootstrap::Grid::row);
+            mContent->setMaximumSize(1024,WLength::Auto);
+            mContent->setAttributeValue (Style::style,currentBackColor);
+            mContent->setMargin(25,Side::Top);
+            mContent->addStyleClass(CSSStyle::Shadows::shadow8px);
+
             currentParti = item.partiAdi ().toStdString ();
-            currentBackColor = Style::background::color::rgb (this->getRandom (245,255),this->getRandom (200,255),this->getRandom (220,255));
+            currentBackColor = Style::background::color::rgb (this->getRandom (240,255),this->getRandom (240,255),this->getRandom (240,255));
             auto containerBreak = mContent->addWidget (cpp14::make_unique<WContainerWidget>());
             containerBreak->addStyleClass (Bootstrap::Grid::col_full_12);
             containerBreak->addWidget (cpp14::make_unique<WText>("<h4>"+item.partiAdi ().toStdString ()+"</h4>"));
             containerBreak->setContentAlignment (AlignmentFlag::Center);
-            containerBreak->setAttributeValue (Style::style,currentBackColor);
-            containerBreak->setMargin(25,Side::Top);
+
         }
-
-
 
         auto tcItem = tcManager->Load_byOID (item.tcOid ().toStdString ());
 
         auto container = mContent->addWidget (cpp14::make_unique<WContainerWidget>());
-//        container->decorationStyle ().setCursor (Cursor::PointingHand);
         container->addStyleClass (Bootstrap::Grid::Large::col_lg_4+
                                   Bootstrap::Grid::Medium::col_md_6+
                                   Bootstrap::Grid::Small::col_sm_6+
                                   Bootstrap::Grid::ExtraSmall::col_xs_6);
-        container->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
-        container->setHeight(160);
-
-
-        container->setAttributeValue (Style::style,currentBackColor);
-
 
         auto rContainer = container->addWidget (cpp14::make_unique<WContainerWidget>());
         rContainer->addStyleClass (Bootstrap::Grid::row);
-
 
         {
             auto mPhotoText = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
@@ -245,12 +234,10 @@ void v2::MeclisPublicPage::onList(const QVector<SerikBLDCore::Meclis::MeclisUyes
                                        Bootstrap::Grid::Small::col_sm_4+
                                        Bootstrap::Grid::ExtraSmall::col_xs_12);
             mPhotoText->setAttributeValue (Style::style,Style::background::url (filePath)+
-                                           Style::background::size::cover+
+                                           Style::background::size::contain+
                                            Style::background::position::center_center+
                                            Style::background::repeat::norepeat);
-            mPhotoText->setHeight (140);
-
-            mPhotoText->addStyleClass (Bootstrap::ImageShape::img_thumbnail);
+            mPhotoText->setHeight (143);
         }
 
         auto infoContainer = rContainer->addWidget (cpp14::make_unique<WContainerWidget>());
