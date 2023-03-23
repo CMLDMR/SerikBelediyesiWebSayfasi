@@ -26,8 +26,6 @@ MainPage::MainPage(mongocxx::database *_db)
 
     mContentWidget = addWidget(cpp14::make_unique<WContainerWidget>());
 
-
-
     if( !this->initMeclisCanliYayin() )
     {
         this->init();

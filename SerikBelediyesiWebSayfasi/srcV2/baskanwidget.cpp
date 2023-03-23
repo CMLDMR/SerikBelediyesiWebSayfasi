@@ -16,6 +16,8 @@ BaskanWidget::BaskanWidget(mongocxx::database *_db)
     rContainer->setMaximumSize(1024,WLength::Auto);
 
 
+
+
     //FOTO
     {
         auto fotoWidget = rContainer->addWidget(cpp14::make_unique<WContainerWidget>());
