@@ -108,7 +108,7 @@ void PersonelManagerPage::onList(const QVector<SerikBLDCore::IK::Personel> *mlis
                                   Bootstrap::Grid::Medium::col_md_2+
                                   Bootstrap::Grid::Small::col_sm_3+
                                   Bootstrap::Grid::ExtraSmall::col_xs_4);
-        container->setMargin (5,Side::Bottom);
+        container->setMargin (2,Side::Bottom);
         container->decorationStyle ().setCursor (Cursor::PointingHand);
         container->setContentAlignment (AlignmentFlag::Center);
         container->setHeight(200);

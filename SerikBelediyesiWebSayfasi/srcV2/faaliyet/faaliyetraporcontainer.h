@@ -39,6 +39,8 @@ public:
 
     void deleteItem( const std::string &uuid );
 
+    void closeItem( const std::string &uuid , const bool &deleted );
+
     void changeItem( const std::string &uuid , const std::string &text );
     void changeItem( const std::string &uuid , const std::string &title , const std::string &imgOid , const bool &deleteImgOid = true );
 
@@ -162,6 +164,10 @@ public:
     // Parameter: uuid
     Signal<std::string> mDeleteItemSignal;
 
+    // Parameter: uuid
+    Signal<std::string,bool> mCloseItemSignal;
+
+
     // Parameter: uuid - text /Baslik,Alt Baslik,Paragraf
     Signal<std::string,std::string> mChangeText;
 
@@ -181,7 +187,7 @@ public:
 
 
     virtual void errorOccured(const std::string &errorText) override{
-        this->showPopUpMessage ("Hata: "+errorText,"err");
+//        this->showPopUpMessage("Hata: "+errorText,"msg");
     }
 
     WContainerWidget* addNewButton( const std::string &name,

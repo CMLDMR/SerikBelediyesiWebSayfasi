@@ -779,6 +779,14 @@ void v2::Faaliyet::FaaliyetRaporContainer::testPage( const std::string &faaliyet
 
         });
 
+        baslikItemContainer->mCloseItemSignal.connect ([=]( const std::string &uuid , const bool &deleted){
+            this->itemList.closeItem(uuid,deleted);
+            this->testPage (faaliyetTitle,faaliyetOid);
+            this->addKaydetButon (faaliyetOid,true);
+            //            baslikItemContainer->refreshWidget();
+
+        });
+
         baslikItemContainer->mChangeText.connect ([=]( const std::string &uuid , const std::string &text){
             this->itemList.changeItem (uuid,text);
             //            this->testPage (faaliyetTitle,faaliyetOid);
@@ -895,7 +903,7 @@ void v2::Faaliyet::FaaliyetRaporContainer::addKaydetButon(const std::string &tit
 
     if( unsaved ){
         container->addStyleClass (CSSStyle::Button::redButton);
-        container->addWidget (cpp14::make_unique<WText>("<b>Kaydet</b>"));
+        container->addWidget (cpp14::make_unique<WText>("<b>Server'a Kaydet</b>"));
         container->clicked ().connect ([=](){
 
             SerikBLDCore::Faaliyet::FaaliyetItem item;
@@ -1209,6 +1217,16 @@ void v2::Faaliyet::SquencedRaporItem::deleteItem(const std::string &uuid)
     }
 
     this->mList.remove (currentBaslikindex);
+}
+
+void v2::Faaliyet::SquencedRaporItem::closeItem(const std::string &uuid, const bool &deleted)
+{
+    for( int i = 0 ; i < this->mList.count (); i++ ){
+        if( uuid == this->mList.at (i)->uuid () ){
+            this->mList[i]->setDelete(deleted);
+            break;
+        }
+    }
 }
 
 void v2::Faaliyet::SquencedRaporItem::changeItem(const std::string &uuid, const std::string &text)
@@ -2762,9 +2780,47 @@ void v2::Faaliyet::ItemContainer<T>::refreshWidget()
     }
 
 
+
+
+
+    if( this->isDeleted() ){
+
+        if( !mViewMode ){
+
+            auto closedContainer = this->addNew<WContainerWidget>();
+            closedContainer->setAttributeValue(Style::style,Style::background::color::rgba(200,75,75,0.85)+Style::color::color(Style::color::White::AliceBlue));
+            closedContainer->setPositionScheme(PositionScheme::Absolute);
+            closedContainer->setOffsets(0,AllSides);
+            closedContainer->setContentAlignment(AlignmentFlag::Middle|AlignmentFlag::Center);
+            closedContainer->addNew<WText>("<h4>Bu Alan Kapatıldı Çıktıda Gözükmeyecek!</h4>");
+
+
+
+            closedContainer->addNew<WBreak>();
+            auto acBtn = closedContainer->addNew<WPushButton>("Alanı Aç");
+            acBtn->addStyleClass(Bootstrap::Button::Danger);
+            acBtn->clicked().connect([=](){
+                mCloseItemSignal(this->uuid(),false);
+            });
+
+            this->setHeight(100);
+            this->setOverflow(Overflow::Hidden);
+        }
+
+
+//        return;
+    }
+
     this->initWidgetType ();
 
+
+
     if( mViewMode ) return;
+
+    if( this->isDeleted() ){
+        return;
+    }
+
 
     auto gradientContainer = addWidget (cpp14::make_unique<WContainerWidget>());
     gradientContainer->setPositionScheme (PositionScheme::Absolute);
@@ -2811,11 +2867,28 @@ void v2::Faaliyet::ItemContainer<T>::refreshWidget()
     delContainer->addStyleClass("gra");
 
     delContainer->clicked().connect([=] {
-        auto btn = askConfirm ("Silmek İstediğinize Emin misiniz?");
-
+        auto btn = askConfirm ("Silmek İstediğinize Emin misiniz? Bunun Yerine Alanı Kapatıp Çıktıda Gözükmemesini Sağlayabilirsiniz!");
         btn->clicked().connect([=](){
             mDeleteItemSignal(this->uuid());
         });
+    });
+
+    auto closeContainer = addWidget (cpp14::make_unique<WContainerWidget>());
+    closeContainer->setPositionScheme (PositionScheme::Absolute);
+    closeContainer->setOffsets (500,Side::Right);
+    closeContainer->setOffsets (0,Side::Bottom);
+    closeContainer->addStyleClass (CSSStyle::Button::Red::CrimsonButton);
+    closeContainer->addWidget(cpp14::make_unique<WText>("Alanı Kapat"));
+    closeContainer->decorationStyle().setCursor(Cursor::PointingHand);
+    closeContainer->setPadding(10,Side::Left|Side::Right);
+    closeContainer->addStyleClass("gra");
+
+    closeContainer->clicked().connect([=] {
+        mCloseItemSignal(this->uuid(),true);
+
+//        auto btn = askConfirm ("Kapatmak İstediğinize Emin misiniz?");
+//        btn->clicked().connect([=](){
+//        });
     });
 
 
@@ -3037,10 +3110,10 @@ void v2::Faaliyet::ItemContainer<T>::refreshWidget()
 
         const std::vector<std::string> headers{"#","Verilen Ödenek","Eklenen(+)","Düşülen(-)","Ek Ödenek","Net Ödenek","Ödenen","İptal Edilen"};
         const std::vector<std::string> headersCol{"Personel Giderleri",
-                                               "Sosyal Güv. Kur. Dev. Pir. Giderleri",
-                                               "Mal ve Hizmet Alım Giderleri",
-                                               "Faiz Giderleri",
-                                               "Sermaye Giderleri","Yedek Ödenekler","Genel Toplam"};
+                                                  "Sosyal Güv. Kur. Dev. Pir. Giderleri",
+                                                  "Mal ve Hizmet Alım Giderleri",
+                                                  "Faiz Giderleri",
+                                                  "Sermaye Giderleri","Yedek Ödenekler","Genel Toplam"};
 
 
         auto model = std::make_shared<WStandardItemModel>(0,headers.size());
@@ -3100,7 +3173,7 @@ void v2::Faaliyet::ItemContainer<T>::refreshWidget()
 
     tabloEkleMenu->addItem( ("Öncesine Tablo Ekle"))->triggered().connect([=] {
         this->addTablePre ();
-      });
+    });
 
     tabloEkleMenu->addItem( ("Sonrasına Tablo Ekle"))->triggered().connect([=] {
         this->addTablePre (false);
@@ -3111,6 +3184,9 @@ void v2::Faaliyet::ItemContainer<T>::refreshWidget()
     auto addButton = addContainer->addWidget (cpp14::make_unique<WPushButton>(""));
     addButton->addStyleClass (Bootstrap::Label::Primary);
     addButton->setMenu (std::move(popupPtr));
+
+
+
 
 }
 
