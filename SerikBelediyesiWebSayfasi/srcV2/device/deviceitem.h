@@ -18,8 +18,6 @@
 //static const std::string lastUpdateTime{"lastUpdateTime"};
 //static const std::string lastEventTime{"lastEventTime"};
 
-
-
 //}
 
 

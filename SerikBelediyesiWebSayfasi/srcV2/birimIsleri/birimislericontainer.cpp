@@ -9,6 +9,7 @@
 #include "SerikBelediyesiWebSayfasi/srcV2/bilgiislem/firewallcontainer.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/duyuruyonetim.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/stok/stokcontainerwidget.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/device/taskitem.h"
 
 v2::BirimIsleriContainer::BirimIsleriContainer(SerikBLDCore::User *_user)
     :ContainerWidget ("Birim İşleri"),mUser(_user)
@@ -52,6 +53,7 @@ v2::BirimIsleriContainer::BirimIsleriContainer(SerikBLDCore::User *_user)
         Header ()->addWidget (std::move(menuFirma));
     }
 
+
     //Depo Yönetimi
     {
         auto menuFirma = createMenu ( "Stok" , Cursor::PointingHand );
@@ -61,7 +63,7 @@ v2::BirimIsleriContainer::BirimIsleriContainer(SerikBLDCore::User *_user)
         Header ()->addWidget (std::move(menuFirma));
     }
 
-    //Çalışma Yönetimi
+    //Faaliyet Yönetimi
     {
         auto menuFirma = this->createButton ( "Faaliyet Raporu" , Cursor::PointingHand );
         menuFirma->clicked ().connect ( [=](){
@@ -69,6 +71,16 @@ v2::BirimIsleriContainer::BirimIsleriContainer(SerikBLDCore::User *_user)
         } );
         Header ()->addWidget (std::move(menuFirma));
     }
+
+    //İş Takibi
+    {
+        auto menuFirma = createMenu ( "iş Takibi" , Cursor::PointingHand );
+        menuFirma->clicked ().connect ( [=](){
+            this->initIsTakibi();
+        } );
+        Header ()->addWidget (std::move(menuFirma));
+    }
+
 
 }
 
@@ -161,6 +173,18 @@ void v2::BirimIsleriContainer::initStok()
 {
     this->Content ()->clear ();
     this->Content ()->addWidget (Wt::cpp14::make_unique<v2::StokWidget::StokContainerWidget>(mUser));
+}
+
+void v2::BirimIsleriContainer::initIsTakibi()
+{
+    qDebug() << "initIsTakibi";
+    this->Content()->clear();
+    if( mUser->getDB() ){
+        this->Content ()->addWidget (Wt::cpp14::make_unique<TodoList::TaskManager>(mUser));
+
+    }else{
+        qDebug() << "User getDB does not exist";
+    }
 }
 
 std::unique_ptr<WContainerWidget>  v2::BirimIsleriContainer::createMenu(const std::string &menuName , Cursor cursor )

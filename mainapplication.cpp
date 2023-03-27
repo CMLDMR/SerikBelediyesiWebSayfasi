@@ -10,7 +10,7 @@
 
 #include "SerikBelediyesiWebSayfasi/srcV2/talepler/talepview.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/meclis/meclisitempage.h"
-
+#include "SerikBelediyesiWebSayfasi/srcV2/device/taskitem.h"
 
 #include "../url.h"
 
@@ -136,7 +136,6 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
             auto text = hLayout->addWidget(cpp14::make_unique<WText>("<h4><p>Sitede Zararlı İçerik Tespit Edildi.</p></h4>"),0,AlignmentFlag::Middle);
             hLayout->addStretch(1);
             return;
-
         }
 
         if( mapList["type"] == "deviceStatus" )
@@ -155,6 +154,12 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
         {
             auto oid = mapList["_id"];
             showSpecLink = this->loadGundem (oid.toStdString ());
+        }
+
+        if( mapList["type"] == "taskList" )
+        {
+            showSpecLink = this->loadBirimManager(mapList);
+            LOG << "LODBIRIMMANAGER\n";
         }
 
 
@@ -640,6 +645,51 @@ bool MainApplication::loadGundem(const std::string &oid)
     }
 
     return false;
+
+}
+
+bool MainApplication::loadBirimManager(const QMap<QString, QString> &map)
+{
+
+    SerikBLDCore::User* mUser = new SerikBLDCore::User(&this->db);
+    auto dManager = std::make_unique<TodoList::TaskManager>(mUser);
+
+    root()->clear();
+    root()->addStyleClass("rootBody");
+    root ()->setContentAlignment (AlignmentFlag::Center);
+    auto rContainer = root ()->addWidget (cpp14::make_unique<WContainerWidget>());
+    rContainer->addStyleClass (Bootstrap::Grid::row);
+    rContainer->setMaximumSize (WLength(1024),WLength::Auto);
+    rContainer->addWidget(std::move(dManager));
+
+
+
+//    SerikBLDCore::Meclis::MeclisItem filter;
+//    filter.setOid (oid);
+//    auto meclisGundem = dManager->findOneItem (filter);
+
+//    if( meclisGundem )
+//    {
+//        auto item = SerikBLDCore::Meclis::MeclisItem();
+//        item.setDocumentView (meclisGundem.value ().view ());
+//        wApp->setTitle ("Serik Belediyesi Meclis Gündemi - " + std::to_string (item.yil ()) + " " + item.ay ().toStdString ());
+//        root()->clear();
+//        root()->addStyleClass("rootBody");
+//        root ()->setContentAlignment (AlignmentFlag::Center);
+//        auto rContainer = root ()->addWidget (cpp14::make_unique<WContainerWidget>());
+//        rContainer->addStyleClass (Bootstrap::Grid::row);
+//        rContainer->setMaximumSize (WLength(1024),WLength::Auto);
+
+//        if( item.yayinda () )
+//        {
+//            rContainer->addWidget (cpp14::make_unique<v2::MeclisItemPublicPage>(new SerikBLDCore::DB(&this->db),item));
+//        }else{
+//            rContainer->addWidget (cpp14::make_unique<WText>("<h4>Bu Meclis Bilgileri Şuanda Kullanılabilir Değil</h4>",TextFormat::UnsafeXHTML));
+//        }
+//        return true;
+//    }
+
+    return true;
 
 }
 

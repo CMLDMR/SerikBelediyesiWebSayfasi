@@ -29,6 +29,8 @@ public:
 
     void initStok();
 
+    void initIsTakibi();
+
 private:
     SerikBLDCore::User* mUser;
 
