@@ -15,8 +15,6 @@ HeaderPage::HeaderPage()
         container->setAttributeValue(Style::style,Style::background::color::rgba(25,25,25,0.65));
         container->setHeight(25);
 
-        container->addNew<WText>("ssffsd");
-
         container->setContentAlignment(AlignmentFlag::Center);
 
         auto tContainer = container->addWidget(cpp14::make_unique<WContainerWidget>());
