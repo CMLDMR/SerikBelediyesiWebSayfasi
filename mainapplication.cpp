@@ -11,6 +11,8 @@
 #include "SerikBelediyesiWebSayfasi/srcV2/talepler/talepview.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/meclis/meclisitempage.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/device/taskitem.h"
+#include "SerikBelediyesiWebSayfasi/BaseClass/cssbuilder.h"
+
 
 #include "../url.h"
 
@@ -22,7 +24,6 @@
 MainApplication::MainApplication(const Wt::WEnvironment &env)
     :WApplication(env)
 {
-
 
     wApp->addMetaHeader(MetaHeaderType::Meta,"Content-Type","text/html; charset=windows-1254");
 
@@ -70,6 +71,7 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
     WApplication::useStyleSheet(WLink("css/nost.css"));
     WApplication::useStyleSheet(WLink("css/CSSCustom.css"));
     WApplication::useStyleSheet(WLink("css/newDialog.css"));
+    wApp->useStyleSheet(WLink("css/taskmanager.css"));
 
 
     Wt::WApplication::instance()->useStyleSheet("resources/themes/bootstrap/3/bootstrap-theme.min.css");

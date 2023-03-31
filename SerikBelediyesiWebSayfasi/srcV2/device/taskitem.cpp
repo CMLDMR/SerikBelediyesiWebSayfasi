@@ -1,7 +1,14 @@
 #include "taskitem.h"
 
+#include <filesystem>
+#include <fstream>
+#include <Wt/WApplication.h>
+#include <Wt/WLink.h>
+
+#include "personelmanager.h"
 
 namespace TodoList {
+
 
 TaskItem::TaskItem()
     :SerikBLDCore::Item(Key::Collection.data())
@@ -21,12 +28,14 @@ TaskItem &TaskItem::setImageItem(const std::string &oid)
     return *this;
 }
 
-TaskItem &TaskItem::setGorevli(const std::string &gorevliOid, const std::string &adSoyad)
+TaskItem &TaskItem::addGorevli(const std::string &gorevliOid, const std::string &adSoyad)
 {
-    this->append(Key::gorevli,bsoncxx::oid{gorevliOid});
-    this->append(Key::gorevliAdSoyad,adSoyad);
+    GorevliItem item;
+    item.setPersonel(gorevliOid,adSoyad);
+    this->pushArray(Key::gorevli,item.view());
     return *this;
 }
+
 
 std::string TaskItem::getDate(const std::string &format) const
 {
@@ -66,7 +75,7 @@ std::string TaskItem::getAciklama() const
 
 std::string TaskItem::getDurum() const
 {
-        return isTamamlandi() ? "Tamamlandı" : "Devam Ediyor";
+        return isTamamlandi() ? "Bitti" : "Devam";
 }
 
 std::string TaskItem::getImageOid() const
@@ -87,10 +96,27 @@ bool TaskItem::isTamamlandi() const
     return false;
 }
 
+std::list<GorevliItem> TaskItem::getGorevliList() const
+{
+    std::list<GorevliItem> list;
+    auto val = this->element(Key::gorevli);
+    if( val ){
+        auto arr = val.value().view().get_array().value;
+        for( const auto &item : arr ){
+            GorevliItem item_;
+            item_.setDocumentView(item.get_document().view());
+            list.push_back(item_);
+        }
+    }
+    return list;
+}
+
 TaskManager::TaskManager(SerikBLDCore::User *_mUser)
     :SerikBLDCore::ListItem<TaskItem>(_mUser->getDB()),
       mUser(_mUser)
 {
+
+//    this->initCSS();
     this->Content()->setMargin(15,Side::Top);
     this->initHeader();
     this->UpdateList(TaskItem().setBirim(mUser->Birimi()));
@@ -118,6 +144,48 @@ void TaskManager::onList(const QVector<TaskItem> *mlist)
             this->loadTask(container->getOid());
         });
     }
+
+}
+
+void TaskManager::initCSS()
+{
+
+
+
+
+
+    std::string cssPath = "css/taskmanager-20230330.css";
+
+    if( std::filesystem::exists("docroot/"+cssPath) ){
+        std::cout << "\n" << "file Does Exist\n";
+    }else{
+
+        std::ofstream out;
+        out.open("docroot/"+cssPath,std::ios::out);
+
+        if( out.is_open() ){
+
+            std::string cssContent;
+            cssContent += ".taskBtn{"
+                          "background-color:\"red\""
+                          "}";
+
+
+
+
+            out.write(cssContent.c_str(),cssContent.size());
+            out.close();
+
+            wApp->useStyleSheet(WLink(cssPath));
+//            Wt::WApplication::useStyleSheet(WLink("css/taskmanager-20230330.css"));
+
+        }
+
+    }
+
+
+
+
 
 }
 
@@ -235,12 +303,117 @@ void TaskManager::loadTask(const std::string &taskoid)
 
 
 
+        this->Footer()->clear();
+        auto hLayout = this->Footer()->setLayout(cpp14::make_unique<WHBoxLayout>());
 
+        auto gorevliBtn = createSmallButton("Personel Ata+");
+        gorevliBtn->clicked().connect([=](){
+            this->assignPersonel(taskoid);
+        });
+        hLayout->addWidget(std::move(gorevliBtn));
 
+        auto malzemeEkleBtn = createSmallButton("Malzeme Ekle+");
+        hLayout->addWidget(std::move(malzemeEkleBtn));
 
+        auto aciklamaBtn = createSmallButton("Açıklama Ekle+");
+        hLayout->addWidget(std::move(aciklamaBtn));
+
+        auto resimEkleBtn = createSmallButton("Resim Ekle+");
+        hLayout->addWidget(std::move(resimEkleBtn));
+
+        auto tamamlaBtn = createSmallButton("Tamamla");
+        hLayout->addWidget(std::move(tamamlaBtn));
+
+        auto silBtn = createSmallButton("SİL!");
+        hLayout->addWidget(std::move(silBtn));
+
+        hLayout->addStretch(1);
     }
 
 
+}
+
+void TaskManager::assignPersonel(const std::string &taskOid)
+{
+
+    mPersonelSelectWidget.clear();
+    auto mDialog = createFlatDialog("Personel Ata");
+
+    SerikBLDCore::PersonelManager* mPersonelManager = new SerikBLDCore::PersonelManager(this->getDB());
+
+    auto list = mPersonelManager->PersonelList(this->mUser->Birimi(),500);
+
+    mDialog->Content()->setOverflow(Overflow::Scroll);
+    auto personelContainer = mDialog->Content()->addWidget(cpp14::make_unique<WContainerWidget>());
+    personelContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+
+    auto gLayout = personelContainer->setLayout(cpp14::make_unique<WGridLayout>());
+
+
+    int i = 0; int j = 0;
+    for( const auto &personel : list ){
+        auto personelItemContainer = gLayout->addWidget(cpp14::make_unique<PersonelSelectWidget>(personel),i,j,AlignmentFlag::Justify);
+        personelItemContainer->clicked().connect([=](){
+            if( personelItemContainer->selected() ){
+                mPersonelSelectWidget.push_back(personelItemContainer);
+            }else{
+                for( const auto &pItem : mPersonelSelectWidget ){
+                    if( personelItemContainer->oid().value().to_string() == pItem->oid().value().to_string() ){
+                        mPersonelSelectWidget.remove(pItem);
+                        break;
+                    }
+                }
+            }
+        });
+        j++;
+        if( j > 3 ) { i++; j = 0 ; }
+    }
+
+    mDialog->Content()->setHeight(400);
+    mDialog->show();
+
+
+    mDialog->Accepted().connect([=](){
+
+
+        TaskItem taskItem;
+        taskItem.setOid(taskOid);
+
+        for( const auto &pItem : mPersonelSelectWidget ){
+            taskItem.addGorevli(pItem->oid()->to_string(),pItem->AdSoyad().toStdString());
+        }
+
+        auto upt = this->UpdateItem(taskItem);
+        if( upt ){
+            this->updateTaskList();
+
+            delete mPersonelManager;
+
+            this->removeDialog(mDialog);
+        }else{
+            this->showPopUpMessage("Personel Eklenemedi","warn");
+        }
+
+    });
+
+}
+
+std::unique_ptr<WContainerWidget> TaskManager::createSmallButton(const std::string &name)
+{
+    auto container = std::make_unique<WContainerWidget>();
+    container->addNew<WText>(name);
+    container->setAttributeValue(Style::style,Style::background::color::rgb(this->getRandom(180,200),this->getRandom(180,200),this->getRandom(180,200))+Style::color::color(Style::color::Grey::Black));
+    container->addStyleClass(CSSStyle::Radius::radius3px+CSSStyle::Shadows::shadow8px);
+    container->decorationStyle().setCursor(Cursor::PointingHand);
+    container->setPadding(2,Side::Left|Side::Right);
+    return container;
+}
+
+void TaskManager::updateTaskList()
+{
+    TaskItem filterItem;
+    filterItem.append(Key::birim,mUser->Birimi());
+    this->UpdateList(filterItem);
 }
 
 TaskListItem::TaskListItem(const TaskItem &item)
@@ -253,16 +426,29 @@ TaskListItem::TaskListItem(const TaskItem &item)
     rContainer->addStyleClass(Bootstrap::Grid::row);
 
     rContainer->addWidget(cpp14::make_unique<WText>(item.element(Key::isAdi).value().view().get_string().value.data()))
-            ->addStyleClass(Bootstrap::Grid::Large::col_lg_8+Bootstrap::Grid::Medium::col_md_8+Bootstrap::Grid::Small::col_sm_1+Bootstrap::Grid::ExtraSmall::col_xs_1);
+            ->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_1+Bootstrap::Grid::ExtraSmall::col_xs_1);
 
-    rContainer->addWidget(cpp14::make_unique<WText>(WString{"{1}"}.arg(WDate::fromJulianDay(item.element(Key::julianDay).value().view().get_int64().value).toString("dd/MM/yyyy"))))
-                          ->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_4);
-    rContainer->addWidget(cpp14::make_unique<WText>(WString{"{1}"}.arg(QDateTime::fromMSecsSinceEpoch(item.element(Key::epochTime).value().view().get_int64().value).time().toString("hh:mm:ss").toStdString())))
-                          ->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_4);
+    auto dateTimeStr = WDate::fromJulianDay(item.element(Key::julianDay).value().view().get_int64().value).toString("dd/MM/yy") + " " + QDateTime::fromMSecsSinceEpoch(item.element(Key::epochTime).value().view().get_int64().value).time().toString("hh:mm").toStdString();
+    rContainer->addWidget(cpp14::make_unique<WText>(WString{"{1}"}.arg(dateTimeStr)))
+                          ->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_4);
+
+    auto pList = item.getGorevliList();
+    if( pList.size() ){
+        auto __gContainer = rContainer->addWidget(cpp14::make_unique<WText>(WString{"{1} +{2}"}.arg(pList.front().adSoyad()).arg(pList.size()-1)));
+            __gContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_4);
+        __gContainer->setAttributeValue(Style::style,Style::background::color::color(Style::color::Green::ForestGreen)+Style::color::color(Style::color::White::AliceBlue));
+    }else{
+        auto __gContainer = rContainer->addWidget(cpp14::make_unique<WText>(WString{"{1}"}.arg("Personel Yok")));
+            __gContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_4);
+        __gContainer->setAttributeValue(Style::style,Style::background::color::color(Style::color::Grey::LightGray)+Style::color::color(Style::color::White::AliceBlue));
+    }
+
+
+
 
     auto durumContainer = rContainer->addWidget(cpp14::make_unique<WText>(item.getDurum()));
-    durumContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_4);
-//    durumContainer->addStyleClass(item.isTamamlandi() ? Bootstrap::ContextualBackGround::bg_success : Bootstrap::ContextualBackGround::bg_danger);
+    durumContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_4);
+
     if( item.isTamamlandi() ){
         durumContainer->setAttributeValue(Style::style,Style::background::color::color(Style::color::Green::Chartreuse)+Style::color::color(Style::color::White::AliceBlue));
     }else{
@@ -316,6 +502,23 @@ void TaskItemWidget::initWidget()
     }
     durumContainer->addNew<WText>(this->getDurum());
 
+    auto pList = this->getGorevliList();
+    if( pList.size() ){
+        for( const auto &pItem : pList ){
+            auto __gContainer = hLayout->addWidget(cpp14::make_unique<WText>(WString{"{1}"}.arg(pItem.adSoyad())));
+            __gContainer->setAttributeValue(Style::style,Style::background::color::color(Style::color::Green::ForestGreen)+Style::color::color(Style::color::White::AliceBlue));
+            __gContainer->addStyleClass(CSSStyle::Gradient::grayGradient90+CSSStyle::Radius::radius3px+CSSStyle::Shadows::shadow8px);
+
+        }
+    }else{
+        auto __gContainer = hLayout->addWidget(cpp14::make_unique<WText>(WString{"{1}"}.arg("Personel Yok")));
+        __gContainer->setAttributeValue(Style::style,Style::background::color::color(Style::color::Grey::LightGray)+Style::color::color(Style::color::White::AliceBlue));
+        __gContainer->addStyleClass(CSSStyle::Gradient::grayGradient90+CSSStyle::Radius::radius3px+CSSStyle::Shadows::shadow8px);
+
+
+    }
+
+
     hLayout->addStretch(1);
 
 
@@ -335,6 +538,34 @@ void TaskItemWidget::initWidget()
     isAciklamaContainer->setPadding(10,Side::Top|Side::Bottom);
     isAciklamaContainer->addStyleClass(Bootstrap::Grid::col_full_12+Bootstrap::ImageShape::img_rounded);
 
+}
+
+PersonelSelectWidget::PersonelSelectWidget(const Personel &personel)
+{
+    this->setDocumentView(personel.view());
+    this->addWidget(cpp14::make_unique<WText>(personel.AdSoyad().toStdString()));
+
+    decorationStyle().setCursor(Cursor::PointingHand);
+    addStyleClass(CSSStyle::Radius::radius3px);
+    setPadding(10,AllSides);
+    setMargin(2,AllSides);
+    addStyleClass("taskManagerPersonelUnSelected");
+
+    clicked().connect([=](){
+        if( !mSelected ){
+            removeStyleClass("taskManagerPersonelUnSelected");
+            addStyleClass("taskManagerPersonelSelected");
+        }else{
+            removeStyleClass("taskManagerPersonelSelected");
+            addStyleClass("taskManagerPersonelUnSelected");
+        }
+        mSelected = !mSelected;
+    });
+}
+
+bool PersonelSelectWidget::selected() const
+{
+    return mSelected;
 }
 
 
