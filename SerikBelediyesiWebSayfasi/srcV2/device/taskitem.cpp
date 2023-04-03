@@ -32,7 +32,19 @@ TaskItem &TaskItem::addGorevli(const std::string &gorevliOid, const std::string 
 {
     GorevliItem item;
     item.setPersonel(gorevliOid,adSoyad);
-    this->pushArray(Key::gorevli,item.view());
+
+    auto list = getGorevliList();
+
+    bool exist = false;
+    for( const auto &personel : list ){
+        if( personel.personelOid() == gorevliOid ){
+            exist = true;
+            break;
+        }
+    }
+    if( !exist ){
+        this->pushArray(Key::gorevli,item.view());
+    }
     return *this;
 }
 
@@ -109,6 +121,19 @@ std::list<GorevliItem> TaskItem::getGorevliList() const
         }
     }
     return list;
+}
+
+bool TaskItem::isGorevli(const std::string &gorevliOid) const
+{
+    bool exist = false;
+    auto list = getGorevliList();
+    for( const auto &personel : list ){
+        if( gorevliOid == personel.personelOid() ){
+            exist = true;
+            break;
+        }
+    }
+    return exist;
 }
 
 TaskManager::TaskManager(SerikBLDCore::User *_mUser)
@@ -349,10 +374,19 @@ void TaskManager::assignPersonel(const std::string &taskOid)
 
     auto gLayout = personelContainer->setLayout(cpp14::make_unique<WGridLayout>());
 
+    TaskItem selectedpersonelBefore;
+    selectedpersonelBefore.setOid(taskOid);
+    selectedpersonelBefore = this->FindOneItem(selectedpersonelBefore);
+    auto selectedPerList = selectedpersonelBefore.getGorevliList();
+
 
     int i = 0; int j = 0;
     for( const auto &personel : list ){
         auto personelItemContainer = gLayout->addWidget(cpp14::make_unique<PersonelSelectWidget>(personel),i,j,AlignmentFlag::Justify);
+        if( selectedpersonelBefore.isGorevli(personel.oid()->to_string() ) ){
+            personelItemContainer->setSelect();
+            mPersonelSelectWidget.push_back(personelItemContainer);
+        }
         personelItemContainer->clicked().connect([=](){
             if( personelItemContainer->selected() ){
                 mPersonelSelectWidget.push_back(personelItemContainer);
@@ -383,9 +417,11 @@ void TaskManager::assignPersonel(const std::string &taskOid)
             taskItem.addGorevli(pItem->oid()->to_string(),pItem->AdSoyad().toStdString());
         }
 
+        LOG << bsoncxx::to_json(taskItem.view()).c_str() << "\n";
+
         auto upt = this->UpdateItem(taskItem);
         if( upt ){
-            this->updateTaskList();
+            this->loadTask(taskOid);
 
             delete mPersonelManager;
 
@@ -508,14 +544,11 @@ void TaskItemWidget::initWidget()
             auto __gContainer = hLayout->addWidget(cpp14::make_unique<WText>(WString{"{1}"}.arg(pItem.adSoyad())));
             __gContainer->setAttributeValue(Style::style,Style::background::color::color(Style::color::Green::ForestGreen)+Style::color::color(Style::color::White::AliceBlue));
             __gContainer->addStyleClass(CSSStyle::Gradient::grayGradient90+CSSStyle::Radius::radius3px+CSSStyle::Shadows::shadow8px);
-
         }
     }else{
         auto __gContainer = hLayout->addWidget(cpp14::make_unique<WText>(WString{"{1}"}.arg("Personel Yok")));
         __gContainer->setAttributeValue(Style::style,Style::background::color::color(Style::color::Grey::LightGray)+Style::color::color(Style::color::White::AliceBlue));
         __gContainer->addStyleClass(CSSStyle::Gradient::grayGradient90+CSSStyle::Radius::radius3px+CSSStyle::Shadows::shadow8px);
-
-
     }
 
 
@@ -552,20 +585,39 @@ PersonelSelectWidget::PersonelSelectWidget(const Personel &personel)
     addStyleClass("taskManagerPersonelUnSelected");
 
     clicked().connect([=](){
-        if( !mSelected ){
-            removeStyleClass("taskManagerPersonelUnSelected");
-            addStyleClass("taskManagerPersonelSelected");
-        }else{
-            removeStyleClass("taskManagerPersonelSelected");
-            addStyleClass("taskManagerPersonelUnSelected");
-        }
-        mSelected = !mSelected;
+        ToogleSelect();
     });
 }
 
 bool PersonelSelectWidget::selected() const
 {
     return mSelected;
+}
+
+void PersonelSelectWidget::setSelect()
+{
+    if( !mSelected ){
+        ToogleSelect();
+    }
+}
+
+void PersonelSelectWidget::setUnselect()
+{
+    if( mSelected ){
+        ToogleSelect();
+    }
+}
+
+void PersonelSelectWidget::ToogleSelect()
+{
+    if( mSelected ){
+        removeStyleClass("taskManagerPersonelSelected");
+        addStyleClass("taskManagerPersonelUnSelected");
+    }else{
+        removeStyleClass("taskManagerPersonelUnSelected");
+        addStyleClass("taskManagerPersonelSelected");
+    }
+    mSelected = !mSelected;
 }
 
 

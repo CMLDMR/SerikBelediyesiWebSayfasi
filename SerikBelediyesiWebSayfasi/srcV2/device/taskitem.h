@@ -97,6 +97,7 @@ public:
     TaskItem &addGorevli( const std::string &gorevliOid , const std::string &adSoyad );
 
 
+
     std::string getDate(const std::string &format = "dd/MM/yyyy") const;
     std::string getTime( const std::string &format = "hh:mm:ss") const;
     std::string getIsAdi() const;
@@ -105,7 +106,7 @@ public:
     std::string getImageOid() const;
     bool isTamamlandi() const;
     std::list<GorevliItem> getGorevliList() const;
-
+    bool isGorevli( const std::string &gorevliOid ) const;
 };
 
 
@@ -170,6 +171,10 @@ public:
 
 
     bool selected() const;
+
+    void setSelect();
+    void setUnselect();
+    void ToogleSelect();
 
 private:
     bool mSelected{false};
