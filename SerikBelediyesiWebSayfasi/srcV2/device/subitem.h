@@ -72,6 +72,9 @@ public:
         ACIKLAMA = 0,
         RESIM,
         MALZEME,
+        TEKLIF,
+        TAMAMLANDI,
+        ONAYLANDI,
         UNKNOWN = 999
     };
 
@@ -91,11 +94,14 @@ public:
     SubItem &setPersonel( const std::string &personelOid , const std::string &personelName );
     SubItem &setAciklama( const std::string &aciklamaText );
     SubItem &setResimOid( const std::string &resimOid );
+    SubItem &setMudurOnay( const Onay &onay );
+    SubItem &setBaskanYrdOnay( const Onay &onay );
 
     SubItem &addMalzeme(const std::string &malzemeAdi , const double &miktar , const std::string &metric);
 
     std::vector<MalzemeItem> getMalzemeList() const;
     SubItem::Type getType() const;
+    std::string uuidString() const;
     std::string getAciklama() const;
     std::string getPersoneName() const;
     std::string getDateString() const;
@@ -108,6 +114,12 @@ public:
 
 
 
+    void setUser(SerikBLDCore::User *newUser);
+
+    SerikBLDCore::User *user() const;
+
+
+    Signal<SubItem::Onay> &mudurOnayClicked();
 private:
 
     void initWidget();
@@ -115,6 +127,9 @@ private:
 
     std::unique_ptr<WContainerWidget> createBtn(const std::string &btnName , const std::string &backColor);
 
+    SerikBLDCore::User* mUser = nullptr;
+
+    Signal<SubItem::Onay> _mMudurOnayClicked;
 };
 
 

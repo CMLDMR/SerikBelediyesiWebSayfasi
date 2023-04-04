@@ -65,6 +65,7 @@ class TaskItem : public SerikBLDCore::Item
 {
 public:
     TaskItem();
+    TaskItem(SerikBLDCore::User* _mUser);
     TaskItem( const TaskItem &other ):SerikBLDCore::Item(Key::Collection.data()){
         this->setDocumentView(other.view());
     }
@@ -101,6 +102,9 @@ public:
     std::list<GorevliItem> getGorevliList() const;
     bool isGorevli( const std::string &gorevliOid ) const;
     std::list<SubItem> getAkisList() const;
+
+private:
+    SerikBLDCore::User* mUser;
 };
 
 
@@ -108,11 +112,12 @@ public:
 class TaskItemWidget : public ContainerWidget, public TaskItem, public SerikBLDCore::DB
 {
 public:
-    explicit TaskItemWidget(const TaskItem &item , SerikBLDCore::DB* mDB);
+    explicit TaskItemWidget(const TaskItem &item , SerikBLDCore::User* _mUser);
 
 private:
     void initWidget();
     void loadAkis( const SubItem &akisItem );
+    SerikBLDCore::User* mUser;
 };
 
 class TaskListItem : public WContainerWidget

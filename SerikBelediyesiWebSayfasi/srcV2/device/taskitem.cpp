@@ -18,6 +18,12 @@ TaskItem::TaskItem()
 
 }
 
+TaskItem::TaskItem(SerikBLDCore::User *_mUser)
+    :SerikBLDCore::Item(Key::Collection.data()),mUser(_mUser)
+{
+
+}
+
 TaskItem &TaskItem::setBirim(const std::string &birim)
 {
     this->append(Key::birim,birim);
@@ -164,7 +170,7 @@ TaskManager::TaskManager(SerikBLDCore::User *_mUser)
 //    this->initCSS();
     this->Content()->setMargin(15,Side::Top);
     this->initHeader();
-    this->UpdateList(TaskItem().setBirim(mUser->Birimi()));
+    this->UpdateList(TaskItem(mUser).setBirim(mUser->Birimi()));
 }
 
 void TaskManager::onList(const QVector<TaskItem> *mlist)
@@ -301,7 +307,7 @@ void TaskManager::addNewTask()
 
     mDialog->Accepted().connect([=](){
 
-        TaskItem taskItem;
+        TaskItem taskItem(mUser);
 
         if( uploaderWidget->isUploaded() ){
             auto uploadedOid = this->uploadfile(uploaderWidget->fileLocation());
@@ -323,7 +329,7 @@ void TaskManager::addNewTask()
         if( ins.empty() ){
             this->showMessage("Uyarı","İş Kayıt Edilemedi");
         }else{
-            TaskItem filterItem;
+            TaskItem filterItem(mUser);
             filterItem.append(Key::birim,mUser->Birimi());
             this->UpdateList(filterItem);
             this->removeDialog(mDialog);
@@ -343,7 +349,7 @@ void TaskManager::loadTask(const std::string &taskoid)
 
     if( !val.view().empty() ){
         this->Content()->clear();
-        auto container = this->Content()->addWidget(cpp14::make_unique<TaskItemWidget>(val,this->getDB()));
+        auto container = this->Content()->addWidget(cpp14::make_unique<TaskItemWidget>(val,this->mUser));
         container->setMargin(25,Side::Top);
 
         this->Footer()->clear();
@@ -375,7 +381,6 @@ void TaskManager::loadTask(const std::string &taskoid)
             auto obkBtn = askConfirm("Silmek İstediğinize Eminmisiniz?");
             obkBtn->clicked().connect([=](){
                 this->deleteTask(taskoid);
-
             });
         });
         hLayout->addWidget(std::move(silBtn));
@@ -699,8 +704,8 @@ std::string TaskListItem::getOid() const
     return mOid;
 }
 
-TaskItemWidget::TaskItemWidget(const TaskItem &item, DB *mDB)
-    :SerikBLDCore::DB(mDB)
+TaskItemWidget::TaskItemWidget(const TaskItem &item, SerikBLDCore::User *_mUser)
+    :SerikBLDCore::DB(_mUser->getDB()),mUser(_mUser)
 {
     this->setDocumentView(item.view());
     this->initWidget();
@@ -781,10 +786,24 @@ void TaskItemWidget::initWidget()
 void TaskItemWidget::loadAkis(const SubItem &akisItem)
 {
     auto container = this->Content()->addNew<SubItem>(akisItem);
+    container->setUser(mUser);
     container->addStyleClass(Bootstrap::Grid::col_full_12);
-
-
-
+    container->mudurOnayClicked().connect([=](const SubItem::Onay &onay){
+        TaskItem filter;
+        filter.setOid(this->oid().value().to_string());
+        SerikBLDCore::Item elematch("");
+        elematch.append("$elemMatch",make_document(kvp(Key::AKIS::uuid,container->uuidString())));
+        filter.append(Key::akis,elematch);
+        TaskItem setObj;
+        setObj.append("$set",make_document(kvp(Key::akis+".$."+Key::AKIS::mudurOnay,
+                                                bsoncxx::types::b_int32{static_cast<std::int32_t>(onay)})));
+        auto upt = this->getDB()->db()->collection(filter.getCollection()).update_one(filter.view(),setObj.view());
+        if( upt ){
+            this->showPopUpMessage("Güncellendi");
+        }else{
+            this->showPopUpMessage("Hata: Task Güncellenemedi");
+        }
+    });
 
 }
 
