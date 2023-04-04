@@ -89,7 +89,7 @@ public:
     void removeDialog( WDialog* mDialog );
 
 
-    DialogContainerWidget *createFlatDialog(const std::string &title = "");
+    DialogContainerWidget *createFlatDialog(const std::string &title = "" , const bool &autoDel = true);
     void removeDialog(DialogContainerWidget *removedContainer );
 
     enum ContainerStyleType

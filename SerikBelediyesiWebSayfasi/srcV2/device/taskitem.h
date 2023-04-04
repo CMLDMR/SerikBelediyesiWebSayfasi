@@ -2,11 +2,9 @@
 #define TODOLIST_TASKITEM_H
 
 
-#include "item.h"
 #include "listitem.h"
-#include "SerikBelediyesiWebSayfasi/BaseClass/containerwiget.h"
-#include "user.h"
-#include "SerikBelediyesiWebSayfasi/BaseClass/cssbuilder.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/device/subitem.h"
+#include "stok/stokv2manager.h"
 
 namespace TodoList {
 
@@ -21,16 +19,7 @@ namespace Key {
     inline const std::string akis{"akis"};
     inline const std::string resim{"resim"};
     inline const std::string tamamlandi{"tamamlandi"};
-
     inline const std::string imageOid{"imageOid"};
-    namespace AKIS {
-        inline const std::string aciklama{"aciklama"};
-        inline const std::string resim{"resim"};
-        inline const std::string julianDay{"julianDay"};
-        inline const std::string epcohTime{"epochTime"};
-        inline const std::string uuid{"uuid"};
-    }
-
     inline const std::string gorevli{"gorevli"};
     namespace GOREVLI {
         inline const std::string gorevliOid{"gorevliOid"};
@@ -69,6 +58,9 @@ public:
 };
 
 
+
+
+
 class TaskItem : public SerikBLDCore::Item
 {
 public:
@@ -95,6 +87,7 @@ public:
     TaskItem &setBirim(const std::string &birim );
     TaskItem &setImageItem( const std::string &oid );
     TaskItem &addGorevli( const std::string &gorevliOid , const std::string &adSoyad );
+    TaskItem &addAkis( const SubItem &subItem );
 
 
 
@@ -107,6 +100,7 @@ public:
     bool isTamamlandi() const;
     std::list<GorevliItem> getGorevliList() const;
     bool isGorevli( const std::string &gorevliOid ) const;
+    std::list<SubItem> getAkisList() const;
 };
 
 
@@ -118,6 +112,7 @@ public:
 
 private:
     void initWidget();
+    void loadAkis( const SubItem &akisItem );
 };
 
 class TaskListItem : public WContainerWidget
@@ -152,6 +147,9 @@ public:
 
     void assignPersonel( const std::string &taskOid );
 
+    void assignMalzeme( const std::string &taskOid );
+    void reListMalzeme( WContainerWidget* mMalzemeListContainer , QList<MalzemeItem>* mList );
+
     std::unique_ptr<WContainerWidget> createSmallButton( const std::string &name );
 
     void updateTaskList();
@@ -160,6 +158,8 @@ private:
     SerikBLDCore::User* mUser;
 
     std::list<PersonelSelectWidget*> mPersonelSelectWidget;
+
+    void deleteTask( const std::string &taskOid );
 
 };
 

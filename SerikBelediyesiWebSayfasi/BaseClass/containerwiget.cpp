@@ -234,7 +234,7 @@ void ContainerWidget::removeDialog(WDialog *mDialog)
     wApp->instance()->root()->removeChild(mDialog);
 }
 
-DialogContainerWidget* ContainerWidget::createFlatDialog(const std::string &title)
+DialogContainerWidget* ContainerWidget::createFlatDialog(const std::string &title, const bool &autoDel)
 {
     auto container = Wt::WApplication::instance()->root()->addNew<DialogContainerWidget>(title);
     container->setId("flatDialog");
@@ -244,9 +244,12 @@ DialogContainerWidget* ContainerWidget::createFlatDialog(const std::string &titl
     container->addStyleClass(CSSStyle::NewDialog::newDialog);
     container->setContentAlignment(AlignmentFlag::Center);
 
-    container->Rejected().connect([=](){
-        Wt::WApplication::instance()->root()->removeWidget(container);
-    });
+    if( autoDel ){
+        container->Rejected().connect([=](){
+            Wt::WApplication::instance()->root()->removeWidget(container);
+        });
+    }
+
 
 
     return container;
@@ -276,6 +279,7 @@ void ContainerWidget::setContainerStyle(ContainerWidget::ContainerStyleType type
         break;
     }
 }
+
 
 void ContainerWidget::showMessage(std::string title, std::string msg, std::string btnText)
 {
