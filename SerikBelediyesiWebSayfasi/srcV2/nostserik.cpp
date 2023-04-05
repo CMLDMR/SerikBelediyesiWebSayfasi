@@ -609,8 +609,8 @@ Signal<std::string> &v2::NostItemThumb::EditClicked()
 
 
 
-v2::NostSerik::NostSerik(SerikBLDCore::DB *mDB)
-    :SerikBLDCore::ListItem<NostItem>(mDB)
+v2::NostSerik::NostSerik(SerikBLDCore::DB *mDB, const bool &showFullScreen)
+    :SerikBLDCore::ListItem<NostItem>(mDB),mShowFullScreen(showFullScreen)
 {
 
     this->setAttributeValue(Style::style,Style::background::url("img/nostback.jpeg")
@@ -653,7 +653,11 @@ void v2::NostSerik::onList(const QVector<NostItem> *mlist)
         mFList.append(item);
     }
 
-    this->showItem();
+    if( mShowFullScreen ){
+        this->showItemFull();
+    }else{
+        this->showItem();
+    }
 
 }
 

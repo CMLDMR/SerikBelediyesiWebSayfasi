@@ -53,6 +53,7 @@ public:
     bool loadGundem( const std::string& oid );
 
     bool loadBirimManager( const QMap<QString,QString> &map );
+    bool loadNost();
 
     void LoadDeviceStatus();
 
