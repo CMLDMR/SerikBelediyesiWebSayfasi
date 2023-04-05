@@ -168,6 +168,9 @@ std::string SubItem::getMudurOnayString() const
     case Onay::Red:
         return "Red";
         break;
+    case Onay::YetersizAciklama:
+        return "YetersizAçıklama";
+        break;
     default:
         return "unKnownType";
         break;
@@ -195,6 +198,9 @@ std::string SubItem::getBaskanYrdOnayString() const
             break;
     case Onay::Red:
         return "Red";
+        break;
+    case Onay::YetersizAciklama:
+        return "YetersizAçıklama";
         break;
     default:
         return "unKnownType";
@@ -274,6 +280,8 @@ void SubItem::initMalzemeList()
         mudurOnayText->addStyleClass(Bootstrap::Label::Warning);
     }else if( this->getMudurOnay() == Onay::Red ){
         mudurOnayText->addStyleClass(Bootstrap::Label::Danger);
+    }else if( this->getMudurOnay() == Onay::YetersizAciklama ){
+        mudurOnayText->addStyleClass(Bootstrap::Label::Primary);
     }else{
         mudurOnayText->addStyleClass(Bootstrap::Label::info);
     }
@@ -285,6 +293,8 @@ void SubItem::initMalzemeList()
             baskanYrdOnayText->addStyleClass(Bootstrap::Label::Warning);
         }else if( this->getBaskanYrdOnay() == Onay::Red ){
             baskanYrdOnayText->addStyleClass(Bootstrap::Label::Danger);
+        }else if( this->getBaskanYrdOnay() == Onay::YetersizAciklama ){
+            baskanYrdOnayText->addStyleClass(Bootstrap::Label::Primary);
         }else{
             baskanYrdOnayText->addStyleClass(Bootstrap::Label::info);
         }
@@ -343,7 +353,7 @@ void SubItem::initMalzemeList()
 
     auto hLayout = btnContainer->setLayout(cpp14::make_unique<WHBoxLayout>());
 
-    //TODO: Müdür RED veya Başkan Yardımcısı RED SIGNAL Tetikleme
+    //TODO: Zaten RED ise Tekrar RED etme
     auto redBtn = createBtn("Red",Style::background::color::rgb (this->getRandom (175,255),
                                                                  this->getRandom (0,50),
                                                                  this->getRandom ()));
@@ -358,13 +368,14 @@ void SubItem::initMalzemeList()
             if( mUser->Statu() == SerikBLDCore::IK::Statu::BaskanYardimcisi ){
                 this->setBaskanYrdOnay(Onay::Red);
                 this->initWidget();
+                _mBaskanYrdOnayClicked.emit(Onay::Red);
             }
         }
-
-
     });
     hLayout->addWidget(std::move(redBtn),1);
-    //TODO: Müdür Kabul Et veya Başkan Yardımcısı Kabul Et
+
+
+    //TODO: Zaten Kabul ise Tekrar Kabul etme
     auto acceptBtn = createBtn("Kabul Et",Style::background::color::rgb (this->getRandom (0,50),
                                                                          this->getRandom (175,255),
                                                                          this->getRandom ()));
@@ -379,15 +390,31 @@ void SubItem::initMalzemeList()
             if( mUser->Statu() == SerikBLDCore::IK::Statu::BaskanYardimcisi ){
                 this->setBaskanYrdOnay(Onay::Onayli);
                 this->initWidget();
+                _mBaskanYrdOnayClicked.emit(Onay::Onayli);
             }
         }
     });
     hLayout->addWidget(std::move(acceptBtn),1);
 
-    //TODO: Müdür Yetersiz Açıklama İşaretle veya Başkan Yardımcısı Yetersiz Açıklama İşaretle
+    //TODO: Yetersiz Aciklama var ise yeniden işaretleme yapılmayacak
     auto requiredExplainBtn = createBtn("Yetersiz Açıklama",Style::background::color::rgb (this->getRandom (0,50),
                                                                          this->getRandom (100,155),
                                                                          this->getRandom (175,255)));
+    requiredExplainBtn->clicked().connect([=](){
+        if( mUser ){
+            if( mUser->Statu() == SerikBLDCore::IK::Statu::Mudur ){
+                this->setMudurOnay(Onay::YetersizAciklama);
+                this->initMalzemeList();
+                _mMudurOnayClicked.emit(Onay::YetersizAciklama);
+            }
+
+            if( mUser->Statu() == SerikBLDCore::IK::Statu::BaskanYardimcisi ){
+                this->setBaskanYrdOnay(Onay::YetersizAciklama);
+                this->initWidget();
+                _mBaskanYrdOnayClicked.emit(Onay::YetersizAciklama);
+            }
+        }
+    });
     hLayout->addWidget(std::move(requiredExplainBtn),1);
 
     //TODO: Onaylandıktan sonra PDF Olarak Yazdır
@@ -395,6 +422,18 @@ void SubItem::initMalzemeList()
                                                                        this->getRandom (100,155),
                                                                        this->getRandom (100,155)));
     hLayout->addWidget(std::move(yazdirBtn),1);
+
+    //TODO: Düzenle
+    auto duzenleBtn = createBtn("Düzenle",Style::background::color::rgb (this->getRandom (100,155),
+                                                                        this->getRandom (100,155),
+                                                                        this->getRandom (100,155)));
+    hLayout->addWidget(std::move(duzenleBtn),1);
+
+    //TODO: Sil
+    auto silBtn = createBtn("Sil",Style::background::color::rgb (this->getRandom (200,255),
+                                                                         this->getRandom (50,100),
+                                                                         this->getRandom (50,100)));
+    hLayout->addWidget(std::move(silBtn),1);
 
 }
 
@@ -426,6 +465,11 @@ SerikBLDCore::User *SubItem::user() const
 Signal<SubItem::Onay> &SubItem::mudurOnayClicked()
 {
     return _mMudurOnayClicked;
+}
+
+Signal<SubItem::Onay> &SubItem::baskanYrdOnayClicked()
+{
+    return _mBaskanYrdOnayClicked;
 }
 
 void SubItem::setUser(SerikBLDCore::User *newUser)

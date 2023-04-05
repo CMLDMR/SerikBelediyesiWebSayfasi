@@ -82,6 +82,7 @@ public:
         Beklemede = 0,
         Red,
         Onayli,
+        YetersizAciklama,
         Bilinmeyen
     };
 
@@ -120,6 +121,7 @@ public:
 
 
     Signal<SubItem::Onay> &mudurOnayClicked();
+    Signal<SubItem::Onay> &baskanYrdOnayClicked();
 private:
 
     void initWidget();
@@ -130,6 +132,8 @@ private:
     SerikBLDCore::User* mUser = nullptr;
 
     Signal<SubItem::Onay> _mMudurOnayClicked;
+    Signal<SubItem::Onay> _mBaskanYrdOnayClicked;
+
 };
 
 

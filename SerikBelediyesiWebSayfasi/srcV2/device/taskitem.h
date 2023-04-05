@@ -21,9 +21,15 @@ namespace Key {
     inline const std::string tamamlandi{"tamamlandi"};
     inline const std::string imageOid{"imageOid"};
     inline const std::string gorevli{"gorevli"};
+    inline const std::string baskanYardimcisi{"baskanYardimcisi"};
+
     namespace GOREVLI {
         inline const std::string gorevliOid{"gorevliOid"};
         inline const std::string gorevliAdSoyad{"gorevliadSoyad"};
+    }
+    namespace BASKANYARDIMCISI{
+        inline const std::string baskanYardimcisiOid{"baskanYardimcisiOid"};
+        inline const std::string baskanYardimcisiAdSoyad{"baskanYardimcisiAdSoyad"};
     }
 }
 
@@ -87,6 +93,7 @@ public:
 
     TaskItem &setBirim(const std::string &birim );
     TaskItem &setImageItem( const std::string &oid );
+    TaskItem &setBaskanYardimcisi( const std::string &baskanYrdOid , const std::string &baskanYrdAdSoyad );
     TaskItem &addGorevli( const std::string &gorevliOid , const std::string &adSoyad );
     TaskItem &addAkis( const SubItem &subItem );
 
@@ -102,6 +109,7 @@ public:
     std::list<GorevliItem> getGorevliList() const;
     bool isGorevli( const std::string &gorevliOid ) const;
     std::list<SubItem> getAkisList() const;
+    GorevliItem getBaskanYardimcisi() const;
 
 private:
     SerikBLDCore::User* mUser;
@@ -151,6 +159,7 @@ public:
     void loadTask( const std::string &taskoid );
 
     void assignPersonel( const std::string &taskOid );
+    void assignBaskanYardimcisi( const std::string &taskOid );
 
     void assignMalzeme( const std::string &taskOid );
     void reListMalzeme( WContainerWidget* mMalzemeListContainer , QList<MalzemeItem>* mList );

@@ -36,6 +36,14 @@ TaskItem &TaskItem::setImageItem(const std::string &oid)
     return *this;
 }
 
+TaskItem &TaskItem::setBaskanYardimcisi(const std::string &baskanYrdOid, const std::string &baskanYrdAdSoyad)
+{
+    GorevliItem item;
+    item.setPersonel(baskanYrdOid,baskanYrdAdSoyad);
+    this->append(Key::baskanYardimcisi,item.view());
+    return *this;
+}
+
 TaskItem &TaskItem::addGorevli(const std::string &gorevliOid, const std::string &adSoyad)
 {
     GorevliItem item;
@@ -160,6 +168,16 @@ std::list<SubItem> TaskItem::getAkisList() const
         }
     }
     return list;
+}
+
+GorevliItem TaskItem::getBaskanYardimcisi() const
+{
+    GorevliItem item_;
+    auto val = this->element(Key::baskanYardimcisi);
+    if( val ){
+        item_.setDocumentView(val.value().view().get_document().value);
+    }
+    return item_;
 }
 
 TaskManager::TaskManager(SerikBLDCore::User *_mUser)
@@ -355,6 +373,14 @@ void TaskManager::loadTask(const std::string &taskoid)
         this->Footer()->clear();
         auto hLayout = this->Footer()->setLayout(cpp14::make_unique<WHBoxLayout>());
 
+
+        auto baskanYardimciAta = createSmallButton("Başkan Yardımcısı Ata+");
+        baskanYardimciAta->clicked().connect([=](){
+            this->assignBaskanYardimcisi(taskoid);
+        });
+        hLayout->addWidget(std::move(baskanYardimciAta));
+
+
         auto gorevliBtn = createSmallButton("Personel Ata+");
         gorevliBtn->clicked().connect([=](){
             this->assignPersonel(taskoid);
@@ -457,6 +483,94 @@ void TaskManager::assignPersonel(const std::string &taskOid)
             delete mPersonelManager;
 
             this->removeDialog(mDialog);
+        }else{
+            this->showPopUpMessage("Personel Eklenemedi","warn");
+        }
+
+    });
+
+}
+
+void TaskManager::assignBaskanYardimcisi(const std::string &taskOid)
+{
+
+
+    mPersonelSelectWidget.clear();
+    auto mDialog = createFlatDialog("Personel Ata");
+
+    SerikBLDCore::PersonelManager* mPersonelManager = new SerikBLDCore::PersonelManager(this->getDB());
+
+    SerikBLDCore::IK::Personel filter;
+    filter.setStatu(SerikBLDCore::IK::Statu::BaskanYardimcisi.c_str());
+    auto list = mPersonelManager->List(filter);
+
+    mDialog->Content()->setOverflow(Overflow::Scroll);
+    auto personelContainer = mDialog->Content()->addWidget(cpp14::make_unique<WContainerWidget>());
+    personelContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+
+    auto gLayout = personelContainer->setLayout(cpp14::make_unique<WGridLayout>());
+
+    TaskItem selectedpersonelBefore;
+    selectedpersonelBefore.setOid(taskOid);
+    selectedpersonelBefore = this->FindOneItem(selectedpersonelBefore);
+
+
+    int i = 0; int j = 0;
+    for( const auto &personel : list ){
+        auto personelItemContainer = gLayout->addWidget(cpp14::make_unique<PersonelSelectWidget>(personel),i,j,AlignmentFlag::Justify);
+        if( selectedpersonelBefore.getBaskanYardimcisi().personelOid() == personelItemContainer->oid()->to_string() ){
+            personelItemContainer->setSelect();
+            mPersonelSelectWidget.push_back(personelItemContainer);
+        }
+        personelItemContainer->clicked().connect([=](){
+            if( personelItemContainer->selected() ){
+                mPersonelSelectWidget.push_back(personelItemContainer);
+            }else{
+                for( const auto &pItem : mPersonelSelectWidget ){
+                    if( personelItemContainer->oid().value().to_string() == pItem->oid().value().to_string() ){
+                        mPersonelSelectWidget.remove(pItem);
+                        break;
+                    }
+                }
+            }
+        });
+        j++;
+        if( j > 3 ) { i++; j = 0 ; }
+    }
+
+    mDialog->Content()->setHeight(150);
+    mDialog->show();
+
+
+    mDialog->Accepted().connect([=](){
+
+
+        TaskItem taskItem;
+        taskItem.setOid(taskOid);
+
+        if( mPersonelSelectWidget.size() > 1 ){
+            this->showPopUpMessage("Birden Fazla Başkan Yardımcısı Seçemezsiniz","warn");
+            return;
+        }
+
+        if( !mPersonelSelectWidget.size() ){
+            this->showPopUpMessage("Başkan Yardımcısı Seçmediniz","warn");
+            return;
+        }
+        //TODO: Başkan Yardımcısı Set Edilecek
+        for( const auto &pItem : mPersonelSelectWidget ){
+            taskItem.setBaskanYardimcisi(pItem->oid()->to_string(),pItem->AdSoyad().toStdString());
+        }
+
+        auto upt = this->UpdateItem(taskItem);
+        if( upt ){
+            this->loadTask(taskOid);
+
+            delete mPersonelManager;
+
+            this->removeDialog(mDialog);
+
+            this->showPopUpMessage("Başkan Yardımcısı Eklendi");
         }else{
             this->showPopUpMessage("Personel Eklenemedi","warn");
         }
@@ -760,6 +874,12 @@ void TaskItemWidget::initWidget()
 
     hLayout->addStretch(1);
 
+    auto baskanYardimcisiContainer = hLayout->addWidget(cpp14::make_unique<WContainerWidget>());
+    auto baskanYrdText = baskanYardimcisiContainer->addNew<WText>(this->getBaskanYardimcisi().adSoyad());
+    baskanYrdText->setAttributeValue(Style::style,Style::background::color::color(Style::color::Yellow::Moccasin)+Style::color::color(Style::color::Grey::DimGray));
+    baskanYrdText->addStyleClass(CSSStyle::Gradient::grayGradient90+CSSStyle::Radius::radius3px+CSSStyle::Shadows::shadow8px);
+    baskanYrdText->setInline(true);
+    baskanYrdText->setPadding(5,AllSides);
 
     auto imageContainer = this->Header()->addWidget(cpp14::make_unique<WContainerWidget>());
     imageContainer->setHeight(250);
@@ -788,22 +908,39 @@ void TaskItemWidget::loadAkis(const SubItem &akisItem)
     auto container = this->Content()->addNew<SubItem>(akisItem);
     container->setUser(mUser);
     container->addStyleClass(Bootstrap::Grid::col_full_12);
-    container->mudurOnayClicked().connect([=](const SubItem::Onay &onay){
+
+
+    auto updateTaskItem = [=]( const SubItem::Onay &onay, const bool mudur = true){
         TaskItem filter;
         filter.setOid(this->oid().value().to_string());
         SerikBLDCore::Item elematch("");
         elematch.append("$elemMatch",make_document(kvp(Key::AKIS::uuid,container->uuidString())));
         filter.append(Key::akis,elematch);
         TaskItem setObj;
-        setObj.append("$set",make_document(kvp(Key::akis+".$."+Key::AKIS::mudurOnay,
-                                                bsoncxx::types::b_int32{static_cast<std::int32_t>(onay)})));
+        if( mudur ){
+            setObj.append("$set",make_document(kvp(Key::akis+".$."+Key::AKIS::mudurOnay,
+                                                    bsoncxx::types::b_int32{static_cast<std::int32_t>(onay)})));
+        }else{
+            setObj.append("$set",make_document(kvp(Key::akis+".$."+Key::AKIS::baskanYrdOnay,
+                                                    bsoncxx::types::b_int32{static_cast<std::int32_t>(onay)})));
+        }
+
         auto upt = this->getDB()->db()->collection(filter.getCollection()).update_one(filter.view(),setObj.view());
         if( upt ){
             this->showPopUpMessage("Güncellendi");
         }else{
             this->showPopUpMessage("Hata: Task Güncellenemedi");
         }
+    };
+
+
+    container->mudurOnayClicked().connect([=](const SubItem::Onay &onay){
+        updateTaskItem(onay,true);
     });
+    container->baskanYrdOnayClicked().connect([=]( const SubItem::Onay &onay){
+        updateTaskItem(onay,false);
+    });
+
 
 }
 
