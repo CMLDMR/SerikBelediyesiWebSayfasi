@@ -943,7 +943,6 @@ void TaskItemWidget::loadAkis(const SubItem &akisItem)
     container->reloadClicked().connect([=](){
         TaskItem filter;
         filter.setOid(this->oid().value().to_string());
-
         auto val = this->getDB()->findOneItem(filter);
         if( val ){
             this->setDocumentView(val.value().view());

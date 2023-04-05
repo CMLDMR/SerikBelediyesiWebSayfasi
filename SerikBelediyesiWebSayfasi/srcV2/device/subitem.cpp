@@ -635,17 +635,37 @@ void SubItem::initMalzemeList()
                                                                        this->getRandom (100,155)));
     hLayout->addWidget(std::move(yazdirBtn),1);
 
-    //TODO: Düzenle
+
     auto duzenleBtn = createBtn("Düzenle",Style::background::color::rgb (this->getRandom (100,155),
                                                                         this->getRandom (100,155),
                                                                         this->getRandom (100,155)));
     duzenleBtn->clicked().connect(this,&SubItem::editContent);
     hLayout->addWidget(std::move(duzenleBtn),1);
 
-    //TODO: Sil
     auto silBtn = createBtn("Sil",Style::background::color::rgb (this->getRandom (200,255),
                                                                          this->getRandom (50,100),
                                                                          this->getRandom (50,100)));
+    silBtn->clicked().connect([=](){
+        auto okBtn = askConfirm("Silmek İstediğinize Emin misniz?");
+        okBtn->clicked().connect([=](){
+            TaskItem filter;
+            filter.setOid(this->mTaskItemOid);
+            TaskItem setObj;
+            setObj.append("$pull",make_document(kvp(Key::akis,this->view())));
+            auto upt = this->mUser->getDB()->db()->collection(filter.getCollection()).update_one(filter.view(),setObj.view());
+            if( upt ){
+                if( upt->modified_count() ){
+                    this->showPopUpMessage("Güncellendi: " + std::to_string(upt.value().modified_count()));
+                        _mReloadClicked.emit(NoClass());
+                }else{
+                    this->showPopUpMessage("Güncellendi: " + std::to_string(upt.value().modified_count()),"warn");
+                }
+            }else{
+                this->showPopUpMessage("Hata: Task Güncellenemedi");
+            }
+        });
+    });
+
     hLayout->addWidget(std::move(silBtn),1);
 
 }
