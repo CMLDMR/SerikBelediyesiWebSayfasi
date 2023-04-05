@@ -1,5 +1,7 @@
 
 #include "subitem.h"
+#include "stok/stokv2manager.h"
+#include "taskitem.h"
 
 namespace TodoList {
 
@@ -225,6 +227,190 @@ std::string SubItem::getResimOid() const
         return val.value().view().get_oid().value.to_string();
     }
     return "";
+}
+
+void SubItem::editContent()
+{
+
+
+    QList<MalzemeItem>* mList = new QList<MalzemeItem>;
+
+    for( const auto &item : this->getMalzemeList() ){
+        mList->push_back(item);
+    }
+
+    auto mDialog = createFlatDialog("Malzeme Ata",false);
+
+
+    auto mMalzemeListContainer = mDialog->Content()->addWidget(cpp14::make_unique<WContainerWidget>());
+    mMalzemeListContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+
+
+
+
+    auto malzemeAddContainer = mDialog->Content()->addNew<WContainerWidget>();
+    malzemeAddContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+
+    auto hMalzemeLayout = malzemeAddContainer->setLayout(cpp14::make_unique<WHBoxLayout>());
+
+    auto MalzemeComboBox = hMalzemeLayout->addWidget(cpp14::make_unique<WComboBox>(),0,AlignmentFlag::Left);
+    MalzemeComboBox->addStyleClass(Bootstrap::Grid::Large::col_lg_6+Bootstrap::Grid::Medium::col_md_6+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_4);
+    std::shared_ptr<WStandardItemModel> mModel = std::make_shared<WStandardItemModel>();
+    MalzemeComboBox->setModel(mModel);
+
+    if( mUser ){
+        SerikBLDCore::Stokv2::Stokv2Manager* mManager = new SerikBLDCore::Stokv2::Stokv2Manager(this->mUser->getDB());
+        SerikBLDCore::Stokv2::Kategori filter;
+        filter.setBirim(this->mUser->Birimi());
+        auto list = mManager->SerikBLDCore::ListItem<SerikBLDCore::Stokv2::Kategori>::List(filter);
+
+        for( const auto &item : list ){
+            std::unique_ptr<WStandardItem> newItem = std::make_unique<WStandardItem>(item.getKategoriAdi());
+            newItem->setData(item.getMetric(),ItemDataRole::User+1);
+            mModel->insertRow(0,std::move(newItem));
+        }
+    }
+
+
+
+    auto MalzemeDoubleSpinBox = hMalzemeLayout->addWidget(cpp14::make_unique<WDoubleSpinBox>(),0,AlignmentFlag::Center);
+
+
+    auto MalzemeAddBtn = hMalzemeLayout->addWidget(cpp14::make_unique<WPushButton>("Ekle+ "),0,AlignmentFlag::Justify);
+
+
+
+
+    MalzemeAddBtn->clicked().connect([=](){
+        if( MalzemeDoubleSpinBox->value() <= 0 ){
+            this->showPopUpMessage("Lütfen Geçerli Miktar Giriniz","warn");
+            return;
+        }
+        mList->push_back(MalzemeItem(MalzemeComboBox->currentText().toUTF8(),MalzemeDoubleSpinBox->value(),linb::any_cast<std::string>(mModel->item(MalzemeComboBox->currentIndex())->data(ItemDataRole::User+1))));
+        reListMalzeme(mMalzemeListContainer,mList);
+    });
+    reListMalzeme(mMalzemeListContainer,mList);
+
+
+
+    auto aciklamaTextBox = mDialog->Content()->addWidget(cpp14::make_unique<WTextArea>());
+    aciklamaTextBox->addStyleClass(Bootstrap::Grid::col_full_12);
+    aciklamaTextBox->setHeight(150);
+    aciklamaTextBox->setPlaceholderText("Malzemelerin nerede ne için kullanılacağı içeren bilgi giriniz!");
+    aciklamaTextBox->setText(this->getAciklama());
+
+    mDialog->Accepted().connect([=](){
+
+        SubItem subItem(SubItem::Type::MALZEME);
+        subItem.setAciklama(aciklamaTextBox->text().toUTF8());
+        subItem.setPersonel(this->mUser->oid().value().to_string(),this->mUser->AdSoyad());
+        for( const auto &malzemeItem : *mList ){
+            subItem.addMalzeme(malzemeItem.getMalzemeAdi(),malzemeItem.getMiktar(),malzemeItem.getMetric());
+        }
+
+
+
+        TaskItem filter;
+        filter.setOid(this->mTaskItemOid);
+
+        SerikBLDCore::Item elematch("");
+        elematch.append("$elemMatch",make_document(kvp(Key::AKIS::uuid,this->uuidString())));
+        filter.append(Key::akis,elematch);
+
+        TaskItem setObj;
+
+        setObj.append("$set",make_document(kvp(Key::akis+".$."+Key::AKIS::aciklama,aciklamaTextBox->text().toUTF8()),
+                                            kvp(Key::akis+".$."+Key::AKIS::malzemeList,subItem.element(Key::AKIS::malzemeList).value().view().get_array().value)));
+
+
+
+        auto upt = this->mUser->getDB()->db()->collection(filter.getCollection()).update_one(filter.view(),setObj.view());
+        if( upt ){
+            if( upt->modified_count() ){
+                this->showPopUpMessage("Güncellendi: " + std::to_string(upt.value().modified_count()));
+                    _mReloadClicked.emit(NoClass());
+                delete mList;
+                this->removeDialog(mDialog);
+            }else{
+                this->showPopUpMessage("Güncellendi: " + std::to_string(upt.value().modified_count()),"warn");
+            }
+
+
+        }else{
+            this->showPopUpMessage("Hata: Task Güncellenemedi");
+        }
+
+    });
+
+
+    mDialog->Rejected().connect([=](){
+        delete mList;
+        this->removeDialog(mDialog);
+    });
+
+
+    mDialog->show();
+}
+
+void SubItem::reListMalzeme(WContainerWidget *mMalzemeListContainer, QList<MalzemeItem> *mList)
+{
+
+    mMalzemeListContainer->clear();
+    std::string attribute1 = Style::background::color::color(Style::color::White::White)+Style::color::color(Style::color::Grey::Black);
+    std::string attribute2 = Style::background::color::color(Style::color::Grey::DimGray)+Style::color::color(Style::color::White::White);
+
+    int i = 0 ;
+    for( const auto &item : *mList ){
+        if( i %2 == 0 ){
+            auto __malzemeAdiText = mMalzemeListContainer->addWidget(cpp14::make_unique<WText>(item.getMalzemeAdi()));
+            __malzemeAdiText->setAttributeValue(Style::style,attribute1);
+            __malzemeAdiText->addStyleClass(Bootstrap::Grid::Large::col_lg_4+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_4);
+
+            auto __malzemeMiktarText = mMalzemeListContainer->addWidget(cpp14::make_unique<WText>(doubleToString(item.getMiktar())));
+            __malzemeMiktarText->setAttributeValue(Style::style,attribute1);
+            __malzemeMiktarText->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_3);
+
+            auto __malzemeMectric = mMalzemeListContainer->addWidget(cpp14::make_unique<WText>(item.getMetric()));
+            __malzemeMectric->setAttributeValue(Style::style,attribute1);
+            __malzemeMectric->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_3);
+
+            auto __silText = mMalzemeListContainer->addWidget(cpp14::make_unique<WText>("SİL"));
+                             __silText->setAttributeValue(Style::style,attribute1);
+            __silText->setAttributeValue(Style::customData,std::to_string(i));
+            __silText->decorationStyle().setCursor(Cursor::PointingHand);
+            __silText->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_2+Bootstrap::Grid::ExtraSmall::col_xs_2);
+            __silText->clicked().connect([=](){
+                mList->removeAt(QString::fromStdString(__silText->attributeValue(Style::customData).toUTF8()).toInt());
+                reListMalzeme(mMalzemeListContainer,mList);
+            });
+
+        }else{
+            auto __malzemeAdiText = mMalzemeListContainer->addWidget(cpp14::make_unique<WText>(item.getMalzemeAdi()));
+            __malzemeAdiText->setAttributeValue(Style::style,attribute2);
+            __malzemeAdiText->addStyleClass(Bootstrap::Grid::Large::col_lg_4+Bootstrap::Grid::Medium::col_md_4+Bootstrap::Grid::Small::col_sm_4+Bootstrap::Grid::ExtraSmall::col_xs_4);
+
+            auto __malzemeMiktarText = mMalzemeListContainer->addWidget(cpp14::make_unique<WText>(doubleToString(item.getMiktar())));
+            __malzemeMiktarText->setAttributeValue(Style::style,attribute2);
+            __malzemeMiktarText->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_3);
+
+            auto __malzemeMectric = mMalzemeListContainer->addWidget(cpp14::make_unique<WText>(item.getMetric()));
+            __malzemeMectric->setAttributeValue(Style::style,attribute2);
+            __malzemeMectric->addStyleClass(Bootstrap::Grid::Large::col_lg_3+Bootstrap::Grid::Medium::col_md_3+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_3);
+
+            auto __silText = mMalzemeListContainer->addWidget(cpp14::make_unique<WText>("SİL"));
+                             __silText->setAttributeValue(Style::style,attribute2);
+            __silText->setAttributeValue(Style::customData,std::to_string(i));
+            __silText->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_2+Bootstrap::Grid::ExtraSmall::col_xs_2);
+            __silText->decorationStyle().setCursor(Cursor::PointingHand);
+            __silText->clicked().connect([=](){
+                mList->removeAt(QString::fromStdString(__silText->attributeValue(Style::customData).toUTF8()).toInt());
+                reListMalzeme(mMalzemeListContainer,mList);
+            });
+        }
+        i++;
+    }
+
+
 }
 
 void SubItem::initWidget()
@@ -453,6 +639,7 @@ void SubItem::initMalzemeList()
     auto duzenleBtn = createBtn("Düzenle",Style::background::color::rgb (this->getRandom (100,155),
                                                                         this->getRandom (100,155),
                                                                         this->getRandom (100,155)));
+    duzenleBtn->clicked().connect(this,&SubItem::editContent);
     hLayout->addWidget(std::move(duzenleBtn),1);
 
     //TODO: Sil
@@ -483,6 +670,11 @@ std::unique_ptr<WContainerWidget> SubItem::createBtn(const std::string &btnName,
 
 }
 
+void SubItem::setTaskItemOid(const std::string &newTaskItemOid)
+{
+    mTaskItemOid = newTaskItemOid;
+}
+
 SerikBLDCore::User *SubItem::user() const
 {
     return mUser;
@@ -496,6 +688,11 @@ Signal<SubItem::Onay> &SubItem::mudurOnayClicked()
 Signal<SubItem::Onay> &SubItem::baskanYrdOnayClicked()
 {
     return _mBaskanYrdOnayClicked;
+}
+
+Signal<NoClass> &SubItem::reloadClicked()
+{
+    return _mReloadClicked;
 }
 
 void SubItem::setUser(SerikBLDCore::User *newUser)

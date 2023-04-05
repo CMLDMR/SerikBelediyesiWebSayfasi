@@ -557,7 +557,6 @@ void TaskManager::assignBaskanYardimcisi(const std::string &taskOid)
             this->showPopUpMessage("Başkan Yardımcısı Seçmediniz","warn");
             return;
         }
-        //TODO: Başkan Yardımcısı Set Edilecek
         for( const auto &pItem : mPersonelSelectWidget ){
             taskItem.setBaskanYardimcisi(pItem->oid()->to_string(),pItem->AdSoyad().toStdString());
         }
@@ -895,6 +894,8 @@ void TaskItemWidget::initWidget()
     isAciklamaContainer->addStyleClass(Bootstrap::Grid::col_full_12+Bootstrap::ImageShape::img_rounded);
 
     auto list = this->getAkisList();
+    this->Content()->clear();
+
     for( const auto &akisItem : list ){
         this->loadAkis(akisItem);
     }
@@ -904,6 +905,7 @@ void TaskItemWidget::loadAkis(const SubItem &akisItem)
 {
     auto container = this->Content()->addNew<SubItem>(akisItem);
     container->setUser(mUser);
+    container->setTaskItemOid(this->oid().value().to_string());
     container->addStyleClass(Bootstrap::Grid::col_full_12);
 
 
@@ -936,6 +938,17 @@ void TaskItemWidget::loadAkis(const SubItem &akisItem)
     });
     container->baskanYrdOnayClicked().connect([=]( const SubItem::Onay &onay){
         updateTaskItem(onay,false);
+    });
+
+    container->reloadClicked().connect([=](){
+        TaskItem filter;
+        filter.setOid(this->oid().value().to_string());
+
+        auto val = this->getDB()->findOneItem(filter);
+        if( val ){
+            this->setDocumentView(val.value().view());
+            this->initWidget();
+        }
     });
 
 

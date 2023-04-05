@@ -114,14 +114,18 @@ public:
     std::string getResimOid() const;
 
 
+    void editContent();
+    void reListMalzeme( WContainerWidget* mMalzemeListContainer , QList<MalzemeItem> *mList );
 
     void setUser(SerikBLDCore::User *newUser);
-
     SerikBLDCore::User *user() const;
 
 
     Signal<SubItem::Onay> &mudurOnayClicked();
     Signal<SubItem::Onay> &baskanYrdOnayClicked();
+    Signal<NoClass> &reloadClicked();
+    void setTaskItemOid(const std::string &newTaskItemOid);
+
 private:
 
     void initWidget();
@@ -130,9 +134,11 @@ private:
     std::unique_ptr<WContainerWidget> createBtn(const std::string &btnName , const std::string &backColor);
 
     SerikBLDCore::User* mUser = nullptr;
+    std::string mTaskItemOid{};
 
     Signal<SubItem::Onay> _mMudurOnayClicked;
     Signal<SubItem::Onay> _mBaskanYrdOnayClicked;
+    Signal<NoClass> _mReloadClicked;
 
 };
 
