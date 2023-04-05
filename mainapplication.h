@@ -52,6 +52,8 @@ public:
 
     bool loadGundem( const std::string& oid );
 
+    bool loadNost();
+
     void LoadDeviceStatus();
 
     void bakim( const std::string &message );

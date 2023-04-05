@@ -96,7 +96,7 @@ class NostSerik : public ContainerWidget , public SerikBLDCore::ListItem<NostIte
 
 
 public:
-    explicit NostSerik(SerikBLDCore::DB* mDB);
+    explicit NostSerik(SerikBLDCore::DB* mDB, const bool &showFullScreen = false );
 
     virtual void onList(const QVector<NostItem> *mlist ) override;
 
@@ -111,7 +111,8 @@ public:
 
     int image_index{0};
 
-
+private:
+    bool mShowFullScreen{false};
 };
 
 
