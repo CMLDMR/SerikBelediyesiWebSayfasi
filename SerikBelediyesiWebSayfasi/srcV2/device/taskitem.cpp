@@ -622,7 +622,6 @@ void TaskManager::assignMalzeme(const std::string &taskOid)
 
 
 
-    //TODO: Malzeme Listesinden Kendi kendini silme lambda fonksiyonunda çalışmıyor
     MalzemeAddBtn->clicked().connect([=](){
         if( MalzemeDoubleSpinBox->value() <= 0 ){
             this->showPopUpMessage("Lütfen Geçerli Miktar Giriniz","warn");
@@ -651,9 +650,7 @@ void TaskManager::assignMalzeme(const std::string &taskOid)
         TaskItem taskItem;
         taskItem.setOid(taskOid);
 
-        taskItem.addAkis(subItem);
-
-        auto upt = this->UpdateItem(taskItem);
+        auto upt = this->pushValue(taskItem,Key::akis,subItem.view());
         if( upt ){
             this->loadTask(taskOid);
             delete mList;

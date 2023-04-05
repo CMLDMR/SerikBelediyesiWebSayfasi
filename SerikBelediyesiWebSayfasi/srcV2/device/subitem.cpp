@@ -353,66 +353,92 @@ void SubItem::initMalzemeList()
 
     auto hLayout = btnContainer->setLayout(cpp14::make_unique<WHBoxLayout>());
 
-    //TODO: Zaten RED ise Tekrar RED etme
     auto redBtn = createBtn("Red",Style::background::color::rgb (this->getRandom (175,255),
                                                                  this->getRandom (0,50),
                                                                  this->getRandom ()));
     redBtn->clicked().connect([=](){
         if( mUser ){
-            if( mUser->Statu() == SerikBLDCore::IK::Statu::Mudur ){
-                this->setMudurOnay(Onay::Red);
-                this->initMalzemeList();
-                _mMudurOnayClicked.emit(Onay::Red);
+            if( this->getMudurOnay() != Onay::Red ){
+                if( mUser->Statu() == SerikBLDCore::IK::Statu::Mudur ){
+                    this->setMudurOnay(Onay::Red);
+                    this->initMalzemeList();
+                    _mMudurOnayClicked.emit(Onay::Red);
+                }
+            }else{
+                this->showPopUpMessage("Zaten Red Olarak İşaretli");
             }
 
-            if( mUser->Statu() == SerikBLDCore::IK::Statu::BaskanYardimcisi ){
-                this->setBaskanYrdOnay(Onay::Red);
-                this->initWidget();
-                _mBaskanYrdOnayClicked.emit(Onay::Red);
+            if( this->getBaskanYrdOnay() != Onay::Red ){
+                if( mUser->Statu() == SerikBLDCore::IK::Statu::BaskanYardimcisi ){
+                    this->setBaskanYrdOnay(Onay::Red);
+                    this->initWidget();
+                    _mBaskanYrdOnayClicked.emit(Onay::Red);
+                }
+            }else{
+                this->showPopUpMessage("Zaten Red Olarak İşaretli");
             }
+
         }
     });
     hLayout->addWidget(std::move(redBtn),1);
 
 
-    //TODO: Zaten Kabul ise Tekrar Kabul etme
     auto acceptBtn = createBtn("Kabul Et",Style::background::color::rgb (this->getRandom (0,50),
                                                                          this->getRandom (175,255),
                                                                          this->getRandom ()));
     acceptBtn->clicked().connect([=](){
+
         if( mUser ){
-            if( mUser->Statu() == SerikBLDCore::IK::Statu::Mudur ){
-                this->setMudurOnay(Onay::Onayli);
-                this->initMalzemeList();
-                _mMudurOnayClicked.emit(Onay::Onayli);
+            if( this->getMudurOnay() != Onay::Onayli ){
+                if( mUser->Statu() == SerikBLDCore::IK::Statu::Mudur ){
+                    this->setMudurOnay(Onay::Onayli);
+                    this->initMalzemeList();
+                    _mMudurOnayClicked.emit(Onay::Onayli);
+                }
+            }else{
+                this->showPopUpMessage("Zaten Onaylı Olarak İşaretli");
             }
 
-            if( mUser->Statu() == SerikBLDCore::IK::Statu::BaskanYardimcisi ){
-                this->setBaskanYrdOnay(Onay::Onayli);
-                this->initWidget();
-                _mBaskanYrdOnayClicked.emit(Onay::Onayli);
+            if( this->getBaskanYrdOnay() != Onay::Onayli ){
+                if( mUser->Statu() == SerikBLDCore::IK::Statu::BaskanYardimcisi ){
+                    this->setBaskanYrdOnay(Onay::Onayli);
+                    this->initWidget();
+                    _mBaskanYrdOnayClicked.emit(Onay::Onayli);
+                }
+            }else{
+                this->showPopUpMessage("Zaten Onaylı Olarak İşaretli");
             }
+
         }
     });
     hLayout->addWidget(std::move(acceptBtn),1);
 
-    //TODO: Yetersiz Aciklama var ise yeniden işaretleme yapılmayacak
     auto requiredExplainBtn = createBtn("Yetersiz Açıklama",Style::background::color::rgb (this->getRandom (0,50),
                                                                          this->getRandom (100,155),
                                                                          this->getRandom (175,255)));
     requiredExplainBtn->clicked().connect([=](){
         if( mUser ){
-            if( mUser->Statu() == SerikBLDCore::IK::Statu::Mudur ){
-                this->setMudurOnay(Onay::YetersizAciklama);
-                this->initMalzemeList();
-                _mMudurOnayClicked.emit(Onay::YetersizAciklama);
+            if( this->getMudurOnay() != Onay::YetersizAciklama ){
+                if( mUser->Statu() == SerikBLDCore::IK::Statu::Mudur ){
+                    this->setMudurOnay(Onay::YetersizAciklama);
+                    this->initMalzemeList();
+                    _mMudurOnayClicked.emit(Onay::YetersizAciklama);
+                }
+            }else{
+                this->showPopUpMessage("Zaten Yetersiz Açıklama Olarak İşaretli");
             }
 
-            if( mUser->Statu() == SerikBLDCore::IK::Statu::BaskanYardimcisi ){
-                this->setBaskanYrdOnay(Onay::YetersizAciklama);
-                this->initWidget();
-                _mBaskanYrdOnayClicked.emit(Onay::YetersizAciklama);
+
+            if( this->getBaskanYrdOnay() != Onay::YetersizAciklama ){
+                if( mUser->Statu() == SerikBLDCore::IK::Statu::BaskanYardimcisi ){
+                    this->setBaskanYrdOnay(Onay::YetersizAciklama);
+                    this->initWidget();
+                    _mBaskanYrdOnayClicked.emit(Onay::YetersizAciklama);
+                }
+            }else{
+                this->showPopUpMessage("Zaten Yetersiz Açıklama Olarak İşaretli");
             }
+
         }
     });
     hLayout->addWidget(std::move(requiredExplainBtn),1);

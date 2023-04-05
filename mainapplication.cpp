@@ -10,12 +10,9 @@
 
 #include "SerikBelediyesiWebSayfasi/srcV2/talepler/talepview.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/meclis/meclisitempage.h"
-<<<<<<< HEAD
 #include "SerikBelediyesiWebSayfasi/srcV2/device/taskitem.h"
 #include "SerikBelediyesiWebSayfasi/BaseClass/cssbuilder.h"
-=======
 #include "SerikBelediyesiWebSayfasi/srcV2/nostserik.h"
->>>>>>> master
 
 
 #include "../url.h"
@@ -162,16 +159,15 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
             showSpecLink = this->loadGundem (oid.toStdString ());
         }
 
-<<<<<<< HEAD
         if( mapList["type"] == "taskList" )
         {
             showSpecLink = this->loadBirimManager(mapList);
             LOG << "LODBIRIMMANAGER\n";
-=======
+        }
+
         if( mapList["type"] == "nostalji" )
         {
             showSpecLink = this->loadNost();
->>>>>>> master
         }
 
 
@@ -660,7 +656,6 @@ bool MainApplication::loadGundem(const std::string &oid)
 
 }
 
-<<<<<<< HEAD
 bool MainApplication::loadBirimManager(const QMap<QString, QString> &map)
 {
 
@@ -703,8 +698,8 @@ bool MainApplication::loadBirimManager(const QMap<QString, QString> &map)
 //    }
 
     return true;
+}
 
-=======
 bool MainApplication::loadNost()
 {
 
@@ -712,7 +707,6 @@ bool MainApplication::loadNost()
     [[maybe_unused]] auto widget = root()->addWidget(cpp14::make_unique<v2::NostSerik>(new SerikBLDCore::DB(&db),true));
 
     return true;
->>>>>>> master
 }
 
 void MainApplication::LoadDeviceStatus()
