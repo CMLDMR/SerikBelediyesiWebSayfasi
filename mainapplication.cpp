@@ -10,6 +10,7 @@
 
 #include "SerikBelediyesiWebSayfasi/srcV2/talepler/talepview.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/meclis/meclisitempage.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/nostserik.h"
 
 
 #include "../url.h"
@@ -155,6 +156,11 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
         {
             auto oid = mapList["_id"];
             showSpecLink = this->loadGundem (oid.toStdString ());
+        }
+
+        if( mapList["type"] == "nostalji" )
+        {
+            showSpecLink = this->loadNost();
         }
 
 
@@ -641,6 +647,15 @@ bool MainApplication::loadGundem(const std::string &oid)
 
     return false;
 
+}
+
+bool MainApplication::loadNost()
+{
+
+    root()->clear();
+    [[maybe_unused]] auto widget = root()->addWidget(cpp14::make_unique<v2::NostSerik>(new SerikBLDCore::DB(&db),true));
+
+    return true;
 }
 
 void MainApplication::LoadDeviceStatus()
