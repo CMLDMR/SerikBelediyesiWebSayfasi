@@ -83,7 +83,7 @@ public:
         Red,
         Onayli,
         YetersizAciklama,
-        Bilinmeyen
+        Bilinmeyen = 999
     };
 
 
