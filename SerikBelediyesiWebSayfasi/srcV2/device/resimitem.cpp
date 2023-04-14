@@ -6,7 +6,25 @@ namespace TodoList {
 ResimItem::ResimItem()
     :BaseItem::BaseItem(BaseItem::Type::RESIM)
 {
+    this->initWidget();
+}
 
+ResimItem::ResimItem(const ResimItem &other)
+    :BaseItem::BaseItem(other)
+{
+    this->initWidget();
+}
+
+ResimItem::ResimItem(ResimItem &&other)
+    :TodoList::BaseItem::BaseItem(other)
+{
+    this->initWidget();
+}
+
+ResimItem::ResimItem(const BaseItem &other)
+    :TodoList::BaseItem::BaseItem(other)
+{
+    this->initWidget();
 }
 ResimItem &ResimItem::setResimOid(const std::string &resimOid)
 {
@@ -33,4 +51,5 @@ void TodoList::ResimItem::errorOccured(const std::string &errorText)
 
 void TodoList::ResimItem::initWidget()
 {
+    this->Content()->addNew<WText>("Resim Widget");
 }

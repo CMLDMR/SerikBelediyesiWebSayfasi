@@ -71,8 +71,10 @@ public:
     MalzemeItem( const MalzemeItem &other );
     MalzemeItem( MalzemeItem &&other );
 
-    MalzemeItem &setPersonel( const std::string &personelOid , const std::string &personelName );
-    MalzemeItem &setAciklama( const std::string &aciklamaText );
+    MalzemeItem( const BaseItem &other );
+
+
+
     MalzemeItem &setMudurOnay( const Onay &onay );
     MalzemeItem &setBaskanYrdOnay( const Onay &onay );
 

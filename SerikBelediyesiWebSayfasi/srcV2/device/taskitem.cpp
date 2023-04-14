@@ -221,11 +221,6 @@ void TaskManager::onList(const QVector<TaskItem> *mlist)
 
 void TaskManager::initCSS()
 {
-
-
-
-
-
     std::string cssPath = "css/taskmanager-20230330.css";
 
     if( std::filesystem::exists("docroot/"+cssPath) ){
@@ -241,24 +236,12 @@ void TaskManager::initCSS()
             cssContent += ".taskBtn{"
                           "background-color:\"red\""
                           "}";
-
-
-
-
             out.write(cssContent.c_str(),cssContent.size());
             out.close();
-
             wApp->useStyleSheet(WLink(cssPath));
 //            Wt::WApplication::useStyleSheet(WLink("css/taskmanager-20230330.css"));
-
         }
-
     }
-
-
-
-
-
 }
 
 void TaskManager::initHeader()
@@ -413,6 +396,9 @@ void TaskManager::loadTask(const std::string &taskoid)
         hLayout->addWidget(std::move(aciklamaBtn));
 
         auto resimEkleBtn = createSmallButton("Resim Ekle+");
+        resimEkleBtn->clicked().connect([=](){
+            this->assignResim(taskoid);
+        });
         hLayout->addWidget(std::move(resimEkleBtn));
 
         auto tamamlaBtn = createSmallButton("Tamamla");
@@ -592,6 +578,62 @@ void TaskManager::assignBaskanYardimcisi(const std::string &taskOid)
 
     });
 
+}
+
+void TaskManager::assignResim(const std::string &taskOid)
+{
+    auto mDialog = createFlatDialog("Malzeme Ata",false);
+
+
+    //TODO: Yüklenen Resim Gösterilecek
+
+    auto fileUploadContainer = mDialog->Content()->addWidget(cpp14::make_unique<FileUploaderWidget>("Resim Yükle"));
+    fileUploadContainer->setType(FileUploaderWidget::Image);
+
+
+
+    auto aciklamaTextBox = mDialog->Content()->addWidget(cpp14::make_unique<WTextArea>());
+    aciklamaTextBox->addStyleClass(Bootstrap::Grid::col_full_12);
+    aciklamaTextBox->setHeight(150);
+    aciklamaTextBox->setPlaceholderText("Malzemelerin nerede ne için kullanılacağı içeren bilgi giriniz!");
+
+
+    mDialog->Accepted().connect([=](){
+
+
+        if( fileUploadContainer->isUploaded() ){
+
+            ResimItem subItem;
+            subItem.setAciklama(aciklamaTextBox->text().toUTF8());
+            subItem.setPersonel(this->mUser->oid().value().to_string(),this->mUser->AdSoyad());
+
+            auto fileOid = this->uploadfile(fileUploadContainer->fileLocation());
+
+            subItem.setResimOid(fileOid.view().get_oid().value.to_string());
+
+            TaskItem taskItem;
+            taskItem.setOid(taskOid);
+
+            auto upt = this->pushValue(taskItem,Key::akis,subItem.view());
+            if( upt ){
+                this->loadTask(taskOid);
+                this->removeDialog(mDialog);
+            }else{
+                this->showPopUpMessage(this->getLastError().toStdString(),"warn");
+            }
+
+        }else{
+            this->showPopUpMessage("Resim Yüklemediniz","warn");
+        }
+
+    });
+
+    mDialog->Rejected().connect([=](){
+        this->removeDialog(mDialog);
+    });
+
+
+    mDialog->show();
 }
 
 void TaskManager::assignMalzeme(const std::string &taskOid)
@@ -931,56 +973,20 @@ void TaskItemWidget::initWidget()
     }
 }
 
-void TaskItemWidget::loadAkis(const MalzemeItem &akisItem)
+void TaskItemWidget::loadAkis(const BaseItem &akisItem)
 {
 
-    auto container = this->Content()->addNew<MalzemeItem>(akisItem);
-    container->setUser(mUser);
-    container->setTaskItemOid(this->oid().value().to_string());
-    container->addStyleClass(Bootstrap::Grid::col_full_12);
-
-
-    auto updateTaskItem = [=]( const MalzemeItem::Onay &onay, const bool mudur = true){
-        TaskItem filter;
-        filter.setOid(this->oid().value().to_string());
-        SerikBLDCore::Item elematch("");
-        elematch.append("$elemMatch",make_document(kvp(Key::AKIS::uuid,container->uuidString())));
-        filter.append(Key::akis,elematch);
-        TaskItem setObj;
-        if( mudur ){
-            setObj.append("$set",make_document(kvp(Key::akis+".$."+Key::AKIS::mudurOnay,
-                                                    bsoncxx::types::b_int32{static_cast<std::int32_t>(onay)})));
-        }else{
-            setObj.append("$set",make_document(kvp(Key::akis+".$."+Key::AKIS::baskanYrdOnay,
-                                                    bsoncxx::types::b_int32{static_cast<std::int32_t>(onay)})));
-        }
-
-        auto upt = this->getDB()->db()->collection(filter.getCollection()).update_one(filter.view(),setObj.view());
-        if( upt ){
-            this->showPopUpMessage("Güncellendi");
-        }else{
-            this->showPopUpMessage("Hata: Task Güncellenemedi");
-        }
-    };
-
-
-    container->mudurOnayClicked().connect([=](const MalzemeItem::Onay &onay){
-        updateTaskItem(onay,true);
-    });
-    container->baskanYrdOnayClicked().connect([=]( const MalzemeItem::Onay &onay){
-        updateTaskItem(onay,false);
-    });
-
-    container->reloadClicked().connect([=](){
-        TaskItem filter;
-        filter.setOid(this->oid().value().to_string());
-        auto val = this->getDB()->findOneItem(filter);
-        if( val ){
-            this->setDocumentView(val.value().view());
-            this->initWidget();
-        }
-    });
-
+    if( akisItem.getType() == BaseItem::Type::MALZEME ){
+        auto container = this->Content()->addNew<MalzemeItem>(akisItem);
+        container->setUser(mUser);
+        container->setTaskItemOid(this->oid().value().to_string());
+        container->addStyleClass(Bootstrap::Grid::col_full_12);
+    }else if( akisItem.getType() == BaseItem::Type::RESIM ){
+        auto container = this->Content()->addNew<ResimItem>(akisItem);
+        container->setUser(mUser);
+        container->setTaskItemOid(this->oid().value().to_string());
+        container->addStyleClass(Bootstrap::Grid::col_full_12);
+    }
 
 }
 

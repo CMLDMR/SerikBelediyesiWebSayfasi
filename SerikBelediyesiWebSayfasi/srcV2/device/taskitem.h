@@ -124,7 +124,7 @@ public:
 
 private:
     void initWidget();
-    void loadAkis( const MalzemeItem &akisItem );
+    void loadAkis(const BaseItem &akisItem );
     SerikBLDCore::User* mUser;
 };
 
@@ -163,6 +163,7 @@ public:
 
     void assignPersonel( const std::string &taskOid );
     void assignBaskanYardimcisi( const std::string &taskOid );
+    void assignResim( const std::string &taskOid );
 
     void assignMalzeme( const std::string &taskOid );
     void reListMalzeme( WContainerWidget* mMalzemeListContainer , QList<MalzemeListItem>* mList );

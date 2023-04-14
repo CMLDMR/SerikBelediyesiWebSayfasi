@@ -47,14 +47,16 @@ BaseItem::BaseItem(const BaseItem &other)
     :SerikBLDCore::Item("")
 {
     this->setDocumentView(other.view());
-
+    this->setUser(other.mUser);
+    this->setTaskItemOid(other.mTaskItemOid);
 }
 
 BaseItem::BaseItem(BaseItem &&other)
     :SerikBLDCore::Item("")
 {
     this->setDocumentView(other.view());
-
+    this->setUser(other.mUser);
+    this->setTaskItemOid(other.mTaskItemOid);
 }
 
 
@@ -67,7 +69,18 @@ BaseItem::Type BaseItem::getType() const
     return Type::UNKNOWN;
 }
 
+BaseItem &BaseItem::setPersonel(const std::string &personelOid, const std::string &personelName)
+{
+    this->append(Key::AKIS::personelOid,bsoncxx::oid{personelOid});
+    this->append(Key::AKIS::personelName,personelName);
+    return *this;
+}
 
+BaseItem &BaseItem::setAciklama(const std::string &aciklamaText)
+{
+    this->append(Key::AKIS::aciklama,aciklamaText);
+    return *this;
+}
 
 std::string BaseItem::uuidString() const
 {

@@ -16,8 +16,8 @@ MalzemeItem::MalzemeItem(SerikBLDCore::User *_mUser)
 MalzemeItem::MalzemeItem(const MalzemeItem &other)
     :BaseItem::BaseItem(other)
 {
-    this->setUser(other.user());
-    this->setDocumentView(other.view());
+//    this->setUser(other.user());
+//    this->setDocumentView(other.view());
     this->initWidget();
 
 }
@@ -25,24 +25,21 @@ MalzemeItem::MalzemeItem(const MalzemeItem &other)
 MalzemeItem::MalzemeItem(MalzemeItem &&other)
     :BaseItem::BaseItem(other)
 {
-    this->setUser(other.user());
-    this->setDocumentView(other.view());
+//    this->setUser(other.user());
+//    this->setDocumentView(other.view());
     this->initWidget();
 
 }
 
-MalzemeItem &MalzemeItem::setPersonel(const std::string &personelOid, const std::string &personelName)
+MalzemeItem::MalzemeItem(const BaseItem &other)
+    :BaseItem::BaseItem(other)
 {
-    this->append(Key::AKIS::personelOid,bsoncxx::oid{personelOid});
-    this->append(Key::AKIS::personelName,personelName);
-    return *this;
+//    this->setUser(other.user());
+//    this->setDocumentView(other.view());
+    this->initWidget();
 }
 
-MalzemeItem &MalzemeItem::setAciklama(const std::string &aciklamaText)
-{
-    this->append(Key::AKIS::aciklama,aciklamaText);
-    return *this;
-}
+
 
 
 

@@ -39,6 +39,10 @@ public:
 
     virtual void initWidget() = 0;
 
+    BaseItem &setPersonel( const std::string &personelOid , const std::string &personelName );
+    BaseItem &setAciklama( const std::string &aciklamaText );
+
+
     BaseItem::Type getType() const;
 
     std::string uuidString() const;

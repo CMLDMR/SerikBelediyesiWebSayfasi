@@ -18,10 +18,15 @@ inline const std::string resim{"resim"};
 
 }
 
-class ResimItem : public TodoList::BaseItem
+class ResimItem : public TodoList::BaseItem, public ContainerWidget
 {
 public:
     ResimItem();
+    ResimItem( const ResimItem &other);
+    ResimItem( ResimItem &&other );
+
+    ResimItem( const BaseItem &other );
+
 
 
     ResimItem &setResimOid( const std::string &resimOid );
