@@ -5,160 +5,84 @@
 
 namespace TodoList {
 
-SubItem::SubItem(const Type &type)
-    :SerikBLDCore::Item("")
+MalzemeItem::MalzemeItem(SerikBLDCore::User *_mUser)
+    :BaseItem::BaseItem(Type::MALZEME,_mUser)
 {
-    this->append(Key::AKIS::uuid,QUuid::createUuid().toString(QUuid::WithoutBraces).toStdString());
-    this->append(Key::AKIS::epcohTime,QDateTime::currentMSecsSinceEpoch());
-    this->append(Key::AKIS::julianDay,QDate::currentDate().toJulianDay());
-    this->append(Key::AKIS::month,QDate::currentDate().month());
-    this->append(Key::AKIS::year,QDate::currentDate().year());
     this->append(Key::AKIS::mudurOnay,bsoncxx::types::b_int32{static_cast<std::int32_t>(Onay::Beklemede)});
     this->append(Key::AKIS::baskanYrdOnay,bsoncxx::types::b_int32{static_cast<std::int32_t>(Onay::Beklemede)});
-
-    switch (type) {
-    case Type::ACIKLAMA:
-        this->append(Key::AKIS::type,static_cast<std::int32_t>(SubItem::Type::ACIKLAMA));
-        break;
-    case Type::MALZEME:
-        this->append(Key::AKIS::type,static_cast<std::int32_t>(SubItem::Type::MALZEME));
-        break;
-    case Type::RESIM:
-        this->append(Key::AKIS::type,static_cast<std::int32_t>(SubItem::Type::RESIM));
-        break;
-    default:
-        break;
-    }
-
     this->initWidget();
 }
 
-SubItem::SubItem(const SubItem &other)
-    :SerikBLDCore::Item("")
+MalzemeItem::MalzemeItem(const MalzemeItem &other)
+    :BaseItem::BaseItem(other)
 {
     this->setUser(other.user());
     this->setDocumentView(other.view());
     this->initWidget();
+
 }
 
-SubItem::SubItem(SubItem &&other)
-    :SerikBLDCore::Item("")
+MalzemeItem::MalzemeItem(MalzemeItem &&other)
+    :BaseItem::BaseItem(other)
 {
     this->setUser(other.user());
     this->setDocumentView(other.view());
     this->initWidget();
+
 }
 
-SubItem &SubItem::setPersonel(const std::string &personelOid, const std::string &personelName)
+MalzemeItem &MalzemeItem::setPersonel(const std::string &personelOid, const std::string &personelName)
 {
     this->append(Key::AKIS::personelOid,bsoncxx::oid{personelOid});
     this->append(Key::AKIS::personelName,personelName);
     return *this;
 }
 
-SubItem &SubItem::setAciklama(const std::string &aciklamaText)
+MalzemeItem &MalzemeItem::setAciklama(const std::string &aciklamaText)
 {
     this->append(Key::AKIS::aciklama,aciklamaText);
     return *this;
 }
 
-SubItem &SubItem::setResimOid(const std::string &resimOid)
-{
-    this->append(Key::AKIS::resim,bsoncxx::oid{resimOid});
-    return *this;
-}
 
-SubItem &SubItem::setMudurOnay(const Onay &onay)
+
+MalzemeItem &MalzemeItem::setMudurOnay(const Onay &onay)
 {
     this->append(Key::AKIS::mudurOnay,bsoncxx::types::b_int32{static_cast<std::int32_t>(onay)});
     return *this;
 }
 
-SubItem &SubItem::setBaskanYrdOnay(const Onay &onay)
+MalzemeItem &MalzemeItem::setBaskanYrdOnay(const Onay &onay)
 {
     this->append(Key::AKIS::baskanYrdOnay,bsoncxx::types::b_int32{static_cast<std::int32_t>(onay)});
     return *this;
 }
 
-SubItem &SubItem::addMalzeme(const std::string &malzemeAdi, const double &miktar, const std::string &metric)
+MalzemeItem &MalzemeItem::addMalzeme(const std::string &malzemeAdi, const double &miktar, const std::string &metric)
 {
-    MalzemeItem item(malzemeAdi,miktar,metric);
+    MalzemeListItem item(malzemeAdi,miktar,metric);
     this->pushArray(Key::AKIS::malzemeList,item.view());
     return *this;
 }
 
-std::vector<MalzemeItem> SubItem::getMalzemeList() const
+std::vector<MalzemeListItem> MalzemeItem::getMalzemeList() const
 {
-    std::vector<MalzemeItem> list;
+    std::vector<MalzemeListItem> list;
     auto val = this->element(Key::AKIS::malzemeList);
     if( val ){
         auto arr = val.value().view().get_array().value;
         for( const auto &itemview : arr ){
-            MalzemeItem item(itemview.get_document().view());
+            MalzemeListItem item(itemview.get_document().view());
             list.push_back(item);
         }
     }
     return list;
 }
 
-SubItem::Type SubItem::getType() const
-{
-
-    auto val = this->element(Key::AKIS::type);
-    if( val ){
-        return static_cast<Type>(val.value().view().get_int32().value);
-    }
-    return Type::UNKNOWN;
 
 
-}
 
-std::string SubItem::uuidString() const
-{
-    auto val = this->element(Key::AKIS::uuid);
-    if( val ){
-        return val.value().view().get_string().value.data();
-    }
-    return "";
-}
-
-std::string SubItem::getAciklama() const
-{
-    auto val = this->element(Key::AKIS::aciklama);
-    if( val ){
-        return val.value().view().get_string().value.data();
-    }
-    return "";
-}
-
-std::string SubItem::getPersoneName() const
-{
-    auto val = this->element(Key::AKIS::personelName);
-    if( val ){
-        return val.value().view().get_string().value.data();
-    }
-    return "";
-}
-
-std::string SubItem::getDateString() const
-{
-    auto val = this->element(Key::AKIS::julianDay);
-    if( val ){
-        return QDate::fromJulianDay(val.value().view().get_int64().value).toString("dd/MM/yyyy").toStdString();
-    }
-    return "0000";
-}
-
-std::string SubItem::getTimeString() const
-{
-    auto val = this->element(Key::AKIS::epcohTime);
-    if( val ){
-        return QDateTime::fromMSecsSinceEpoch(val.value().view().get_int64().value).time().toString("hh:mm").toStdString();
-    }
-    return "0000";
-}
-
-std::string SubItem::getMudurOnayString() const
+std::string MalzemeItem::getMudurOnayString() const
 {
     switch (getMudurOnay()) {
     case Onay::Beklemede:
@@ -179,7 +103,7 @@ std::string SubItem::getMudurOnayString() const
     }
 }
 
-SubItem::Onay SubItem::getMudurOnay() const
+MalzemeItem::Onay MalzemeItem::getMudurOnay() const
 {
     auto val = this->element(Key::AKIS::mudurOnay);
     if( val ){
@@ -189,7 +113,7 @@ SubItem::Onay SubItem::getMudurOnay() const
     return Onay::Bilinmeyen;
 }
 
-std::string SubItem::getBaskanYrdOnayString() const
+std::string MalzemeItem::getBaskanYrdOnayString() const
 {
     switch (getBaskanYrdOnay()) {
     case Onay::Beklemede:
@@ -210,7 +134,7 @@ std::string SubItem::getBaskanYrdOnayString() const
     }
 }
 
-SubItem::Onay SubItem::getBaskanYrdOnay() const
+MalzemeItem::Onay MalzemeItem::getBaskanYrdOnay() const
 {
     auto val = this->element(Key::AKIS::baskanYrdOnay);
     if( val ){
@@ -220,20 +144,12 @@ SubItem::Onay SubItem::getBaskanYrdOnay() const
     return Onay::Bilinmeyen;
 }
 
-std::string SubItem::getResimOid() const
-{
-    auto val = element(Key::AKIS::resim);
-    if( val ){
-        return val.value().view().get_oid().value.to_string();
-    }
-    return "";
-}
 
-void SubItem::editContent()
+void MalzemeItem::editContent()
 {
 
 
-    QList<MalzemeItem>* mList = new QList<MalzemeItem>;
+    QList<MalzemeListItem>* mList = new QList<MalzemeListItem>;
 
     for( const auto &item : this->getMalzemeList() ){
         mList->push_back(item);
@@ -271,22 +187,16 @@ void SubItem::editContent()
         }
     }
 
-
-
     auto MalzemeDoubleSpinBox = hMalzemeLayout->addWidget(cpp14::make_unique<WDoubleSpinBox>(),0,AlignmentFlag::Center);
 
-
     auto MalzemeAddBtn = hMalzemeLayout->addWidget(cpp14::make_unique<WPushButton>("Ekle+ "),0,AlignmentFlag::Justify);
-
-
-
 
     MalzemeAddBtn->clicked().connect([=](){
         if( MalzemeDoubleSpinBox->value() <= 0 ){
             this->showPopUpMessage("Lütfen Geçerli Miktar Giriniz","warn");
             return;
         }
-        mList->push_back(MalzemeItem(MalzemeComboBox->currentText().toUTF8(),MalzemeDoubleSpinBox->value(),linb::any_cast<std::string>(mModel->item(MalzemeComboBox->currentIndex())->data(ItemDataRole::User+1))));
+        mList->push_back(MalzemeListItem(MalzemeComboBox->currentText().toUTF8(),MalzemeDoubleSpinBox->value(),linb::any_cast<std::string>(mModel->item(MalzemeComboBox->currentIndex())->data(ItemDataRole::User+1))));
         reListMalzeme(mMalzemeListContainer,mList);
     });
     reListMalzeme(mMalzemeListContainer,mList);
@@ -301,7 +211,7 @@ void SubItem::editContent()
 
     mDialog->Accepted().connect([=](){
 
-        SubItem subItem(SubItem::Type::MALZEME);
+        MalzemeItem subItem;
         subItem.setAciklama(aciklamaTextBox->text().toUTF8());
         subItem.setPersonel(this->mUser->oid().value().to_string(),this->mUser->AdSoyad());
         for( const auto &malzemeItem : *mList ){
@@ -335,7 +245,6 @@ void SubItem::editContent()
                 this->showPopUpMessage("Güncellendi: " + std::to_string(upt.value().modified_count()),"warn");
             }
 
-
         }else{
             this->showPopUpMessage("Hata: Task Güncellenemedi");
         }
@@ -352,7 +261,7 @@ void SubItem::editContent()
     mDialog->show();
 }
 
-void SubItem::reListMalzeme(WContainerWidget *mMalzemeListContainer, QList<MalzemeItem> *mList)
+void MalzemeItem::reListMalzeme(WContainerWidget *mMalzemeListContainer, QList<MalzemeListItem> *mList)
 {
 
     mMalzemeListContainer->clear();
@@ -413,33 +322,14 @@ void SubItem::reListMalzeme(WContainerWidget *mMalzemeListContainer, QList<Malze
 
 }
 
-void SubItem::initWidget()
+void MalzemeItem::initWidget()
 {
     this->addStyleClass(CSSStyle::Radius::radius3px+CSSStyle::Shadows::shadow8px);
     this->setMargin(25,Side::Bottom|Side::Top);
-
-    switch (getType()) {
-    case Type::ACIKLAMA:
-
-    break;
-
-    case Type::MALZEME:
-        this->initMalzemeList();
-    break;
-
-    case Type::RESIM:
-
-    break;
-
-    case Type::UNKNOWN:
-
-        break;
-default:
-    break;
-}
+    this->initMalzemeList();
 }
 
-void SubItem::initMalzemeList()
+void MalzemeItem::initMalzemeList()
 {
 
     this->Content()->clear();
@@ -543,28 +433,7 @@ void SubItem::initMalzemeList()
                                                                  this->getRandom (0,50),
                                                                  this->getRandom ()));
     redBtn->clicked().connect([=](){
-        if( mUser ){
-            if( this->getMudurOnay() != Onay::Red ){
-                if( mUser->Statu() == SerikBLDCore::IK::Statu::Mudur ){
-                    this->setMudurOnay(Onay::Red);
-                    this->initMalzemeList();
-                    _mMudurOnayClicked.emit(Onay::Red);
-                }
-            }else{
-                this->showPopUpMessage("Zaten Red Olarak İşaretli");
-            }
-
-            if( this->getBaskanYrdOnay() != Onay::Red ){
-                if( mUser->Statu() == SerikBLDCore::IK::Statu::BaskanYardimcisi ){
-                    this->setBaskanYrdOnay(Onay::Red);
-                    this->initWidget();
-                    _mBaskanYrdOnayClicked.emit(Onay::Red);
-                }
-            }else{
-                this->showPopUpMessage("Zaten Red Olarak İşaretli");
-            }
-
-        }
+        this->setOnay(Onay::Red);
     });
     hLayout->addWidget(std::move(redBtn),1);
 
@@ -573,29 +442,7 @@ void SubItem::initMalzemeList()
                                                                          this->getRandom (175,255),
                                                                          this->getRandom ()));
     acceptBtn->clicked().connect([=](){
-
-        if( mUser ){
-            if( this->getMudurOnay() != Onay::Onayli ){
-                if( mUser->Statu() == SerikBLDCore::IK::Statu::Mudur ){
-                    this->setMudurOnay(Onay::Onayli);
-                    this->initMalzemeList();
-                    _mMudurOnayClicked.emit(Onay::Onayli);
-                }
-            }else{
-                this->showPopUpMessage("Zaten Onaylı Olarak İşaretli");
-            }
-
-            if( this->getBaskanYrdOnay() != Onay::Onayli ){
-                if( mUser->Statu() == SerikBLDCore::IK::Statu::BaskanYardimcisi ){
-                    this->setBaskanYrdOnay(Onay::Onayli);
-                    this->initWidget();
-                    _mBaskanYrdOnayClicked.emit(Onay::Onayli);
-                }
-            }else{
-                this->showPopUpMessage("Zaten Onaylı Olarak İşaretli");
-            }
-
-        }
+        this->setOnay(Onay::Onayli);
     });
     hLayout->addWidget(std::move(acceptBtn),1);
 
@@ -603,29 +450,7 @@ void SubItem::initMalzemeList()
                                                                          this->getRandom (100,155),
                                                                          this->getRandom (175,255)));
     requiredExplainBtn->clicked().connect([=](){
-        if( mUser ){
-            if( this->getMudurOnay() != Onay::YetersizAciklama ){
-                if( mUser->Statu() == SerikBLDCore::IK::Statu::Mudur ){
-                    this->setMudurOnay(Onay::YetersizAciklama);
-                    this->initMalzemeList();
-                    _mMudurOnayClicked.emit(Onay::YetersizAciklama);
-                }
-            }else{
-                this->showPopUpMessage("Zaten Yetersiz Açıklama Olarak İşaretli");
-            }
-
-
-            if( this->getBaskanYrdOnay() != Onay::YetersizAciklama ){
-                if( mUser->Statu() == SerikBLDCore::IK::Statu::BaskanYardimcisi ){
-                    this->setBaskanYrdOnay(Onay::YetersizAciklama);
-                    this->initWidget();
-                    _mBaskanYrdOnayClicked.emit(Onay::YetersizAciklama);
-                }
-            }else{
-                this->showPopUpMessage("Zaten Yetersiz Açıklama Olarak İşaretli");
-            }
-
-        }
+        this->setOnay(Onay::YetersizAciklama);
     });
     hLayout->addWidget(std::move(requiredExplainBtn),1);
 
@@ -639,7 +464,7 @@ void SubItem::initMalzemeList()
     auto duzenleBtn = createBtn("Düzenle",Style::background::color::rgb (this->getRandom (100,155),
                                                                         this->getRandom (100,155),
                                                                         this->getRandom (100,155)));
-    duzenleBtn->clicked().connect(this,&SubItem::editContent);
+    duzenleBtn->clicked().connect(this,&MalzemeItem::editContent);
     hLayout->addWidget(std::move(duzenleBtn),1);
 
     auto silBtn = createBtn("Sil",Style::background::color::rgb (this->getRandom (200,255),
@@ -670,57 +495,103 @@ void SubItem::initMalzemeList()
 
 }
 
-std::unique_ptr<WContainerWidget> SubItem::createBtn(const std::string &btnName, const std::string &backColor )
+void MalzemeItem::setOnay(const Onay &onay)
 {
 
-    auto container = cpp14::make_unique<WContainerWidget>();
-    container->addStyleClass (/*Bootstrap::Grid::Large::col_lg_2+
-                             Bootstrap::Grid::Medium::col_md_2+
-                             Bootstrap::Grid::Small::col_sm_3+
-                             Bootstrap::Grid::ExtraSmall::col_xs_3+*/
-                             Bootstrap::ImageShape::img_thumbnail);
-    container->setAttributeValue (Style::style,backColor);
-    auto btnText = container->addWidget (cpp14::make_unique<WText>(btnName));
-    btnText->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
-    container->decorationStyle ().setCursor (Cursor::PointingHand);
-    container->addStyleClass (CSSStyle::Button::blueButton);
-    container->setHeight (25);
-    container->setPadding(5,Side::Left|Side::Right);
-    return container;
 
+    auto updateTaskItem = [=]( const Onay &onay, const bool mudur = true){
+        TaskItem filter;
+        filter.setOid(this->mTaskItemOid);
+        SerikBLDCore::Item elematch("");
+        elematch.append("$elemMatch",make_document(kvp(Key::AKIS::uuid,this->uuidString())));
+        filter.append(Key::akis,elematch);
+        TaskItem setObj;
+        if( mudur ){
+            setObj.append("$set",make_document(kvp(Key::akis+".$."+Key::AKIS::mudurOnay,
+                                                    bsoncxx::types::b_int32{static_cast<std::int32_t>(onay)})));
+        }else{
+            setObj.append("$set",make_document(kvp(Key::akis+".$."+Key::AKIS::baskanYrdOnay,
+                                                    bsoncxx::types::b_int32{static_cast<std::int32_t>(onay)})));
+        }
+
+        auto upt = this->user()->getDB()->db()->collection(filter.getCollection()).update_one(filter.view(),setObj.view());
+        if( upt ){
+            this->showPopUpMessage("Güncellendi");
+                return true;
+        }else{
+            this->showPopUpMessage("Hata: Task Güncellenemedi");
+                    return false;
+        }
+    };
+
+    auto infoShow = [=](const Onay &onay ){
+        switch (onay) {
+        case Onay::Onayli:
+            this->showPopUpMessage("Zaten Onaylı Olarak İşaretli");
+            break;
+        case Onay::Red:
+            this->showPopUpMessage("Zaten Red Olarak İşaretli");
+            break;
+        case Onay::YetersizAciklama:
+            this->showPopUpMessage("Zaten Yetersiz Açıklama Olarak İşaretli");
+            break;
+        case Onay::Beklemede:
+            this->showPopUpMessage("Zaten Beklemede  Olarak İşaretli");
+            break;
+
+        default:
+
+            break;
+        }
+    };
+
+
+    if( this->user() ){
+        if( mUser->Statu() == SerikBLDCore::IK::Statu::Mudur ){
+            if( this->getMudurOnay() != onay ){
+                if( updateTaskItem(onay,true) ){
+                    this->setMudurOnay(onay);
+                    this->initMalzemeList();
+                }
+            }else{
+                infoShow(onay);
+            }
+        }else if( mUser->Statu() == SerikBLDCore::IK::Statu::BaskanYardimcisi ){
+            if( this->getBaskanYrdOnay() != onay ){
+                if( updateTaskItem(onay,false) ){
+                    this->setBaskanYrdOnay(onay);
+                    this->initMalzemeList();
+                }
+            }else{
+                infoShow(onay);
+            }
+        }
+    }
 }
 
-void SubItem::setTaskItemOid(const std::string &newTaskItemOid)
-{
-    mTaskItemOid = newTaskItemOid;
-}
 
-SerikBLDCore::User *SubItem::user() const
-{
-    return mUser;
-}
 
-Signal<SubItem::Onay> &SubItem::mudurOnayClicked()
+
+
+
+Signal<MalzemeItem::Onay> &MalzemeItem::mudurOnayClicked()
 {
     return _mMudurOnayClicked;
 }
 
-Signal<SubItem::Onay> &SubItem::baskanYrdOnayClicked()
+Signal<MalzemeItem::Onay> &MalzemeItem::baskanYrdOnayClicked()
 {
     return _mBaskanYrdOnayClicked;
 }
 
-Signal<NoClass> &SubItem::reloadClicked()
+Signal<NoClass> &MalzemeItem::reloadClicked()
 {
     return _mReloadClicked;
 }
 
-void SubItem::setUser(SerikBLDCore::User *newUser)
-{
-    mUser = newUser;
-}
 
-std::string MalzemeItem::getMalzemeAdi() const
+
+std::string MalzemeListItem::getMalzemeAdi() const
 {
     auto val = this->element(Key::AKIS::MALZEMELIST::malzemeAdi);
     if( val ){
@@ -730,7 +601,7 @@ std::string MalzemeItem::getMalzemeAdi() const
 
 }
 
-double MalzemeItem::getMiktar() const
+double MalzemeListItem::getMiktar() const
 {
     auto val = this->element(Key::AKIS::MALZEMELIST::miktari);
     if( val ){
@@ -739,7 +610,7 @@ double MalzemeItem::getMiktar() const
     return 0;
 }
 
-std::string MalzemeItem::getMetric() const
+std::string MalzemeListItem::getMetric() const
 {
     auto val = this->element(Key::AKIS::MALZEMELIST::metric);
     if( val ){

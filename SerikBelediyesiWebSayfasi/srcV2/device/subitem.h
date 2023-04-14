@@ -2,10 +2,8 @@
 #ifndef TODOLIST_SUBITEM_H
 #define TODOLIST_SUBITEM_H
 
-#include "item.h"
-#include "SerikBelediyesiWebSayfasi/BaseClass/containerwiget.h"
-#include "SerikBelediyesiWebSayfasi/BaseClass/cssbuilder.h"
-#include "user.h"
+#include "baseitem.h"
+
 
 
 
@@ -14,19 +12,10 @@ namespace TodoList {
 namespace Key {
 
 namespace AKIS {
-inline const std::string aciklama{"aciklama"};
-inline const std::string resim{"resim"};
-inline const std::string julianDay{"julianDay"};
-inline const std::string epcohTime{"epochTime"};
-inline const std::string month{"month"};
-inline const std::string year{"year"};
-inline const std::string uuid{"uuid"};
-inline const std::string personelOid{"personelOid"};
-inline const std::string personelName{"personelName"};
-inline const std::string malzemeList{"malzemeList"};
-inline const std::string type{"type"};
 inline const std::string mudurOnay{"mudurOnay"};
 inline const std::string baskanYrdOnay{"baskanYrdOnay"};
+inline const std::string malzemeList{"malzemeList"};
+
 namespace MALZEMELIST{
 inline const std::string malzemeAdi{"malzemeAdi"};
 inline const std::string miktari{"miktari"};
@@ -37,23 +26,25 @@ inline const std::string metric{"metric"};
 }
 
 
-class MalzemeItem : public SerikBLDCore::Item{
+
+
+class MalzemeListItem : public SerikBLDCore::Item{
 public:
-    explicit MalzemeItem(const std::string &malzemeAdi, const double &miktar, const std::string &metric ):SerikBLDCore::Item(""){
+    explicit MalzemeListItem(const std::string &malzemeAdi, const double &miktar, const std::string &metric ):SerikBLDCore::Item(""){
         this->append(Key::AKIS::MALZEMELIST::malzemeAdi,malzemeAdi);
         this->append(Key::AKIS::MALZEMELIST::miktari,miktar);
         this->append(Key::AKIS::MALZEMELIST::metric,metric);
     }
-    MalzemeItem( const bsoncxx::document::view &view ): SerikBLDCore::Item(""){
+    MalzemeListItem( const bsoncxx::document::view &view ): SerikBLDCore::Item(""){
         this->setDocumentView(view);
     }
 
-    MalzemeItem( const MalzemeItem &other ):SerikBLDCore::Item(""){this->setDocumentView(other.view());}
-    MalzemeItem( MalzemeItem &&other ):SerikBLDCore::Item(""){this->setDocumentView(other.view());}
+    MalzemeListItem( const MalzemeListItem &other ):SerikBLDCore::Item(""){this->setDocumentView(other.view());}
+    MalzemeListItem( MalzemeListItem &&other ):SerikBLDCore::Item(""){this->setDocumentView(other.view());}
 
 
-    MalzemeItem& operator=( const MalzemeItem &other){ this->setDocumentView(other.view()); return *this;}
-    MalzemeItem& operator=( MalzemeItem &&other){ this->setDocumentView(other.view()); return *this;}
+    MalzemeListItem& operator=( const MalzemeListItem &other){ this->setDocumentView(other.view()); return *this;}
+    MalzemeListItem& operator=( MalzemeListItem &&other){ this->setDocumentView(other.view()); return *this;}
 
     std::string getMalzemeAdi() const;
     double getMiktar() const;
@@ -65,18 +56,43 @@ private:
     std::string mMetric;
 };
 
-class SubItem : public SerikBLDCore::Item, public ContainerWidget
+
+
+
+
+
+
+class MalzemeItem : public BaseItem, public ContainerWidget
 {
 public:
-    enum class Type{
-        ACIKLAMA = 0,
-        RESIM,
-        MALZEME,
-        TEKLIF,
-        TAMAMLANDI,
-        ONAYLANDI,
-        UNKNOWN = 999
-    };
+    enum class Onay;
+
+    explicit MalzemeItem( SerikBLDCore::User* _mUser = nullptr );
+    MalzemeItem( const MalzemeItem &other );
+    MalzemeItem( MalzemeItem &&other );
+
+    MalzemeItem &setPersonel( const std::string &personelOid , const std::string &personelName );
+    MalzemeItem &setAciklama( const std::string &aciklamaText );
+    MalzemeItem &setMudurOnay( const Onay &onay );
+    MalzemeItem &setBaskanYrdOnay( const Onay &onay );
+
+    MalzemeItem &addMalzeme(const std::string &malzemeAdi , const double &miktar , const std::string &metric);
+
+    std::vector<MalzemeListItem> getMalzemeList() const;
+
+    std::string getMudurOnayString() const;
+    Onay getMudurOnay() const;
+    std::string getBaskanYrdOnayString() const;
+    Onay getBaskanYrdOnay() const;
+
+
+    void editContent();
+    void reListMalzeme( WContainerWidget* mMalzemeListContainer , QList<MalzemeListItem> *mList );
+
+    Signal<MalzemeItem::Onay> &mudurOnayClicked();
+    Signal<MalzemeItem::Onay> &baskanYrdOnayClicked();
+    Signal<NoClass> &reloadClicked();
+
 
     enum class Onay{
         Beklemede = 0,
@@ -86,59 +102,16 @@ public:
         Bilinmeyen = 999
     };
 
-
-    explicit SubItem(const Type &type = Type::ACIKLAMA);
-    SubItem( const SubItem &other );
-    SubItem( SubItem &&other );
-
-
-    SubItem &setPersonel( const std::string &personelOid , const std::string &personelName );
-    SubItem &setAciklama( const std::string &aciklamaText );
-    SubItem &setResimOid( const std::string &resimOid );
-    SubItem &setMudurOnay( const Onay &onay );
-    SubItem &setBaskanYrdOnay( const Onay &onay );
-
-    SubItem &addMalzeme(const std::string &malzemeAdi , const double &miktar , const std::string &metric);
-
-    std::vector<MalzemeItem> getMalzemeList() const;
-    SubItem::Type getType() const;
-    std::string uuidString() const;
-    std::string getAciklama() const;
-    std::string getPersoneName() const;
-    std::string getDateString() const;
-    std::string getTimeString() const;
-    std::string getMudurOnayString() const;
-    Onay getMudurOnay() const;
-    std::string getBaskanYrdOnayString() const;
-    Onay getBaskanYrdOnay() const;
-    std::string getResimOid() const;
-
-
-    void editContent();
-    void reListMalzeme( WContainerWidget* mMalzemeListContainer , QList<MalzemeItem> *mList );
-
-    void setUser(SerikBLDCore::User *newUser);
-    SerikBLDCore::User *user() const;
-
-
-    Signal<SubItem::Onay> &mudurOnayClicked();
-    Signal<SubItem::Onay> &baskanYrdOnayClicked();
-    Signal<NoClass> &reloadClicked();
-    void setTaskItemOid(const std::string &newTaskItemOid);
-
 private:
 
-    void initWidget();
+    virtual void initWidget() override;
     void initMalzemeList();
 
-    std::unique_ptr<WContainerWidget> createBtn(const std::string &btnName , const std::string &backColor);
-
-    SerikBLDCore::User* mUser = nullptr;
-    std::string mTaskItemOid{};
-
-    Signal<SubItem::Onay> _mMudurOnayClicked;
-    Signal<SubItem::Onay> _mBaskanYrdOnayClicked;
+    Signal<MalzemeItem::Onay> _mMudurOnayClicked;
+    Signal<MalzemeItem::Onay> _mBaskanYrdOnayClicked;
     Signal<NoClass> _mReloadClicked;
+
+    void setOnay(const Onay &onay );
 
 };
 

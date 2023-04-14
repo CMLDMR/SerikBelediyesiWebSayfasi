@@ -128,6 +128,9 @@ private:
     SerikBLDCore::User* mUser;
 };
 
+
+
+
 class TaskListItem : public WContainerWidget
 {
 public:

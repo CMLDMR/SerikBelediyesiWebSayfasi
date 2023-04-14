@@ -164,7 +164,7 @@ std::list<MalzemeItem> TaskItem::getAkisList() const
     if( val ){
         auto arr = val.value().view().get_array().value;
         for( const auto &akisItem : arr ){
-            MalzemeItem item(MalzemeItem::Type::ACIKLAMA);
+            MalzemeItem item;
             item.setDocumentView(akisItem.get_document().view());
             list.push_back(item);
         }
@@ -641,7 +641,7 @@ void TaskManager::assignMalzeme(const std::string &taskOid)
 
     mDialog->Accepted().connect([=](){
 
-        MalzemeItem subItem(MalzemeItem::Type::MALZEME);
+        MalzemeItem subItem;
         subItem.setAciklama(aciklamaTextBox->text().toUTF8());
         subItem.setPersonel(this->mUser->oid().value().to_string(),this->mUser->AdSoyad());
         for( const auto &malzemeItem : *mList ){
@@ -746,6 +746,7 @@ void TaskManager::updateTaskList()
     TaskItem filterItem;
     filterItem.append(Key::birim,mUser->Birimi());
     this->UpdateList(filterItem);
+    this->Footer()->clear();
 }
 
 void TaskManager::deleteTask(const std::string &taskOid)
@@ -918,6 +919,7 @@ void TaskItemWidget::initWidget()
 
 void TaskItemWidget::loadAkis(const MalzemeItem &akisItem)
 {
+
     auto container = this->Content()->addNew<MalzemeItem>(akisItem);
     container->setUser(mUser);
     container->setTaskItemOid(this->oid().value().to_string());
