@@ -1,5 +1,6 @@
 #include "taskitem.h"
 
+
 #include <filesystem>
 #include <fstream>
 #include <algorithm>
@@ -7,6 +8,7 @@
 #include <Wt/WApplication.h>
 #include <Wt/WLink.h>
 
+#include "SerikBelediyesiWebSayfasi/srcV2/device/resimitem.h"
 #include "personelmanager.h"
 
 namespace TodoList {
@@ -61,7 +63,7 @@ TaskItem &TaskItem::addGorevli(const std::string &gorevliOid, const std::string 
     return *this;
 }
 
-TaskItem &TaskItem::addAkis(const SubItem &subItem)
+TaskItem &TaskItem::addAkis(const MalzemeItem &subItem)
 {
     this->pushArray(Key::akis,subItem.view());
     return *this;
@@ -155,14 +157,14 @@ bool TaskItem::isGorevli(const std::string &gorevliOid) const
     return exist;
 }
 
-std::list<SubItem> TaskItem::getAkisList() const
+std::list<MalzemeItem> TaskItem::getAkisList() const
 {
-    std::list<SubItem> list;
+    std::list<MalzemeItem> list;
     auto val = this->element(Key::akis);
     if( val ){
         auto arr = val.value().view().get_array().value;
         for( const auto &akisItem : arr ){
-            SubItem item(SubItem::Type::ACIKLAMA);
+            MalzemeItem item(MalzemeItem::Type::ACIKLAMA);
             item.setDocumentView(akisItem.get_document().view());
             list.push_back(item);
         }
@@ -581,7 +583,7 @@ void TaskManager::assignBaskanYardimcisi(const std::string &taskOid)
 void TaskManager::assignMalzeme(const std::string &taskOid)
 {
 
-    QList<MalzemeItem>* mList = new QList<MalzemeItem>;
+    QList<MalzemeListItem>* mList = new QList<MalzemeListItem>;
     auto mDialog = createFlatDialog("Malzeme Ata",false);
 
 
@@ -626,7 +628,7 @@ void TaskManager::assignMalzeme(const std::string &taskOid)
             this->showPopUpMessage("Lütfen Geçerli Miktar Giriniz","warn");
             return;
         }
-        mList->push_back(MalzemeItem(MalzemeComboBox->currentText().toUTF8(),MalzemeDoubleSpinBox->value(),linb::any_cast<std::string>(mModel->item(MalzemeComboBox->currentIndex())->data(ItemDataRole::User+1))));
+        mList->push_back(MalzemeListItem(MalzemeComboBox->currentText().toUTF8(),MalzemeDoubleSpinBox->value(),linb::any_cast<std::string>(mModel->item(MalzemeComboBox->currentIndex())->data(ItemDataRole::User+1))));
         reListMalzeme(mMalzemeListContainer,mList);
     });
 
@@ -639,7 +641,7 @@ void TaskManager::assignMalzeme(const std::string &taskOid)
 
     mDialog->Accepted().connect([=](){
 
-        SubItem subItem(SubItem::Type::MALZEME);
+        MalzemeItem subItem(MalzemeItem::Type::MALZEME);
         subItem.setAciklama(aciklamaTextBox->text().toUTF8());
         subItem.setPersonel(this->mUser->oid().value().to_string(),this->mUser->AdSoyad());
         for( const auto &malzemeItem : *mList ){
@@ -669,7 +671,7 @@ void TaskManager::assignMalzeme(const std::string &taskOid)
     mDialog->show();
 }
 
-void TaskManager::reListMalzeme(WContainerWidget *mMalzemeListContainer, QList<MalzemeItem> *mList)
+void TaskManager::reListMalzeme(WContainerWidget *mMalzemeListContainer, QList<MalzemeListItem> *mList)
 {
     mMalzemeListContainer->clear();
     std::string attribute1 = Style::background::color::color(Style::color::White::White)+Style::color::color(Style::color::Grey::Black);
@@ -750,21 +752,34 @@ void TaskManager::deleteTask(const std::string &taskOid)
 {
 
     TaskItem filter;
+    filter.setOid(taskOid);
 
     auto taskItem = this->FindOneItem(filter);
 
     for( const auto &akis : taskItem.getAkisList() ){
-        if( !akis.getResimOid().empty() ){
-            this->deleteGridFS(akis.getResimOid().c_str());
+
+        if( akis.getType() == BaseItem::Type::RESIM ){
+
+            ResimItem item;
+            item.setDocumentView(akis.view());
+
+            if( !item.getResimOid().empty() ){
+                this->deleteGridFS(item.getResimOid().c_str());
+            }
+        }else{
+
         }
-    }
-    if( !taskItem.getImageOid().empty() ){
+
 
     }
-    if( deleteGridFS(taskItem.getImageOid().c_str()) ){
-        this->deleteGridFS(taskItem.getImageOid().c_str());
-        this->DeleteItem(filter);
+    if( !taskItem.getImageOid().empty() ){
+        if( deleteGridFS(taskItem.getImageOid().c_str()) ){
+            this->deleteGridFS(taskItem.getImageOid().c_str());
+            this->DeleteItem(filter);
+        }
+
     }
+
     this->updateTaskList();
 }
 
@@ -901,15 +916,15 @@ void TaskItemWidget::initWidget()
     }
 }
 
-void TaskItemWidget::loadAkis(const SubItem &akisItem)
+void TaskItemWidget::loadAkis(const MalzemeItem &akisItem)
 {
-    auto container = this->Content()->addNew<SubItem>(akisItem);
+    auto container = this->Content()->addNew<MalzemeItem>(akisItem);
     container->setUser(mUser);
     container->setTaskItemOid(this->oid().value().to_string());
     container->addStyleClass(Bootstrap::Grid::col_full_12);
 
 
-    auto updateTaskItem = [=]( const SubItem::Onay &onay, const bool mudur = true){
+    auto updateTaskItem = [=]( const MalzemeItem::Onay &onay, const bool mudur = true){
         TaskItem filter;
         filter.setOid(this->oid().value().to_string());
         SerikBLDCore::Item elematch("");
@@ -933,10 +948,10 @@ void TaskItemWidget::loadAkis(const SubItem &akisItem)
     };
 
 
-    container->mudurOnayClicked().connect([=](const SubItem::Onay &onay){
+    container->mudurOnayClicked().connect([=](const MalzemeItem::Onay &onay){
         updateTaskItem(onay,true);
     });
-    container->baskanYrdOnayClicked().connect([=]( const SubItem::Onay &onay){
+    container->baskanYrdOnayClicked().connect([=]( const MalzemeItem::Onay &onay){
         updateTaskItem(onay,false);
     });
 

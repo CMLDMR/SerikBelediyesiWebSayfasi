@@ -95,7 +95,7 @@ public:
     TaskItem &setImageItem( const std::string &oid );
     TaskItem &setBaskanYardimcisi( const std::string &baskanYrdOid , const std::string &baskanYrdAdSoyad );
     TaskItem &addGorevli( const std::string &gorevliOid , const std::string &adSoyad );
-    TaskItem &addAkis( const SubItem &subItem );
+    TaskItem &addAkis( const MalzemeItem &subItem );
 
 
 
@@ -108,7 +108,7 @@ public:
     bool isTamamlandi() const;
     std::list<GorevliItem> getGorevliList() const;
     bool isGorevli( const std::string &gorevliOid ) const;
-    std::list<SubItem> getAkisList() const;
+    std::list<MalzemeItem> getAkisList() const;
     GorevliItem getBaskanYardimcisi() const;
 
 private:
@@ -124,7 +124,7 @@ public:
 
 private:
     void initWidget();
-    void loadAkis( const SubItem &akisItem );
+    void loadAkis( const MalzemeItem &akisItem );
     SerikBLDCore::User* mUser;
 };
 
@@ -162,7 +162,7 @@ public:
     void assignBaskanYardimcisi( const std::string &taskOid );
 
     void assignMalzeme( const std::string &taskOid );
-    void reListMalzeme( WContainerWidget* mMalzemeListContainer , QList<MalzemeItem>* mList );
+    void reListMalzeme( WContainerWidget* mMalzemeListContainer , QList<MalzemeListItem>* mList );
 
     std::unique_ptr<WContainerWidget> createSmallButton( const std::string &name );
 
