@@ -196,6 +196,7 @@ TaskManager::TaskManager(SerikBLDCore::User *_mUser)
 void TaskManager::onList(const QVector<TaskItem> *mlist)
 {
 
+    this->Footer()->clear();
     this->Content()->clear();
 
     bool initColor = false;
@@ -265,11 +266,24 @@ void TaskManager::initHeader()
 
     this->Header()->clear();
 
+    auto listContainer = this->Header()->addNew<WContainerWidget>();
+    listContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_2+
+                                Bootstrap::Grid::Medium::col_md_2+
+                                Bootstrap::Grid::Small::col_sm_3+
+                                Bootstrap::Grid::ExtraSmall::col_xs_4);
+    listContainer->addStyleClass(Bootstrap::ContextualBackGround::bg_primary);
+    listContainer->setPadding(5,AllSides);
+    listContainer->addNew<WText>("<b>Listele</b>");
+    listContainer->decorationStyle().setCursor(Cursor::PointingHand);
+    listContainer->clicked().connect([=](){
+        this->UpdateList(TaskItem(mUser).setBirim(mUser->Birimi()));
+    });
+
     auto infoContainer = this->Header()->addNew<WContainerWidget>();
-    infoContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_10+
-                                 Bootstrap::Grid::Medium::col_md_10+
-                                 Bootstrap::Grid::Small::col_sm_9+
-                                 Bootstrap::Grid::ExtraSmall::col_xs_8);
+    infoContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_8+
+                                 Bootstrap::Grid::Medium::col_md_8+
+                                 Bootstrap::Grid::Small::col_sm_6+
+                                 Bootstrap::Grid::ExtraSmall::col_xs_4);
     infoContainer->addStyleClass(Bootstrap::ContextualBackGround::bg_info);
     infoContainer->setPadding(5,AllSides);
     infoContainer->addNew<WText>(this->mUser->Birimi());
