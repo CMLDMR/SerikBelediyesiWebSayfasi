@@ -4,7 +4,7 @@
 
 #include "baseitem.h"
 
-
+#include "SerikBelediyesiWebSayfasi/BaseClass/containerwiget.h"
 
 namespace TodoList {
 
@@ -27,11 +27,8 @@ public:
 
     ResimItem( const BaseItem &other );
 
-
-
     ResimItem &setResimOid( const std::string &resimOid );
     std::string getResimOid() const;
-
 
     // Item interface
 public:

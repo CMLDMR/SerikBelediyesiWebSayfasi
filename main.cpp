@@ -112,6 +112,8 @@ int main(int argc, char *argv[])
 
     mongocxx::instance ins{};
 
+    SerikBLDCore::DB::setUrl(_url);
+
     std::cout << __cplusplus << "\n";
 
 

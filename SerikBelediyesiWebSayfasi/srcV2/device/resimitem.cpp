@@ -1,30 +1,31 @@
 
 #include "resimitem.h"
+#include <db.h>
 
 namespace TodoList {
 
 ResimItem::ResimItem()
     :BaseItem::BaseItem(BaseItem::Type::RESIM)
 {
-    this->initWidget();
+
 }
 
 ResimItem::ResimItem(const ResimItem &other)
     :BaseItem::BaseItem(other)
 {
-    this->initWidget();
+
 }
 
 ResimItem::ResimItem(ResimItem &&other)
     :TodoList::BaseItem::BaseItem(other)
 {
-    this->initWidget();
+
 }
 
 ResimItem::ResimItem(const BaseItem &other)
     :TodoList::BaseItem::BaseItem(other)
 {
-    this->initWidget();
+
 }
 ResimItem &ResimItem::setResimOid(const std::string &resimOid)
 {
@@ -51,5 +52,18 @@ void TodoList::ResimItem::errorOccured(const std::string &errorText)
 
 void TodoList::ResimItem::initWidget()
 {
-    this->Content()->addNew<WText>("Resim Widget");
+
+    this->setMargin(30,Side::Top);
+    this->addStyleClass(CSSStyle::Radius::radius3px);
+    auto imgContainer = this->Content()->addNew<WContainerWidget>();
+    imgContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+    imgContainer->setHeight(350);
+
+    auto imgPath = SerikBLDCore::DB::instance()->downloadFileWeb(this->getResimOid().c_str());
+
+    imgContainer->setAttributeValue(Style::style,Style::background::url(imgPath)+
+                                                      Style::background::size::contain+
+                                                      Style::background::position::center_center+
+                                                      Style::background::repeat::norepeat);
+
 }

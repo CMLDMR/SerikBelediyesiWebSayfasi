@@ -1,6 +1,12 @@
 
 #include "baseitem.h"
+#include "bootstrap.h"
+#include "inlinestyle.h"
 
+#include <Wt/WText.h>
+#include <Wt/WCssDecorationStyle.h>
+
+using namespace Wt;
 
 namespace TodoList {
 

@@ -4,6 +4,7 @@
 
 #include "baseitem.h"
 
+#include "SerikBelediyesiWebSayfasi/BaseClass/containerwiget.h"
 
 
 
@@ -104,9 +105,10 @@ public:
         Bilinmeyen = 999
     };
 
+    virtual void initWidget() override;
+
 private:
 
-    virtual void initWidget() override;
     void initMalzemeList();
 
     Signal<MalzemeItem::Onay> _mMudurOnayClicked;

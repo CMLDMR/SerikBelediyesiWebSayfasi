@@ -15,7 +15,6 @@
 #include "SerikBelediyesiWebSayfasi/srcV2/nostserik.h"
 
 
-#include "../url.h"
 
 #include <QDir>
 #include <QCryptographicHash>
@@ -36,20 +35,21 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
 //    return;
 
 
-    try {
-        mClient = new mongocxx::client(mongocxx::uri(_url));
-    } catch (mongocxx::exception& e) {
-        std::cout << "MongoDB Connection Error: " << e.what() << std::endl;
-        root()->addWidget(cpp14::make_unique<WText>("Driver Yüklenemedi!"));
-        return;
-    }
+
+//    try {
+//        mClient = new mongocxx::client(mongocxx::uri(_url));
+//    } catch (mongocxx::exception& e) {
+//        std::cout << "MongoDB Connection Error: " << e.what() << std::endl;
+//        root()->addWidget(cpp14::make_unique<WText>("Driver Yüklenemedi!"));
+//        return;
+//    }
 
     Wt::WApplication *app = Wt::WApplication::instance();
     app->setLoadingIndicator(std::make_unique<WOverlayLoadingIndicator>());
     app->loadingIndicator()->setMessage("Yükleniyor...");
 
-
-    db = mClient->database(SBLDKeys::DB);
+        db = *SerikBLDCore::DB::instance()->db();
+//    db = mClient->database(SBLDKeys::DB);
     Bucket = db.gridfs_bucket();
 
 

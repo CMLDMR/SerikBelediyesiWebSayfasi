@@ -10,33 +10,24 @@ MalzemeItem::MalzemeItem(SerikBLDCore::User *_mUser)
 {
     this->append(Key::AKIS::mudurOnay,bsoncxx::types::b_int32{static_cast<std::int32_t>(Onay::Beklemede)});
     this->append(Key::AKIS::baskanYrdOnay,bsoncxx::types::b_int32{static_cast<std::int32_t>(Onay::Beklemede)});
-    this->initWidget();
 }
 
 MalzemeItem::MalzemeItem(const MalzemeItem &other)
     :BaseItem::BaseItem(other)
 {
-//    this->setUser(other.user());
-//    this->setDocumentView(other.view());
-    this->initWidget();
 
 }
 
 MalzemeItem::MalzemeItem(MalzemeItem &&other)
     :BaseItem::BaseItem(other)
 {
-//    this->setUser(other.user());
-//    this->setDocumentView(other.view());
-    this->initWidget();
 
 }
 
 MalzemeItem::MalzemeItem(const BaseItem &other)
     :BaseItem::BaseItem(other)
 {
-//    this->setUser(other.user());
-//    this->setDocumentView(other.view());
-    this->initWidget();
+
 }
 
 
@@ -145,7 +136,6 @@ MalzemeItem::Onay MalzemeItem::getBaskanYrdOnay() const
 void MalzemeItem::editContent()
 {
 
-
     QList<MalzemeListItem>* mList = new QList<MalzemeListItem>;
 
     for( const auto &item : this->getMalzemeList() ){
@@ -154,12 +144,8 @@ void MalzemeItem::editContent()
 
     auto mDialog = createFlatDialog("Malzeme Ata",false);
 
-
     auto mMalzemeListContainer = mDialog->Content()->addWidget(cpp14::make_unique<WContainerWidget>());
     mMalzemeListContainer->addStyleClass(Bootstrap::Grid::col_full_12);
-
-
-
 
     auto malzemeAddContainer = mDialog->Content()->addNew<WContainerWidget>();
     malzemeAddContainer->addStyleClass(Bootstrap::Grid::col_full_12);
@@ -198,8 +184,6 @@ void MalzemeItem::editContent()
     });
     reListMalzeme(mMalzemeListContainer,mList);
 
-
-
     auto aciklamaTextBox = mDialog->Content()->addWidget(cpp14::make_unique<WTextArea>());
     aciklamaTextBox->addStyleClass(Bootstrap::Grid::col_full_12);
     aciklamaTextBox->setHeight(150);
@@ -215,8 +199,6 @@ void MalzemeItem::editContent()
             subItem.addMalzeme(malzemeItem.getMalzemeAdi(),malzemeItem.getMiktar(),malzemeItem.getMetric());
         }
 
-
-
         TaskItem filter;
         filter.setOid(this->mTaskItemOid);
 
@@ -228,8 +210,6 @@ void MalzemeItem::editContent()
 
         setObj.append("$set",make_document(kvp(Key::akis+".$."+Key::AKIS::aciklama,aciklamaTextBox->text().toUTF8()),
                                             kvp(Key::akis+".$."+Key::AKIS::malzemeList,subItem.element(Key::AKIS::malzemeList).value().view().get_array().value)));
-
-
 
         auto upt = this->mUser->getDB()->db()->collection(filter.getCollection()).update_one(filter.view(),setObj.view());
         if( upt ){
@@ -248,12 +228,10 @@ void MalzemeItem::editContent()
 
     });
 
-
     mDialog->Rejected().connect([=](){
         delete mList;
         this->removeDialog(mDialog);
     });
-
 
     mDialog->show();
 }
@@ -316,7 +294,6 @@ void MalzemeItem::reListMalzeme(WContainerWidget *mMalzemeListContainer, QList<M
         i++;
     }
 
-
 }
 
 void MalzemeItem::initWidget()
@@ -333,7 +310,6 @@ void MalzemeItem::initMalzemeList()
     this->Header()->clear();
     this->Footer()->clear();
     auto mList = this->getMalzemeList();
-
 
     auto personelContainer = this->Header()->addWidget(cpp14::make_unique<WContainerWidget>());
     personelContainer->addStyleClass(Bootstrap::Grid::col_full_12);
@@ -423,7 +399,6 @@ void MalzemeItem::initMalzemeList()
     auto btnContainer = this->Footer()->addNew<WContainerWidget>();
     btnContainer->addStyleClass(Bootstrap::Grid::col_full_12);
 
-
     auto hLayout = btnContainer->setLayout(cpp14::make_unique<WHBoxLayout>());
 
     auto redBtn = createBtn("Red",Style::background::color::rgb (this->getRandom (175,255),
@@ -433,7 +408,6 @@ void MalzemeItem::initMalzemeList()
         this->setOnay(Onay::Red);
     });
     hLayout->addWidget(std::move(redBtn),1);
-
 
     auto acceptBtn = createBtn("Kabul Et",Style::background::color::rgb (this->getRandom (0,50),
                                                                          this->getRandom (175,255),
@@ -456,7 +430,6 @@ void MalzemeItem::initMalzemeList()
                                                                        this->getRandom (100,155),
                                                                        this->getRandom (100,155)));
     hLayout->addWidget(std::move(yazdirBtn),1);
-
 
     auto duzenleBtn = createBtn("Düzenle",Style::background::color::rgb (this->getRandom (100,155),
                                                                         this->getRandom (100,155),

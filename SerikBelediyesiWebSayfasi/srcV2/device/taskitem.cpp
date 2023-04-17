@@ -392,6 +392,13 @@ void TaskManager::loadTask(const std::string &taskoid)
         });
         hLayout->addWidget(std::move(malzemeEkleBtn));
 
+
+        auto teklifEkleBtn = createSmallButton("Teklif Ekle+");
+        teklifEkleBtn->clicked().connect([=](){
+//            this->assignMalzeme(taskoid);
+        });
+        hLayout->addWidget(std::move(teklifEkleBtn));
+
         auto aciklamaBtn = createSmallButton("Açıklama Ekle+");
         hLayout->addWidget(std::move(aciklamaBtn));
 
@@ -981,11 +988,13 @@ void TaskItemWidget::loadAkis(const BaseItem &akisItem)
         container->setUser(mUser);
         container->setTaskItemOid(this->oid().value().to_string());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
+        container->initWidget();
     }else if( akisItem.getType() == BaseItem::Type::RESIM ){
         auto container = this->Content()->addNew<ResimItem>(akisItem);
         container->setUser(mUser);
         container->setTaskItemOid(this->oid().value().to_string());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
+        container->initWidget();
     }
 
 }
