@@ -9,6 +9,8 @@
 #include <Wt/WLink.h>
 
 #include "SerikBelediyesiWebSayfasi/srcV2/device/resimitem.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/device/aciklamaitem.h"
+
 #include "personelmanager.h"
 
 namespace TodoList {
@@ -249,6 +251,17 @@ void TaskManager::initHeader()
 
     this->Header()->clear();
 
+
+    this->Header()->setMargin(30,Side::Top);
+
+    auto titleContainer = this->Header()->addNew<WContainerWidget>();
+    titleContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+    titleContainer->setAttributeValue(Style::style,Style::Border::border("1px solid dimgray")+Style::Border::borderRardius("10","10")+
+                                                        Style::background::color::color(Style::color::Yellow::PeachPuff));
+
+    auto titleText = titleContainer->addWidget(cpp14::make_unique<WText>("<h4>İş Takibi</h4>"));
+
+
     auto listContainer = this->Header()->addNew<WContainerWidget>();
     listContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_2+
                                 Bootstrap::Grid::Medium::col_md_2+
@@ -366,12 +379,15 @@ void TaskManager::loadTask(const std::string &taskoid)
 
     if( !val.view().empty() ){
         this->Content()->clear();
+
+        auto controlLayoutWidget = this->Content()->addWidget(cpp14::make_unique<WContainerWidget>());
+        controlLayoutWidget->addStyleClass(Bootstrap::Grid::col_full_12);
+
         auto container = this->Content()->addWidget(cpp14::make_unique<TaskItemWidget>(val,this->mUser));
         container->setMargin(25,Side::Top);
+        container->addStyleClass(Bootstrap::Grid::col_full_12);
 
-        this->Footer()->clear();
-        auto hLayout = this->Footer()->setLayout(cpp14::make_unique<WHBoxLayout>());
-
+        auto hLayout = controlLayoutWidget->setLayout(cpp14::make_unique<WHBoxLayout>());
 
         auto baskanYardimciAta = createSmallButton("Başkan Yardımcısı Ata+");
         baskanYardimciAta->clicked().connect([=](){
@@ -400,6 +416,9 @@ void TaskManager::loadTask(const std::string &taskoid)
         hLayout->addWidget(std::move(teklifEkleBtn));
 
         auto aciklamaBtn = createSmallButton("Açıklama Ekle+");
+            aciklamaBtn->clicked().connect([=](){
+                 this->assignAciklama(taskoid);
+             });
         hLayout->addWidget(std::move(aciklamaBtn));
 
         auto resimEkleBtn = createSmallButton("Resim Ekle+");
@@ -589,10 +608,7 @@ void TaskManager::assignBaskanYardimcisi(const std::string &taskOid)
 
 void TaskManager::assignResim(const std::string &taskOid)
 {
-    auto mDialog = createFlatDialog("Malzeme Ata",false);
-
-
-    //TODO: Yüklenen Resim Gösterilecek
+    auto mDialog = createFlatDialog("Resim Ekle",false);
 
     auto fileUploadContainer = mDialog->Content()->addWidget(cpp14::make_unique<FileUploaderWidget>("Resim Yükle"));
     fileUploadContainer->setType(FileUploaderWidget::Image);
@@ -602,7 +618,7 @@ void TaskManager::assignResim(const std::string &taskOid)
     auto aciklamaTextBox = mDialog->Content()->addWidget(cpp14::make_unique<WTextArea>());
     aciklamaTextBox->addStyleClass(Bootstrap::Grid::col_full_12);
     aciklamaTextBox->setHeight(150);
-    aciklamaTextBox->setPlaceholderText("Malzemelerin nerede ne için kullanılacağı içeren bilgi giriniz!");
+    aciklamaTextBox->setPlaceholderText("Resim Hakkında Bilgi Giriniz!");
 
 
     mDialog->Accepted().connect([=](){
@@ -633,6 +649,44 @@ void TaskManager::assignResim(const std::string &taskOid)
             this->showPopUpMessage("Resim Yüklemediniz","warn");
         }
 
+    });
+
+    mDialog->Rejected().connect([=](){
+        this->removeDialog(mDialog);
+    });
+
+
+    mDialog->show();
+}
+
+void TaskManager::assignAciklama(const std::string &taskOid)
+{
+    auto mDialog = createFlatDialog("Açıklama Ekle",false);
+
+
+
+
+    auto aciklamaTextBox = mDialog->Content()->addWidget(cpp14::make_unique<WTextArea>());
+    aciklamaTextBox->addStyleClass(Bootstrap::Grid::col_full_12);
+    aciklamaTextBox->setHeight(150);
+    aciklamaTextBox->setPlaceholderText("Açıklama Metni Giriniz!");
+
+
+    mDialog->Accepted().connect([=](){
+        AciklamaItem subItem;
+        subItem.setAciklama(aciklamaTextBox->text().toUTF8());
+        subItem.setPersonel(this->mUser->oid().value().to_string(),this->mUser->AdSoyad());
+
+        TaskItem taskItem;
+        taskItem.setOid(taskOid);
+
+        auto upt = this->pushValue(taskItem,Key::akis,subItem.view());
+        if( upt ){
+            this->loadTask(taskOid);
+            this->removeDialog(mDialog);
+        }else{
+            this->showPopUpMessage(this->getLastError().toStdString(),"warn");
+        }
     });
 
     mDialog->Rejected().connect([=](){
@@ -903,6 +957,10 @@ TaskItemWidget::TaskItemWidget(const TaskItem &item, SerikBLDCore::User *_mUser)
 void TaskItemWidget::initWidget()
 {
     this->Header()->clear();
+    this->Header()->addStyleClass(CSSStyle::Radius::radius3px+CSSStyle::Shadows::shadow8px);
+    this->Header()->setAttributeValue(Style::style,Style::background::color::rgb(this->getRandom(225,230),
+                                                                                  this->getRandom(245,255),
+                                                                                  this->getRandom(245,255)));
 
     auto isAdiContainer = this->Header()->addNew<WText>("<h4><b>"+this->getIsAdi()+"</b></h4>");
     isAdiContainer->addStyleClass(Bootstrap::Grid::col_full_12);
@@ -975,6 +1033,7 @@ void TaskItemWidget::initWidget()
     auto list = this->getAkisList();
     this->Content()->clear();
 
+    list.reverse();
     for( const auto &akisItem : list ){
         this->loadAkis(akisItem);
     }
@@ -991,6 +1050,12 @@ void TaskItemWidget::loadAkis(const BaseItem &akisItem)
         container->initWidget();
     }else if( akisItem.getType() == BaseItem::Type::RESIM ){
         auto container = this->Content()->addNew<ResimItem>(akisItem);
+        container->setUser(mUser);
+        container->setTaskItemOid(this->oid().value().to_string());
+        container->addStyleClass(Bootstrap::Grid::col_full_12);
+        container->initWidget();
+    }else if( akisItem.getType() == BaseItem::Type::ACIKLAMA ){
+        auto container = this->Content()->addNew<AciklamaItem>(akisItem);
         container->setUser(mUser);
         container->setTaskItemOid(this->oid().value().to_string());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
