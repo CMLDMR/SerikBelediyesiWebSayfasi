@@ -1014,15 +1014,19 @@ void TaskItemWidget::initWidget()
     baskanYrdText->setInline(true);
     baskanYrdText->setPadding(5,AllSides);
 
-    auto imageContainer = this->Header()->addWidget(cpp14::make_unique<WContainerWidget>());
-    imageContainer->setHeight(250);
-    imageContainer->addStyleClass(Bootstrap::Grid::col_full_12);
-    auto fileUrl = this->downloadFileWeb(this->getImageOid().c_str());
-    imageContainer->setAttributeValue(Style::style,Style::background::url(fileUrl)+
-                                                        Style::background::size::contain+
-                                                        Style::background::position::center_center+
-                                                        Style::background::repeat::norepeat);
-    imageContainer->setMargin(5,Side::Top|Side::Bottom);
+
+    if( !this->getImageOid().empty() ){
+        auto imageContainer = this->Header()->addWidget(cpp14::make_unique<WContainerWidget>());
+        imageContainer->setHeight(250);
+        imageContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+        auto fileUrl = this->downloadFileWeb(this->getImageOid().c_str());
+        imageContainer->setAttributeValue(Style::style,Style::background::url(fileUrl)+
+                                                            Style::background::size::contain+
+                                                            Style::background::position::center_center+
+                                                            Style::background::repeat::norepeat);
+        imageContainer->setMargin(5,Side::Top|Side::Bottom);
+    }
+
 
 
     auto isAciklamaContainer = this->Header()->addNew<WText>(this->getAciklama());
@@ -1032,6 +1036,27 @@ void TaskItemWidget::initWidget()
 
     auto list = this->getAkisList();
     this->Content()->clear();
+
+    mMalzemeListContainer = this->Content()->addNew<WContainerWidget>();
+    mMalzemeListContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+
+    mSperatorContainer = this->Content()->addNew<WContainerWidget>();
+    mSperatorContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+    mSperatorContainer->setAttributeValue(Style::style,Style::background::color::color(Style::color::Grey::Black));
+    mSperatorContainer->setHeight(2);
+
+
+    auto malzemeItem = std::find_if(list.begin(),list.end(),[=](const BaseItem &item){
+        return item.getType() == BaseItem::Type::MALZEME;
+    });
+
+    if( malzemeItem != std::end(list) ){
+        auto container = mMalzemeListContainer->addNew<MalzemeItem>(*malzemeItem);
+        container->setUser(mUser);
+        container->setTaskItemOid(this->oid().value().to_string());
+        container->addStyleClass(Bootstrap::Grid::col_full_12);
+        container->initWidget();
+    }
 
     list.reverse();
     for( const auto &akisItem : list ){
@@ -1043,11 +1068,8 @@ void TaskItemWidget::loadAkis(const BaseItem &akisItem)
 {
 
     if( akisItem.getType() == BaseItem::Type::MALZEME ){
-        auto container = this->Content()->addNew<MalzemeItem>(akisItem);
-        container->setUser(mUser);
-        container->setTaskItemOid(this->oid().value().to_string());
-        container->addStyleClass(Bootstrap::Grid::col_full_12);
-        container->initWidget();
+
+
     }else if( akisItem.getType() == BaseItem::Type::RESIM ){
         auto container = this->Content()->addNew<ResimItem>(akisItem);
         container->setUser(mUser);

@@ -300,6 +300,7 @@ void MalzemeItem::initWidget()
 {
     this->addStyleClass(CSSStyle::Radius::radius3px+CSSStyle::Shadows::shadow8px);
     this->setMargin(25,Side::Bottom|Side::Top);
+    this->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::GhostWhite));
     this->initMalzemeList();
 }
 

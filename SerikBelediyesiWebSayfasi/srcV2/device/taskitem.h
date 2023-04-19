@@ -126,6 +126,9 @@ private:
     void initWidget();
     void loadAkis(const BaseItem &akisItem );
     SerikBLDCore::User* mUser;
+
+    WContainerWidget* mMalzemeListContainer;
+    WContainerWidget* mTeklifListContainer;
 };
 
 

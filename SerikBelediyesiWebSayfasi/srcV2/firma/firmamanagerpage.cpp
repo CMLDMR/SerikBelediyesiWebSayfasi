@@ -274,7 +274,7 @@ void v2::FirmaManagerPage::yeniFirmaKayitDialog()
     firmaAdiLineEdit->setPlaceholderText ("Firma Adını Giriniz");
 
     firmaAdiLineEdit->changed ().connect ([=](){
-        // Set options for email address suggestions:
+        //TODO:  Set options for email address suggestions:
 
 
 
