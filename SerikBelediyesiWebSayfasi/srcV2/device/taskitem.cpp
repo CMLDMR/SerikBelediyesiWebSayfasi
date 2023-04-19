@@ -10,6 +10,7 @@
 
 #include "SerikBelediyesiWebSayfasi/srcV2/device/resimitem.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/device/aciklamaitem.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/device/teklifitem.h"
 
 #include "personelmanager.h"
 
@@ -411,7 +412,7 @@ void TaskManager::loadTask(const std::string &taskoid)
 
         auto teklifEkleBtn = createSmallButton("Teklif Ekle+");
         teklifEkleBtn->clicked().connect([=](){
-//            this->assignMalzeme(taskoid);
+            this->assignTeklif(taskoid);
         });
         hLayout->addWidget(std::move(teklifEkleBtn));
 
@@ -441,7 +442,6 @@ void TaskManager::loadTask(const std::string &taskoid)
 
         hLayout->addStretch(1);
     }
-
 
 }
 
@@ -697,6 +697,46 @@ void TaskManager::assignAciklama(const std::string &taskOid)
     mDialog->show();
 }
 
+void TaskManager::assignTeklif(const std::string &taskOid)
+{
+
+    //TODO: Teklif Veren Firma adı ve Verdiği Teklif Girilecek
+    auto mDialog = createFlatDialog("Teklif Ekle",false);
+
+
+
+
+    auto aciklamaTextBox = mDialog->Content()->addWidget(cpp14::make_unique<WTextArea>());
+    aciklamaTextBox->addStyleClass(Bootstrap::Grid::col_full_12);
+    aciklamaTextBox->setHeight(150);
+    aciklamaTextBox->setPlaceholderText("Açıklama Metni Giriniz!");
+
+
+    mDialog->Accepted().connect([=](){
+        TeklifItem subItem;
+        subItem.setAciklama(aciklamaTextBox->text().toUTF8());
+        subItem.setPersonel(this->mUser->oid().value().to_string(),this->mUser->AdSoyad());
+
+        TaskItem taskItem;
+        taskItem.setOid(taskOid);
+
+        auto upt = this->pushValue(taskItem,Key::akis,subItem.view());
+        if( upt ){
+            this->loadTask(taskOid);
+            this->removeDialog(mDialog);
+        }else{
+            this->showPopUpMessage(this->getLastError().toStdString(),"warn");
+        }
+    });
+
+    mDialog->Rejected().connect([=](){
+        this->removeDialog(mDialog);
+    });
+
+
+    mDialog->show();
+}
+
 void TaskManager::assignMalzeme(const std::string &taskOid)
 {
 
@@ -888,14 +928,12 @@ void TaskManager::deleteTask(const std::string &taskOid)
 
         }
 
-
     }
     if( !taskItem.getImageOid().empty() ){
         if( deleteGridFS(taskItem.getImageOid().c_str()) ){
             this->deleteGridFS(taskItem.getImageOid().c_str());
             this->DeleteItem(filter);
         }
-
     }
 
     this->updateTaskList();
@@ -1028,7 +1066,6 @@ void TaskItemWidget::initWidget()
     }
 
 
-
     auto isAciklamaContainer = this->Header()->addNew<WText>(this->getAciklama());
     isAciklamaContainer->setMargin(10,Side::Top|Side::Bottom);
     isAciklamaContainer->setPadding(10,Side::Top|Side::Bottom);
@@ -1040,10 +1077,14 @@ void TaskItemWidget::initWidget()
     mMalzemeListContainer = this->Content()->addNew<WContainerWidget>();
     mMalzemeListContainer->addStyleClass(Bootstrap::Grid::col_full_12);
 
+    mTeklifItemContainer = this->Content()->addNew<WContainerWidget>();
+    mTeklifItemContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+
+
     mSperatorContainer = this->Content()->addNew<WContainerWidget>();
     mSperatorContainer->addStyleClass(Bootstrap::Grid::col_full_12);
     mSperatorContainer->setAttributeValue(Style::style,Style::background::color::color(Style::color::Grey::Black));
-    mSperatorContainer->setHeight(2);
+    mSperatorContainer->setHeight(5);
 
 
     auto malzemeItem = std::find_if(list.begin(),list.end(),[=](const BaseItem &item){
@@ -1058,6 +1099,18 @@ void TaskItemWidget::initWidget()
         container->initWidget();
     }
 
+    auto teklifItem = std::find_if(list.begin(),list.end(),[=](const BaseItem &item){
+        return item.getType() == BaseItem::Type::TEKLIF;
+    });
+
+    if( teklifItem != std::end(list) ){
+        auto container = mMalzemeListContainer->addNew<TeklifItem>(*teklifItem);
+        container->setUser(mUser);
+        container->setTaskItemOid(this->oid().value().to_string());
+        container->addStyleClass(Bootstrap::Grid::col_full_12);
+        container->initWidget();
+    }
+
     list.reverse();
     for( const auto &akisItem : list ){
         this->loadAkis(akisItem);
@@ -1066,9 +1119,7 @@ void TaskItemWidget::initWidget()
 
 void TaskItemWidget::loadAkis(const BaseItem &akisItem)
 {
-
     if( akisItem.getType() == BaseItem::Type::MALZEME ){
-
 
     }else if( akisItem.getType() == BaseItem::Type::RESIM ){
         auto container = this->Content()->addNew<ResimItem>(akisItem);

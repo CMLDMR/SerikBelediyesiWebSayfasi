@@ -1,41 +1,47 @@
 
-#include "aciklamaitem.h"
+#include "teklifitem.h"
 
 namespace TodoList {
 
-AciklamaItem::AciklamaItem()
-    :BaseItem::BaseItem(BaseItem::Type::ACIKLAMA)
+TeklifItem::TeklifItem()
+    :BaseItem::BaseItem(BaseItem::Type::TEKLIF)
 {
 
 }
 
-AciklamaItem::AciklamaItem(const AciklamaItem &other)
+TeklifItem::TeklifItem(const TeklifItem &other)
     :BaseItem::BaseItem(other)
+
 {
 
 }
 
-AciklamaItem::AciklamaItem(AciklamaItem &&other)
-    :TodoList::BaseItem::BaseItem(other)
+TeklifItem::TeklifItem(TeklifItem &&other)
+    :BaseItem::BaseItem(other)
+
 {
 
 }
 
-AciklamaItem::AciklamaItem(const BaseItem &other)
-    :TodoList::BaseItem::BaseItem(other)
+TeklifItem::TeklifItem(const BaseItem &other)
+    :BaseItem::BaseItem(other)
+
 {
 
 }
 
-void AciklamaItem::errorOccured(const std::string &errorText)
+void TeklifItem::errorOccured(const std::string &errorText)
 {
-    this->showPopUpMessage(errorText,"warn");
+
 }
 
-void AciklamaItem::initWidget()
+void TeklifItem::initWidget()
 {
-    this->setMargin(30,Side::Top);
     this->addStyleClass(CSSStyle::Radius::radius3px);
+    auto baslikContainer = this->Content()->addNew<WContainerWidget>();
+    baslikContainer->addStyleClass(Bootstrap::Grid::col_full_12);
+    baslikContainer->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::GhostWhite));
+    baslikContainer->addWidget(cpp14::make_unique<WText>("<h4>Teklifler</h4>"));
 
 
     auto perInformationContainer = this->Content()->addWidget(cpp14::make_unique<WContainerWidget>());

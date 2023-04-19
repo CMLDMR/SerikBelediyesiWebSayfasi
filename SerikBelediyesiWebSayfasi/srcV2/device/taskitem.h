@@ -128,7 +128,9 @@ private:
     SerikBLDCore::User* mUser;
 
     WContainerWidget* mMalzemeListContainer;
-    WContainerWidget* mTeklifListContainer;
+    WContainerWidget* mSperatorContainer;
+    WContainerWidget* mTeklifItemContainer;
+
 };
 
 
@@ -168,6 +170,7 @@ public:
     void assignBaskanYardimcisi( const std::string &taskOid );
     void assignResim( const std::string &taskOid );
     void assignAciklama( const std::string &taskOid );
+    void assignTeklif( const std::string &taskOid );
 
     void assignMalzeme( const std::string &taskOid );
     void reListMalzeme( WContainerWidget* mMalzemeListContainer , QList<MalzemeListItem>* mList );
@@ -177,7 +180,7 @@ public:
     void updateTaskList();
 
 private:
-    SerikBLDCore::User* mUser;
+    SerikBLDCore::User* mUser{nullptr};
 
     std::list<PersonelSelectWidget*> mPersonelSelectWidget;
 
