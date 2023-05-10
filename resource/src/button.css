@@ -1,0 +1,45 @@
+.abstractBtn, .warningBtn, .successBtn, .primaryBtn, .defaultBtn {
+  font-family: Roboto, sans-serif;
+  font-weight: 0;
+  font-size: 14px;
+  padding: 8px 14px;
+  border-radius: 2px;
+  transition: 100ms;
+  transform: translateY(0);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+  width: max-content;
+  border: solid 1px #ffffff;
+}
+
+.abstractBtn:hover, .warningBtn:hover, .successBtn:hover, .primaryBtn:hover, .defaultBtn:hover {
+  transition: 100ms;
+  background-color: #fff;
+  color: #4e4e4e;
+  border: solid 1px #525252;
+}
+
+.abstractBtn:active, .warningBtn:active, .successBtn:active, .primaryBtn:active, .defaultBtn:active {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.defaultBtn {
+  background-color: #b8c6d4;
+}
+
+.primaryBtn {
+  background-color: #82c0ff;
+}
+
+.successBtn {
+  background-color: #82ffba;
+}
+
+.warningBtn {
+  background-color: #f1c228;
+}
+
+/*# sourceMappingURL=button.css.map */

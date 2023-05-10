@@ -111,8 +111,6 @@ bool ItemBase::deleteItem()
 bool ItemBase::reLoad()
 {
 
-
-
     try {
         auto val = this->db()->collection(collectionName).find_one(make_document(kvp("_id",this->mOid)));
 
@@ -138,6 +136,7 @@ bool ItemBase::reLoad()
                 } catch (bsoncxx::exception &e) {
                     std::cout << "ERROR: " << __LINE__ << " " << __FUNCTION__ << " " << e.what() << std::endl;
                     mIsValid = false;
+                    return false;
                 }
             }else{
                 return false;

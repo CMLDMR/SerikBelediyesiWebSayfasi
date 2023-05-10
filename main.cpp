@@ -15,6 +15,8 @@
 
 #include <ranges>
 
+#include "SerikBelediyesiWebSayfasi/widget/cssbuilder.h"
+
 ///https://www.flaticon.com/packs/essential-collection
 /// https://codepen.io/asfarmed/pen/cfslr
 ///
@@ -111,6 +113,9 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     mongocxx::instance ins{};
+
+    Widget::CSSBuilder::instance();
+
 
     SerikBLDCore::DB::setUrl(_url);
 

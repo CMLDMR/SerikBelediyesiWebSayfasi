@@ -2,6 +2,7 @@
 #include "baseitem.h"
 #include "bootstrap.h"
 #include "inlinestyle.h"
+#include "SerikBelediyesiWebSayfasi/widget/css/button.h"
 
 #include <Wt/WText.h>
 #include <Wt/WCssDecorationStyle.h>
@@ -138,19 +139,14 @@ std::string BaseItem::getTimeString() const
 std::unique_ptr<WContainerWidget> BaseItem::createBtn(const std::string &btnName, const std::string &backColor )
 {
 
-    auto container = cpp14::make_unique<WContainerWidget>();
+    auto container = cpp14::make_unique<Widget::Button::Default>(btnName);
     container->addStyleClass (/*Bootstrap::Grid::Large::col_lg_2+
                              Bootstrap::Grid::Medium::col_md_2+
                              Bootstrap::Grid::Small::col_sm_3+
                              Bootstrap::Grid::ExtraSmall::col_xs_3+*/
                              Bootstrap::ImageShape::img_thumbnail);
-    container->setAttributeValue (Style::style,backColor);
-    auto btnText = container->addWidget (cpp14::make_unique<WText>(btnName));
-    btnText->setAttributeValue (Style::style,Style::color::color (Style::color::White::Snow));
-    container->decorationStyle ().setCursor (Cursor::PointingHand);
-    container->addStyleClass (CSSStyle::Button::blueButton);
-    container->setHeight (25);
-    container->setPadding(5,Side::Left|Side::Right);
+    container->setPadding(4,Side::Top|Side::Bottom);
+    container->setPadding(8,Side::Right|Side::Left);
     return container;
 
 }

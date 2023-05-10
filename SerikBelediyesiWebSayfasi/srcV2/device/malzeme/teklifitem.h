@@ -2,7 +2,7 @@
 #ifndef TODOLIST_TEKLIFITEM_H
 #define TODOLIST_TEKLIFITEM_H
 
-#include "baseitem.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/device/baseitem.h"
 #include "SerikBelediyesiWebSayfasi/BaseClass/containerwiget.h"
 
 

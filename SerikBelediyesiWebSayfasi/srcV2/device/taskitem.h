@@ -3,7 +3,7 @@
 
 
 #include "listitem.h"
-#include "SerikBelediyesiWebSayfasi/srcV2/device/subitem.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/device/malzeme/malzemeitem.h"
 #include "stok/stokv2manager.h"
 
 namespace TodoList {
@@ -170,7 +170,6 @@ public:
     void assignBaskanYardimcisi( const std::string &taskOid );
     void assignResim( const std::string &taskOid );
     void assignAciklama( const std::string &taskOid );
-    void assignTeklif( const std::string &taskOid );
 
     void assignMalzeme( const std::string &taskOid );
     void reListMalzeme( WContainerWidget* mMalzemeListContainer , QList<MalzemeListItem>* mList );

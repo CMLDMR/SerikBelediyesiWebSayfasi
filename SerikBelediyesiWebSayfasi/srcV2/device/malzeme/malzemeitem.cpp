@@ -1,7 +1,9 @@
 
-#include "subitem.h"
+#include "malzemeitem.h"
 #include "stok/stokv2manager.h"
-#include "taskitem.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/device/taskitem.h"
+
+#include "SerikBelediyesiWebSayfasi/widget/css/button.h"
 
 namespace TodoList {
 
@@ -172,11 +174,11 @@ void MalzemeItem::editContent()
 
     auto MalzemeDoubleSpinBox = hMalzemeLayout->addWidget(cpp14::make_unique<WDoubleSpinBox>(),0,AlignmentFlag::Center);
 
-    auto MalzemeAddBtn = hMalzemeLayout->addWidget(cpp14::make_unique<WPushButton>("Ekle+ "),0,AlignmentFlag::Justify);
+    auto MalzemeAddBtn = hMalzemeLayout->addWidget(cpp14::make_unique<Widget::Button::Default>("Ekle+ "),0,AlignmentFlag::Justify);
 
     MalzemeAddBtn->clicked().connect([=](){
         if( MalzemeDoubleSpinBox->value() <= 0 ){
-            this->showPopUpMessage("Lütfen Geçerli Miktar Giriniz","warn");
+            this->showPopUpMessage("Lütfen Geçerli Miktar Giriniz11","warn");
             return;
         }
         mList->push_back(MalzemeListItem(MalzemeComboBox->currentText().toUTF8(),MalzemeDoubleSpinBox->value(),linb::any_cast<std::string>(mModel->item(MalzemeComboBox->currentIndex())->data(ItemDataRole::User+1))));
@@ -293,6 +295,57 @@ void MalzemeItem::reListMalzeme(WContainerWidget *mMalzemeListContainer, QList<M
         }
         i++;
     }
+
+}
+
+void MalzemeItem::addTeklif()
+{
+
+    auto mDialog = createFlatDialog("Teklif Ekle");
+
+
+
+    auto vLayout = mDialog->Content()->setLayout(std::make_unique<WVBoxLayout>());
+
+    auto container = vLayout->addWidget(std::make_unique<WContainerWidget>());
+
+    auto gLayout = container->setLayout(std::make_unique<WGridLayout>());
+//    gLayout->setRowStretch(0,1);
+    gLayout->setDefaultImplementation(LayoutImplementation::Flex);
+    gLayout->setPreferredImplementation(LayoutImplementation::Flex);
+
+    auto text = gLayout->addWidget(std::make_unique<WText>("Firma Adı"),0,0,AlignmentFlag::Center);
+//                text->setAttributeValue(Style::style,"display:flex;");
+//    text->setTextAlignment(AlignmentFlag::Center);
+        auto firmaComboBox = gLayout->addWidget(std::make_unique<WLineEdit>(),0,1,AlignmentFlag::Center);
+
+    firmaComboBox->setPlaceholderText("Firma Adını Giriniz");
+//    firmaComboBox->setMaximumSize(250,WLength::Auto);
+
+    auto text1 = gLayout->addWidget(std::make_unique<WText>("Fiyat"),1,0,AlignmentFlag::Justify);
+//    text1->setAttributeValue(Style::style,"dislplay:flex;");;
+
+    auto fiyatSpinBox = gLayout->addWidget(std::make_unique<WSpinBox>(),1,1,AlignmentFlag::Center);
+    fiyatSpinBox->setRange(1,99999999);
+//    fiyatSpinBox->setMaximumSize(250,WLength::Auto);
+
+
+
+
+    auto fileUploader = vLayout->addWidget(std::make_unique<FileUploaderWidget>("Teklif Yükle"));
+    fileUploader->setType(FileUploaderWidget::FilterType::Image);
+
+
+    mDialog->Accepted().connect([=](){
+
+    });
+
+    mDialog->Rejected().connect([=](){
+
+    });
+
+
+    mDialog->show();
 
 }
 
@@ -464,6 +517,14 @@ void MalzemeItem::initMalzemeList()
 
     hLayout->addWidget(std::move(silBtn),1);
 
+
+
+    auto teklifAddBtn = createBtn("Teklif Ekle",Style::background::color::rgb (this->getRandom (100,155),
+                                                                         this->getRandom (100,155),
+                                                                         this->getRandom (100,155)));
+    teklifAddBtn->clicked().connect(this,&MalzemeItem::addTeklif);
+    hLayout->addWidget(std::move(teklifAddBtn),1);
+
 }
 
 void MalzemeItem::setOnay(const Onay &onay)
@@ -562,33 +623,7 @@ Signal<NoClass> &MalzemeItem::reloadClicked()
 
 
 
-std::string MalzemeListItem::getMalzemeAdi() const
-{
-    auto val = this->element(Key::AKIS::MALZEMELIST::malzemeAdi);
-    if( val ){
-        return val.value().view().get_string().value.data();
-    }
-    return "";
 
-}
-
-double MalzemeListItem::getMiktar() const
-{
-    auto val = this->element(Key::AKIS::MALZEMELIST::miktari);
-    if( val ){
-        return val.value().view().get_double().value;
-    }
-    return 0;
-}
-
-std::string MalzemeListItem::getMetric() const
-{
-    auto val = this->element(Key::AKIS::MALZEMELIST::metric);
-    if( val ){
-        return val.value().view().get_string().value.data();
-    }
-    return "";
-}
 
 
 } // namespace TodoList

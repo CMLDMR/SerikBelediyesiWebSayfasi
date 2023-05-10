@@ -95,14 +95,11 @@ WPushButton* ContainerWidget::askConfirm(const std::string &question)
 {
     auto mDialog = wApp->instance()->root()->addChild (cpp14::make_unique<WDialog>());
 
-
     mDialog->titleBar ()->addWidget (cpp14::make_unique<WText>("?"));
     mDialog->titleBar ()->addStyleClass (Bootstrap::ContextualBackGround::bg_primary);
 
-
     mDialog->contents ()->addWidget (cpp14::make_unique<WText>(question));
     mDialog->contents ()->addStyleClass (Bootstrap::ContextualBackGround::bg_info);
-
 
     auto yesBtn = mDialog->footer ()->addWidget (cpp14::make_unique<WPushButton>("Evet"));
     yesBtn->addStyleClass (Bootstrap::Button::Primary);

@@ -22,11 +22,13 @@ include_directories("C:/SerikBLDCoreRelease/MSVC2022x64noBoost/include/bilgiEdin
 
 file(GLOB_RECURSE HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+file(GLOB_RECURSE RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.qrc)
 
 
 add_executable(SerikBelediyesiWebSayfasi
     ${HEADERS}
     ${SOURCES}
+    ${RESOURCES}
 )
 
 target_include_directories(SerikBelediyesiWebSayfasi PUBLIC "C:/Mongo/mongo-msvc2022x64-noBoost/include")

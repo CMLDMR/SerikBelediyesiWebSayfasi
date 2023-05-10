@@ -19,6 +19,8 @@
 #include <QDir>
 #include <QCryptographicHash>
 
+#include "SerikBelediyesiWebSayfasi/widget/cssbuilder.h"
+#include "SerikBelediyesiWebSayfasi/widget/css/button.h"
 
 
 MainApplication::MainApplication(const Wt::WEnvironment &env)
@@ -31,9 +33,11 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
 
     Wt::WApplication::instance()->setTitle("Serik Belediyesi Resmi Web Sayfası");
     Wt::WApplication::instance()->addMetaLink("icon/20180126113337667.ico","shortcut icon","","","image/x-icon","16x16",false);
-//    this->bakim("Şuanda Bakım Aşamasında...");
-//    return;
 
+
+    for( const auto &cssItem : Widget::CSSBuilder::instance()->getCSSPathList() ){
+        WApplication::useStyleSheet(WLink(cssItem));
+    }
 
 
 //    try {
@@ -72,7 +76,7 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
     WApplication::useStyleSheet(WLink("css/nost.css"));
     WApplication::useStyleSheet(WLink("css/CSSCustom.css"));
     WApplication::useStyleSheet(WLink("css/newDialog.css"));
-    wApp->useStyleSheet(WLink("css/taskmanager.css"));
+    WApplication::useStyleSheet(WLink("css/taskmanager.css"));
 
 
     Wt::WApplication::instance()->useStyleSheet("resources/themes/bootstrap/3/bootstrap-theme.min.css");
@@ -103,6 +107,9 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
 
     WApplication::instance()->addMetaHeader("viewport","width=device-width, initial-scale=1.0");
     wApp->require("http://www.openlayers.org/api/OpenLayers.js");
+
+
+
 
 
 

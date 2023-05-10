@@ -10,7 +10,9 @@
 
 #include "SerikBelediyesiWebSayfasi/srcV2/device/resimitem.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/device/aciklamaitem.h"
-#include "SerikBelediyesiWebSayfasi/srcV2/device/teklifitem.h"
+//#include "SerikBelediyesiWebSayfasi/srcV2/device/malzeme/teklifitem.h"
+
+#include "SerikBelediyesiWebSayfasi/widget/css/button.h"
 
 #include "personelmanager.h"
 
@@ -410,11 +412,7 @@ void TaskManager::loadTask(const std::string &taskoid)
         hLayout->addWidget(std::move(malzemeEkleBtn));
 
 
-        auto teklifEkleBtn = createSmallButton("Teklif Ekle+");
-        teklifEkleBtn->clicked().connect([=](){
-            this->assignTeklif(taskoid);
-        });
-        hLayout->addWidget(std::move(teklifEkleBtn));
+
 
         auto aciklamaBtn = createSmallButton("Açıklama Ekle+");
             aciklamaBtn->clicked().connect([=](){
@@ -697,45 +695,6 @@ void TaskManager::assignAciklama(const std::string &taskOid)
     mDialog->show();
 }
 
-void TaskManager::assignTeklif(const std::string &taskOid)
-{
-
-    //TODO: Teklif Veren Firma adı ve Verdiği Teklif Girilecek
-    auto mDialog = createFlatDialog("Teklif Ekle",false);
-
-
-
-
-    auto aciklamaTextBox = mDialog->Content()->addWidget(cpp14::make_unique<WTextArea>());
-    aciklamaTextBox->addStyleClass(Bootstrap::Grid::col_full_12);
-    aciklamaTextBox->setHeight(150);
-    aciklamaTextBox->setPlaceholderText("Açıklama Metni Giriniz!");
-
-
-    mDialog->Accepted().connect([=](){
-        TeklifItem subItem;
-        subItem.setAciklama(aciklamaTextBox->text().toUTF8());
-        subItem.setPersonel(this->mUser->oid().value().to_string(),this->mUser->AdSoyad());
-
-        TaskItem taskItem;
-        taskItem.setOid(taskOid);
-
-        auto upt = this->pushValue(taskItem,Key::akis,subItem.view());
-        if( upt ){
-            this->loadTask(taskOid);
-            this->removeDialog(mDialog);
-        }else{
-            this->showPopUpMessage(this->getLastError().toStdString(),"warn");
-        }
-    });
-
-    mDialog->Rejected().connect([=](){
-        this->removeDialog(mDialog);
-    });
-
-
-    mDialog->show();
-}
 
 void TaskManager::assignMalzeme(const std::string &taskOid)
 {
@@ -889,10 +848,8 @@ void TaskManager::reListMalzeme(WContainerWidget *mMalzemeListContainer, QList<M
 
 std::unique_ptr<WContainerWidget> TaskManager::createSmallButton(const std::string &name)
 {
-    auto container = std::make_unique<WContainerWidget>();
-    container->addNew<WText>(name);
-    container->setAttributeValue(Style::style,Style::background::color::rgb(this->getRandom(180,200),this->getRandom(180,200),this->getRandom(180,200))+Style::color::color(Style::color::Grey::Black));
-    container->addStyleClass(CSSStyle::Radius::radius3px+CSSStyle::Shadows::shadow8px);
+    auto container = std::make_unique<Widget::Button::Default>(name);
+    container->addStyleClass(CSSStyle::Shadows::shadow8px);
     container->decorationStyle().setCursor(Cursor::PointingHand);
     container->setPadding(2,Side::Left|Side::Right);
     return container;
@@ -1093,18 +1050,6 @@ void TaskItemWidget::initWidget()
 
     if( malzemeItem != std::end(list) ){
         auto container = mMalzemeListContainer->addNew<MalzemeItem>(*malzemeItem);
-        container->setUser(mUser);
-        container->setTaskItemOid(this->oid().value().to_string());
-        container->addStyleClass(Bootstrap::Grid::col_full_12);
-        container->initWidget();
-    }
-
-    auto teklifItem = std::find_if(list.begin(),list.end(),[=](const BaseItem &item){
-        return item.getType() == BaseItem::Type::TEKLIF;
-    });
-
-    if( teklifItem != std::end(list) ){
-        auto container = mMalzemeListContainer->addNew<TeklifItem>(*teklifItem);
         container->setUser(mUser);
         container->setTaskItemOid(this->oid().value().to_string());
         container->addStyleClass(Bootstrap::Grid::col_full_12);
