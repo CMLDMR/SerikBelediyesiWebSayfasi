@@ -4,6 +4,7 @@
 #include "SerikBelediyesiWebSayfasi/srcV2/device/taskitem.h"
 
 #include "SerikBelediyesiWebSayfasi/widget/css/button.h"
+#include "SerikBelediyesiWebSayfasi/widget/stylesheet.h"
 
 namespace TodoList {
 
@@ -305,44 +306,49 @@ void MalzemeItem::addTeklif()
 
 
 
-    auto vLayout = mDialog->Content()->setLayout(std::make_unique<WVBoxLayout>());
+//    auto vLayout = mDialog->Content()->setLayout(std::make_unique<WVBoxLayout>());
 
-    auto container = vLayout->addWidget(std::make_unique<WContainerWidget>());
+//    auto container = vLayout->addWidget(std::make_unique<WContainerWidget>());
 
-    auto gLayout = container->setLayout(std::make_unique<WGridLayout>());
-//    gLayout->setRowStretch(0,1);
-    gLayout->setDefaultImplementation(LayoutImplementation::Flex);
-    gLayout->setPreferredImplementation(LayoutImplementation::Flex);
+//    auto gLayout = container->setLayout(std::make_unique<WGridLayout>());
+//    gLayout->setDefaultImplementation(LayoutImplementation::Flex);
+//    gLayout->setPreferredImplementation(LayoutImplementation::Flex);
 
-    auto text = gLayout->addWidget(std::make_unique<WText>("Firma Adı"),0,0,AlignmentFlag::Center);
-//                text->setAttributeValue(Style::style,"display:flex;");
-//    text->setTextAlignment(AlignmentFlag::Center);
-        auto firmaComboBox = gLayout->addWidget(std::make_unique<WLineEdit>(),0,1,AlignmentFlag::Center);
+//    auto text = gLayout->addWidget(std::make_unique<WText>("Firma Adı"),0,0,AlignmentFlag::Center);
+//        auto firmaComboBox = gLayout->addWidget(std::make_unique<WLineEdit>(),0,1,AlignmentFlag::Center);
 
-    firmaComboBox->setPlaceholderText("Firma Adını Giriniz");
-//    firmaComboBox->setMaximumSize(250,WLength::Auto);
+//    firmaComboBox->setPlaceholderText("Firma Adını Giriniz");
+//    auto text1 = gLayout->addWidget(std::make_unique<WText>("Fiyat"),1,0,AlignmentFlag::Justify);
 
-    auto text1 = gLayout->addWidget(std::make_unique<WText>("Fiyat"),1,0,AlignmentFlag::Justify);
-//    text1->setAttributeValue(Style::style,"dislplay:flex;");;
+//    auto fiyatSpinBox = gLayout->addWidget(std::make_unique<WSpinBox>(),1,1,AlignmentFlag::Center);
+//    fiyatSpinBox->setRange(1,99999999);
 
-    auto fiyatSpinBox = gLayout->addWidget(std::make_unique<WSpinBox>(),1,1,AlignmentFlag::Center);
-    fiyatSpinBox->setRange(1,99999999);
-//    fiyatSpinBox->setMaximumSize(250,WLength::Auto);
-
-
-
-
-    auto fileUploader = vLayout->addWidget(std::make_unique<FileUploaderWidget>("Teklif Yükle"));
-    fileUploader->setType(FileUploaderWidget::FilterType::Image);
+//    auto fileUploader = vLayout->addWidget(std::make_unique<FileUploaderWidget>("Teklif Yükle"));
+//    fileUploader->setType(FileUploaderWidget::FilterType::Image);
 
 
     mDialog->Accepted().connect([=](){
+
 
     });
 
     mDialog->Rejected().connect([=](){
 
+
     });
+
+
+    auto testContainer = mDialog->Content()->addWidget(std::make_unique<WContainerWidget>());
+
+
+//    auto styleRule = std::make_unique<Wt::WCssTextRule>(".testItem", "background-color: green;height: 100px; width: 100px; cursor: pointer;");
+    auto rule = Widget::StyleSheet::StyleSheet("test");
+    rule.installStyle();
+//    Wt::WApplication::instance()->styleSheet().addRule(std::move(rule.getRule()));
+//    Wt::WApplication::instance()->styleSheet().addRule(std::move(rule.getHover()));
+
+    testContainer->addStyleClass(rule.selector());
+
 
 
     mDialog->show();
