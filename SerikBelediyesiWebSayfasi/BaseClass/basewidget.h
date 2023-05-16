@@ -78,7 +78,6 @@
 #include "inlinestyle.h"
 #include "mongoheaders.h"
 #include "serikbeltr.h"
-#include "SerikBelediyesiWebSayfasi/chart/donutchart.h"
 
 #include <iostream>
 #include <memory>
