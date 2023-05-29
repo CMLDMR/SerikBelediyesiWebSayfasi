@@ -334,44 +334,58 @@ void MainApplication::init()
     root()->addStyleClass("rootBody");
 
 //     Afis Ön Görsel
-        if( false ){
+    if( QDate::currentDate().toJulianDay() <= QDate(2023,5,31).toJulianDay() ){
 
-            auto container = root()->addWidget(cpp14::make_unique<WContainerWidget>());
+        auto container = root()->addWidget(cpp14::make_unique<WContainerWidget>());
 
-            container->setWidth(WLength("100%"));
-            container->setHeight(WLength("100%"));
-            container->setPositionScheme(PositionScheme::Fixed);
-            container->setAttributeValue(Style::style,Style::background::color::rgba(0,0,0,0.75));
-            container->setZIndex(1000);
+        container->setWidth(WLength("100%"));
+        container->setHeight(WLength("100%"));
+        container->setPositionScheme(PositionScheme::Fixed);
+        container->setAttributeValue(Style::style,Style::background::color::rgba(0,0,0,0.75));
+        container->setZIndex(1000);
 
-            auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
-            _container->setWidth(WLength("100%"));
-            _container->setHeight(WLength("100%"));
-            _container->setPositionScheme(PositionScheme::Fixed);
+        auto _container = container->addWidget(cpp14::make_unique<WContainerWidget>());
+        _container->setWidth(WLength("100%"));
+        _container->setHeight(WLength("100%"));
+        _container->setPositionScheme(PositionScheme::Fixed);
 
-            _container->setZIndex(1000);
+        _container->setZIndex(1000);
+        _container->setContentAlignment(AlignmentFlag::Center);
 
 
-            {
-                _container->setContentAlignment (AlignmentFlag::Center);
-                _container->setPadding (50,Side::Top);
-                auto mContainer = _container->addWidget(cpp14::make_unique<WContainerWidget>());
-                mContainer->setPositionScheme (PositionScheme::Relative);
-                mContainer->setContentAlignment(AlignmentFlag::Center);
-                mContainer->setMaximumSize(1024,WLength::Auto);
-                mContainer->setHeight (512);
-//                mContainer->addStyleClass ("boxShadow boxRadius");
-                mContainer->setAttributeValue(Style::style,Style::background::url("img/18mart.jpg")+
-                                              Style::background::size::contain+
-                                              Style::background::position::center_center+
-                                              Style::background::repeat::norepeat);
+        {
+            _container->setContentAlignment (AlignmentFlag::Center);
+            _container->setPadding (50,Side::Top);
+            auto mContainer = _container->addWidget(cpp14::make_unique<WContainerWidget>());
+            mContainer->setPositionScheme (PositionScheme::Relative);
+            mContainer->setContentAlignment(AlignmentFlag::Center);
+            mContainer->setMaximumSize(1024,WLength::Auto);
+            mContainer->setHeight (512);
+            //                mContainer->addStyleClass ("boxShadow boxRadius");
+            mContainer->setAttributeValue(Style::style,Style::background::url("img/yapilandirma.jpg")+
+                                                            Style::background::size::contain+
+                                                            Style::background::position::center_center+
+                                                            Style::background::repeat::norepeat);
 
-            }
-
-            container->clicked().connect([=](){
-               root()->removeWidget(container);
-            });
         }
+
+        {
+            auto mContainer = _container->addWidget(cpp14::make_unique<WText>("<h2>Ana Sayfa İçin Tıklayınız</h2>"));
+            mContainer->setPositionScheme (PositionScheme::Relative);
+            mContainer->setTextAlignment(AlignmentFlag::Center);
+            //                mContainer->setMaximumSize(1024,WLength::Auto);
+            mContainer->setHeight (50);
+            mContainer->setMargin(25,Side::Top);
+            mContainer->setAttributeValue(Style::style,Style::color::color("white"));
+            mContainer->decorationStyle().setCursor(Cursor::PointingHand);
+
+        }
+
+
+        container->clicked().connect([=](){
+            root()->removeWidget(container);
+        });
+    }
 
 
 //    std::cout << "\n" << QDate(2021,9,31).toJulianDay() << " " << QDate::currentDate().toJulianDay() << "\n";
