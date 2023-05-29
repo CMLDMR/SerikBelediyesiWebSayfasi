@@ -82,6 +82,12 @@ private:
     Signal<NoClass> _Yonetim;
 
 
+    WContainerWidget* bContainer;
+    WContainerWidget* createButton( const std::string &btnName );
+    const std::string bootsrapString = Bootstrap::Grid::Large::col_lg_3 + Bootstrap::Grid::Medium::col_md_3 + Bootstrap::Grid::Small::col_sm_4 + Bootstrap::Grid::ExtraSmall::col_xs_4;
+    const int mHeight = 100;
+    const int mWidth = 100;
+
 };
 
 #endif // MAINPAGECONTROLLER_H
