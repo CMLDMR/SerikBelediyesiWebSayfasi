@@ -52,7 +52,6 @@ MainApplication::MainApplication(const Wt::WEnvironment &env)
     db = mClient->database(SBLDKeys::DB);
     Bucket = db.gridfs_bucket();
 
-
     p_wtTheme = std::make_shared<Wt::WBootstrapTheme>();
 
     p_wtTheme->setVersion(Wt::WBootstrapTheme::Version::v3);
@@ -751,6 +750,147 @@ void MainApplication::bakim(const std::string &message)
 
 
     return;
+}
+
+void MainApplication::deleteOldCollectionandFiles()
+{
+
+
+    auto collection = db.collection("Çalışmalar");
+
+
+    auto filter = document{};
+
+    SerikBLDCore::TalepManager* dManager = new SerikBLDCore::TalepManager(&this->db);
+
+    SerikBLDCore::DB* mDB = new SerikBLDCore::DB(&this->db);
+
+
+    QDir dir;
+
+    dir.mkdir("Fold");
+
+    dir.cd("Fold");
+
+
+
+    try {
+        auto cursor = collection.find(filter.view());
+
+        int coutner = 0;
+        for( auto &item : cursor ){
+            bool willDelete = true;
+            std::string oid = item["_id"].get_oid().value.to_string();
+            std::vector<std::string> fList;
+//            if( coutner == 0 ){
+//                std::cout << bsoncxx::to_json(item) << "\n";
+
+                auto datestr = QDate::fromJulianDay(item["Başlama Tarihi"].get_int64().value).toString("dd-MMM-yyyy");
+
+                dir.mkdir(QString("%1-").arg(datestr)+item["_id"].get_oid().value.to_string().c_str());
+
+                auto path = QString("Fold/%1-").arg(datestr)+item["_id"].get_oid().value.to_string().c_str()+QString("/");
+                QFile file(path+QString("%1.txt").arg(item["Başlama Tarihi"].get_int64().value));
+
+                if( file.open(QIODevice::ReadWrite) ){
+
+                    file.write(bsoncxx::to_json(item).c_str());
+                    file.close();
+
+                    if( fileExist(item["Küçük Resim"].get_oid().value.to_string()) ){
+                        auto str = mDB->downloadFile(item["Küçük Resim"].get_oid().value.to_string().c_str());
+                        QFileInfo inf(str.c_str());
+                        std::cout << "Kucuk Resim: OBJID: " << item["Küçük Resim"].get_oid().value.to_string().c_str() << " " << str <<"\n";
+                        if ( QFile::copy(str.c_str(),path+inf.fileName()) ){
+                            fList.push_back(item["Küçük Resim"].get_oid().value.to_string());
+                        }else{
+                            willDelete = false;
+                        }
+                    }else{
+                        willDelete = false;
+                    }
+
+                    try {
+                        auto asama = item["Aşama"].get_array().value;
+
+                                     for( auto _item : asama ){
+                            auto obj = _item.get_document().value;
+                            auto gorseller = obj["Görseller"].get_array().value;
+
+                                             for( auto _resimid : gorseller ){
+
+                                if( fileExist(_resimid.get_oid().value.to_string()) ){
+                                    auto str = mDB->downloadFile(_resimid.get_oid().value.to_string().c_str());
+                                    QFileInfo inf(str.c_str());
+                                    std::cout << "OBJID: " << _resimid.get_oid().value.to_string() << " " << str <<"\n";
+                                    if ( QFile::copy(str.c_str(),path+inf.fileName()) ){
+                                        fList.push_back(_resimid.get_oid().value.to_string());
+                                    }else{
+                                        willDelete = false;
+                                    }
+                                }else{
+                                    willDelete = false;
+                                }
+
+                            }
+                        }
+                    } catch (bsoncxx::exception &e) {
+                        std::cout << "Error: " << e.what() << " Aşama\n";
+                    }
+
+
+
+                }else{
+                    willDelete = false;
+                }
+
+                if( willDelete ){
+//                    SerikBLDCore::Item delItem("Çalışmalar");
+//                    delItem.setOid(oid);
+//                    auto delRes = mDB->deleteItem(delItem);
+//                    if( delRes ){
+//                                         if( delRes.value().deleted_count() ){
+
+//                                         }
+//                    }
+
+                    for( const auto &fileOid : fList ){
+                                         std::cout << coutner << " Delete: " << mDB->deleteGridFS(fileOid.c_str()) << "\n";
+                    }
+
+                }
+
+//            }
+            coutner++;
+        }
+        std::cout << "Coutn: " << coutner << "\n";
+    } catch (mongocxx::exception &e) {
+        std::cout << "Error: " << e.what() << std::endl;
+    }
+
+    try {
+        filter.append(kvp("Küçük Resim",bsoncxx::oid{"5cb58d2c91935621ac004a8a"}));
+    } catch (bsoncxx::exception &e) {
+        std::cout << "filter Error: " << e.what() << std::endl;
+    }
+
+
+
+}
+
+bool MainApplication::fileExist(const std::string &fileOid)
+{
+
+    auto fileFilter = document{};
+    fileFilter.append(kvp("_id",bsoncxx::oid{fileOid}));
+    auto fileCursor = Bucket.find(fileFilter.view());
+    bool ecist = false;
+    for( const auto &___item : fileCursor ){
+        ecist = true;
+    }
+
+    return ecist;
+
 }
 
 
