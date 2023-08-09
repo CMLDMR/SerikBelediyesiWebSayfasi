@@ -334,7 +334,7 @@ void MainApplication::init()
     root()->addStyleClass("rootBody");
 
 //     Afis Ön Görsel
-    if( QDate::currentDate().toJulianDay() <= QDate(2023,5,31).toJulianDay() ){
+    if( QDate::currentDate().toJulianDay() <= QDate(2023,6,30).toJulianDay() ){
 
         auto container = root()->addWidget(cpp14::make_unique<WContainerWidget>());
 
