@@ -78,6 +78,14 @@ private:
 
 
 
+    ///
+    void deleteOldCollectionandFiles();
+
+    bool fileExist( const std::string &fileOid );
+
+
+
+
 
 };
 
