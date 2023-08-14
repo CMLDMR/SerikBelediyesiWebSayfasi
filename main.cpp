@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
 
     mongocxx::instance ins{};
 
-    std::cout << __cplusplus << "\n";
+    std::cout << "C++ Ver: "<< __cplusplus << "\n";
 
 
 //    try {

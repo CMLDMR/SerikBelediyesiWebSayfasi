@@ -9,6 +9,7 @@
 #include "SerikBelediyesiWebSayfasi/srcV2/bilgiislem/firewallcontainer.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/duyuruyonetim.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/stok/stokcontainerwidget.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/karavan/karavancontrolwidget.h"
 
 v2::BirimIsleriContainer::BirimIsleriContainer(SerikBLDCore::User *_user)
     :ContainerWidget ("Birim İşleri"),mUser(_user)
@@ -41,6 +42,13 @@ v2::BirimIsleriContainer::BirimIsleriContainer(SerikBLDCore::User *_user)
             Content ()->addWidget (cpp14::make_unique<v2::Duyuru::DuyuruYonetim>(this->mUser->getDB()));
         } );
         Header ()->addWidget (std::move(menuDuyuruItem));
+
+        auto menuKaravanItem = createMenu ( "Karavan" , Cursor::PointingHand );
+        menuKaravanItem->clicked ().connect ( [=](){
+            Content ()->clear ();
+            Content ()->addWidget (cpp14::make_unique<v2::Karavan::MainWidget>(this->mUser));
+        } );
+        Header ()->addWidget (std::move(menuKaravanItem));
     }
 
     //Çalışma Yönetimi
@@ -158,6 +166,12 @@ void v2::BirimIsleriContainer::initFireWallLog()
 }
 
 void v2::BirimIsleriContainer::initStok()
+{
+    this->Content ()->clear ();
+    this->Content ()->addWidget (Wt::cpp14::make_unique<v2::StokWidget::StokContainerWidget>(mUser));
+}
+
+void v2::BirimIsleriContainer::initKaravanYonetim()
 {
     this->Content ()->clear ();
     this->Content ()->addWidget (Wt::cpp14::make_unique<v2::StokWidget::StokContainerWidget>(mUser));
