@@ -29,6 +29,8 @@ public:
 
     void initStok();
 
+    void initKaravanYonetim();
+
 private:
     SerikBLDCore::User* mUser;
 

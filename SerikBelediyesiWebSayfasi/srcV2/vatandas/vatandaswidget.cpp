@@ -7,13 +7,8 @@ VatandasWidget::VatandasWidget(SerikBLDCore::DB *db, SerikBLDCore::TC *tc)
       SerikBLDCore::TCManager (db),
       mTC(tc)
 {
-
     mEnableEdit = true;
-
     this->initTC ();
-
-
-
 }
 
 void VatandasWidget::initChangeTC()
@@ -44,7 +39,7 @@ void VatandasWidget::initChangeTC()
     mahalleComboBox->setWidth (WLength("100%"));
     auto mahList = this->getMahalleler ();
     int __currentMahalle = 0;
-    for( auto item : mahList )
+    for( const auto &item : mahList )
     {
         mahalleComboBox->addItem (item.toStdString ());
     }
@@ -180,10 +175,15 @@ void VatandasWidget::initTC()
 
     }
 
+    this->Footer()->clear();
+
+    LOG << "EnableEdit: " << mEnableEdit << "\n";
     if( mEnableEdit ){
         auto mSvBtn = this->Footer ()->addWidget (cpp14::make_unique<WPushButton>("Bilgileri Değiştir"));
         mSvBtn->addStyleClass (Bootstrap::Button::Primary);
         mSvBtn->clicked ().connect ( this , &VatandasWidget::initChangeTC );
+    }else{
+
     }
 }
 
