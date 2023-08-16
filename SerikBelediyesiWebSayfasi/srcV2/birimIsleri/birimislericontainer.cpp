@@ -78,6 +78,17 @@ v2::BirimIsleriContainer::BirimIsleriContainer(SerikBLDCore::User *_user)
         Header ()->addWidget (std::move(menuFirma));
     }
 
+    //GALERI
+    if( this->mUser->Birimi () == "Zabıta Müdürlüğü" ){
+
+        auto menuKaravanItem = createMenu ( "Karavan" , Cursor::PointingHand );
+        menuKaravanItem->clicked ().connect ( [=](){
+            Content ()->clear ();
+            Content ()->addWidget (cpp14::make_unique<v2::Karavan::MainWidget>(this->mUser));
+        } );
+        Header ()->addWidget (std::move(menuKaravanItem));
+    }
+
 }
 
 void v2::BirimIsleriContainer::initFirmaYonetimi()
