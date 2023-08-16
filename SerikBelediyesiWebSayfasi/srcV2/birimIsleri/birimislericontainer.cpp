@@ -78,7 +78,7 @@ v2::BirimIsleriContainer::BirimIsleriContainer(SerikBLDCore::User *_user)
         Header ()->addWidget (std::move(menuFirma));
     }
 
-    //GALERI
+    //KARAVAN
     if( this->mUser->Birimi () == "Zabıta Müdürlüğü" ){
 
         auto menuKaravanItem = createMenu ( "Karavan" , Cursor::PointingHand );
