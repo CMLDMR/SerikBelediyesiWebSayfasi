@@ -128,6 +128,15 @@ HeaderPage::HeaderPage()
                            _MeclisUyeleriPage.emit(NoClass());
                         });
                     }
+
+                    {
+                        auto _pC = popContainer->addWidget (cpp14::make_unique<WContainerWidget>());
+                        _pC->addStyleClass ("headerItem");
+                        _pC->addWidget (cpp14::make_unique<WText>("KVKK"));
+                        _pC->clicked().connect([=](){
+                           _MeclisUyeleriPage.emit(NoClass());
+                        });
+                    }
                 }
 
 

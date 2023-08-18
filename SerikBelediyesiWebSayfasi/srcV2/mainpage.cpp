@@ -6,6 +6,7 @@
 #include "SerikBelediyesiWebSayfasi/srcV2/externalWidget/nobetcieczanewidget.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/talepler/talepwidget.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/externalWidget/haritawidget.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/kvkk/kvkkcontainer.h"
 
 #include "meclis/meclispage.h"
 #include "meclis/meclispublicpage.h"
@@ -47,6 +48,7 @@ MainPage::MainPage(mongocxx::database *_db)
     header->ClickBaskan().connect(this,&MainPage::initBaskan);
     header->ClickBaskanYrd ().connect(this,&MainPage::initBaskanYardimcilari);
     header->ClickMeclisUyeleri ().connect(this,&MainPage::initMeclisUyeleri);
+    header->ClickMeclisUyeleri ().connect(this,&MainPage::initKVKK);
 
     footer = addWidget(cpp14::make_unique<Footer::Footer>());
 
@@ -83,27 +85,7 @@ void MainPage::init()
 
     mContentWidget->clear();
 
-    //    auto slider = mContentWidget->addWidget(cpp14::make_unique<Slider>(this->getDB()));
-    //    slider->setPositionScheme(PositionScheme::Absolute);
-    //    slider->setWidth(WLength("100%"));
-    //    slider->setAttributeValue(Style::style,"z-index:-1;");
-    //    slider->setId("sliderid");
-    //    slider->setHeight(768);
-
     mContentWidget->setContentAlignment(AlignmentFlag::Center);
-
-    //     Meclis Canlı Yayın
-    //    {
-    //        auto container = mContentWidget->addWidget(cpp14::make_unique<WContainerWidget>());
-    //        container->setPadding(90,Side::Top);
-    //        container->setContentAlignment(AlignmentFlag::Center);
-    //        auto text = container->addWidget(cpp14::make_unique<WText>("<h2>Meclis Canlı Yayın</b>",TextFormat::UnsafeXHTML));
-    //        text->setAttributeValue(Style::style,Style::color::rgb("255,255,255"));
-    //    }
-
-    //    this->initMeclisCanliYayin();
-
-    //    <iframe width="1280" height="720" src="https://www.youtube.com/embed/IqWNR7X-fvk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
     auto rContainer = mContentWidget->addWidget(cpp14::make_unique<WContainerWidget>());
     rContainer->addStyleClass(Bootstrap::Grid::row);
@@ -130,31 +112,7 @@ void MainPage::init()
         controller->ClickNostSerik().connect(this,&MainPage::initNostSerik);
         controller->ClickYonetim().connect(this,&MainPage::initBaskanYardimcilari);
 
-
     }
-
-
-//    //
-//    if( QDate::currentDate() < QDate(2022,05,2)){
-//        auto losevContainer = mContentWidget->addWidget(cpp14::make_unique<WContainerWidget>());
-//        losevContainer->setWidth(WLength("100%"));
-//        losevContainer->setHeight(90);
-//        losevContainer->setAttributeValue(Style::style,Style::background::color::color(Style::color::White::AliceBlue));
-//        losevContainer->setMargin(25,Side::Top);
-//        losevContainer->setAttributeValue("href","https://www.losev.org.tr/ramazan");
-//        losevContainer->setAttributeValue("title","Bağış için tıklayınız...");
-//        losevContainer->setAttributeValue("target","_blank");
-//        losevContainer->setAttributeValue(Style::style,Style::background::url("http://www.losev.org.tr/filesfordownload/2022/ramazan/banner/980x90_losev_ramazan_banner_2022.gif")+
-//                                          Style::background::size::contain+
-//                                          Style::background::repeat::norepeat+
-//                                          Style::background::position::center_center);
-//        losevContainer->decorationStyle().setCursor(Cursor::PointingHand);
-//        losevContainer->clicked().connect([=](){
-//           this->doJavaScript("window.open('https://www.losev.org.tr/ramazan', '_blank').focus();");
-//        });
-//        //<a href="https://www.losev.org.tr/ramazan" title="Bağış için tıklayınız..." target="_blank"><img src="http://www.losev.org.tr/filesfordownload/2022/ramazan/banner/1000x130_losev_ramazan_banner_2022.gif" width="" height="" /></a>
-//        // <a href="https://www.losev.org.tr/ramazan" title="Bağış için tıklayınız..." target="_blank"><img src="http://www.losev.org.tr/filesfordownload/2022/ramazan/banner/980x90_losev_ramazan_banner_2022.gif" width="" height="" /></a>
-//    }
 
 }
 
@@ -547,6 +505,14 @@ void MainPage::initNostSerik()
 
 //    mContentWidget->clear();
     [[maybe_unused]] auto widget = mContentWidget->addWidget(cpp14::make_unique<v2::NostSerik>(new SerikBLDCore::DB(this->getDB())));
+//    widget->setMaximumSize(1024,WLength::Auto);
+    //    footer->removeStyleClass("footerStickAbsolute");
+}
+
+void MainPage::initKVKK()
+{
+    mContentWidget->clear ();
+    [[maybe_unused]] auto widget = mContentWidget->addWidget(cpp14::make_unique<v2::KVKK::KVKKContainer>());
 //    widget->setMaximumSize(1024,WLength::Auto);
 //    footer->removeStyleClass("footerStickAbsolute");
 }

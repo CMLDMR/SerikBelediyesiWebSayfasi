@@ -18,10 +18,8 @@
 #include <Wt/WLink.h>
 
 #include <Wt/WMessageBox.h>
-#include "SerikBelediyesiWebSayfasi/BaseClass/containerwiget.h"
 
-#include "bootstrap.h"
-#include "inlinestyle.h"
+
 
 #include <iostream>
 #include <memory>
@@ -36,7 +34,6 @@ namespace Footer {
     public:
         Footer();
 
-        void showMessage( std::string title , std::string msg );
 
 
         double getWidth() const;
