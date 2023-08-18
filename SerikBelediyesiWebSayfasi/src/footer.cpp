@@ -1,4 +1,8 @@
 #include "footer.h"
+#include "bootstrap.h"
+#include "inlinestyle.h"
+#include "SerikBelediyesiWebSayfasi/BaseClass/containerwiget.h"
+
 
 Footer::Footer::Footer()
 {
@@ -6,6 +10,8 @@ Footer::Footer::Footer()
 //    setPositionScheme(PositionScheme::Absolute);
 //    setOffsets(0,Side::Bottom);
 //    setWidth(WLength("100%"));
+
+    this->addStyleClass(Bootstrap::Grid::col_full_12);
 
     auto mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
     mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
@@ -83,38 +89,12 @@ Footer::Footer::Footer()
             layout->addWidget(std::move(anchor));
         }
 
-//        {
-//            Wt::WLink link = Wt::WLink("https://github.com/CMLDMR/SerikBelediyesiWebSayfasi");
-//            link.setTarget(Wt::LinkTarget::NewWindow);
-
-//            std::unique_ptr<Wt::WAnchor> anchor =
-//                    Wt::cpp14::make_unique<Wt::WAnchor>(link,"gitHub");
-
-//            layout->addWidget(std::move(anchor));
-//        }
-
         layout->addWidget(cpp14::make_unique<WText>(QString("   yapım@%1.%2.%3.%4").arg (MAJOR).arg (MINOR).arg (REV).arg (COM).toStdString ()))->addStyleClass("footerText");
-
         layout->addStretch(1);
-
     }
-
 }
 
-void Footer::Footer::showMessage(std::string title, std::string msg)
-{
-    auto messageBox = this->addChild(
-                Wt::cpp14::make_unique<Wt::WMessageBox>
-                (title,
-                 msg,
-                 Wt::Icon::Information, Wt::StandardButton::Ok));
 
-    messageBox->buttonClicked().connect([=] {
-        this->removeChild(messageBox);
-    });
-
-    messageBox->show();
-}
 
 double Footer::Footer::getWidth() const
 {

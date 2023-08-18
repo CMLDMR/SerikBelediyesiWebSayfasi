@@ -48,6 +48,8 @@ public:
 
     void initNostSerik();
 
+    void initKVKK();
+
 
     JSignal<int,int> _signal;
 
