@@ -16,25 +16,24 @@ KVKKContainer::KVKKContainer()
 
     addLink("Belediye KVKK Politikası","kvkk/Belediye_KVKK_Politikasi.pdf");
     addLink("Belediye Aydınlatma Metni","kvkk/BelediyeAydinlatmaMetni.pdf");
-    addLink("Belediye Bilgi Güvenliği Politikası","kvkk/BelediyeBilgiGüvenligiPolitikasi.pdf");
+    addLink("Belediye Bilgi Güvenliği Politikası","kvkk/BelediyeBilgiGuvenligiPolitikasi.pdf");
     addLink("Belediye Kişisel Veri Saklama ve İmha Politikası","kvkk/BelediyeKisiselVeriSaklamaveimhaPolitikasi.pdf");
     addLink("Belediye Özel Nitelikli Kişisel Verilerin Korunması ve İşlenmesi Politikası","kvkk/BelediyeOzelNitelikliKisiselVerilerinKorunmasiveislenmesiPolitikasi.pdf");
-    addLink("Belediye Sosyal Medya Aydınlatma Metni","kvkk/Belediye_Sosyal_Medya_Aydinlatma_Metni.pdf.pdf");
+    addLink("Belediye Sosyal Medya Aydınlatma Metni","kvkk/Belediye_Sosyal_Medya_Aydinlatma_Metni.pdf");
 
-    addLink("Belediye- Veri İhlali Müdahale Politikası","kvkk/Belediye_KVKK_Politikası.pdf");
     addLink("Belediye Veri ihlali Müdahale Politikası","kvkk/Belediye_Veri_ihlali_Mudahale_Politikasi.pdf");
 
     addLink("Belediye-Kişisel Veri İhlali Disiplin Politikası","kvkk/Belediye_Kisisel_veri_ihlali_Disiplin_Politikasi.pdf");
 
     addLink("Bilgi Edinme Başvurusu İletişim Formu Aydınlatma Metni","kvkk/Bilgi_Edinme_Basvurusu_iletisim_Formu_Aydinlatma_Metni.pdf");
 
-    addLink("Çalışan Adayı Aydınlatma Metni","kvkk/Calisan_Adayi_Aydinlatma_Metni.pdf.pdf");
+    addLink("Çalışan Adayı Aydınlatma Metni","kvkk/Calisan_Adayi_Aydinlatma_Metni.pdf");
     addLink("Çalışan Aydınlatma Metni","kvkk/calisan_Aydinlatma_Metni.pdf");
     addLink("Çerez Politikası","kvkk/Cerez_Politikasi.pdf");
 
     addLink("Kamera Aydınlatma Metni","kvkk/Kamera_Aydinlatma_Metni.pdf");
     addLink("KVKK Başvuru Formu","kvkk/KVKK_Basvuru_Formu.pdf");
-    addLink("Talep ve Şikayet Formu Aydınlatma Metni","kvkk/Talep_ve_sikayet_Formu_Aydinlatma_Metni.pdf.pdf");
+    addLink("Talep ve Şikayet Formu Aydınlatma Metni","kvkk/Talep_ve_sikayet_Formu_Aydinlatma_Metni.pdf");
 
 }
 
