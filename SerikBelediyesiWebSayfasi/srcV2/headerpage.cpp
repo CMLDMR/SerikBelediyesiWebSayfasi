@@ -134,7 +134,7 @@ HeaderPage::HeaderPage()
                         _pC->addStyleClass ("headerItem");
                         _pC->addWidget (cpp14::make_unique<WText>("KVKK"));
                         _pC->clicked().connect([=](){
-                           _MeclisUyeleriPage.emit(NoClass());
+                           _kvkkMetinleri.emit(NoClass());
                         });
                     }
                 }
@@ -344,4 +344,9 @@ Signal<NoClass> &HeaderPage::ClickBaskanYrd()
 Signal<NoClass> &HeaderPage::ClickMeclisUyeleri()
 {
     return _MeclisUyeleriPage;
+}
+
+Signal<NoClass> &HeaderPage::ClickKvkkMetinleri()
+{
+    return _kvkkMetinleri;
 }
