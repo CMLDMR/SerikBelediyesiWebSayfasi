@@ -48,7 +48,7 @@ MainPage::MainPage(mongocxx::database *_db)
     header->ClickBaskan().connect(this,&MainPage::initBaskan);
     header->ClickBaskanYrd ().connect(this,&MainPage::initBaskanYardimcilari);
     header->ClickMeclisUyeleri ().connect(this,&MainPage::initMeclisUyeleri);
-    header->ClickMeclisUyeleri ().connect(this,&MainPage::initKVKK);
+    header->ClickKvkkMetinleri().connect(this,&MainPage::initKVKK);
 
     footer = addWidget(cpp14::make_unique<Footer::Footer>());
 

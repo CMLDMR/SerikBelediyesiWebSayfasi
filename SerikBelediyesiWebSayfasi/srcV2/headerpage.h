@@ -35,6 +35,9 @@ public:
 
     Signal<NoClass> &ClickMeclisUyeleri();
 
+    Signal<NoClass> &ClickKvkkMetinleri();
+
+
 private:
     Signal<NoClass> _Anasayfa;
 
@@ -61,6 +64,9 @@ private:
     Signal<NoClass> _baskanYrd;
 
     Signal<NoClass> _MeclisUyeleriPage;
+
+    Signal<NoClass> _kvkkMetinleri;
+
 
 };
 
