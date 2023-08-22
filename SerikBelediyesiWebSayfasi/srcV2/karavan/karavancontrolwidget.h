@@ -89,8 +89,12 @@ public:
 
     Signal<std::string> &silClicked();
 
+    Signal<std::string, std::string> &detailClicked();
+
 private:
     Signal<std::string> _silClicked;
+    Signal<std::string,std::string> _detailClicked;
+
 };
 
 

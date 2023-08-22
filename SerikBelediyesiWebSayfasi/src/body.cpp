@@ -4962,7 +4962,7 @@ void Body::Serik::Content::initContent()
         btn->clicked().connect([=](){
             if( value != "null" )
             {
-                this->selectedContent(value.toStdString());
+//                this->selectedContent(value.toStdString());
             }
         });
         btn->addStyleClass(CSSStyle::Button::blueButton);
