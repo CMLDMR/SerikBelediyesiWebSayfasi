@@ -4804,14 +4804,16 @@ void Body::Serik::Hakkinda::initPage()
     auto mMainContainer = addWidget(cpp14::make_unique<WContainerWidget>());
     mMainContainer->addStyleClass(Bootstrap::Grid::container_fluid);
     mMainContainer->setContentAlignment(AlignmentFlag::Center);
-    mMainContainer->setMargin(90,Side::Top);
-    mMainContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::Snow));
+//    mMainContainer->setMargin(90,Side::Top);
+    mMainContainer->setPadding(90,Side::Top);
+//    mMainContainer->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::Snow));
 
 
 
     auto row = mMainContainer->addWidget(cpp14::make_unique<WContainerWidget>());
     row->addStyleClass(Bootstrap::Grid::row);
     row->setMaximumSize(1270,WLength::Auto);
+    row->setAttributeValue (Style::style,Style::background::color::color (Style::color::White::Snow));
 
 
     {
@@ -4962,7 +4964,7 @@ void Body::Serik::Content::initContent()
         btn->clicked().connect([=](){
             if( value != "null" )
             {
-//                this->selectedContent(value.toStdString());
+                this->selectedContent(value.toStdString());
             }
         });
         btn->addStyleClass(CSSStyle::Button::blueButton);

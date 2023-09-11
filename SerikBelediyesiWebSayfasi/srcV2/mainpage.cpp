@@ -254,7 +254,6 @@ void MainPage::initHakkinda()
 
 
 
-
     auto widget = mContentWidget->addWidget(cpp14::make_unique<Body::Serik::Hakkinda>(this->getDB()->db()));
 
 //    auto widget = mContentWidget->addWidget(cpp14::make_unique<v2::Serik::Hakkinda>(/*this->getDB()->db()*/));
