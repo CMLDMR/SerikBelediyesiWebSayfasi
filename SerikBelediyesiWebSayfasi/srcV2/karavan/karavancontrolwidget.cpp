@@ -18,7 +18,6 @@ MainWidget::MainWidget(SerikBLDCore::User *_mUser)
     auto controller = this->Header()->addWidget(std::make_unique<KaravanControlWidget>());
     controller->saveClicked().connect([=](){
 
-
         v2::Karavan::KaravanItem item;
         item.setbaslangicDate(controller->getBaslangicDate());
         item.setbitisDate(controller->getBitisDate());
@@ -26,7 +25,6 @@ MainWidget::MainWidget(SerikBLDCore::User *_mUser)
         item.setTCNO(controller->getTCNO());
         item.setPersonelOid(_mUser->oid().value());
         item.setTelefon(controller->getTelefon());
-
 
         if( this->InsertItem(item).size() ){
             this->UpdateList(mSorguWidget->Filter());
@@ -93,9 +91,7 @@ MainWidget::MainWidget(SerikBLDCore::User *_mUser)
 
 KaravanControlWidget::KaravanControlWidget()
 {
-
     this->init();
-
 }
 
 void KaravanControlWidget::init(const std::string &tcno)
@@ -322,8 +318,16 @@ ListWidget::ListWidget(const int &index , const KaravanItem &item)
     auto plakaContainer = this->addNew<WText>(this->getPlakaNo());
     plakaContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_2+Bootstrap::Grid::Medium::col_md_2+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_3);
 
-    auto tcnoContainer = this->addNew<WText>(this->getTcNO());
+
+
+    auto tcnostr = QString::fromStdString(this->getTcNO()).mid(0,2) + "******"+ QString::fromStdString(this->getTcNO()).mid(this->getTcNO().size()-3,3);
+    auto tcnoContainer = this->addNew<WText>(tcnostr.toStdString());
     tcnoContainer->addStyleClass(bootStr);
+    tcnoContainer->decorationStyle().setCursor(Cursor::PointingHand);
+    tcnoContainer->setAttributeValue(Style::style,Style::background::color::color(Style::color::Pink::MediumVioletRed)+Style::color::color(Style::color::White::Snow));
+    tcnoContainer->clicked().connect([=](){
+        _detailClicked.emit(this->getTcNO(),this->getPlakaNo());
+    });
 
     auto telefonContainer = this->addNew<WText>(this->getTelefon());
     telefonContainer->addStyleClass(bootStr);
@@ -371,6 +375,11 @@ ListWidget::ListWidget(const int &index , const KaravanItem &item)
 Signal<std::string> &ListWidget::silClicked()
 {
     return _silClicked;
+}
+
+Signal<std::string, std::string> &ListWidget::detailClicked()
+{
+    return _detailClicked;
 }
 
 
@@ -466,6 +475,32 @@ void v2::Karavan::MainWidget::onList(const QVector<KaravanItem> *mlist)
 //            mDialog->show();
 //        });
 
+        container->detailClicked().connect([=]( const std::string &tcno , const std::string &plakaNo){
+
+
+            auto tckimlik = mTCManager->Load_byTCNO(tcno);
+
+
+            if( tckimlik.has_value() ){
+                auto mDialog = this->createDialog("TC Bilgileri");
+                auto vLayout = mDialog->contents()->setLayout(std::make_unique<WVBoxLayout>());
+
+                auto tcnostr = tckimlik.value()->TCNO().mid(0,2) + "******"+ tckimlik.value()->TCNO().mid(tckimlik.value()->TCNO().size()-3,3);
+
+                auto tcnoText = vLayout->addWidget(std::make_unique<WText>(tcnostr.toStdString()));
+                auto kimlikNoText = vLayout->addWidget(std::make_unique<WText>(tckimlik.value()->AdSoyad().toStdString()));
+                auto telefonNoText = vLayout->addWidget(std::make_unique<WText>(tckimlik.value()->CepTelefonu().toStdString()));
+                auto adrestext = vLayout->addWidget(std::make_unique<WText>(tckimlik.value()->TamAdres().toStdString()));
+                mDialog->show();
+            }else{
+                this->showPopUpMessage("TCNO Bulunamadı");
+            }
+
+
+
+
+
+        });
         container->silClicked().connect([=](const std::string &itemOid){
             auto okBtn = this->askConfirm("Silmek İstediğinize Eminmisiniz?");
             okBtn->clicked().connect([=](){

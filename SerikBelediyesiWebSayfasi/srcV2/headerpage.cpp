@@ -234,7 +234,8 @@ HeaderPage::HeaderPage()
 
                 std::unique_ptr<Wt::WAnchor> anchor =
                         Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                        "e-Belediye");
+                                        "<b style=\"background-color:orange;padding:6px;\">e-Belediye</b>");
+
                 auto text = layout->addWidget(std::move(anchor),0,AlignmentFlag::Center|AlignmentFlag::Middle);
                 text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::size::s14px);
             }

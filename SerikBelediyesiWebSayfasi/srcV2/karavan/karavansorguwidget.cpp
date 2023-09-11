@@ -6,8 +6,8 @@ namespace Karavan {
 KaravanSorguWidget::KaravanSorguWidget()
 {
 //    this->setMargin(5,Side::Top|Side::Bottom);
-    this->setMargin(25,Side::Top);
-this->setPadding(5,Side::Top|Side::Bottom);
+    this->setMargin(50,Side::Top);
+    this->setPadding(5,Side::Top|Side::Bottom);
 
     this->init();
 }
@@ -17,7 +17,7 @@ void KaravanSorguWidget::init()
 
     this->Content()->clear();
 
-    setAttributeValue(Style::style,Style::background::color::color(Style::color::Grey::LightGray));
+    setAttributeValue(Style::style,Style::background::color::color(Style::color::Grey::LightSlateGray));
 
     {
         auto _container = this->Content()->addWidget(std::make_unique<WContainerWidget>());

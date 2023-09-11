@@ -7,6 +7,7 @@
 #include "SerikBelediyesiWebSayfasi/srcV2/talepler/talepwidget.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/externalWidget/haritawidget.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/kvkk/kvkkcontainer.h"
+#include "SerikBelediyesiWebSayfasi/srcV2/serik/hakkinda.h"
 
 #include "meclis/meclispage.h"
 #include "meclis/meclispublicpage.h"
@@ -250,8 +251,15 @@ void MainPage::initMeclis()
 void MainPage::initHakkinda()
 {
     mContentWidget->clear();
+
+
+
     auto widget = mContentWidget->addWidget(cpp14::make_unique<Body::Serik::Hakkinda>(this->getDB()->db()));
-    widget->setMaximumSize(1024,WLength::Auto);
+
+//    auto widget = mContentWidget->addWidget(cpp14::make_unique<v2::Serik::Hakkinda>(/*this->getDB()->db()*/));
+
+
+    widget->setMaximumSize(1280,WLength::Auto);
     footer->removeStyleClass("footerStickAbsolute");
 }
 

@@ -56,12 +56,12 @@ MainPageController::MainPageController()
             });
         }
 
-        {
-            auto btn = createButton("BİLGİ EDİNME");
-            btn->clicked().connect([=](){
-                _BilgiEdinme.emit(NoClass());
-            });
-        }
+//        {
+//            auto btn = createButton("BİLGİ EDİNME");
+//            btn->clicked().connect([=](){
+//                _BilgiEdinme.emit(NoClass());
+//            });
+//        }
 
 
 
@@ -120,39 +120,34 @@ MainPageController::MainPageController()
             text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
         }
 
-        {
-            auto btn = createButton("GİRİŞ");
-            btn->clicked().connect([=](){
-                _Giris.emit(NoClass());
-            });
-        }
-
-        {   // e-BELEDİYE
-            auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
-            container->addStyleClass(bootsrapString);
-            container->addStyleClass(Bootstrap::Grid::Offset::Large::col_lg_3+Bootstrap::Grid::Offset::Medium::col_md_3);
-            container->setContentAlignment(AlignmentFlag::Center);
-            auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
-            btn->setAttributeValue(Style::style,Style::background::color::rgba(236,157,8,0.95)+Style::Border::border("1px solid white"));
-            btn->setHeight(mHeight);
-            btn->setWidth(mWidth);
-            btn->setMargin(15,AllSides);
-            //            btn->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
-            btn->addStyleClass(CSSStyle::Shadows::shadow8px);
 
 
-            auto layout = btn->setLayout(cpp14::make_unique<WVBoxLayout>());
+//        {   // e-BELEDİYE
+//            auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
+//            container->addStyleClass(bootsrapString);
+//            container->addStyleClass(Bootstrap::Grid::Offset::Large::col_lg_3+Bootstrap::Grid::Offset::Medium::col_md_3);
+//            container->setContentAlignment(AlignmentFlag::Center);
+//            auto btn = container->addWidget(cpp14::make_unique<WContainerWidget>());
+//            btn->setAttributeValue(Style::style,Style::background::color::rgba(236,157,8,0.95)+Style::Border::border("1px solid white"));
+//            btn->setHeight(mHeight);
+//            btn->setWidth(mWidth);
+//            btn->setMargin(15,AllSides);
+//            //            btn->addStyleClass(Bootstrap::ImageShape::img_thumbnail);
+//            btn->addStyleClass(CSSStyle::Shadows::shadow8px);
 
-            Wt::WLink link = Wt::WLink("https://webportal.serik.bel.tr/web/guest/2");
-            link.setTarget(Wt::LinkTarget::NewWindow);
 
-            std::unique_ptr<Wt::WAnchor> anchor =
-                Wt::cpp14::make_unique<Wt::WAnchor>(link,
-                                                    "e-Belediye");
+//            auto layout = btn->setLayout(cpp14::make_unique<WVBoxLayout>());
 
-            auto text = layout->addWidget(std::move(anchor),0,AlignmentFlag::Center|AlignmentFlag::Middle);
-            text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
-        }
+//            Wt::WLink link = Wt::WLink("https://webportal.serik.bel.tr/web/guest/2");
+//            link.setTarget(Wt::LinkTarget::NewWindow);
+
+//            std::unique_ptr<Wt::WAnchor> anchor =
+//                Wt::cpp14::make_unique<Wt::WAnchor>(link,
+//                                                    "e-Belediye");
+
+//            auto text = layout->addWidget(std::move(anchor),0,AlignmentFlag::Center|AlignmentFlag::Middle);
+//            text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
+//        }
 
         {
             auto container = bContainer->addWidget(cpp14::make_unique<WContainerWidget>());
@@ -178,6 +173,13 @@ MainPageController::MainPageController()
 
             auto text = layout->addWidget(std::move(anchor),0,AlignmentFlag::Center|AlignmentFlag::Middle);
             text->setAttributeValue(Style::style,Style::color::color(Style::color::White::Snow)+Style::font::weight::bold);
+        }
+
+        {
+            auto btn = createButton("GİRİŞ");
+            btn->clicked().connect([=](){
+                _Giris.emit(NoClass());
+            });
         }
 
 
