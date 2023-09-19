@@ -1,6 +1,6 @@
 *.TMP
 *.und
-CMakeLists.txt.user
+*.txt.user
 
 # Created by https://www.gitignore.io/api/qt,qtcreator
 # Edit at https://www.gitignore.io/?templates=qt,qtcreator
