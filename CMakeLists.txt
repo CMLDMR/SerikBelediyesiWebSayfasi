@@ -27,6 +27,7 @@ file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 add_executable(SerikBelediyesiWebSayfasi
     ${HEADERS}
     ${SOURCES}
+    SerikBelediyesiWebSayfasi/srcV2/karavan/UpdateDialog.h SerikBelediyesiWebSayfasi/srcV2/karavan/UpdateDialog.cpp
 )
 
 target_include_directories(SerikBelediyesiWebSayfasi PUBLIC "C:/Mongo/mongo-msvc2022x64-noBoost/include")

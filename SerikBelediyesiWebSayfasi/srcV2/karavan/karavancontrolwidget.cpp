@@ -1,3 +1,4 @@
+#include "UpdateDialog.h"
 #include "karavancontrolwidget.h"
 #include "SerikBelediyesiWebSayfasi/srcV2/vatandas/vatandaswidget.h"
 
@@ -355,26 +356,23 @@ ListWidget::ListWidget(const int &index , const KaravanItem &item)
     }
 
 
-    auto silContainer = this->addNew<WText>(WString("Sil?"));
+    auto silContainer = this->addNew<WText>(WString("Güncelle"));
     silContainer->addStyleClass(Bootstrap::Grid::Large::col_lg_1+Bootstrap::Grid::Medium::col_md_1+Bootstrap::Grid::Small::col_sm_3+Bootstrap::Grid::ExtraSmall::col_xs_3);
     silContainer->addStyleClass(CSSStyle::Button::redButton);
     silContainer->clicked().connect([=](){
-        _silClicked.emit(this->oid().value().to_string());
+        _updateClicked.emit(this->oid().value().to_string());
     });
 
-
-//    auto controlBtnContainer = this->addNew<WContainerWidget>();
-//    auto controlBtnText = controlBtnContainer->addNew<WText>("Kapat");
-//    controlBtnContainer->addStyleClass(bootStr);
-    //    controlBtnContainer->addStyleClass(CSSStyle::Button::redButton);
-
-//    this->decorationStyle().setCursor(Cursor::PointingHand);
-    //    this->addStyleClass(CSSStyle::Button::grayButton);
 }
 
 Signal<std::string> &ListWidget::silClicked()
 {
     return _silClicked;
+}
+
+Signal<std::string> &ListWidget::updateClicked()
+{
+    return _updateClicked;
 }
 
 Signal<std::string, std::string> &ListWidget::detailClicked()
@@ -515,6 +513,24 @@ void v2::Karavan::MainWidget::onList(const QVector<KaravanItem> *mlist)
                     this->showPopUpMessage(this->getLastError().toStdString(),"warn");
                 }
             });
+        });
+
+        container->updateClicked().connect([=]( const std::string &itemOid ){
+
+            KaravanItem filter;
+            filter.setOid(itemOid);
+            auto val = FindOneItem(filter);
+
+            if( ! val.view().empty() ) {
+                auto mDialog = wApp->addChild(std::make_unique<v2::Karavan::UpdateDialog>(val));
+
+                mDialog->show();
+            }
+            else{
+                showPopUpMessage("Oid Bulunamadı","warn");
+            }
+
+
         });
         color = !color;
     }

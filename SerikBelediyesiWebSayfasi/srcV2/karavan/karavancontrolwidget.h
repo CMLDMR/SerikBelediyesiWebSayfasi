@@ -86,6 +86,7 @@ public:
     Signal<std::string> silClicked() const;
     void setSilClicked(const Signal<std::string> &newSilClicked);
 
+    Signal<std::string> &updateClicked();
 
     Signal<std::string> &silClicked();
 
@@ -94,7 +95,7 @@ public:
 private:
     Signal<std::string> _silClicked;
     Signal<std::string,std::string> _detailClicked;
-
+    Signal<std::string> _updateClicked;
 };
 
 
