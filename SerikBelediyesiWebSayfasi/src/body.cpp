@@ -4671,6 +4671,27 @@ Body::BilgiEdin::DenetimRapor::DenetimRapor()
     {
         auto layout = controlWidget->setLayout(cpp14::make_unique<WVBoxLayout>());
 
+        {
+            Wt::WLink link = Wt::WLink("http://www.serik.bel.tr/file/2022_meclis_denetim_komisyon.pdf");
+            link.setTarget(Wt::LinkTarget::NewWindow);
+
+            std::unique_ptr<Wt::WAnchor> anchor =
+                    Wt::cpp14::make_unique<Wt::WAnchor>(link,
+                                                        "2022 Meclis Denetim Komisyonu Raporu");
+            anchor->setAttributeValue(Style::style,Style::font::size::s20px);
+            layout->addWidget(std::move(anchor));
+        }
+
+        {
+            Wt::WLink link = Wt::WLink("http://www.serik.bel.tr/file/2021_meclis_denetim_komisyon.pdf");
+            link.setTarget(Wt::LinkTarget::NewWindow);
+
+            std::unique_ptr<Wt::WAnchor> anchor =
+                    Wt::cpp14::make_unique<Wt::WAnchor>(link,
+                                                        "2021 Meclis Denetim Komisyonu Raporu");
+            anchor->setAttributeValue(Style::style,Style::font::size::s20px);
+            layout->addWidget(std::move(anchor));
+        }
 
         {
             Wt::WLink link = Wt::WLink("http://www.serik.bel.tr/file/2021_mahalliidare_denetim.pdf");
